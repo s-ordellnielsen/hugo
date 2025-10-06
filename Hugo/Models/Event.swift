@@ -21,8 +21,18 @@ final class Event {
     }
 }
 
-enum EventType: String, Codable, CaseIterable {
+enum EventType: String, Codable, CaseIterable, Identifiable {
     case fieldService
     case bethel
     case custom
+    
+    var id: String { rawValue }
+    
+    var label: String {
+        switch self {
+        case .fieldService: return "Field Service"
+        case .bethel: return "Bethel"
+        case .custom: return "Custom"
+        }
+    }
 }

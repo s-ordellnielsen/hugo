@@ -9,22 +9,21 @@ import SwiftUI
 import SwiftData
 
 struct EventListView: View {
-    @Environment(\.modelContext) private var modelContext
-    let items: [Event]
+    @EnvironmentObject private var viewModel: EventListViewModel
     
     var body: some View {
         List {
-            ForEach(items) { item in
+            ForEach(viewModel.events) { event in
                 NavigationLink {
-                    Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                    Text("Item at \(event.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
                 } label: {
                     HStack(spacing: 16) {
-                        Image(systemName: getEventIcon(for: item))
+                        Image(systemName: getEventIcon(for: event.type))
                             .foregroundStyle(.accent)
                         VStack(alignment: .leading) {
-                            Text(formatDuration(item.duration))
+                            Text(formatDuration(event.duration))
                                 .fontWeight(.medium)
-                            Text(item.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .none))
+                            Text(event.timestamp, format: Date.FormatStyle(date: .abbreviated, time: .none))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -38,7 +37,7 @@ struct EventListView: View {
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                viewModel.delete(event: viewModel.allEvents[index])
             }
         }
     }
@@ -61,5 +60,6 @@ struct EventListView: View {
 }
 
 #Preview {
-    EventListView(items: [Event(type: .fieldService, timestamp: Date(), duration: 3600)])
+    EventListView()
+        .environmentObject(EventListViewModel(events: [Event(type: .fieldService, timestamp: Date(), duration: 3600)]))
 }

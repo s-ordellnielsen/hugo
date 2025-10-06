@@ -26,7 +26,7 @@ struct HugoApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                ContentView()
+                ContentView(showAddItemSheet: false)
                     .tabItem {
                         Label("Overview", systemImage: "house")
                     }
