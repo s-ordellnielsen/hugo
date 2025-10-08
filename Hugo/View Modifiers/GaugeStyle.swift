@@ -7,12 +7,20 @@
 
 import SwiftUI
 
-struct SwiftUIView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct CircularLarge: GaugeStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            Circle()
+                .stroke(.primary.opacity(0.1), lineWidth: 32)
+            Circle()
+                .trim(to: configuration.value)
+                .stroke(.primary, style: .init(lineWidth: 32, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            configuration.currentValueLabel
+        }
     }
 }
 
-#Preview {
-    SwiftUIView()
+extension GaugeStyle where Self == CircularLarge {
+    static var circularLarge: CircularLarge { .init() }
 }

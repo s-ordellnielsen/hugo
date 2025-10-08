@@ -26,13 +26,17 @@ struct HugoApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                ContentView(showAddItemSheet: false)
+                ContentView()
                     .tabItem {
                         Label("Overview", systemImage: "house")
                     }
                 PlannerView()
                     .tabItem {
                         Label("Planner", systemImage: "calendar")
+                    }
+                ReportView()
+                    .tabItem {
+                        Label("Report", systemImage: "tray.full.fill")
                     }
             }
         }

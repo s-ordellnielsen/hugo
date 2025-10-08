@@ -8,9 +8,9 @@
 func getEventIcon(for eventType: EventType) -> String {
     switch eventType {
     case .fieldService:
-        return "briefcase.fill"
+        return "figure.walk"
     case .bethel:
-        return "building.2.crop.circle"
+        return "heart"
     case .custom:
         return "star"
     }

@@ -5,74 +5,52 @@
 //  Created by Sebastian Nielsen on 05/10/2025.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
     @Query private var events: [Event]
 
     @State private var showAddItemSheet: Bool = false
-    
-    @State private var selectedEventType: EventType?
-    
-    init(showAddItemSheet: Bool, selectedEventType: EventType? = nil) {
-        self.showAddItemSheet = showAddItemSheet
-        self.selectedEventType = selectedEventType
-        
-        debugPrint(selectedEventType as Any)
+
+    let goal: Double = 50.0
+    var current: Double {
+        let totalSeconds = events.reduce(0) { $0 + Double($1.duration) }
+
+        let totalHours = totalSeconds / 3600.0
+
+        return totalHours
     }
 
     var body: some View {
-        NavigationSplitView {
-            EventListView()
-            .navigationTitle("Overview")
+        NavigationStack {
+            ScrollView {
+                VStack {
+                    MonthlyProgressView(value: current)
+                        .padding(.horizontal, 48)
+                        .padding(.bottom, 32)
+                        .padding(.top, 16)
+                    EventListView()
+                        .padding(.bottom, 20)
+                        .padding(.top, 24)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .background(Color(.systemGroupedBackground))
             .toolbar {
                 ToolbarItem {
-                    Menu {
-                        Picker("Filter Type", selection: $selectedEventType) {
-                            Label("Show All", systemImage: "list.bullet")
-                                .tag(nil as EventType?)
-                            ForEach(EventType.allCases) { type in
-                                Label(String(describing: type.label), systemImage: getEventIcon(for: type))
-                                    .tag(type)
-                            }
-                        }
-                    } label: {
-                        Label("Filter", systemImage: "line.3.horizontal.decrease")
-                    }
-                }
-                ToolbarSpacer(.fixed)
-                ToolbarItem {
                     Button {
-                        print("Clicked")
-                        showAddItemSheet.toggle()
+                        
                     } label: {
-                        Label("Add Item", systemImage: "plus")
+                        Label("Open Account", systemImage: "person.fill")
                     }
-                    .buttonStyle(.glassProminent)
+                    .tint(.secondary)
                 }
             }
-            .environmentObject(EventListViewModel(events: events))
-        } detail: {
-            Text("Select an item")
-        }
-        .sheet(isPresented: $showAddItemSheet) {
-            AddEventSheet(submitAction: addItem)
-                .presentationDetents([.medium])
-        }
-    }
-
-    private func addItem(date: Date, duration: Int) {
-        withAnimation {
-            let newItem = Event(type: EventType.fieldService, timestamp: date, duration: duration)
-            modelContext.insert(newItem)
         }
     }
 }
 
-#Preview {
-    ContentView(showAddItemSheet: false)
-        .modelContainer(for: Event.self, inMemory: true)
+#Preview(traits: .sampleData) {
+    ContentView()
 }
-
