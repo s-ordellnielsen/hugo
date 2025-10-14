@@ -9,17 +9,24 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @Query private var events: [Event]
+    @Query private var entries: [Entry]
 
     @State private var showAddItemSheet: Bool = false
 
     let goal: Double = 50.0
     var current: Double {
-        let totalSeconds = events.reduce(0) { $0 + Double($1.duration) }
+        let totalSeconds = entries.reduce(0) { $0 + Double($1.duration) }
 
         let totalHours = totalSeconds / 3600.0
 
         return totalHours
+    }
+    
+    var formattedMonth: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM, yyyy"
+        
+        return dateFormatter.string(from: Date())
     }
 
     var body: some View {
@@ -30,21 +37,38 @@ struct ContentView: View {
                         .padding(.horizontal, 48)
                         .padding(.bottom, 32)
                         .padding(.top, 16)
-                    EventListView()
-                        .padding(.bottom, 20)
-                        .padding(.top, 24)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("overview.section.thismonth.title")
+                                    .font(.headline)
+                                    .fontDesign(.rounded)
+                                Text(formattedMonth)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .fontWeight(.medium)
+                            }
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        EntryListView(entries: entries)
+                        Spacer()
+                    }
+                    .padding(.vertical)
+                    .padding(.horizontal, 20)
+                    .background(Color(.systemGroupedBackground))
+                    .frame(maxWidth: .infinity)
                 }
+
                 .frame(maxWidth: .infinity)
             }
+            .navigationTitle("overview.title")
+            .navigationBarTitleDisplayMode(.inline)
             .background(Color(.systemGroupedBackground))
             .toolbar {
                 ToolbarItem {
-                    Button {
-                        
-                    } label: {
-                        Label("Open Account", systemImage: "person.fill")
-                    }
-                    .tint(.secondary)
+                    AccountViewButton()
                 }
             }
         }

@@ -12,7 +12,7 @@ import SwiftData
 struct HugoApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Event.self,
+            Entry.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -28,15 +28,15 @@ struct HugoApp: App {
             TabView {
                 ContentView()
                     .tabItem {
-                        Label("Overview", systemImage: "house")
+                        Label("tab.overview", systemImage: "house")
                     }
                 PlannerView()
                     .tabItem {
-                        Label("Planner", systemImage: "calendar")
+                        Label("tab.planner", systemImage: "calendar")
                     }
                 ReportView()
                     .tabItem {
-                        Label("Report", systemImage: "tray.full.fill")
+                        Label("tab.report", systemImage: "tray.full.fill")
                     }
             }
         }

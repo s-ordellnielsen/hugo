@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddEventSheet: View {
+struct AddEntrySheet: View {
     @Environment(\.dismiss) var dismiss
     @State var date: Date = (Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: Date()) ?? Date())
     @State var time: Date? = nil
@@ -22,9 +22,9 @@ struct AddEventSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Duration") {
+                Section("entry.add.duration.label") {
                     VStack(alignment: .center) {
-                        DatePicker("Duration", selection: $duration, displayedComponents: .hourAndMinute)
+                        DatePicker("entry.add.duration.label", selection: $duration, displayedComponents: .hourAndMinute)
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                     }
@@ -32,15 +32,15 @@ struct AddEventSheet: View {
                 }
                 
                 Section {
-                    DatePicker("Date", selection: $date, in: ...Date(), displayedComponents: .date)
+                    DatePicker("entry.add.date.label", selection: $date, in: ...Date(), displayedComponents: .date)
                     Button {
                         showTimeSheet = true
                     } label: {
                         HStack {
-                            Text("Time")
+                            Text("entry.add.time.label")
                             Spacer()
                             if time == nil {
-                                Text("Select Time")
+                                Text("entry.add.time.none")
                                     .foregroundStyle(.secondary)
                             } else {
                                 Text((time != nil) ? formatTime(time ?? Date()) : "Error")
@@ -57,7 +57,7 @@ struct AddEventSheet: View {
             }
             .safeAreaInset(edge: .bottom) {
                 Button(action: submitForm) {
-                    Label("Add Event", systemImage: "plus")
+                    Label("entry.add.label", systemImage: "plus")
                         .fontWeight(.semibold)
                 }
                 .buttonStyle(.glassProminent)
@@ -67,7 +67,7 @@ struct AddEventSheet: View {
                 .padding()
                 .disabled(isDurationZero())
             }
-            .navigationTitle(String("Add Event"))
+            .navigationTitle("entry.add.label")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -75,7 +75,7 @@ struct AddEventSheet: View {
                         dismiss()
                     }
                     label: {
-                        Label("Dismiss", systemImage: "xmark")
+                        Label("navigation.dismiss", systemImage: "xmark")
                     }
                 }
             }
@@ -135,10 +135,10 @@ struct AddEventSheet: View {
         
         var body: some View {
             NavigationStack {
-                DatePicker("Time", selection: $selectedDate, displayedComponents: .hourAndMinute)
+                DatePicker("entry.add.time.select.label", selection: $selectedDate, displayedComponents: .hourAndMinute)
                     .datePickerStyle(.wheel)
                     .labelsHidden()
-                    .navigationBarTitle("Select Time")
+                    .navigationBarTitle("entry.add.time.select.label")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem {
@@ -146,7 +146,7 @@ struct AddEventSheet: View {
                                 date = selectedDate
                                 showTimeSheet = false
                             } label: {
-                                Label("Done", systemImage: "checkmark")
+                                Label("navigation.done", systemImage: "checkmark")
                             }
                         }
                         if date != nil {
@@ -155,7 +155,7 @@ struct AddEventSheet: View {
                                     date = nil
                                     showTimeSheet = false
                                 } label: {
-                                    Label("Clear", systemImage: "trash")
+                                    Label("navigation.clear", systemImage: "trash")
                                 }
                             }
                         }
@@ -166,5 +166,5 @@ struct AddEventSheet: View {
 }
 
 #Preview {
-    AddEventSheet()
+    AddEntrySheet()
 }

@@ -12,9 +12,9 @@ import SwiftUI
 struct SampleData: PreviewModifier {
     static func makeSharedContext() throws -> ModelContainer {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Event.self, configurations: config)
+        let container = try ModelContainer(for: Entry.self, configurations: config)
         
-        Event.makeSampleData(in: container)
+        Entry.makeSampleData(in: container)
         return container
     }
     

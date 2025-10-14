@@ -21,7 +21,7 @@ struct MonthlyProgressView: View {
             LargeProgressCircle(progress: value, max: 50.0)
 
             VStack {
-                Text("October")
+                Text(Date.now, format: .dateTime.month(.wide))
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
@@ -40,7 +40,7 @@ struct MonthlyProgressView: View {
                             self.valueText = "\(Int(newValue))"
                         }
                     }
-                Text("Hours")
+                Text("entry.progress.month.hours.label")
                     .font(.title3)
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary.opacity(0.5))
@@ -49,26 +49,32 @@ struct MonthlyProgressView: View {
             Button {
                 showAddItemSheet.toggle()
             } label: {
-                Image(systemName: "plus")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary.opacity(0.80))
+                Label("entry.add.label", systemImage: "plus")
                     .padding(12)
+//                Image(systemName: "plus")
+//                    .font(.largeTitle)
+//                    .fontWeight(.semibold)
+//                    .foregroundColor(.primary.opacity(0.80))
+//                    .padding(12)
             }
             .buttonBorderShape(.circle)
+            .font(.largeTitle)
+            .fontWeight(.semibold)
+            .foregroundStyle(.accent)
+            .labelStyle(.iconOnly)
             .buttonStyle(.glass)
             .offset(x: 128, y: 128)
 
         }
         .sheet(isPresented: $showAddItemSheet) {
-            AddEventSheet(submitAction: addItem)
+            AddEntrySheet(submitAction: addItem)
                 .presentationDetents([.large])
         }
     }
     
     private func addItem(date: Date, duration: Int) {
         withAnimation(.bouncy.delay(0.5)) {
-            let newItem = Event(
+            let newItem = Entry(
                 type: EventType.fieldService,
                 timestamp: date,
                 duration: duration

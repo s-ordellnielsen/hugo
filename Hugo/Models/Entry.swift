@@ -9,10 +9,10 @@ import Foundation
 import SwiftData
 
 @Model
-final class Event {
-    var type: EventType
-    var timestamp: Date
-    var duration: Int
+final class Entry {
+    var type: EventType = EventType.fieldService
+    var timestamp: Date = Date()
+    var duration: Int = 0
     
     init(type: EventType, timestamp: Date, duration: Int) {
         self.type = type
@@ -27,9 +27,9 @@ final class Event {
     static func makeSampleData(in container: ModelContainer) {
         let context = ModelContext(container)
         let data = [
-            Event(type: .fieldService, timestamp: Date(), duration: 3600),
-            Event(type: .bethel, timestamp: Date().addingTimeInterval(-86_400), duration: 3600),
-            Event(type: .custom, timestamp: Date().addingTimeInterval(-1_728_000), duration: 3600),
+            Entry(type: .fieldService, timestamp: Date(), duration: 3600),
+            Entry(type: .bethel, timestamp: Date().addingTimeInterval(-86_400), duration: 3600),
+            Entry(type: .custom, timestamp: Date().addingTimeInterval(-1_728_000), duration: 3600),
         ]
         for event in data {
             context.insert(event)
