@@ -72,12 +72,12 @@ struct MonthlyProgressView: View {
         }
     }
     
-    private func addItem(date: Date, duration: Int) {
+    private func addItem(date: Date, duration: Int, tracker: Tracker) {
         withAnimation(.bouncy.delay(0.5)) {
             let newItem = Entry(
-                type: EventType.fieldService,
-                timestamp: date,
-                duration: duration
+                date: date,
+                duration: duration,
+                tracker: tracker
             )
             modelContext.insert(newItem)
         }

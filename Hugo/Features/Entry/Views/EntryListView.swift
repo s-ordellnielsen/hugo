@@ -20,7 +20,7 @@ struct EntryListView: View {
             RowView(entry: entry, selectedEntry: $selectedEntry)
         }
         .sheet(item: $selectedEntry) { entry in
-            EventDetailSheet(entry: entry)
+            EntryDetailSheet(entry: entry)
                 .presentationDetents([.medium])
         }
     }
@@ -45,35 +45,38 @@ private struct RowView: View {
             selectedEntry = entry
         } label: {
             HStack(spacing: 16) {
-                Image(systemName: getEventIcon(for: entry.type))
-                    .font(.title)
-                    .fontWeight(.medium)
-                    .frame(width: 32, height: 32)
-                    .alignmentGuide(
-                        .leading,
-                        computeValue: { dimension in
-                            dimension[.leading]
-                        }
-                    )
+                Image(
+                    systemName: entry.tracker?.iconName ?? "questionmark.circle"
+                )
+                .font(.title)
+                .fontWeight(.medium)
+                .frame(width: 32, height: 32)
+                .alignmentGuide(
+                    .leading,
+                    computeValue: { dimension in
+                        dimension[.leading]
+                    }
+                )
                 VStack(alignment: .leading) {
                     HStack(spacing: 6) {
                         Text(formatDuration(entry.duration))
-                            .fontWeight(.semibold)
-                        Text("Field Service")
+                            .fontWeight(.bold)
+                        Text(entry.tracker?.name ?? "Unknown")
                             .fontWeight(.medium)
+                            .foregroundStyle(.secondary)
                     }
                     .foregroundStyle(.primary)
                     .font(.system(size: 17))
                     .fontDesign(.rounded)
                     Text(
-                        entry.timestamp,
+                        entry.date,
                         format: Date.FormatStyle(
                             date: .abbreviated,
                             time: .none
                         )
                     )
                     .font(.callout)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                 }
                 Spacer()
             }
@@ -98,8 +101,12 @@ private struct RowView: View {
     }
 }
 
-private struct EventDetailSheet: View {
+private struct EntryDetailSheet: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(\.colorScheme) private var colorScheme
+
+    @Query private var trackers: [Tracker]
 
     var entry: Entry
 
@@ -107,34 +114,106 @@ private struct EventDetailSheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
+            VStack(spacing: 32) {
                 HStack(spacing: 12) {
-                    Image(systemName: getEventIcon(for: entry.type))
-                        .font(.title)
-                    Text("entry.label")
+                    Image(
+                        systemName: entry.tracker?.iconName
+                            ?? "questionmark.circle"
+                    )
+                    .font(.title)
+                    Text(entry.tracker?.name ?? "Unknown")
                         .font(.title)
                         .fontDesign(.rounded)
                     Spacer()
+                    Menu {
+                        ForEach(trackers) { tracker in
+                            Button {
+
+                            } label: {
+                                Label(
+                                    tracker.name,
+                                    systemImage: tracker.iconName
+                                )
+                            }
+                        }
+                    } label: {
+                        Label("Change Tracker", systemImage: "chevron.down")
+                            .labelStyle(.iconOnly)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.extraLarge)
+                    .buttonBorderShape(.circle)
                 }
+                .padding(.leading, 12)
                 .fontWeight(.bold)
+
+                HStack {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Duration")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.secondary)
+                            Text(formatDuration(entry.duration))
+                                .fontDesign(.monospaced)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
+                        
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(colorScheme == .dark ? Color(.systemGroupedBackground).opacity(0.5) : .white.opacity(0.5))
+                    .cornerRadius(24)
+                    
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Date")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.secondary)
+                            Text(entry.date.formatted(date: .abbreviated, time: .omitted))
+                                .fontDesign(.monospaced)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
+                        
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(colorScheme == .dark ? Color(.systemGroupedBackground).opacity(0.5) : .white.opacity(0.5))
+                    .cornerRadius(24)
+                }
                 Spacer()
             }
             .padding()
             .toolbar {
                 ToolbarItem {
-                    Menu {
-                        Button {
+                    Button {
 
-                        } label: {
-                            Label("entry.edit.label", systemImage: "pencil")
-                        }
-                        Button(role: .destructive) {
-                            deleteConfirmationShown = true
-                        } label: {
-                            Label("entry.delete.label", systemImage: "trash")
-                        }
                     } label: {
-                        Label("navigation.done", systemImage: "ellipsis")
+                        Label("entry.edit.label", systemImage: "pencil")
+                    }
+                }
+                ToolbarSpacer()
+                ToolbarItem {
+                    Button(role: .destructive) {
+                        deleteConfirmationShown = true
+                    } label: {
+                        Label("entry.delete.label", systemImage: "trash")
+                    }
+                    .confirmationDialog(
+                        "Delete Entry?",
+                        isPresented: $deleteConfirmationShown
+                    ) {
+                        Button("Delete", role: .destructive) {
+                            context.delete(entry)
+                            dismiss()
+                        }
+                    } message: {
+                        Text("Are you sure you want to delete this entry?")
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
@@ -148,10 +227,27 @@ private struct EventDetailSheet: View {
             }
         }
     }
+    
+    private func formatDuration(_ totalSeconds: Int) -> String {
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
 }
 
-#Preview(traits: .sampleData) {
-    EntryListView(entries: [
-        Entry(type: .fieldService, timestamp: Date(), duration: 3600)
-    ])
+//#Preview {
+//    EntryListView(entries: [
+//        Entry(date: Date(), duration: 3600)
+//    ])
+//    .modelContainer(.preview)
+//}
+
+#Preview {
+    let tracker = Tracker(name: "Field Service")
+
+    EntryDetailSheet(
+        entry: Entry(date: Date(), duration: 3600, tracker: tracker)
+    )
+    .modelContainer(.preview)
 }

@@ -48,14 +48,14 @@ struct LargeProgressCircle: View {
         }
         .onAppear {
             DispatchQueue.main.async {
-                withAnimation(.bouncy(duration: 1.5).delay(1)) {
-                    progressHeight = CGFloat(size / max * CGFloat(progress))
+                withAnimation(.bouncy(duration: 1.5).delay(0.5)) {
+                    progressHeight = min(CGFloat(size / max * CGFloat(progress)), size)
                 }
             }
         }
         .onChange(of: progress) { oldValue, newValue in
             withAnimation {
-                progressHeight = CGFloat(size / max * CGFloat(newValue))
+                progressHeight = min(CGFloat(size / max * CGFloat(newValue)), size)
             }
         }
     }

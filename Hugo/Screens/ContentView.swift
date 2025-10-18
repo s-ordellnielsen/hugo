@@ -9,7 +9,18 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @Query private var entries: [Entry]
+    static var currentMonthPredicate: Predicate<Entry> {
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfMonth = calendar.dateInterval(of: .month, for: now)?.start ?? now
+        let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth) ?? now
+        
+        return #Predicate<Entry> { entry in
+            entry.date >= startOfMonth && entry.date < endOfMonth
+        }
+    }
+    
+    @Query(filter: ContentView.currentMonthPredicate, sort: \Entry.date, order: .reverse) private var entries: [Entry]
 
     @State private var showAddItemSheet: Bool = false
 
@@ -75,6 +86,7 @@ struct ContentView: View {
     }
 }
 
-#Preview(traits: .sampleData) {
+#Preview {
     ContentView()
+        .modelContainer(.preview)
 }

@@ -9,7 +9,24 @@ import SwiftUI
 
 struct PlannerView: View {
     var body: some View {
-        Text("misc.comingsoon")
+        NavigationStack {
+            VStack {
+                Text("misc.comingsoon")
+                Button {
+                    
+                } label: {
+                    Label("misc.comingsoon", systemImage: "star")
+                }
+                .buttonStyle(.glassProminent)
+            }
+            .navigationTitle(Text("Planner"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem {
+                    AccountViewButton()
+                }
+            }
+        }
     }
 }
 

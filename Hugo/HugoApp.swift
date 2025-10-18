@@ -13,11 +13,25 @@ struct HugoApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Entry.self,
+            Tracker.self
         ])
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" || ProcessInfo.processInfo.environment["XCODE_SERVICE_ACCOUNT_STATUS"] != nil {
+            print("Initializing ModelContainer with in-memory storage for previews...")
+            let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            
+            do {
+                return try ModelContainer(for: schema, migrationPlan: EntryMigrationPlan.self, configurations: [config])
+            } catch {
+                fatalError("Still could not create ModelContainer: \(error)")
+            }
+        }
+        #endif
+        
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try ModelContainer(for: schema, migrationPlan: EntryMigrationPlan.self, configurations: [modelConfiguration])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -30,14 +44,21 @@ struct HugoApp: App {
                     .tabItem {
                         Label("tab.overview", systemImage: "house")
                     }
+                    .tint(.teal)
                 PlannerView()
                     .tabItem {
                         Label("tab.planner", systemImage: "calendar")
                     }
+                    .tint(.indigo)
                 ReportView()
                     .tabItem {
                         Label("tab.report", systemImage: "tray.full.fill")
                     }
+                    .tint(.pink)
+            }
+            .tint(.primary)
+            .task {
+                await AppInitializer.initialize(modelContext: sharedModelContainer.mainContext)
             }
         }
         .modelContainer(sharedModelContainer)
