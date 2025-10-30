@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E090548E2E951E2C00254125 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -17,6 +21,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E090544F2E91E99900254125 /* Hugo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hugo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E090548A2E951E2C00254125 /* HugoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HugoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -68,6 +73,7 @@
 		E09054462E91E99900254125 = {
 			isa = PBXGroup;
 			children = (
+				E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */,
 				E09054512E91E99900254125 /* Hugo */,
 				E090548B2E951E2C00254125 /* HugoTests */,
 				E09054502E91E99900254125 /* Products */,
@@ -179,6 +185,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
