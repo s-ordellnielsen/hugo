@@ -40,23 +40,16 @@ struct HugoApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                ContentView()
-                    .tabItem {
-                        Label("tab.overview", systemImage: "house")
-                    }
-                    .tint(.teal)
-                PlannerView()
-                    .tabItem {
-                        Label("tab.planner", systemImage: "calendar")
-                    }
-                    .tint(.indigo)
-                ReportView()
-                    .tabItem {
-                        Label("tab.report", systemImage: "tray.full.fill")
-                    }
-                    .tint(.pink)
+                Tab("tab.overview", systemImage: "house") {
+                    ContentView()
+                }
+                Tab("tab.planner", systemImage: "calendar") {
+                    PlannerView()
+                }
+                Tab("tab.report", systemImage: "tray.full.fill") {
+                    ReportView()
+                }
             }
-            .tint(.primary)
             .task {
                 await AppInitializer.initialize(modelContext: sharedModelContainer.mainContext)
             }

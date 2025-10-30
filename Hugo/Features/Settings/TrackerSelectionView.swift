@@ -47,7 +47,7 @@ struct TrackerSelectionView: View {
                     Button {
                         
                     } label: {
-                        Label("Help", systemImage: "questionmark")
+                        Label("navigation.help", systemImage: "questionmark")
                     }
                     EditButton()
                 } label: {

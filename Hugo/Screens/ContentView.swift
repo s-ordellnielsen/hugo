@@ -12,19 +12,24 @@ struct ContentView: View {
     static var currentMonthPredicate: Predicate<Entry> {
         let calendar = Calendar.current
         let now = Date()
-        let startOfMonth = calendar.dateInterval(of: .month, for: now)?.start ?? now
-        let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth) ?? now
-        
+        let startOfMonth =
+            calendar.dateInterval(of: .month, for: now)?.start ?? now
+        let endOfMonth =
+            calendar.date(byAdding: .month, value: 1, to: startOfMonth) ?? now
+
         return #Predicate<Entry> { entry in
             entry.date >= startOfMonth && entry.date < endOfMonth
         }
     }
-    
-    @Query(filter: ContentView.currentMonthPredicate, sort: \Entry.date, order: .reverse) private var entries: [Entry]
+
+    @Query(
+        filter: ContentView.currentMonthPredicate,
+        sort: \Entry.date,
+        order: .reverse
+    ) private var entries: [Entry]
 
     @State private var showAddItemSheet: Bool = false
 
-    let goal: Double = 50.0
     var current: Double {
         let totalSeconds = entries.reduce(0) { $0 + Double($1.duration) }
 
@@ -32,11 +37,11 @@ struct ContentView: View {
 
         return totalHours
     }
-    
+
     var formattedMonth: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM, yyyy"
-        
+
         return dateFormatter.string(from: Date())
     }
 
@@ -78,9 +83,7 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(.systemGroupedBackground))
             .toolbar {
-                ToolbarItem {
-                    AccountViewButton()
-                }
+                AccountViewButton()
             }
         }
     }

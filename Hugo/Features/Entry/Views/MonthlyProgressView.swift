@@ -5,20 +5,22 @@
 //  Created by Sebastian Nielsen on 08/10/2025.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct MonthlyProgressView: View {
     @Environment(\.modelContext) private var modelContext
+    @AppStorage(UserDefaults.publisherStatusKey) var publisherStatusId = ""
 
     var value: Double
 
     @State private var showAddItemSheet: Bool = false
     @State private var valueText: String = "0"
+    @State private var monthlyGoal: Double = 0.00
 
     var body: some View {
         ZStack {
-            LargeProgressCircle(progress: value, max: 50.0)
+            LargeProgressCircle(progress: value, maxValue: monthlyGoal)
 
             VStack {
                 Text(Date.now, format: .dateTime.month(.wide))
@@ -47,15 +49,10 @@ struct MonthlyProgressView: View {
             }
 
             Button {
-                showAddItemSheet.toggle()
+                showAddItemSheet = true
             } label: {
                 Label("entry.add.label", systemImage: "plus")
                     .padding(12)
-//                Image(systemName: "plus")
-//                    .font(.largeTitle)
-//                    .fontWeight(.semibold)
-//                    .foregroundColor(.primary.opacity(0.80))
-//                    .padding(12)
             }
             .buttonBorderShape(.circle)
             .font(.largeTitle)
@@ -68,10 +65,22 @@ struct MonthlyProgressView: View {
         }
         .sheet(isPresented: $showAddItemSheet) {
             AddEntrySheet(submitAction: addItem)
-                .presentationDetents([.large])
+                .presentationDetents([.medium, .large])
+        }
+        .onAppear {
+            monthlyGoal = getMonthlyGoal()
+        }
+        .onChange(of: publisherStatusId) {
+            print("Publisher Status Changed to: \(publisherStatusId)")
+            withAnimation(.bouncy.delay(0.25)) {
+                monthlyGoal = getMonthlyGoal()
+            }
+        }
+        .onChange(of: monthlyGoal) { old, new in
+            print("Updating goal from \(old) to \(new)")
         }
     }
-    
+
     private func addItem(date: Date, duration: Int, tracker: Tracker) {
         withAnimation(.bouncy.delay(0.5)) {
             let newItem = Entry(
@@ -82,8 +91,15 @@ struct MonthlyProgressView: View {
             modelContext.insert(newItem)
         }
     }
+
+    private func getMonthlyGoal() -> Double {
+        print("Getting monthly goal")
+        let currentConfig = PublisherStatusConfig.current(publisherStatusId)
+
+        return Double(currentConfig?.monthlyGoal() ?? 0)
+    }
 }
 
 #Preview {
-    MonthlyProgressView(value: 32)
+    MonthlyProgressView(value: 12)
 }

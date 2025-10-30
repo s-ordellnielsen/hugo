@@ -108,13 +108,30 @@ private struct EntryDetailSheet: View {
 
     @Query private var trackers: [Tracker]
 
-    var entry: Entry
+    @State var entry: Entry
 
     @State private var deleteConfirmationShown: Bool = false
+    
+    var durationAsDate: Date {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: Date())
+        
+        let seconds = entry.duration
+        
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let secs = seconds % 60
+        
+        components.hour = hours
+        components.minute = minutes
+        components.second = secs
+        
+        return calendar.date(from: components) ?? Date()
+    }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 32) {
+        Form {
+            Section {
                 HStack(spacing: 12) {
                     Image(
                         systemName: entry.tracker?.iconName
@@ -126,15 +143,13 @@ private struct EntryDetailSheet: View {
                         .fontDesign(.rounded)
                     Spacer()
                     Menu {
-                        ForEach(trackers) { tracker in
-                            Button {
-
-                            } label: {
-                                Label(
-                                    tracker.name,
-                                    systemImage: tracker.iconName
-                                )
-                            }
+                        Button(role: .destructive) {
+                            deleteConfirmationShown = true
+                        } label: {
+                            Label(
+                                "entry.delete.label",
+                                systemImage: "trash"
+                            )
                         }
                     } label: {
                         Label("Change Tracker", systemImage: "chevron.down")
@@ -143,91 +158,35 @@ private struct EntryDetailSheet: View {
                     .buttonStyle(.bordered)
                     .controlSize(.extraLarge)
                     .buttonBorderShape(.circle)
-                }
-                .padding(.leading, 12)
-                .fontWeight(.bold)
-
-                HStack {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Duration")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-                            Text(formatDuration(entry.duration))
-                                .fontDesign(.monospaced)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                        }
-                        
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(colorScheme == .dark ? Color(.systemGroupedBackground).opacity(0.5) : .white.opacity(0.5))
-                    .cornerRadius(24)
-                    
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Date")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-                            Text(entry.date.formatted(date: .abbreviated, time: .omitted))
-                                .fontDesign(.monospaced)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                        }
-                        
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(colorScheme == .dark ? Color(.systemGroupedBackground).opacity(0.5) : .white.opacity(0.5))
-                    .cornerRadius(24)
-                }
-                Spacer()
-            }
-            .padding()
-            .toolbar {
-                ToolbarItem {
-                    Button {
-
-                    } label: {
-                        Label("entry.edit.label", systemImage: "pencil")
-                    }
-                }
-                ToolbarSpacer()
-                ToolbarItem {
-                    Button(role: .destructive) {
-                        deleteConfirmationShown = true
-                    } label: {
-                        Label("entry.delete.label", systemImage: "trash")
-                    }
                     .confirmationDialog(
-                        "Delete Entry?",
+                        "entry.delete.confirmation.label",
                         isPresented: $deleteConfirmationShown
                     ) {
-                        Button("Delete", role: .destructive) {
+                        Button(
+                            "entry.delete.confirmation.action",
+                            role: .destructive
+                        ) {
                             context.delete(entry)
                             dismiss()
                         }
                     } message: {
-                        Text("Are you sure you want to delete this entry?")
+                        Text("entry.delete.confirmation.message")
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Label("navigation.done", systemImage: "xmark")
-                    }
-                }
-
+                .padding(.leading, 12)
+                .fontWeight(.bold)
+            }
+            .listRowBackground(Color.clear)
+            .listRowInsets(.all, 0)
+            
+            DurationSelect(duration: $entry.duration, durationAsDate: durationAsDate)
+            
+            DatePicker(selection: $entry.date) {
+                Label("Date", systemImage: "calendar")
             }
         }
     }
-    
+
     private func formatDuration(_ totalSeconds: Int) -> String {
         let hours = totalSeconds / 3600
         let minutes = (totalSeconds % 3600) / 60
@@ -236,12 +195,38 @@ private struct EntryDetailSheet: View {
     }
 }
 
-//#Preview {
-//    EntryListView(entries: [
-//        Entry(date: Date(), duration: 3600)
-//    ])
-//    .modelContainer(.preview)
-//}
+fileprivate struct DurationSelect: View {
+    @Environment(\.modelContext) private var context
+    
+    @Binding var duration: Int
+    
+    @State var durationAsDate: Date
+    
+    var body: some View {
+        DatePicker(selection: $durationAsDate, displayedComponents: .hourAndMinute) {
+            Label("Duration", systemImage: "clock")
+        }
+        .onChange(of: durationAsDate, updateDuration)
+    }
+    
+    private func updateDuration() {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute, .second], from: durationAsDate)
+        
+        let hours: Int = (components.hour ?? 0) * 60 * 60
+        let minutes: Int = (components.minute ?? 0) * 60
+        let seconds: Int = components.second ?? 0
+        
+        duration = hours + minutes + seconds
+    }
+}
+
+#Preview {
+    EntryListView(entries: [
+        Entry(date: Date(), duration: 3600)
+    ])
+    .modelContainer(.preview)
+}
 
 #Preview {
     let tracker = Tracker(name: "Field Service")

@@ -9,4 +9,6 @@ import Foundation
 
 extension UserDefaults {
     static let hasRunInitialSetupKey: String = "hasRunInitialSetup"
+    
+    static let publisherStatusKey: String = "publisherStatus"
 }

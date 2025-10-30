@@ -10,9 +10,9 @@ import SwiftUI
 
 struct AddEntrySheet: View {
     @Environment(\.dismiss) var dismiss
-    
+
     @Query private var trackers: [Tracker]
-    
+
     @State var date: Date =
         (Calendar.current.date(
             bySettingHour: 0,
@@ -28,7 +28,7 @@ struct AddEntrySheet: View {
             second: 0,
             of: Date()
         ) ?? Date())
-    
+
     @State private var selectedTracker: Tracker? = nil
 
     @State var showTimeSheet: Bool = false
@@ -36,7 +36,8 @@ struct AddEntrySheet: View {
 
     @State var includeTime: Bool = false
 
-    var submitAction: (_ date: Date, _ hours: Int, _ tracker: Tracker) -> Void = { date, hours, tracker in }
+    var submitAction: (_ date: Date, _ hours: Int, _ tracker: Tracker) -> Void =
+        { date, hours, tracker in }
 
     var body: some View {
         NavigationStack {
@@ -53,33 +54,32 @@ struct AddEntrySheet: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
-
-//                Section {
-//                    Button {
-//                        showTrackerSheet = true
-//                    } label: {
-//                        HStack {
-//                            Text("entry.add.tracker.label")
-//                                .foregroundStyle(.primary)
-//                                .tint(.primary)
-//                            Spacer()
-//                            Image(systemName: selectedTracker?.iconName ?? "circle")
-//                            Text(selectedTracker?.name ?? "entry.add.tracker.none")
-//                        }
-//                        .tint(Color(
-//                            hue: selectedTracker?.hue ?? 0.5,
-//                            saturation: 0.8,
-//                            brightness: 0.9
-//                        ))
-//                    }.sheet(isPresented: $showTrackerSheet) {
-//                        SelectTrackerSheet(trackers: trackers)
-//                            .presentationDetents([.medium])
-//                    }
-//                }
-//                .onChange(of: trackers) { old, new in
-//                    selectedTracker = new.first
-//                }
-
+                
+                //                Section {
+                //                    Button {
+                //                        showTrackerSheet = true
+                //                    } label: {
+                //                        HStack {
+                //                            Text("entry.add.tracker.label")
+                //                                .foregroundStyle(.primary)
+                //                            Spacer()
+                //                            Image(systemName: selectedTracker?.iconName ?? "circle")
+                //                            Text(selectedTracker?.name ?? "entry.add.tracker.none")
+                //                        }
+                //                        .tint(Color(
+                //                            hue: selectedTracker?.hue ?? 0.5,
+                //                            saturation: 0.8,
+                //                            brightness: 0.9
+                //                        ))
+                //                    }.sheet(isPresented: $showTrackerSheet) {
+                //                        SelectTrackerSheet(trackers: trackers)
+                //                            .presentationDetents([.medium])
+                //                    }
+                //                }
+                //                .onChange(of: trackers) { old, new in
+                //                    selectedTracker = new.first
+                //                }
+                
                 Section {
                     DatePicker(
                         "entry.add.date.label",
@@ -99,7 +99,7 @@ struct AddEntrySheet: View {
                             } else {
                                 Text(
                                     (time != nil)
-                                        ? formatTime(time ?? Date()) : "Error"
+                                    ? formatTime(time ?? Date()) : "Error"
                                 )
                                 .foregroundStyle(.secondary)
                             }
@@ -115,18 +115,6 @@ struct AddEntrySheet: View {
                     }
                 }
             }
-            .safeAreaInset(edge: .bottom) {
-                Button(action: submitForm) {
-                    Label("entry.add.label", systemImage: "plus")
-                        .fontWeight(.semibold)
-                }
-                .buttonStyle(.glassProminent)
-                .buttonSizing(.flexible)
-                .controlSize(.extraLarge)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .disabled(isDurationZero())
-            }
             .navigationTitle("entry.add.label")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -137,6 +125,14 @@ struct AddEntrySheet: View {
                         Label("navigation.dismiss", systemImage: "xmark")
                     }
                 }
+                ToolbarItem {
+                    Button(action: submitForm) {
+                        Label("entry.add.label", systemImage: "plus")
+                            .fontWeight(.semibold)
+                    }
+                    .buttonStyle(.glassProminent)
+                    .disabled(isDurationZero())
+                }
             }
         }
         .onAppear {
@@ -144,6 +140,7 @@ struct AddEntrySheet: View {
                 selectedTracker = trackers.first
             }
         }
+
     }
 
     private func submitForm() {
@@ -251,32 +248,34 @@ private struct SelectTrackerSheet: View {
     private var groupedTrackers: [TrackerOutputType: [Tracker]] {
         Dictionary(grouping: trackers, by: { $0.type })
     }
-    
+
     @State var isAddTrackerPresented: Bool = false
 
     var body: some View {
         NavigationStack {
             List {
                 ForEach(groupedTrackers.keys.sorted()) { type in
-                    Section(header: Text("\(type.rawValue.capitalized)")) {
+                    Section("\(type.rawValue.capitalized)") {
                         ForEach(groupedTrackers[type]!) { tracker in
                             Button {
 
                             } label: {
-                                Label(tracker.name, systemImage: tracker.iconName)
+                                Label(
+                                    tracker.name,
+                                    systemImage: tracker.iconName
+                                )
                             }
                         }
                     }
                 }
             }
-            .navigationTitle("Select Tracker")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem {
                     Button {
                         isAddTrackerPresented = true
                     } label: {
-                        Label("Add", systemImage: "plus")
+                        Label("navigation.add", systemImage: "plus")
                             .labelStyle(.titleAndIcon)
                     }
                 }

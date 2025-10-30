@@ -29,11 +29,11 @@ struct TrackerDetailView: View {
                     Label("Delete Tracker", systemImage: "trash")
                 }
                 .confirmationDialog("Delete \(tracker.name)?", isPresented: $showDeleteConfirmation) {
-                    Button("Delete") {
+                    Button("common.delete", role: .destructive) {
                         context.delete(tracker)
                         dismiss()
                     }
-                    Button("Cancel", role: .cancel) {}
+                    Button(role: .cancel) {}
                 } message: {
                     VStack {
                         Text("Delete \(tracker.name)?")

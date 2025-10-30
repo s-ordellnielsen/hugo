@@ -8,110 +8,73 @@
 import SwiftUI
 
 struct PublisherStatusSelectionView: View {
+    @AppStorage(UserDefaults.publisherStatusKey) var currentStatus: String = ""
+
     var body: some View {
-            List {
-                VStack {
-                    HStack(spacing: 16) {
-                        Image(systemName: "circle.badge.checkmark.fill")
-                            .font(.title)
-                        VStack(alignment: .leading) {
-                            Text("account.page.publisherselect.current")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-                            Text("publisher.status.regularpioneer.full")
+        List {
+            CurrentPublisherStatusView(currentStatus: currentStatus)
+
+            Section {
+                ForEach(PublisherStatusConfig.defaults) { status in
+                    Button {
+                        currentStatus = status.id
+                    } label: {
+                        HStack(spacing: 16) {
+                            Image(systemName: currentStatus == status.id ? "checkmark.circle.fill" : "circle")
+                                .contentTransition(.symbolEffect(.replace.downUp.byLayer, options: .nonRepeating))
                                 .font(.title2)
-                                .fontDesign(.rounded)
-                        }
-                    }
-                    .fontWeight(.bold)
-                }
-                
-                Section {
-                    Button {
-                        
-                    } label: {
-                        Label {
-                            VStack(alignment: .leading) {
-                                Text("publisher.status.regularpioneer.full")
-                                HStack {
-                                    HStack(spacing: 4) {
-                                        Text("account.publisher.status.goaltype.label")
-                                        Text("publisher.status.goaltype.yearly")
-                                    }
-                                    HStack(spacing: 4) {
-                                        Text("account.publisher.status.goal.label")
-                                        Text("publisher.status.goal.\(Int(600))")
-                                    }
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(status.nameKey)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("publisher.status.goaltype.label.\(status.goalType.label)")
+                                    Text("publisher.status.goal.label.\(status.goal)")
                                 }
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .fontWeight(.regular)
-                                .font(.caption)
                             }
-                        } icon: {
-                            Image(systemName: "checkmark.circle.fill")
                         }
-                    }
-                    Button {
-                        
-                    } label: {
-                        Label {
-                            VStack(alignment: .leading) {
-                                Text("publisher.status.auxiliary.full")
-                                HStack {
-                                    HStack(spacing: 4) {
-                                        Text("account.publisher.status.goaltype.label")
-                                        Text("publisher.status.goaltype.monthly")
-                                    }
-                                    HStack(spacing: 4) {
-                                        Text("account.publisher.status.goal.label")
-                                        Text("publisher.status.goal.\(Int(30))")
-                                    }
-                                }
-                                .foregroundStyle(.secondary)
-                                .fontWeight(.regular)
-                                .font(.caption)
-                            }
-                        } icon: {
-                            Image(systemName: "circle")
-                        }
-                    }
-                    Button {
-                        
-                    } label: {
-                        Label {
-                            VStack(alignment: .leading) {
-                                Text("publisher.status.publisher.full")
-                                HStack {
-                                    HStack(spacing: 4) {
-                                        Text("account.publisher.status.goaltype.label")
-                                        Text("publisher.status.goal.\(Int(0))")
-                                    }
-                                }
-                                .foregroundStyle(.secondary)
-                                .fontWeight(.regular)
-                                .font(.caption)
-                            }
-                        } icon: {
-                            Image(systemName: "circle")
-                        }
-                    }
-                }
-                .fontWeight(.semibold)
-                .tint(.primary)
-                .listRowBackground(Color(.clear))
-            }
-            .navigationTitle("account.page.publisherstatus.title")
-            .toolbar {
-                ToolbarItem {
-                    Button {
-                        
-                    } label: {
-                        Label("navigation.help", systemImage: "questionmark")
                     }
                 }
             }
-        
+            .fontWeight(.semibold)
+            .listRowBackground(Color(.clear))
+        }
+        .navigationTitle("account.page.publisherstatus.title")
+        .toolbar {
+            ToolbarItem {
+                Button {
+
+                } label: {
+                    Label("navigation.help", systemImage: "questionmark")
+                }
+            }
+        }
+    }
+}
+
+private struct CurrentPublisherStatusView: View {
+    var currentStatus: String
+
+    var body: some View {
+        VStack {
+            HStack(spacing: 16) {
+                Image(systemName: PublisherStatusConfig.current(currentStatus) != nil ? "circle.badge.checkmark" : "circle")
+                    .font(.title)
+                    .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
+                    .symbolRenderingMode(.hierarchical)
+                VStack(alignment: .leading) {
+                    Text("account.page.publisherselect.current")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                    Text(PublisherStatusConfig.current(currentStatus)?.nameKey ?? "publisher.status.empty")
+                        .font(.title2)
+                        .fontDesign(.rounded)
+                }
+            }
+            .fontWeight(.semibold)
+        }
     }
 }
 

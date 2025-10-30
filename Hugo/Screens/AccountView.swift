@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AccountView: View {
     @Environment(\.dismiss) var dismiss
+    @AppStorage(UserDefaults.publisherStatusKey) var publisherStatus = ""
 
     var body: some View {
         NavigationStack {
@@ -17,29 +18,21 @@ struct AccountView: View {
                     NavigationLink(destination: PublisherStatusSelectionView()) {
                         Label {
                             Text("account.group.main.item.publisher.status")
-                            Text("publisher.status.regularpioneer.full")
+                            Text(PublisherStatusConfig.current(publisherStatus)?.nameKey ?? "account.group.main.item.publisher.status.empty")
                         } icon: {
                             Image(systemName: "circle.badge.checkmark.fill")
                         }
                     }
-//                    NavigationLink(destination: Image(systemName: "checklist")) {
-//                        Label(
-//                            "account.group.main.item.personal.goals",
-//                            systemImage: "checklist"
-//                        )
-//                    }
+                    //                    NavigationLink(destination: Image(systemName: "checklist")) {
+                    //                        Label(
+                    //                            "account.group.main.item.personal.goals",
+                    //                            systemImage: "checklist"
+                    //                        )
+                    //                    }
+                    //                    NavigationLink(destination: SettingsView()) {
+                    //                        Label("account.group.personalize.item.settings", systemImage: "gearshape.fill")
+                    //                    }
                 }
-//                Section("account.group.personalize") {
-//                    NavigationLink(destination: PersonalDetailsView()) {
-//                        Label(
-//                            "account.group.personalize.item.personal.details",
-//                            systemImage: "person.crop.circle.fill"
-//                        )
-//                    }
-//                    NavigationLink(destination: SettingsView()) {
-//                        Label("account.group.personalize.item.settings", systemImage: "gearshape.fill")
-//                    }
-//                }
 //                Section("account.group.integrations") {
 //                    NavigationLink(destination: Image(systemName: "calendar")) {
 //                        Label(
@@ -121,7 +114,6 @@ struct AccountView: View {
                 }
             }
         }
-        .tint(.primary)
     }
 }
 

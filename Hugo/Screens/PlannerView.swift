@@ -19,7 +19,7 @@ struct PlannerView: View {
                 }
                 .buttonStyle(.glassProminent)
             }
-            .navigationTitle(Text("Planner"))
+            .navigationTitle(Text("planner.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem {
