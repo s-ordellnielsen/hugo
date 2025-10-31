@@ -112,15 +112,65 @@ enum EntrySchemaV2: VersionedSchema {
     }
 }
 
-typealias Entry = EntrySchemaV2.Entry
+enum EntrySchemaV2_1: VersionedSchema {
+    static var versionIdentifier = Schema.Version(2, 1, 0)
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self]
+    }
+
+    @Model
+    final class Entry {
+        var date: Date = Date()
+        var duration: Int = 0
+        var bibleStudies: Int = 0
+
+        var createdAt: Date = Date()
+
+        @Relationship var tracker: Tracker?
+
+        init(
+            date: Date,
+            duration: Int,
+            tracker: Tracker? = nil,
+            bibleStudies: Int? = nil
+        ) {
+            self.date = date
+            self.duration = duration
+            self.tracker = tracker
+            self.bibleStudies = bibleStudies ?? 0
+        }
+
+        public func delete(in context: ModelContext) {
+            context.delete(self)
+        }
+
+        static func makeSampleData(in container: ModelContainer) {
+            let context = ModelContext(container)
+            let data = [
+                Entry(date: Date(), duration: 3600),
+                Entry(date: Date().addingTimeInterval(-86_400), duration: 3600),
+                Entry(
+                    date: Date().addingTimeInterval(-1_728_000),
+                    duration: 3600
+                ),
+            ]
+            for event in data {
+                context.insert(event)
+            }
+        }
+    }
+}
+
+typealias Entry = EntrySchemaV2_1.Entry
 
 enum EntryMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [EntrySchemaV1.self, EntrySchemaV2.self]
+        [EntrySchemaV1.self, EntrySchemaV2.self, EntrySchemaV2_1.self]
     }
-    
+
     static var stages: [MigrationStage] {
-        [migrateV1toV2]
+        [migrateV1toV2, migrateV2toV2_1]
     }
 
     static let migrateV1toV2 = MigrationStage.custom(
@@ -128,20 +178,54 @@ enum EntryMigrationPlan: SchemaMigrationPlan {
         toVersion: EntrySchemaV2.self,
         willMigrate: { context in
             print("Migrating from V1 to V2...")
-            let entries = try context.fetch(FetchDescriptor<EntrySchemaV1.Entry>())
-            
+            let entries = try context.fetch(
+                FetchDescriptor<EntrySchemaV1.Entry>()
+            )
+
             for entry in entries {
-                context.insert(EntrySchemaV2.Entry(
-                    date: entry.timestamp,
-                    duration: entry.duration,
-                    tracker: nil
-                ))
-                
+                context.insert(
+                    EntrySchemaV2.Entry(
+                        date: entry.timestamp,
+                        duration: entry.duration,
+                        tracker: nil
+                    )
+                )
+
                 context.delete(entry)
             }
-            
+
             try context.save()
         },
         didMigrate: nil
     )
+
+//    static let migrateV2toV2_1 = MigrationStage.custom(
+//        fromVersion: EntrySchemaV2.self,
+//        toVersion: EntrySchemaV2_1.self,
+//        willMigrate: { context in
+//            print("Migrating from v2.0.0 to v2.1.0 ...")
+//
+//            let entries = try context.fetch(
+//                FetchDescriptor<EntrySchemaV2.Entry>()
+//            )
+//
+//            for entry in entries {
+//                context.insert(
+//                    EntrySchemaV2_1.Entry(
+//                        date: entry.date,
+//                        duration: entry.duration,
+//                        tracker: entry.tracker ?? nil,
+//                        bibleStudies: 0
+//                    )
+//                )
+//                
+//                context.delete(entry)
+//            }
+//            
+//            try context.save()
+//        },
+//        didMigrate: nil
+//    )
+    
+    static let migrateV2toV2_1 = MigrationStage.lightweight(fromVersion: EntrySchemaV2.self, toVersion: EntrySchemaV2_1.self)
 }

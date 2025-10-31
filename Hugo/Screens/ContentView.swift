@@ -68,7 +68,7 @@ struct ContentView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        EntryListView(entries: entries)
+                        EntryList.Content(entries: entries)
                         Spacer()
                     }
                     .padding(.vertical)
