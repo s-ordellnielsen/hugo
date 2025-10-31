@@ -49,7 +49,7 @@ struct ContentView: View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    MonthlyProgressView(value: current)
+                    CurrentMonthProgress.Content(value: current)
                         .padding(.horizontal, 48)
                         .padding(.bottom, 32)
                         .padding(.top, 16)
