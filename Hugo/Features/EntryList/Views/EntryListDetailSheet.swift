@@ -5,8 +5,8 @@
 //  Created by Sebastian Nielsen on 31/10/2025.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 extension EntryList {
     struct DetailSheet: View {
@@ -19,21 +19,24 @@ extension EntryList {
         @State var entry: Entry
 
         @State private var deleteConfirmationShown: Bool = false
-        
+
         var durationAsDate: Date {
             let calendar = Calendar.current
-            var components = calendar.dateComponents([.year, .month, .day], from: Date())
-            
+            var components = calendar.dateComponents(
+                [.year, .month, .day],
+                from: Date()
+            )
+
             let seconds = entry.duration
-            
+
             let hours = seconds / 3600
             let minutes = (seconds % 3600) / 60
             let secs = seconds % 60
-            
+
             components.hour = hours
             components.minute = minutes
             components.second = secs
-            
+
             return calendar.date(from: components) ?? Date()
         }
 
@@ -86,11 +89,30 @@ extension EntryList {
                 }
                 .listRowBackground(Color.clear)
                 .listRowInsets(.all, 0)
-                
-                EntryList.DurationPicker(duration: $entry.duration, durationAsDate: durationAsDate)
-                
-                DatePicker(selection: $entry.date) {
-                    Label("Date", systemImage: "calendar")
+
+                Section {
+                    EntryList.DurationPicker(
+                        duration: $entry.duration,
+                        durationAsDate: durationAsDate
+                    )
+                }
+
+                Section {
+                    DatePicker(selection: $entry.date) {
+                        Label("Date", systemImage: "calendar")
+                    }
+                }
+
+                Section {
+                    Stepper(
+                        onIncrement: incrementBibleStudies,
+                        onDecrement: decrementBibleStudies
+                    ) {
+                        Label(
+                            "Bible Studies: \(entry.bibleStudies)",
+                            systemImage: "book"
+                        )
+                    }
                 }
             }
         }
@@ -100,6 +122,18 @@ extension EntryList {
             let minutes = (totalSeconds % 3600) / 60
             let seconds = totalSeconds % 60
             return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+        }
+
+        private func incrementBibleStudies() {
+            entry.bibleStudies += 1
+        }
+
+        private func decrementBibleStudies() {
+            if entry.bibleStudies == 0 {
+                return
+            }
+
+            entry.bibleStudies -= 1
         }
     }
 }

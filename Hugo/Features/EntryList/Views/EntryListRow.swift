@@ -53,7 +53,16 @@ extension EntryList {
                         .foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Text("\(entry.bibleStudies)")
+                    if entry.bibleStudies != 0 {
+                        VStack(spacing: 4) {
+                            Image(systemName: "book")
+                            Text("\(entry.bibleStudies)")
+                                .fontDesign(.rounded)
+                        }
+                        .fontWeight(.medium)
+                        .foregroundStyle(.secondary)
+                        
+                    }
                 }
                 .padding(.vertical, 24)
                 .padding(.horizontal, 24)
@@ -77,6 +86,9 @@ extension EntryList {
     }
 }
 
-//#Preview {
-//    EntryList.Content(entries: Entry.makeSampleData(in: .preview))
-//}
+#Preview {
+    @Previewable @State var selectedEntry: Entry? = nil
+    var tracker = Tracker()
+    
+    EntryList.Row(entry: Entry(date: Date(), duration: 3600, tracker: tracker, bibleStudies: 2), selectedEntry: $selectedEntry)
+}

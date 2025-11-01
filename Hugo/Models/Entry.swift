@@ -198,34 +198,6 @@ enum EntryMigrationPlan: SchemaMigrationPlan {
         },
         didMigrate: nil
     )
-
-//    static let migrateV2toV2_1 = MigrationStage.custom(
-//        fromVersion: EntrySchemaV2.self,
-//        toVersion: EntrySchemaV2_1.self,
-//        willMigrate: { context in
-//            print("Migrating from v2.0.0 to v2.1.0 ...")
-//
-//            let entries = try context.fetch(
-//                FetchDescriptor<EntrySchemaV2.Entry>()
-//            )
-//
-//            for entry in entries {
-//                context.insert(
-//                    EntrySchemaV2_1.Entry(
-//                        date: entry.date,
-//                        duration: entry.duration,
-//                        tracker: entry.tracker ?? nil,
-//                        bibleStudies: 0
-//                    )
-//                )
-//                
-//                context.delete(entry)
-//            }
-//            
-//            try context.save()
-//        },
-//        didMigrate: nil
-//    )
     
     static let migrateV2toV2_1 = MigrationStage.lightweight(fromVersion: EntrySchemaV2.self, toVersion: EntrySchemaV2_1.self)
 }

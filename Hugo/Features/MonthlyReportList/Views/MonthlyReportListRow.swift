@@ -13,11 +13,11 @@ extension MonthlyReportList {
         var month: MonthlySummary
 
         @State private var showCopyAlert: Bool = false
-        
+
         var fullHours: Int {
             month.totalSeconds / (60 * 60)
         }
-        
+
         var leftoverMinutes: Int {
             (month.totalSeconds % 3600) / 60
         }
@@ -25,9 +25,18 @@ extension MonthlyReportList {
         var body: some View {
             Section(month.displayName) {
                 HStack {
-                    Text(formatDuration(month.totalSeconds))
-                        .fontDesign(.monospaced)
-                        .fontWeight(.semibold)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(formatDuration(month.totalSeconds))
+                            .fontDesign(.monospaced)
+                            .fontWeight(.semibold)
+                        HStack {
+                            Image(systemName: "book")
+                            Text("\(month.totalBibleStudies)")
+                        }
+                        .foregroundStyle(.secondary)
+                        .font(.callout)
+                        .fontWeight(.medium)
+                    }
                     Spacer()
                     Button {
                         showCopyAlert = true

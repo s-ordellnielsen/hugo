@@ -19,12 +19,14 @@ extension MonthlyReportList {
             return
                 (groups.map { (key, entriesInMonth) in
                     let total = entriesInMonth.reduce(0) { $0 + $1.duration }
+                    let bibleStudies = entriesInMonth.reduce(0) { $0 + $1.bibleStudies }
                     return MonthlySummary(
                         id: key,
                         displayName: key.monthYearString(
                             locale: Locale(identifier: "en_US")
                         ),
-                        totalSeconds: total
+                        totalSeconds: total,
+                        totalBibleStudies: bibleStudies
                     )
                 }).sorted { $0.id > $1.id }  // descending
         }

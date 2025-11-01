@@ -65,8 +65,7 @@ extension CurrentMonthProgress {
 
             }
             .sheet(isPresented: $showAddItemSheet) {
-                AddEntrySheet(submitAction: addItem)
-                    .presentationDetents([.medium, .large])
+                EntrySheet.Add()
             }
             .onAppear {
                 monthlyGoal = getMonthlyGoal()
@@ -79,17 +78,6 @@ extension CurrentMonthProgress {
             }
             .onChange(of: monthlyGoal) { old, new in
                 print("Updating goal from \(old) to \(new)")
-            }
-        }
-
-        private func addItem(date: Date, duration: Int, tracker: Tracker) {
-            withAnimation(.bouncy.delay(0.5)) {
-                let newItem = Entry(
-                    date: date,
-                    duration: duration,
-                    tracker: tracker
-                )
-                modelContext.insert(newItem)
             }
         }
 
