@@ -1,0 +1,47 @@
+//
+//  Schema.swift
+//  Hugo
+//
+//  Created by Sebastian Nielsen on 07/11/2025.
+//
+
+import Foundation
+import SwiftData
+
+enum SchemaV1: VersionedSchema {
+    static var versionIdentifier = Schema.Version(1, 0, 0)
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self]
+    }
+}
+
+enum SchemaV2: VersionedSchema {
+    static var versionIdentifier = Schema.Version(2, 0, 0)
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self]
+    }
+}
+
+enum SchemaV2_1: VersionedSchema {
+    static var versionIdentifier = Schema.Version(2, 1, 0)
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self]
+    }
+}
+
+enum SchemaV3: VersionedSchema {
+    static var versionIdentifier = Schema.Version(3, 0, 0)
+    
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self, Report.self]
+    }
+}
+
+typealias CurrentSchema = SchemaV3
+
+typealias Entry = CurrentSchema.Entry
+typealias Tracker = CurrentSchema.Tracker
+typealias Report = CurrentSchema.Report

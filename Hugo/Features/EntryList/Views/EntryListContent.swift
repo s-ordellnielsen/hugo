@@ -25,13 +25,5 @@ extension EntryList {
                     .presentationDetents([.medium])
             }
         }
-
-        private func deleteItems(offsets: IndexSet) {
-            withAnimation {
-                for index in offsets {
-                    entries[index].delete(in: modelContext)
-                }
-            }
-        }
     }
 }

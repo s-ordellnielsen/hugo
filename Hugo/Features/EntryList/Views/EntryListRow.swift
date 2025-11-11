@@ -88,7 +88,7 @@ extension EntryList {
 
 #Preview {
     @Previewable @State var selectedEntry: Entry? = nil
-    var tracker = Tracker()
+    let tracker = Tracker()
     
     EntryList.Row(entry: Entry(date: Date(), duration: 3600, tracker: tracker, bibleStudies: 2), selectedEntry: $selectedEntry)
 }

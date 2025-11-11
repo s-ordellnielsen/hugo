@@ -22,7 +22,7 @@
 
 /* Begin PBXFileReference section */
 		E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		E090544F2E91E99900254125 /* Hugo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hugo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E090544F2E91E99900254125 /* Hugo Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hugo Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E090548A2E951E2C00254125 /* HugoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HugoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -83,7 +83,7 @@
 		E09054502E91E99900254125 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E090544F2E91E99900254125 /* Hugo.app */,
+				E090544F2E91E99900254125 /* Hugo Dev.app */,
 				E090548A2E951E2C00254125 /* HugoTests.xctest */,
 			);
 			name = Products;
@@ -111,7 +111,7 @@
 			packageProductDependencies = (
 			);
 			productName = Hugo;
-			productReference = E090544F2E91E99900254125 /* Hugo.app */;
+			productReference = E090544F2E91E99900254125 /* Hugo Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E09054892E951E2C00254125 /* HugoTests */ = {
@@ -226,16 +226,16 @@
 		E090545E2E91E99A00254125 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = Hugo;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Hugo/Hugo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Hugo/Resources/Entitlements/Dev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CAJA48GKTR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Hugo/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Hugo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Hugo Dev";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -248,8 +248,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo.dev;
+				PRODUCT_NAME = "Hugo Dev";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -267,9 +267,9 @@
 		E090545F2E91E99A00254125 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = Hugo;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Hugo/Hugo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Hugo/Resources/Entitlements/Hugo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CAJA48GKTR;
@@ -290,7 +290,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Hugo;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -358,13 +358,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HUGO_BUNDLE_ID_SUFFIX = ".$(HUGO_ENV)";
+				HUGO_ENV = DEV;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) ENV_$(HUGO_ENV)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -417,11 +419,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HUGO_BUNDLE_ID_SUFFIX = "";
+				HUGO_ENV = PROD;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "ENV_$(HUGO_ENV)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
