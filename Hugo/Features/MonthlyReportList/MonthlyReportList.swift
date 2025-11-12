@@ -6,9 +6,56 @@
 //
 
 import SwiftUI
+import SwiftData
 
-struct MonthlyReportList {}
+struct MonthlyReportListView: View {
+    @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
+
+    private var monthlySummaries: [MonthlySummary] {
+        let groups = Dictionary(grouping: entries) { $0.date.yearMonth() }
+
+        // Map to MonthlySummary and sort descending (most recent first)
+        return
+            (groups.map { (key, entriesInMonth) in
+                let total = entriesInMonth.reduce(0) { $0 + $1.duration }
+                let bibleStudies = entriesInMonth.reduce(0) { $0 + $1.bibleStudies }
+                
+                var totalsByTrackerID: [UUID: Int] = [:]
+                var trackerByID: [UUID: Tracker] = [:]
+                
+                for entry in entriesInMonth {
+                    guard let tracker = entry.tracker else { continue }
+                    let trackerID = tracker.id
+                    totalsByTrackerID[trackerID, default: 0] += entry.duration
+                    trackerByID[trackerID] = tracker
+                }
+                
+                let trackers: [MonthlySummaryTracker] = trackerByID.map { (trackerID, tracker) in
+                    MonthlySummaryTracker(tracker: tracker, total: totalsByTrackerID[trackerID]!)
+                }
+                
+                return MonthlySummary(
+                    id: key,
+                    displayName: key.monthYearString(
+                        locale: Locale(identifier: "en_US")
+                    ),
+                    totalSeconds: total,
+                    totalBibleStudies: bibleStudies,
+                    trackers: trackers
+                )
+            }).sorted { $0.id > $1.id }  // descending
+    }
+
+    var body: some View {
+        VStack {
+            ForEach(monthlySummaries) { month in
+                Row(month: month)
+            }
+        }
+    }
+}
 
 #Preview {
-    MonthlyReportList.Content()
+    ReportView()
+        .modelContainer(.preview)
 }

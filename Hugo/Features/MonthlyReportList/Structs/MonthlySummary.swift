@@ -6,9 +6,12 @@
 //
 
 
-struct MonthlySummary: Identifiable {
-    let id: YearMonth
-    let displayName: String
-    let totalSeconds: Int
-    let totalBibleStudies: Int
+extension MonthlyReportListView {
+    struct MonthlySummary: Identifiable {
+        let id: YearMonth
+        let displayName: String
+        let totalSeconds: Int
+        let totalBibleStudies: Int
+        let trackers: [MonthlySummaryTracker]
+    }
 }

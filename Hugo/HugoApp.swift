@@ -11,12 +11,12 @@ import SwiftData
 @main
 struct HugoApp: App {
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema(versionedSchema: SchemaV3.self)
+        let schema = Schema(versionedSchema: CurrentSchema.self)
         
-        #if DEBUG
+        #if ENV_DEV
         if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" || ProcessInfo.processInfo.environment["XCODE_SERVICE_ACCOUNT_STATUS"] != nil {
             print("Initializing ModelContainer with in-memory storage for previews...")
-            let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             
             do {
                 return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: [config])
@@ -41,9 +41,9 @@ struct HugoApp: App {
                 Tab("tab.overview", systemImage: "house") {
                     ContentView()
                 }
-                Tab("tab.planner", systemImage: "calendar") {
-                    PlannerView()
-                }
+//                Tab("tab.planner", systemImage: "calendar") {
+//                    PlannerView()
+//                }
                 Tab("tab.report", systemImage: "tray.full.fill") {
                     ReportView()
                 }
