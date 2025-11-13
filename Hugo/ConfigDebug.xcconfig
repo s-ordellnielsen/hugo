@@ -1,0 +1,14 @@
+//
+//  ConfigRelease.xcconfig
+//  Hugo
+//
+//  Created by Sebastian Nielsen on 13/11/2025.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo.dev
+APP_GROUP_IDENTIFIER = group.com.ordellnielsen.Hugo.dev
+ICLOUD_CONTAINER_IDENTIFIER = iCloud.com.ordellnielsen.Hugo.dev
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev

@@ -444,6 +444,8 @@
 		};
 		E09054602E91E99A00254125 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = E09054512E91E99900254125 /* Hugo */;
+			baseConfigurationReferenceRelativePath = ConfigDebug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -513,6 +515,8 @@
 		};
 		E09054612E91E99A00254125 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = E09054512E91E99900254125 /* Hugo */;
+			baseConfigurationReferenceRelativePath = ConfigRelease.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

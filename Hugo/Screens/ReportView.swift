@@ -11,6 +11,8 @@ import SwiftUI
 struct ReportView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @Query(sort: \Report.year, order: .reverse) private var reports: [Report]
+    
+    @State private var addReportSheetIsPresented: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -87,6 +89,18 @@ struct ReportView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("report.title")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        addReportSheetIsPresented =  true
+                    } label: {
+                        Label("Add Report", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $addReportSheetIsPresented) {
+                AddReportSheet()
+            }
         }
     }
 }
