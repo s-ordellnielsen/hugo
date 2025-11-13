@@ -168,6 +168,8 @@ extension SavedReportListView {
                         }
                         .chartXAxis(.hidden)
                         .chartYAxis(.hidden)
+                        .padding(.top, 8)
+                        .frame(height: 64)
                     }
                 }
                 .labelReservedIconWidth(24)
