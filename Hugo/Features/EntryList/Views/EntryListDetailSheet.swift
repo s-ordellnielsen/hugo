@@ -29,9 +29,9 @@ extension EntryList {
 
             let seconds = entry.duration
 
-            let hours = seconds / 3600
-            let minutes = (seconds % 3600) / 60
-            let secs = seconds % 60
+            let hours = Int(seconds / 3600)
+            let minutes = Int(seconds.truncatingRemainder(dividingBy: 3600) / 60)
+            let secs = Int(seconds.truncatingRemainder(dividingBy: 60))
 
             components.hour = hours
             components.minute = minutes
@@ -115,13 +115,6 @@ extension EntryList {
                     }
                 }
             }
-        }
-
-        private func formatDuration(_ totalSeconds: Int) -> String {
-            let hours = totalSeconds / 3600
-            let minutes = (totalSeconds % 3600) / 60
-            let seconds = totalSeconds % 60
-            return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
         }
 
         private func incrementBibleStudies() {

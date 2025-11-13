@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-extension SchemaV3 {
+extension SchemaV2_1 {
     @Model
     final class Tracker {
         var id: UUID = UUID()

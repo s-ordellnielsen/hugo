@@ -192,7 +192,7 @@ extension EntrySheet {
             }
         }
 
-        private func durationInSeconds() -> Int {
+        private func durationInSeconds() -> TimeInterval {
             let calendar = Calendar.current
             let components = calendar.dateComponents(
                 [.hour, .minute],
@@ -202,7 +202,7 @@ extension EntrySheet {
             let hours = components.hour ?? 0
             let minutes = components.minute ?? 0
 
-            return hours * 3600 + minutes * 60
+            return TimeInterval(hours * 3600 + minutes * 60)
         }
 
         private func formatTime(_ date: Date) -> String {

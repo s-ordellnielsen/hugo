@@ -14,12 +14,12 @@ extension MonthlyReportListView {
 
         @State private var showCopyAlert: Bool = false
 
-        var fullHours: Int {
+        var fullHours: TimeInterval {
             month.totalSeconds / (60 * 60)
         }
 
-        var leftoverMinutes: Int {
-            (month.totalSeconds % 3600) / 60
+        var leftoverMinutes: TimeInterval {
+            month.totalSeconds.truncatingRemainder(dividingBy: 3600) / 60
         }
 
         var body: some View {

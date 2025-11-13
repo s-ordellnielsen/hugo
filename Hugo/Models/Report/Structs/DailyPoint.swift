@@ -11,5 +11,5 @@ import SwiftData
 
 struct DailyPoint: Codable, Hashable {
     var date: Date
-    var total: Int
+    var total: TimeInterval
 }

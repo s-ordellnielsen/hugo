@@ -20,7 +20,7 @@ struct MonthlyReportListView: View {
                 let total = entriesInMonth.reduce(0) { $0 + $1.duration }
                 let bibleStudies = entriesInMonth.reduce(0) { $0 + $1.bibleStudies }
                 
-                var totalsByTrackerID: [UUID: Int] = [:]
+                var totalsByTrackerID: [UUID: TimeInterval] = [:]
                 var trackerByID: [UUID: Tracker] = [:]
                 
                 for entry in entriesInMonth {

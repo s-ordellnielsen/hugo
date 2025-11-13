@@ -5,13 +5,12 @@
 //  Created by Sebastian Nielsen on 07/11/2025.
 //
 
-
 import Foundation
 import SwiftData
 
 struct TrackerSummary: Codable, Hashable {
     var name: String
-    var duration: Int
+    var duration: TimeInterval
     var type: TrackerType
 
     var hue: Double

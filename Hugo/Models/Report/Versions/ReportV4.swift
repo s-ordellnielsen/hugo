@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-extension SchemaV3 {
+extension SchemaV4 {
     @Model
     final class Report {
         var id: UUID = UUID()
@@ -16,13 +16,13 @@ extension SchemaV3 {
         var year: Int = 0
         var month: Int = 0
         
-        var fieldService: Int = 0
+        var fieldService: TimeInterval = 0
         var bibleStudies: Int = 0
         
         var goalID: String? = nil
         var goal: Int = 0
         
-        var extraTime: Int = 0
+        var extraTime: TimeInterval = 0
         
         private var trackersData: Data?
         private var dailyPointsData: Data?
@@ -33,11 +33,11 @@ extension SchemaV3 {
         init(
             year: Int,
             month: Int,
-            fieldService: Int,
+            fieldService: TimeInterval,
             bibleStudies: Int,
             goalID: String?,
             goalMonthlyHours: Int,
-            extraTime: Int,
+            extraTime: TimeInterval,
             trackers: [TrackerSummary] = [],
             dailyPoints: [DailyPoint] = []
         ) {
@@ -85,7 +85,7 @@ extension SchemaV3 {
             }
         }
         
-        var fieldServiceHours: Int {
+        var fieldServiceHours: TimeInterval {
             get { fieldService / 3600 }
             set {
                 fieldService = newValue
@@ -112,10 +112,10 @@ extension SchemaV3 {
             }
             
             var trackerMap: [String: TrackerSummary] = [:]
-            var dailyMap: [Date: Int] = [:]
-            var fieldServiceTotal: Int = 0
+            var dailyMap: [Date: TimeInterval] = [:]
+            var fieldServiceTotal: TimeInterval = 0
             var bibleStudyTotal: Int = 0
-            var extraTime: Int = 0
+            var extraTime: TimeInterval = 0
             
             var goalID: String? = nil
             var goalMonthlyHours: Int = 0
@@ -141,12 +141,12 @@ extension SchemaV3 {
                 let trackerKey = e.tracker?.id.uuidString ?? "unknown"
                 
                 if var existing = trackerMap[trackerKey] {
-                    existing.duration += TimeInterval(duration)
+                    existing.duration += duration
                     trackerMap[trackerKey] = existing
                 } else {
                     let summary = TrackerSummary(
                         name: e.tracker?.name ?? "Unknown",
-                        duration: TimeInterval(duration),
+                        duration: duration,
                         type: e.tracker?.type ?? .none,
                         hue: e.tracker?.hue ?? 0,
                         sat: 0.8,
@@ -172,22 +172,22 @@ extension SchemaV3 {
             switch rounding {
             case .roundUp:
                 let targetSeconds = combinedHoursCeil * 3600.0
-                fieldServiceTotal = Int(targetSeconds)
+                fieldServiceTotal = TimeInterval(targetSeconds)
                 
             case .roundDownAndTransfer:
                 let targetSeconds = combinedHoursFloor * 3600.0
-                fieldServiceTotal = Int(targetSeconds)
-                extraTime = Int(
+                fieldServiceTotal = TimeInterval(targetSeconds)
+                extraTime = TimeInterval(
                     combinedSeconds.truncatingRemainder(dividingBy: 3600.0)
                 )
             case .roundDown:
                 let targetSeconds = combinedHoursFloor * 3600.0
-                fieldServiceTotal = Int(targetSeconds)
+                fieldServiceTotal = TimeInterval(targetSeconds)
             }
             
             let trackers = Array(trackerMap.values)
             let dailyPoints: [DailyPoint] = dailyMap.map {
-                DailyPoint(date: $0.key, total: TimeInterval($0.value))
+                DailyPoint(date: $0.key, total: $0.value)
             }
                 .sorted { $0.date < $1.date }
             

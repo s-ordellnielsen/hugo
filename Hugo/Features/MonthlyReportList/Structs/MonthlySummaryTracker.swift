@@ -9,7 +9,7 @@ import Foundation
 
 struct MonthlySummaryTracker: Identifiable {
     let tracker: Tracker
-    let total: Int
+    let total: TimeInterval
 
     var id: UUID { self.tracker.id }
 }

@@ -11,7 +11,7 @@ extension EntryList {
     struct DurationPicker: View {
         @Environment(\.modelContext) private var context
         
-        @Binding var duration: Int
+        @Binding var duration: TimeInterval
         
         @State var durationAsDate: Date
         
@@ -30,7 +30,7 @@ extension EntryList {
             let minutes: Int = (components.minute ?? 0) * 60
             let seconds: Int = components.second ?? 0
             
-            duration = hours + minutes + seconds
+            duration = TimeInterval(hours + minutes + seconds)
         }
     }
 }

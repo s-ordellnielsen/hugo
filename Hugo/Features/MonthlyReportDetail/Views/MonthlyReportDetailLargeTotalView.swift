@@ -11,7 +11,7 @@ extension MonthlyReportDetailView {
     struct LargeTotal: View {
         let summary: MonthlySummary
         
-        var primaryTotal: Int {
+        var primaryTotal: TimeInterval {
             summary.entries.reduce(0, { curr, acc in
                 if acc.tracker?.type == .main {
                     return curr + acc.duration
@@ -21,7 +21,7 @@ extension MonthlyReportDetailView {
             })
         }
         
-        var secondaryTotal: Int {
+        var secondaryTotal: TimeInterval {
             summary.entries.reduce(0, { curr, acc in
                 if acc.tracker?.type == .separate {
                     return curr + acc.duration
