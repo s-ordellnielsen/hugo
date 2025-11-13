@@ -10,7 +10,11 @@ import SwiftUI
 
 struct ReportView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
-    @Query(sort: \Report.year, order: .reverse) private var reports: [Report]
+    @Query(sort: [
+        SortDescriptor(\Report.year, order: .reverse),
+        SortDescriptor(\Report.month, order: .reverse),
+        SortDescriptor(\Report.createdAt, order: .reverse)
+    ]) private var reports: [Report]
     
     @State private var addReportSheetIsPresented: Bool = false
 
