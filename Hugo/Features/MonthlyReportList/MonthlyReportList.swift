@@ -39,15 +39,18 @@ struct MonthlyReportListView: View {
                     displayName: key.monthYearString(
                         locale: Locale(identifier: "en_US")
                     ),
+                    year: key.year,
+                    month: key.month,
                     totalSeconds: total,
                     totalBibleStudies: bibleStudies,
-                    trackers: trackers
+                    trackers: trackers,
+                    entries: entriesInMonth
                 )
             }).sorted { $0.id > $1.id }  // descending
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 24) {
             ForEach(monthlySummaries) { month in
                 Row(month: month)
             }

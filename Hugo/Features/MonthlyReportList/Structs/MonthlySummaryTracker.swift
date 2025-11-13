@@ -7,11 +7,9 @@
 
 import Foundation
 
-extension MonthlyReportListView {
-    struct MonthlySummaryTracker : Identifiable{
-        let tracker: Tracker
-        let total: Int
-        
-        var id: UUID { self.tracker.id }
-    }
+struct MonthlySummaryTracker: Identifiable {
+    let tracker: Tracker
+    let total: Int
+
+    var id: UUID { self.tracker.id }
 }

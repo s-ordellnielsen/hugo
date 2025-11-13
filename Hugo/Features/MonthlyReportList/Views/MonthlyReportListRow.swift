@@ -23,7 +23,7 @@ extension MonthlyReportListView {
         }
 
         var body: some View {
-            NavigationLink(destination: Text(month.displayName)) {
+            NavigationLink(destination: MonthlyReportDetailView(summary: month)) {
                 VStack(alignment: .leading) {
                     HStack {
                         Text(month.displayName)
@@ -31,14 +31,15 @@ extension MonthlyReportListView {
                             .textCase(.uppercase)
                             .tracking(1.5)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.red)
                         Spacer()
                         Button {
                         } label: {
                             Label("Show details", systemImage: "chevron.right")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.tertiary)
                                 .labelStyle(.iconOnly)
                                 .font(.caption)
+                                .fontWeight(.semibold)
                         }
                     }
                     HStack {
@@ -51,15 +52,6 @@ extension MonthlyReportListView {
                                 .foregroundStyle(.secondary)
                         }
                         .fontDesign(.monospaced)
-                        Spacer()
-                        Button {
-                            
-                        } label: {
-                            Label("Submit", systemImage: "arrow.up.circle.fill")
-                                .symbolRenderingMode(.hierarchical)
-                        }
-                        .buttonStyle(.bordered)
-                        .font(.callout)
                     }
                     Divider()
                     VStack {
@@ -132,13 +124,6 @@ extension MonthlyReportListView {
 //                    "You can only copy full hours, make sure to transfer \(leftoverMinutes) minutes to next month. Hugo will be able to do this for you in a future update"
 //                )
 //            }
-        }
-
-        private func formatDuration(_ totalSeconds: Int) -> String {
-            let hours = totalSeconds / 3600
-            let minutes = (totalSeconds % 3600) / 60
-            
-            return String(format: "%02d:%02d", hours, minutes)
         }
     }
 }

@@ -55,9 +55,30 @@ struct ReportView: View {
                         .foregroundStyle(.secondary)
                     
                     if reports.isEmpty {
-                        ContentUnavailableView("No Reports", systemImage: "receipt.fill", description: Text("Once you have marked a report as submitted, it will appear here"))
+                        ContentUnavailableView("No Reports", systemImage: "receipt.fill", description: Text("Reports submitted from this Service Year, will be shown here. To see previous reports, go to **All Reports**."))
                             .padding(.top, 48)
                     }
+                    
+                    NavigationLink(destination: Text("All Reports")) {
+                        Label {
+                            HStack {
+                                Text("All Reports")
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                                    .fontWeight(.semibold)
+                            }
+                        } icon: {
+                            Image(systemName: "list.bullet")
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(24)
+                    .labelReservedIconWidth(24)
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)

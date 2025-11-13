@@ -96,7 +96,7 @@ extension SchemaV3 {
         static func make(
             from entries: [Entry],
             in context: ModelContext,
-            rounding: RoundingPolicy = .roundDownAndTransfer
+            rounding: RoundingPolicy = .roundDown
         ) -> Report? {
             let calendar = Calendar.current
             let refDate = entries.first?.date ?? Date()
