@@ -159,10 +159,12 @@ extension SavedReportListView {
                                 .interpolationMethod(.monotone)
                                 .foregroundStyle(.blue)
                             }
-                            RuleMark(
-                                y: .value("Goal", report.goal)
-                            )
-                            .foregroundStyle(.primary.opacity(0.25))
+                            if report.goal != 0 {
+                                RuleMark(
+                                    y: .value("Goal", report.goal)
+                                )
+                                .foregroundStyle(.blue.opacity(0.15))
+                            }
                         }
                         .chartXAxis(.hidden)
                         .chartYAxis(.hidden)
