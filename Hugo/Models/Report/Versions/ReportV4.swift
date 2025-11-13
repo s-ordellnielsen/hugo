@@ -98,6 +98,35 @@ extension SchemaV4 {
             in context: ModelContext,
             rounding: RoundingPolicy = .roundDown
         ) -> Report? {
+            var goalID: String? = nil
+            var goalMonthlyHours: Int = 0
+            
+            let goalKey = UserDefaults.publisherStatusKey
+            if let id = UserDefaults.standard.string(forKey: goalKey) {
+                goalID = id
+                let goal = PublisherStatusConfig.current(id)
+                if let hours = goal?.monthlyGoal() {
+                    goalMonthlyHours = hours
+                }
+            }
+            
+            let report = makePure(from: entries, goalID: goalID, goal: goalMonthlyHours, withRounding: rounding)
+            
+            if report == nil {
+                return nil
+            }
+            
+            context.insert(report!)
+            
+            return report
+        }
+        
+        static func makePure(
+            from entries: [Entry],
+            goalID: String? = nil,
+            goal: Int? = nil,
+            withRounding rounding: RoundingPolicy = .roundDown
+        ) -> Report? {
             let calendar = Calendar.current
             let refDate = entries.first?.date ?? Date()
             let components = calendar.dateComponents(
@@ -116,18 +145,6 @@ extension SchemaV4 {
             var fieldServiceTotal: TimeInterval = 0
             var bibleStudyTotal: Int = 0
             var extraTime: TimeInterval = 0
-            
-            var goalID: String? = nil
-            var goalMonthlyHours: Int = 0
-            
-            let goalKey = UserDefaults.publisherStatusKey
-            if let id = UserDefaults.standard.string(forKey: goalKey) {
-                goalID = id
-                let goal = PublisherStatusConfig.current(id)
-                if let hours = goal?.monthlyGoal() {
-                    goalMonthlyHours = hours
-                }
-            }
             
             for e in entries {
                 let duration = e.duration
@@ -197,13 +214,11 @@ extension SchemaV4 {
                 fieldService: fieldServiceTotal,
                 bibleStudies: bibleStudyTotal,
                 goalID: goalID,
-                goalMonthlyHours: goalMonthlyHours,
+                goalMonthlyHours: goal ?? 0,
                 extraTime: extraTime,
                 trackers: trackers,
                 dailyPoints: dailyPoints
             )
-            
-            context.insert(report)
             
             return report
         }

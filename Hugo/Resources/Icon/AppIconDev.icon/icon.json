@@ -16,7 +16,7 @@
             {
               "appearance" : "dark",
               "value" : {
-                "automatic-gradient" : "extended-srgb:0.00000,0.78431,0.70196,1.00000"
+                "automatic-gradient" : "extended-srgb:0.00000,0.53333,1.00000,1.00000"
               }
             },
             {
@@ -70,6 +70,7 @@
               }
             }
           ],
+          "hidden" : true,
           "image-name" : "layer-1.svg",
           "name" : "layer-1",
           "opacity-specializations" : [

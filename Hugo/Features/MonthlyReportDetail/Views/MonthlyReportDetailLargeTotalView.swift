@@ -46,10 +46,10 @@ extension MonthlyReportDetailView {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
                     VStack {
-                        Text(formatDuration(summary.totalSeconds))
-                            .font(.largeTitle)
-                            .fontDesign(.monospaced)
-                            .fontWeight(.bold)
+                            Text(formatDuration(summary.totalSeconds))
+                                .font(.title)
+                                .fontDesign(.monospaced)
+                                .fontWeight(.bold)
                         Text("Total")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -67,9 +67,9 @@ extension MonthlyReportDetailView {
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
-            .padding()
+            .padding(24)
             .background(Color(.secondarySystemGroupedBackground))
-            .cornerRadius(24)
+            .cornerRadius(32)
         }
     }
 }

@@ -9,7 +9,9 @@
 import Foundation
 import SwiftData
 
-struct DailyPoint: Codable, Hashable {
+struct DailyPoint: Codable, Hashable, Identifiable {
     var date: Date
     var total: TimeInterval
+    
+    var id: Date { date }
 }

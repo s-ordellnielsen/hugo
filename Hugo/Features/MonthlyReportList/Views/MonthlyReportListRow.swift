@@ -45,13 +45,14 @@ extension MonthlyReportListView {
                     HStack {
                         HStack(alignment: .firstTextBaseline) {
                             Text(formatDuration(month.totalSeconds))
-                                .font(.title3)
-                                .fontWeight(.semibold)
+                                .font(.title2)
+                                .fontWeight(.bold)
                                 .padding(.top, 4)
                             Text("hours")
                                 .foregroundStyle(.secondary)
+                                .fontWeight(.medium)
                         }
-                        .fontDesign(.monospaced)
+                        .fontDesign(.rounded)
                     }
                     Divider()
                     VStack {
@@ -78,52 +79,13 @@ extension MonthlyReportListView {
                         }
                         .font(.callout)
                     }
-                    .padding(.vertical, 8)
+                    .padding(.top, 8)
                 }
                 .labelReservedIconWidth(24)
-                .padding()
+                .padding(24)
                 .background(Color(.secondarySystemGroupedBackground))
-                .cornerRadius(24)
+                .cornerRadius(32)
             }
-//            HStack {
-//                VStack(alignment: .leading, spacing: 8) {
-//                    Text(formatDuration(month.totalSeconds))
-//                        .fontDesign(.monospaced)
-//                        .fontWeight(.semibold)
-//                    HStack {
-//                        Image(systemName: "book")
-//                        Text("\(month.totalBibleStudies)")
-//                    }
-//                    .foregroundStyle(.secondary)
-//                    .font(.callout)
-//                    .fontWeight(.medium)
-//                }
-//                Spacer()
-//                Button {
-//                    showCopyAlert = true
-//                } label: {
-//                    Label("Copy", systemImage: "square.on.square")
-//                        .labelStyle(.iconOnly)
-//                        .foregroundStyle(.secondary)
-//                }
-//                .buttonStyle(.plain)
-//            }
-//            .padding()
-//            .background(Color(.secondarySystemGroupedBackground))
-//            .cornerRadius(24)
-//            .alert("Report Limitations", isPresented: $showCopyAlert) {
-//                Button {
-//                    UIPasteboard.general.string = "\(fullHours)"
-//                } label: {
-//                    Label("Copy", systemImage: "square.on.square")
-//                        .labelStyle(.titleAndIcon)
-//                }
-//                Button(role: .cancel) {}
-//            } message: {
-//                Text(
-//                    "You can only copy full hours, make sure to transfer \(leftoverMinutes) minutes to next month. Hugo will be able to do this for you in a future update"
-//                )
-//            }
         }
     }
 }

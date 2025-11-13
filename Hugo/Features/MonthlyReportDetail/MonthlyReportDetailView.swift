@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MonthlyReportDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
 
     let summary: MonthlySummary
 
@@ -42,14 +43,37 @@ struct MonthlyReportDetailView: View {
                     Label("Send as Mail", systemImage: "envelope")
                 }
                 Button {
-                    
+                    _ = makeReport()
+                    dismiss()
                 } label: {
                     Label("Lock Report", systemImage: "lock")
                 }
             } label: {
-                Label("More Options", systemImage: "ellipsis")
+                Label("Submit Options", systemImage: "ellipsis")
             }
         }
+    }
+    
+    private func makeReport() -> Result<Report, ReportError> {
+        let report = Report.make(from: summary.entries, in: context)
+        
+        if report == nil {
+            // TODO: Handle error case correctly
+            
+            print("Unable to generate report")
+            
+            return .failure(.unableToGenerateReport)
+        }
+        
+        for entry in summary.entries {
+            context.delete(entry)
+        }
+        
+        return .success(report!)
+    }
+    
+    enum ReportError: Error {
+        case unableToGenerateReport
     }
 }
 

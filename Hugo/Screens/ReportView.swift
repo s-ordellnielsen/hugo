@@ -17,16 +17,16 @@ struct ReportView: View {
             ScrollView {
                 if entries.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 48))
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundStyle(.green)
-                            
-                            Text("You have reported all entries.")
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                                .fontDesign(.rounded)
-                                .padding(.leading, 8)
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 48))
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(.green)
+
+                        Text("You have reported all entries.")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .fontDesign(.rounded)
+                            .padding(.leading, 8)
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -34,18 +34,10 @@ struct ReportView: View {
                     .cornerRadius(24)
                     .padding()
                 } else {
-                    VStack(alignment: .leading) {
-//                        Text("Unreported Reports")
-//                            .padding(.horizontal)
-//                            .font(.callout)
-//                            .fontWeight(.semibold)
-//                            .fontDesign(.rounded)
-//                            .foregroundStyle(.secondary)
-                        MonthlyReportListView()
-                    }
-                    .padding()
+                    MonthlyReportListView()
+                        .padding()
                 }
-                
+
                 VStack(alignment: .leading) {
                     Text("Submitted Reports")
                         .padding(.horizontal)
@@ -53,12 +45,20 @@ struct ReportView: View {
                         .fontWeight(.semibold)
                         .fontDesign(.rounded)
                         .foregroundStyle(.secondary)
-                    
+
                     if reports.isEmpty {
-                        ContentUnavailableView("No Reports", systemImage: "receipt.fill", description: Text("Reports submitted from this Service Year, will be shown here. To see previous reports, go to **All Reports**."))
-                            .padding(.top, 48)
+                        ContentUnavailableView(
+                            "No Reports",
+                            systemImage: "receipt.fill",
+                            description: Text(
+                                "Reports submitted from this Service Year, will be shown here. To see previous reports, go to **All Reports**."
+                            )
+                        )
+                        .padding(.top, 48)
+                    } else {
+                        SavedReportListView(reports: reports)
                     }
-                    
+
                     NavigationLink(destination: Text("All Reports")) {
                         Label {
                             HStack {
@@ -95,4 +95,3 @@ struct ReportView: View {
     ReportView()
         .modelContainer(.preview)
 }
-

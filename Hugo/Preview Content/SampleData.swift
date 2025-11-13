@@ -61,3 +61,32 @@ extension ModelContainer {
         }
     }
 }
+
+func sampleReports() -> [Report] {
+    let tracker1: Tracker = .init(
+        name: "Field Service",
+        type: .main,
+        isDefault: true,
+        iconName: "figure.walk"
+    )
+    let tracker2: Tracker = .init(
+        name: "Bethel",
+        type: .separate,
+        isDefault: false,
+        iconName: "building"
+    )
+
+    let entries: [Entry] = [
+        Entry(date: Date(), duration: 3600, tracker: tracker1, bibleStudies: 1),
+        Entry(date: Date(), duration: 7200, tracker: tracker2),
+        .init(date: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(), duration: 3600, tracker: tracker1)
+    ]
+
+    let report = Report.makePure(from: entries, goal: 30)
+    
+    if report == nil {
+        return []
+    }
+    
+    return [report!]
+}
