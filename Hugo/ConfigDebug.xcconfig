@@ -10,5 +10,4 @@
 
 BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo.dev
 APP_GROUP_IDENTIFIER = group.com.ordellnielsen.Hugo.dev
-ICLOUD_CONTAINER_IDENTIFIER = iCloud.com.ordellnielsen.Hugo.dev
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev
