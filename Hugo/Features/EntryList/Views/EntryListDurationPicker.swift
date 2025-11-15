@@ -17,7 +17,7 @@ extension EntryList {
         
         var body: some View {
             DatePicker(selection: $durationAsDate, displayedComponents: .hourAndMinute) {
-                Label("Duration", systemImage: "clock")
+                Label("entry.duration.label", systemImage: "clock")
             }
             .onChange(of: durationAsDate, updateDuration)
         }

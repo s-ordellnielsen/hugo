@@ -82,7 +82,7 @@ struct AddReportSheet: View {
 
                 Section {
                     HStack {
-                        Text("Goal")
+                        Text("goal.label")
                         Spacer()
                         TextField("0", text: $goal)
                             .keyboardType(.decimalPad)

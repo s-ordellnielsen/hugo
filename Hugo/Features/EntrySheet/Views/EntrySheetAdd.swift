@@ -42,10 +42,10 @@ extension EntrySheet {
         var body: some View {
             NavigationStack {
                 Form {
-                    Section("entry.add.duration.label") {
+                    Section("entry.duration.label") {
                         VStack(alignment: .center) {
                             DatePicker(
-                                "entry.add.duration.label",
+                                "entry.duration.label",
                                 selection: $duration,
                                 displayedComponents: .hourAndMinute
                             )
@@ -82,7 +82,7 @@ extension EntrySheet {
 
                     Section {
                         DatePicker(
-                            "entry.add.date.label",
+                            "entry.date.label",
                             selection: $date,
                             in: ...Date(),
                             displayedComponents: .date
@@ -91,7 +91,7 @@ extension EntrySheet {
                             showTimeSheet = true
                         } label: {
                             HStack {
-                                Text("entry.add.time.label")
+                                Text("entry.time.label")
                                 Spacer()
                                 if time == nil {
                                     Text("entry.add.time.none")
@@ -121,7 +121,7 @@ extension EntrySheet {
                             onIncrement: incrementBibleStudies,
                             onDecrement: decrementBibleStudies,
                         ) {
-                            Text("Bible Studies: \(bibleStudies)")
+                            Text("entry.biblestudies.count.label.\(bibleStudies)")
                         }
                     }
                 }

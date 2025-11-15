@@ -95,10 +95,12 @@ struct ReportView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem {
-                    Button {
-                        addReportSheetIsPresented =  true
+                    Menu {
+                        Button("Add Report", systemImage: "plus") {
+                            addReportSheetIsPresented =  true
+                        }
                     } label: {
-                        Label("Add Report", systemImage: "plus")
+                        Label("Add ...", systemImage: "plus")
                     }
                 }
             }

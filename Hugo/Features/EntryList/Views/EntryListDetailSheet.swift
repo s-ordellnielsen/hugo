@@ -30,7 +30,9 @@ extension EntryList {
             let seconds = entry.duration
 
             let hours = Int(seconds / 3600)
-            let minutes = Int(seconds.truncatingRemainder(dividingBy: 3600) / 60)
+            let minutes = Int(
+                seconds.truncatingRemainder(dividingBy: 3600) / 60
+            )
             let secs = Int(seconds.truncatingRemainder(dividingBy: 60))
 
             components.hour = hours
@@ -41,18 +43,38 @@ extension EntryList {
         }
 
         var body: some View {
-            Form {
-                Section {
-                    HStack(spacing: 12) {
-                        Image(
-                            systemName: entry.tracker?.iconName
-                                ?? "questionmark.circle"
+            NavigationStack {
+                Form {
+                    Section {
+                        EntryList.DurationPicker(
+                            duration: $entry.duration,
+                            durationAsDate: durationAsDate
                         )
-                        .font(.title)
-                        Text(entry.tracker?.name ?? "Unknown")
-                            .font(.title)
-                            .fontDesign(.rounded)
-                        Spacer()
+                        DatePicker(selection: $entry.date) {
+                            Label("entry.date.label", systemImage: "calendar")
+                        }
+                    }
+
+                    Section {
+                        Stepper(
+                            onIncrement: incrementBibleStudies,
+                            onDecrement: decrementBibleStudies
+                        ) {
+                            Label(
+                                "entry.biblestudies.count.label.\(entry.bibleStudies)",
+                                systemImage: "book"
+                            )
+                        }
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        HStack {
+                            Image(systemName: entry.tracker?.iconName ?? "")
+                            Text(entry.tracker?.name ?? "entrylist.detailsheet.untracked").font(.headline)
+                        }
+                    }
+                    ToolbarItem {
                         Menu {
                             Button(role: .destructive) {
                                 deleteConfirmationShown = true
@@ -63,12 +85,8 @@ extension EntryList {
                                 )
                             }
                         } label: {
-                            Label("Change Tracker", systemImage: "chevron.down")
-                                .labelStyle(.iconOnly)
+                            Label("More options", systemImage: "ellipsis")
                         }
-                        .buttonStyle(.bordered)
-                        .controlSize(.extraLarge)
-                        .buttonBorderShape(.circle)
                         .confirmationDialog(
                             "entry.delete.confirmation.label",
                             isPresented: $deleteConfirmationShown
@@ -83,35 +101,6 @@ extension EntryList {
                         } message: {
                             Text("entry.delete.confirmation.message")
                         }
-                    }
-                    .padding(.leading, 12)
-                    .fontWeight(.bold)
-                }
-                .listRowBackground(Color.clear)
-                .listRowInsets(.all, 0)
-
-                Section {
-                    EntryList.DurationPicker(
-                        duration: $entry.duration,
-                        durationAsDate: durationAsDate
-                    )
-                }
-
-                Section {
-                    DatePicker(selection: $entry.date) {
-                        Label("Date", systemImage: "calendar")
-                    }
-                }
-
-                Section {
-                    Stepper(
-                        onIncrement: incrementBibleStudies,
-                        onDecrement: decrementBibleStudies
-                    ) {
-                        Label(
-                            "Bible Studies: \(entry.bibleStudies)",
-                            systemImage: "book"
-                        )
                     }
                 }
             }
