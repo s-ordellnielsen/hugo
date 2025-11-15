@@ -7,11 +7,15 @@
 
 import SwiftUI
 import SwiftData
+import os.log
 
 @main
 struct HugoApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema(versionedSchema: CurrentSchema.self)
+        let logger = Logger(subsystem: "com.ordellnielsen.Hugo", category: "CloudKit")
+        
+        logger.info("Initializing ModelContainer...")
         
         #if DEBUG
         if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" || ProcessInfo.processInfo.environment["XCODE_SERVICE_ACCOUNT_STATUS"] != nil {
@@ -31,6 +35,7 @@ struct HugoApp: App {
         do {
             return try ModelContainer(for: schema, migrationPlan: MigrationPlan.self, configurations: [modelConfiguration])
         } catch {
+            logger.error("SwiftData init failed: \(error)")
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
