@@ -10,7 +10,10 @@ import SwiftData
 
 enum MigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self, SchemaV4.self]
+        [
+            SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
+            SchemaV4.self,
+        ]
     }
 
     static var stages: [MigrationStage] {
@@ -42,10 +45,25 @@ enum MigrationPlan: SchemaMigrationPlan {
         },
         didMigrate: nil
     )
-    
-    static let migrateV2toV2_1 = MigrationStage.lightweight(fromVersion: SchemaV2.self, toVersion: SchemaV2_1.self)
-    
-    static let migrateV2_1toV3 = MigrationStage.lightweight(fromVersion: SchemaV2_1.self, toVersion: SchemaV3.self)
-    
-    static let migrateV3toV4 = MigrationStage.lightweight(fromVersion: SchemaV3.self, toVersion: SchemaV4.self)
+
+    static let migrateV2toV2_1 = MigrationStage.lightweight(
+        fromVersion: SchemaV2.self,
+        toVersion: SchemaV2_1.self
+    )
+
+    static let migrateV2_1toV3 = MigrationStage.custom(
+        fromVersion: SchemaV2_1.self,
+        toVersion: SchemaV3.self,
+        willMigrate: { context in
+            print("Migrating from v2.1 to v3 (adding Report model)")
+
+            try context.save()
+        },
+        didMigrate: nil
+    )
+
+    static let migrateV3toV4 = MigrationStage.lightweight(
+        fromVersion: SchemaV3.self,
+        toVersion: SchemaV4.self
+    )
 }
