@@ -49,10 +49,12 @@ struct ContentView: View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    CurrentMonthProgress.Content(value: current)
-                        .padding(.horizontal, 48)
-                        .padding(.bottom, 32)
-                        .padding(.top, 16)
+                    CurrentMonthProgressView(value: current) {
+                        EntrySheet.Add()
+                    }
+                    .padding(.horizontal, 48)
+                    .padding(.bottom, 32)
+                    .padding(.top, 16)
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             VStack(alignment: .leading) {
