@@ -53,10 +53,7 @@ struct CurrentMonthProgressView<SheetContent: View>: View {
                             self.valueText = "\(Int(newValue))"
                         }
                     }
-                Text("entry.progress.month.hours.label")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary.opacity(0.5))
+                StatusText(expectedProgress: marker, currentProgress: value)
             }
 
             Button {
