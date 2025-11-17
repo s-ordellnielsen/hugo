@@ -24,11 +24,10 @@ extension SchemaV4 {
         
         var extraTime: TimeInterval = 0
         
-        private var trackersData: Data?
-        private var dailyPointsData: Data?
+        var trackers: [TrackerSummary] = []
+        var dailyPoints: [DailyPoint] = []
         
         var createdAt: Date = Date()
-        var updatedAt: Date? = nil
         
         init(
             year: Int,
@@ -52,36 +51,11 @@ extension SchemaV4 {
             self.extraTime = extraTime
             
             if !trackers.isEmpty {
-                self.trackersData = try? JSONEncoder().encode(trackers)
+                self.trackers = trackers
             }
             
             if !dailyPoints.isEmpty {
-                self.dailyPointsData = try? JSONEncoder().encode(dailyPoints)
-            }
-        }
-        
-        var trackers: [TrackerSummary] {
-            get {
-                guard let d = trackersData else { return [] }
-                return (try? JSONDecoder().decode([TrackerSummary].self, from: d))
-                ?? []
-            }
-            set {
-                trackersData = try? JSONEncoder().encode(newValue)
-                updatedAt = Date()
-            }
-        }
-        
-        var dailyPoints: [DailyPoint] {
-            get {
-                guard let d = dailyPointsData else { return [] }
-                return (try? JSONDecoder().decode([DailyPoint].self, from: d)) ?? []
-            }
-            set {
-                dailyPointsData = try? JSONEncoder().encode(
-                    newValue.sorted { $0.date < $1.date }
-                )
-                updatedAt = Date()
+                self.dailyPoints = dailyPoints
             }
         }
         
@@ -89,7 +63,6 @@ extension SchemaV4 {
             get { fieldService / 3600 }
             set {
                 fieldService = newValue
-                updatedAt = Date()
             }
         }
         
