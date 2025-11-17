@@ -62,8 +62,14 @@ enum MigrationPlan: SchemaMigrationPlan {
         didMigrate: nil
     )
 
-    static let migrateV3toV4 = MigrationStage.lightweight(
+    static let migrateV3toV4 = MigrationStage.custom(
         fromVersion: SchemaV3.self,
-        toVersion: SchemaV4.self
+        toVersion: SchemaV4.self,
+        willMigrate: { context in
+            print("Migrating from v3 to v4")
+            
+            try context.save()
+        },
+        didMigrate: nil
     )
 }
