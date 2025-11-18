@@ -11,4 +11,6 @@ extension UserDefaults {
     static let hasRunInitialSetupKey: String = "hasRunInitialSetup"
     
     static let publisherStatusKey: String = "publisherStatus"
+    
+    static let hasCompletedOnboardingKey: String = "hasCompletedOnboarding"
 }

@@ -65,7 +65,6 @@ struct CurrentMonthProgressView<SheetContent: View>: View {
             .buttonBorderShape(.circle)
             .font(.largeTitle)
             .fontWeight(.semibold)
-            .foregroundStyle(.accent)
             .labelStyle(.iconOnly)
             .buttonStyle(.glass)
             .offset(x: 128, y: 128)

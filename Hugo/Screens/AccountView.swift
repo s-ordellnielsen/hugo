@@ -10,6 +10,7 @@ import SwiftUI
 struct AccountView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage(UserDefaults.publisherStatusKey) var publisherStatus = ""
+    @AppStorage("isOnboarding") var isOnboarding: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -103,6 +104,11 @@ struct AccountView: View {
 //                        Label("account.group.legal.item.privacypolicy", systemImage: "exclamationmark.shield.fill")
 //                    }
 //                }
+                Section {
+                    Button("Reset Onboarding") {
+                        isOnboarding = true
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem {

@@ -47,17 +47,26 @@ extension PublisherStatusConfig {
             goalType: .monthly,
             goal: 30
         ),
+        PublisherStatusConfig(
+            id: "publisher",
+            nameKey: "publisher.status.publisher.full",
+            shortName: "publisher.status.publisher.short",
+            goalType: .monthly,
+            goal: 0
+        ),
     ]
-    
-    static func current(_ currentStatusId: String) -> PublisherStatusConfig? {        
+
+    static func current(_ currentStatusId: String) -> PublisherStatusConfig? {
         if currentStatusId != "" {
-            let currentStatus = PublisherStatusConfig.defaults.first(where: { $0.id == currentStatusId })
-            
+            let currentStatus = PublisherStatusConfig.defaults.first(where: {
+                $0.id == currentStatusId
+            })
+
             if currentStatus != nil {
                 return currentStatus
             }
         }
-        
+
         return nil
     }
 }
