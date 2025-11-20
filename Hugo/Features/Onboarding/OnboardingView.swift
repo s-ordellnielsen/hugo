@@ -11,6 +11,8 @@ struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(UserDefaults.publisherStatusKey) var currentStatus: String = ""
 
+    @State private var isLoading: Bool = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -37,7 +39,7 @@ struct OnboardingView: View {
                                 HStack(spacing: 16) {
                                     Image(
                                         systemName: currentStatus == status.id
-                                        ? "checkmark.circle.fill" : "circle"
+                                            ? "checkmark.circle.fill" : "circle"
                                     )
                                     .font(.title2)
                                     .tint(.orange)
@@ -45,7 +47,8 @@ struct OnboardingView: View {
                                         Text(status.nameKey)
                                             .fontWeight(.medium)
                                             .fontDesign(.rounded)
-                                        VStack(alignment: .leading, spacing: 4) {
+                                        VStack(alignment: .leading, spacing: 4)
+                                        {
                                             Text(
                                                 "publisher.status.goaltype.label.\(status.goalType.label)"
                                             )
@@ -67,7 +70,7 @@ struct OnboardingView: View {
                                 .cornerRadius(32)
                                 .tint(.primary)
                             }
-                            
+
                         }
                     }
                     .padding(.vertical, 8)
@@ -78,16 +81,28 @@ struct OnboardingView: View {
             .navigationTitle("Welcome to Hugo")
             .safeAreaInset(edge: .bottom) {
                 Button {
-                    dismiss()
+                    Task {
+                        await onDismiss()
+                    }
                 } label: {
-                    Label("Let's Get Started", systemImage: "arrow.right")
-                        .fontWeight(.semibold)
-                        .fontDesign(.rounded)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(24)
+                    HStack {
+                        if isLoading {
+                            ProgressView()
+                                .tint(.white)
+                                .transition(.blurReplace)
+                        } else {
+                            Label("Let's Get Started", systemImage: "arrow.right")
+                                .transition(.blurReplace)
+                        }
+                    }
+                    .animation(.smooth, value: isLoading)
+                    .fontWeight(.semibold)
+                    .fontDesign(.rounded)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.orange)
+                    .foregroundColor(.white)
+                    .cornerRadius(24)
                 }
                 .disabled(currentStatus == "")
                 .padding()
@@ -96,6 +111,13 @@ struct OnboardingView: View {
         }
         .background(Color(.systemGroupedBackground))
         .interactiveDismissDisabled(true)
+    }
+
+    private func onDismiss() async {
+        isLoading = true
+
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        dismiss()
     }
 }
 

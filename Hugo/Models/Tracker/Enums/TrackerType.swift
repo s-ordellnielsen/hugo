@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum TrackerType: String, Codable, Comparable, Identifiable {
+enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
     case main
     case separate
     case none

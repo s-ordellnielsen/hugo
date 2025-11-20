@@ -57,7 +57,6 @@ struct TrackerSelectionView: View {
         }
         .sheet(isPresented: $addTrackerSheetIsPresented) {
             AddTrackerSheet()
-                .presentationDetents([.medium])
         }
     }
 }

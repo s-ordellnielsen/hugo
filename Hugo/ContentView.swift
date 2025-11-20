@@ -26,12 +26,18 @@ struct ContentView: View {
             }
         }
         .tint(.primary)
-        .task {
-            await AppInitializer.initialize(
-                modelContext: context
-            )
-        }
+//        .task {
+//            await AppInitializer.initialize(
+//                modelContext: context
+//            )
+//        }
         .sheet(isPresented: $isOnboarding) {
+            Task {
+                await AppInitializer.initialize(
+                    modelContext: context
+                )
+            }
+        } content: {
             OnboardingView()
         }
     }

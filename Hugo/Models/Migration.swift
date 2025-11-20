@@ -12,12 +12,14 @@ enum MigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
-            SchemaV4.self,
+            SchemaV4.self, SchemaV5.self
         ]
     }
 
     static var stages: [MigrationStage] {
-        [migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4]
+        [
+            migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4, migrateV4toV5
+        ]
     }
 
     static let migrateV1toV2 = MigrationStage.custom(
@@ -67,9 +69,14 @@ enum MigrationPlan: SchemaMigrationPlan {
         toVersion: SchemaV4.self,
         willMigrate: { context in
             print("Migrating from v3 to v4")
-            
+
             try context.save()
         },
         didMigrate: nil
+    )
+    
+    static let migrateV4toV5: MigrationStage = .lightweight(
+        fromVersion: SchemaV4.self,
+        toVersion: SchemaV5.self
     )
 }

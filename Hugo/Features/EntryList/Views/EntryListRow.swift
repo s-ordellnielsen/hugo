@@ -35,7 +35,7 @@ extension EntryList {
                         HStack(spacing: 6) {
                             Text(formatDuration(entry.duration))
                                 .fontWeight(.bold)
-                            Text(entry.tracker?.name ?? "Unknown")
+                            Text(entry.tracker != nil ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked"))
                                 .fontWeight(.medium)
                                 .foregroundStyle(.secondary)
                         }

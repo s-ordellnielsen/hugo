@@ -17,6 +17,7 @@ extension EntryList {
         @Query private var trackers: [Tracker]
 
         @State var entry: Entry
+        @State var selectTrackerIsPresented: Bool = false
 
         @State private var deleteConfirmationShown: Bool = false
 
@@ -70,20 +71,19 @@ extension EntryList {
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         HStack {
-                            Image(systemName: entry.tracker?.iconName ?? "")
-                            Text(entry.tracker?.name ?? "entrylist.detailsheet.untracked").font(.headline)
+                            Image(systemName: entry.tracker?.iconName ?? "questionmark.circle.fill")
+                            Text(entry.tracker != nil ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked")).font(.headline)
                         }
                     }
                     ToolbarItem {
                         Menu {
-                            Button(role: .destructive) {
-                                deleteConfirmationShown = true
-                            } label: {
-                                Label(
-                                    "entry.delete.label",
-                                    systemImage: "trash"
-                                )
+                            Button("Change Tracker...", systemImage: "checklist") {
+                                selectTrackerIsPresented = true
                             }
+                            Button("entry.delete.label", systemImage: "trash", role: .destructive) {
+                                deleteConfirmationShown = true
+                            }
+                            .tint(.red)
                         } label: {
                             Label("More options", systemImage: "ellipsis")
                         }
@@ -103,6 +103,10 @@ extension EntryList {
                         }
                     }
                 }
+                .sheet(isPresented: $selectTrackerIsPresented) {
+                    SelectTracker(entry: entry)
+                        .presentationDetents([.medium, .large])
+                }
             }
         }
 
@@ -118,4 +122,10 @@ extension EntryList {
             entry.bibleStudies -= 1
         }
     }
+}
+
+#Preview {
+    let entry = Entry(date: Date(), duration: 3600)
+    
+    EntryList.DetailSheet(entry: entry)
 }
