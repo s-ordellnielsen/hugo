@@ -11,6 +11,7 @@ struct SymbolDefinition: Codable, Identifiable {
     let icon: String
     let name: LocalizedStringResource
     let keywordsKey: LocalizedStringResource
+    let attributes: [SymbolAttribute]
     
     var id: String { self.icon }
     
@@ -25,17 +26,23 @@ struct SymbolDefinition: Codable, Identifiable {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
     }
     
-    func matches(_ searchText: String) -> Bool {
-        guard !searchText.isEmpty else { return true }
+    func matches(_ searchText: String, _ attr: SymbolAttribute?) -> Bool {
+        var satisfiesAttributes: Bool = true
+        
+        if attr != nil && !attributes.contains(attr!) {
+            satisfiesAttributes = false
+        }
+        
+        guard !searchText.isEmpty && satisfiesAttributes else {
+            return satisfiesAttributes
+        }
         
         let query = searchText.lowercased()
         
-        // Search in name
         if localizedName.lowercased().contains(query) {
             return true
         }
         
-        // Search in keywords
         return keywords.contains { $0.lowercased().contains(query) }
     }
 }

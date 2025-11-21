@@ -55,30 +55,39 @@ extension EntrySheet {
                         .frame(maxWidth: .infinity)
                     }
 
-                    //                Section {
-                    //                    Button {
-                    //                        showTrackerSheet = true
-                    //                    } label: {
-                    //                        HStack {
-                    //                            Text("entry.add.tracker.label")
-                    //                                .foregroundStyle(.primary)
-                    //                            Spacer()
-                    //                            Image(systemName: selectedTracker?.iconName ?? "circle")
-                    //                            Text(selectedTracker?.name ?? "entry.add.tracker.none")
-                    //                        }
-                    //                        .tint(Color(
-                    //                            hue: selectedTracker?.hue ?? 0.5,
-                    //                            saturation: 0.8,
-                    //                            brightness: 0.9
-                    //                        ))
-                    //                    }.sheet(isPresented: $showTrackerSheet) {
-                    //                        SelectTrackerSheet(trackers: trackers)
-                    //                            .presentationDetents([.medium])
-                    //                    }
-                    //                }
-                    //                .onChange(of: trackers) { old, new in
-                    //                    selectedTracker = new.first
-                    //                }
+                    Section {
+                        HStack {
+                            Text("entry.add.tracker.label")
+                            Spacer()
+                            Button {
+                                showTrackerSheet = true
+                            } label: {
+                                HStack {
+                                    Image(
+                                        systemName: selectedTracker?.iconName
+                                            ?? "circle"
+                                    )
+                                    Text(
+                                        selectedTracker?.name
+                                            ?? "entry.add.tracker.none"
+                                    )
+                                }
+                                .foregroundStyle(
+                                    Color(
+                                        hue: selectedTracker?.hue ?? 0.5,
+                                        saturation: 0.8,
+                                        brightness: 0.9
+                                    )
+                                )
+                            }
+                        }.sheet(isPresented: $showTrackerSheet) {
+                            TrackerPicker(selection: $selectedTracker)
+                                .presentationDetents([.medium])
+                        }
+                    }
+                    .onChange(of: trackers) { old, new in
+                        selectedTracker = new.first
+                    }
 
                     Section {
                         DatePicker(
@@ -121,7 +130,9 @@ extension EntrySheet {
                             onIncrement: incrementBibleStudies,
                             onDecrement: decrementBibleStudies,
                         ) {
-                            Text("entry.biblestudies.count.label.\(bibleStudies)")
+                            Text(
+                                "entry.biblestudies.count.label.\(bibleStudies)"
+                            )
                         }
                     }
                 }
@@ -291,4 +302,5 @@ extension EntrySheet {
 
 #Preview {
     EntrySheet.Add()
+        .modelContainer(.preview)
 }
