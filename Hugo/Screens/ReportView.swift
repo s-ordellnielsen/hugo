@@ -85,6 +85,7 @@ struct ReportView: View {
                     .background(Color(.secondarySystemGroupedBackground))
                     .cornerRadius(24)
                     .labelReservedIconWidth(24)
+                    .tint(.primary)
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -25,7 +25,7 @@ struct ContentView: View {
                 ReportView()
             }
         }
-        .tint(.primary)
+//        .tint(.primary)
 //        .task {
 //            await AppInitializer.initialize(
 //                modelContext: context

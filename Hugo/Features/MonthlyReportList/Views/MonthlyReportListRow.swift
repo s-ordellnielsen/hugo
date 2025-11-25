@@ -85,6 +85,7 @@ extension MonthlyReportListView {
                 .padding(24)
                 .background(Color(.secondarySystemGroupedBackground))
                 .cornerRadius(32)
+                .tint(.primary)
             }
         }
     }

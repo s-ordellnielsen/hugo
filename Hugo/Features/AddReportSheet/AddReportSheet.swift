@@ -112,7 +112,6 @@ struct AddReportSheet: View {
                         Label("Submit", systemImage: "plus")
                     }
                     .buttonStyle(.glassProminent)
-                    .tint(.blue)
                 }
             }
         }

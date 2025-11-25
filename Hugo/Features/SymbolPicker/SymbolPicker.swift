@@ -108,7 +108,7 @@ struct SymbolPicker: View {
             .aspectRatio(1, contentMode: .fit)
             .background(
                 selectedSymbol == symbol.id
-                    ? Color.blue : Color(.secondarySystemGroupedBackground)
+                    ? Color.accent : Color(.secondarySystemGroupedBackground)
             )
             .cornerRadius(24)
             .foregroundStyle(selectedSymbol == symbol.id ? .white : .primary)

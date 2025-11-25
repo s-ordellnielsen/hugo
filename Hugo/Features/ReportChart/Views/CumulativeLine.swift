@@ -75,7 +75,7 @@ extension ReportChart {
                         y: .value("common.minutes", p.cumulativeHours)
                     )
                     .interpolationMethod(.monotone)
-                    .foregroundStyle(Gradient(colors: [.blue.opacity(0.25), .blue.opacity(0)]))
+                    .foregroundStyle(Gradient(colors: [.accent.opacity(0.25), .accent.opacity(0)]))
                 }
                 ForEach(cumulativePoints) { p in
                     LineMark(
@@ -83,13 +83,13 @@ extension ReportChart {
                         y: .value("common.minutes", p.cumulativeHours)
                     )
                     .interpolationMethod(.monotone)
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(.accent)
                 }
                 if report.goal != 0 {
                     RuleMark(
                         y: .value("goal.label", report.goal)
                     )
-                    .foregroundStyle(.blue.opacity(0.15))
+                    .foregroundStyle(.accent.opacity(0.15))
                 }
             }
             .chartXAxis(.hidden)
