@@ -9,11 +9,13 @@ import SwiftUI
 
 extension CurrentMonthProgressView {
     struct DetailSheet: View {
+        @Environment(\.dismiss) private var dismiss
+        
         var body: some View {
             NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading) {
-
+                        SegmentedProgressView()
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -21,6 +23,13 @@ extension CurrentMonthProgressView {
                 .background(Color(.systemGroupedBackground))
                 .navigationTitle("Detailed Report")
                 .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(role: .cancel) {
+                            dismiss()
+                        }
+                    }
+                }
             }
         }
     }

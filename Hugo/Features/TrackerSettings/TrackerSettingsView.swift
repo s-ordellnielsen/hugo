@@ -5,29 +5,42 @@
 //  Created by Sebastian Nielsen on 27/11/2025.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct TrackerSettingsView: View {
     @Query private var trackers: [Tracker]
-    
+
     @State private var addTrackerSheetIsPresented: Bool = false
-    
+
     var body: some View {
-        List(trackers) { tracker in
-            NavigationLink(destination: DetailView(tracker: tracker)) {
-                Label {
-                    HStack {
-                        Text(tracker.name)
-                        Spacer()
-                        if tracker.isDefault {
-                            Image(systemName: "star.fill")
-                                .font(.callout)
-                                .foregroundStyle(.yellow)
+        List {
+            ForEach(TrackerType.allCases, id: \.self) { type in
+                let filtered = trackers.filter { $0.type == type }
+
+                if !filtered.isEmpty {
+                    Section(type.label) {
+                        ForEach(filtered, id: \.id) { tracker in
+                            NavigationLink(
+                                destination: DetailView(tracker: tracker)
+                            ) {
+                                HStack {
+                                    Label {
+                                        Text(tracker.name)
+                                    } icon: {
+                                        Image(systemName: tracker.iconName)
+                                    }
+                                    Spacer()
+                                    if tracker.isDefault {
+                                        Image(systemName: "star.fill")
+                                            .font(.callout)
+                                            .foregroundStyle(.yellow)
+                                    }
+                                }
+                            }
+                            .foregroundColor(.primary)
                         }
                     }
-                } icon: {
-                    Image(systemName: tracker.iconName)
                 }
             }
         }
