@@ -94,7 +94,7 @@ struct AddReportSheet: View {
                     }
                 }
             })
-            .navigationTitle("Add Report")
+            .navigationTitle("report.add.report")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 syncInitialValues()

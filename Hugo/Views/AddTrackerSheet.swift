@@ -35,7 +35,7 @@ struct AddTrackerSheet: View {
                             .background(Color(.secondarySystemGroupedBackground))
                             .cornerRadius(32)
                         }
-                        Text("Select Icon")
+                        Text("symbol.picker.select.label")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -48,7 +48,7 @@ struct AddTrackerSheet: View {
                 }
                 
                 Section {
-                    Picker("Type", selection: $tracker.type) {
+                    Picker("tracker.type.label.long", selection: $tracker.type) {
                         ForEach(TrackerType.allCases) { trackerType in
                             Text(trackerType.label).tag(trackerType)
                         }
@@ -56,16 +56,16 @@ struct AddTrackerSheet: View {
                     .pickerStyle(.inline)
                     .labelsHidden()
                 } header: {
-                    Text("Tracker Type")
+                    Text("tracker.type.label.long")
                 } footer: {
                     Text(tracker.type.description)
                 }
                 
                 Section {
-                    Toggle("Can add Bible Studies", isOn: $tracker.allowBibleStudies)
-                    Toggle("Use as Default", isOn: $tracker.isDefault)
+                    Toggle("tracker.options.allow-bible-studies", isOn: $tracker.allowBibleStudies)
+                    Toggle("tracker.options.use-as-default", isOn: $tracker.isDefault)
                 } header: {
-                    Text("Options")
+                    Text("tracker.options.label")
                 } footer: {
                     if trackers.first(where: { $0.isDefault == true }) != nil {
                         Text("Turning this on will override the current default tracker: \(trackers.first(where: { $0.isDefault == true })!.name).")

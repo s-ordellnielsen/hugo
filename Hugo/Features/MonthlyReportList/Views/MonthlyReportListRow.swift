@@ -75,7 +75,7 @@ extension MonthlyReportListView {
                     Divider()
                     VStack {
                         HStack {
-                            Label("Bible Studies", systemImage: "book")
+                            Label("report.bible-studies", systemImage: "book")
                             Spacer()
                             Text("\(month.totalBibleStudies)")
                                 .fontDesign(.monospaced)

@@ -12,11 +12,11 @@ struct DebuggingView: View {
     
     var body: some View {
         List {
-            Button("Reset Onboarding", systemImage: "arrow.counterclockwise") {
+            Button("debug.action.reset-onboarding", systemImage: "arrow.counterclockwise") {
                 isOnboarding = true
             }
         }
-        .navigationTitle("Debugging")
+        .navigationTitle("debug.title")
     }
 }
 

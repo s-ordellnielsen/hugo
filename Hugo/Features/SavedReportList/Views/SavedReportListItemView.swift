@@ -62,7 +62,7 @@ extension SavedReportListView {
                     Divider()
                     VStack {
                         HStack {
-                            Label("Bible Studies", systemImage: "book")
+                            Label("report.bible-studies", systemImage: "book")
                             Spacer()
                             Text("\(report.bibleStudies)")
                                 .fontDesign(.monospaced)

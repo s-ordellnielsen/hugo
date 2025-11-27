@@ -54,10 +54,10 @@ struct ReportView: View {
 
                     if reports.isEmpty {
                         ContentUnavailableView(
-                            "No Reports",
+                            "reports.submitted.empty.title",
                             systemImage: "receipt.fill",
                             description: Text(
-                                "Reports submitted from this Service Year, will be shown here. To see previous reports, go to **All Reports**."
+                                "reports.submitted.empty.description"
                             )
                         )
                         .padding(.top, 48)
@@ -65,10 +65,10 @@ struct ReportView: View {
                         SavedReportListView(reports: reports)
                     }
 
-                    NavigationLink(destination: Text("All Reports")) {
+                    NavigationLink(destination: Text("reports.all")) {
                         Label {
                             HStack {
-                                Text("All Reports")
+                                Text("reports.all")
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.caption)
@@ -97,11 +97,11 @@ struct ReportView: View {
             .toolbar {
                 ToolbarItem {
                     Menu {
-                        Button("Add Report", systemImage: "plus") {
+                        Button("report.add.report", systemImage: "plus") {
                             addReportSheetIsPresented =  true
                         }
                     } label: {
-                        Label("Add ...", systemImage: "plus")
+                        Label("report.add.more", systemImage: "plus")
                     }
                 }
             }

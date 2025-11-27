@@ -87,7 +87,7 @@ struct SymbolPicker: View {
                         }
                     } label: {
                         Label(
-                            "Filter",
+                            "common.filter",
                             systemImage: "line.3.horizontal.decrease"
                         )
                     }

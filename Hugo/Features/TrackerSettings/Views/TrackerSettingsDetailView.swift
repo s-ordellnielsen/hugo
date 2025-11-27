@@ -37,7 +37,7 @@ extension TrackerSettingsView {
                             .cornerRadius(32)
                         }
                         .frame(width: 128, height: 128)
-                        Text("Select Icon")
+                        Text("symbol.picker.select.label")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -50,7 +50,7 @@ extension TrackerSettingsView {
                 }
                 
                 Section {
-                    Picker("Tracker Type", selection: $tracker.type) {
+                    Picker("tracker.type.label.long", selection: $tracker.type) {
                             ForEach(TrackerType.allCases) { trackerType in
                                 Text(trackerType.label).tag(trackerType)
                             }

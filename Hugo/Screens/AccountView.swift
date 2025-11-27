@@ -123,11 +123,11 @@ struct AccountView: View {
                 //                }
                 Section {
                     NavigationLink(destination: DebuggingView()) {
-                        Label("Debugging", systemImage: "ant.fill")
+                        Label("debug.title", systemImage: "ant.fill")
                             .foregroundStyle(.red)
                     }
                 } footer: {
-                    Text("Debugging options are only meant for development purposes. Please do not use these options unless told to do so by the developer.")
+                    Text("debug.disclaimer")
                 }
             }
             .toolbar {
