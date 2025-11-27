@@ -1,57 +1,44 @@
 //
-//  TrackerSelectionView.swift
+//  TrackerSettingsView.swift
 //  Hugo
 //
-//  Created by Sebastian Nielsen on 14/10/2025.
+//  Created by Sebastian Nielsen on 27/11/2025.
 //
 
 import SwiftUI
 import SwiftData
 
-struct TrackerSelectionView: View {
+struct TrackerSettingsView: View {
     @Query private var trackers: [Tracker]
     
     @State private var addTrackerSheetIsPresented: Bool = false
     
     var body: some View {
         List(trackers) { tracker in
-            NavigationLink(destination: TrackerDetailView(tracker: tracker)) {
+            NavigationLink(destination: DetailView(tracker: tracker)) {
                 Label {
                     HStack {
                         Text(tracker.name)
                         Spacer()
                         if tracker.isDefault {
                             Image(systemName: "star.fill")
+                                .font(.callout)
+                                .foregroundStyle(.yellow)
                         }
                     }
                 } icon: {
                     Image(systemName: tracker.iconName)
-                        .tint(Color(
-                            hue: tracker.hue, saturation: 0.8, brightness: 0.9
-                        ))
                 }
             }
         }
         .navigationTitle("settings.trackers.title")
+        .tint(.primary)
         .toolbar {
             ToolbarItem {
                 Button {
                     addTrackerSheetIsPresented = true
                 } label: {
                     Label("navigation.add", systemImage: "plus")
-                }
-            }
-            ToolbarSpacer()
-            ToolbarItem {
-                Menu {
-                    Button {
-                        
-                    } label: {
-                        Label("navigation.help", systemImage: "questionmark")
-                    }
-                    EditButton()
-                } label: {
-                    Label("navigation.more", systemImage: "ellipsis")
                 }
             }
         }
@@ -62,6 +49,9 @@ struct TrackerSelectionView: View {
 }
 
 #Preview {
-    TrackerSelectionView()
-        .modelContainer(.preview)
+    NavigationStack {
+        TrackerSettingsView()
+            .modelContainer(.preview)
+            .navigationBarTitleDisplayMode(.inline)
+    }
 }

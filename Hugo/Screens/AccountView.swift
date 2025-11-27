@@ -45,7 +45,7 @@ struct AccountView: View {
                 }
                 
                 Section {
-                    NavigationLink(destination: TrackerSelectionView()) {
+                    NavigationLink(destination: TrackerSettingsView()) {
                         Label("settings.link.trackers", systemImage: "chart.line.text.clipboard.fill")
                     }
                 } footer: {
@@ -139,6 +139,7 @@ struct AccountView: View {
                     }
                 }
             }
+            .tint(.primary)
         }
     }
 }

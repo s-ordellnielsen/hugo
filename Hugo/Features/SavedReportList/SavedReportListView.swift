@@ -17,6 +17,7 @@ struct SavedReportListView: View {
                 ListItem(report: report)
             }
         }
+        .tint(.primary)
     }
 }
 

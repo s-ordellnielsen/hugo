@@ -12,13 +12,13 @@ enum MigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
-            SchemaV4.self, SchemaV5.self
+            SchemaV4.self, SchemaV5.self, SchemaV6.self
         ]
     }
 
     static var stages: [MigrationStage] {
         [
-            migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4, migrateV4toV5
+            migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4, migrateV4toV5, migrateV5toV6
         ]
     }
 
@@ -78,5 +78,10 @@ enum MigrationPlan: SchemaMigrationPlan {
     static let migrateV4toV5: MigrationStage = .lightweight(
         fromVersion: SchemaV4.self,
         toVersion: SchemaV5.self
+    )
+    
+    static let migrateV5toV6: MigrationStage = .lightweight(
+        fromVersion: SchemaV5.self,
+        toVersion: SchemaV6.self
     )
 }

@@ -83,11 +83,6 @@ extension SavedReportListView {
                 .background(Color(.secondarySystemGroupedBackground))
                 .cornerRadius(32)
             }
-            .onAppear {
-                print(report.dailyPoints)
-                print(report.trackers)
-            }
-
         }
     }
 }

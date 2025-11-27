@@ -19,10 +19,6 @@ extension CurrentMonthProgressView {
 
             let diff = currentProgress - expectedProgress
 
-            print(
-                "Current: \(currentProgress). Expected: \(expectedProgress). Diff: \(diff)"
-            )
-
             if diff > 5 {
                 return .wayAboveTarget
             } else if diff > 2 {
