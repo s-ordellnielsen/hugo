@@ -1543,6 +1543,18 @@
     "symbol.book.keywords" : {
 
     },
+    "symbol.briefcase" : {
+
+    },
+    "symbol.briefcase.keywords" : {
+
+    },
+    "symbol.bubble" : {
+
+    },
+    "symbol.bubble.keywords" : {
+
+    },
     "symbol.building" : {
 
     },
@@ -1593,6 +1605,12 @@
         }
       }
     },
+    "symbol.firstaid" : {
+
+    },
+    "symbol.firstaid.keywords" : {
+
+    },
     "symbol.folder" : {
 
     },
@@ -1603,6 +1621,12 @@
 
     },
     "symbol.grid.keywords" : {
+
+    },
+    "symbol.house" : {
+
+    },
+    "symbol.house.keywords" : {
 
     },
     "symbol.paperplane" : {
@@ -1674,6 +1698,12 @@
           }
         }
       }
+    },
+    "symbol.tag" : {
+
+    },
+    "symbol.tag.keywords" : {
+
     },
     "symbol.walk" : {
       "comment" : "Name of the symbol.",

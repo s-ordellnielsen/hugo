@@ -89,6 +89,12 @@ enum SymbolSet: String, CaseIterable {
                     attributes: [.fill]
                 ),
                 SymbolDefinition(
+                    icon: "paperplane.circle.fill",
+                    name: "symbol.paperplane",
+                    keywordsKey: "symbol.paperplane.keywords",
+                    attributes: [.fill, .cropped]
+                ),
+                SymbolDefinition(
                     icon: "document",
                     name: "symbol.document",
                     keywordsKey: "symbol.document.keywords",
@@ -105,6 +111,12 @@ enum SymbolSet: String, CaseIterable {
                     name: "symbol.calendar",
                     keywordsKey: "symbol.calendar.keywords",
                     attributes: []
+                ),
+                SymbolDefinition(
+                    icon: "calendar.circle.fill",
+                    name: "symbol.calendar",
+                    keywordsKey: "symbol.calendar.keywords",
+                    attributes: [.cropped, .fill]
                 ),
                 SymbolDefinition(
                     icon: "arrowshape.left.fill",
@@ -143,19 +155,114 @@ enum SymbolSet: String, CaseIterable {
                     attributes: [.fill]
                 ),
                 SymbolDefinition(
+                    icon: "book.circle.fill",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: [.fill, .cropped]
+                ),
+                SymbolDefinition(
+                    icon: "books.vertical",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: []
+                ),
+                SymbolDefinition(
+                    icon: "books.vertical.fill",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: [.fill]
+                ),
+                SymbolDefinition(
+                    icon: "books.vertical.circle.fill",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: [.fill, .cropped]
+                ),
+                SymbolDefinition(
+                    icon: "book.closed",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: []
+                ),
+                SymbolDefinition(
+                    icon: "book.closed.fill",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: [.fill]
+                ),
+                SymbolDefinition(
+                    icon: "book.closed.circle.fill",
+                    name: "symbol.book",
+                    keywordsKey: "symbol.book.keywords",
+                    attributes: [.cropped, .fill]
+                ),
+                SymbolDefinition(
                     icon: "rectangle.grid.3x1",
                     name: "symbol.grid",
                     keywordsKey: "symbol.grid.keywords",
                     attributes: []
                 ),
-                SymbolDefinition(icon: "rectangle.grid.3x1.fill", name: "symbol.grid", keywordsKey: "symbol.grid.keywords", attributes: [.fill]),
-                SymbolDefinition(icon: "square.grid.3x1.below.line.grid.1x2", name: "symbol.grid", keywordsKey: "symbol.grid.keywords", attributes: []),
-                SymbolDefinition(icon: "square.grid.3x1.below.line.grid.1x2.fill", name: "symbol.grid", keywordsKey: "symbol.grid.keywords", attributes: [.fill]),
-                SymbolDefinition(icon: "building", name: "symbol.building", keywordsKey: "symbol.building.keywords", attributes: []),
-                SymbolDefinition(icon: "building.fill", name: "symbol.building", keywordsKey: "symbol.building.keywords", attributes: [.fill]),
-                SymbolDefinition(icon: "building.2", name: "symbol.building", keywordsKey: "symbol.building.keywords", attributes: []),
-                SymbolDefinition(icon: "building.2.fill", name: "symbol.building", keywordsKey: "symbol.building.keywords", attributes: [.fill]),
-                SymbolDefinition(icon: "building.2.crop.circle.fill", name: "symbol.building", keywordsKey: "symbol.building.keywords", attributes: [.fill, .cropped])
+                SymbolDefinition(
+                    icon: "rectangle.grid.3x1.fill",
+                    name: "symbol.grid",
+                    keywordsKey: "symbol.grid.keywords",
+                    attributes: [.fill]
+                ),
+                SymbolDefinition(
+                    icon: "square.grid.3x1.below.line.grid.1x2",
+                    name: "symbol.grid",
+                    keywordsKey: "symbol.grid.keywords",
+                    attributes: []
+                ),
+                SymbolDefinition(
+                    icon: "square.grid.3x1.below.line.grid.1x2.fill",
+                    name: "symbol.grid",
+                    keywordsKey: "symbol.grid.keywords",
+                    attributes: [.fill]
+                ),
+                SymbolDefinition(
+                    icon: "building",
+                    name: "symbol.building",
+                    keywordsKey: "symbol.building.keywords",
+                    attributes: []
+                ),
+                SymbolDefinition(
+                    icon: "building.fill",
+                    name: "symbol.building",
+                    keywordsKey: "symbol.building.keywords",
+                    attributes: [.fill]
+                ),
+                SymbolDefinition(
+                    icon: "building.2",
+                    name: "symbol.building",
+                    keywordsKey: "symbol.building.keywords",
+                    attributes: []
+                ),
+                SymbolDefinition(
+                    icon: "building.2.fill",
+                    name: "symbol.building",
+                    keywordsKey: "symbol.building.keywords",
+                    attributes: [.fill]
+                ),
+                SymbolDefinition(
+                    icon: "building.2.crop.circle.fill",
+                    name: "symbol.building",
+                    keywordsKey: "symbol.building.keywords",
+                    attributes: [.fill, .cropped]
+                ),
+                SymbolDefinition(icon: "tag", name: "symbol.tag", keywordsKey: "symbol.tag.keywords", attributes: []),
+                SymbolDefinition(icon: "tag.fill", name: "symbol.tag", keywordsKey: "symbol.tag.keywords", attributes: [.fill]),
+                SymbolDefinition(icon: "tag.circle.fill", name: "symbol.tag", keywordsKey: "symbol.tag.keywords", attributes: [.fill, .cropped]),
+                SymbolDefinition(icon: "bubble.left.and.text.bubble.right", name: "symbol.bubble", keywordsKey: "symbol.bubble.keywords", attributes: []),
+                SymbolDefinition(icon: "bubble.left.and.text.bubble.right.fill", name: "symbol.bubble", keywordsKey: "symbol.bubble.keywords", attributes: [.fill]),
+                SymbolDefinition(icon: "briefcase", name: "symbol.briefcase", keywordsKey: "symbol.briefcase.keywords", attributes: []),
+                SymbolDefinition(icon: "briefcase.fill", name: "symbol.briefcase", keywordsKey: "symbol.briefcase.keywords", attributes: [.fill]),
+                SymbolDefinition(icon: "briefcase.circle.fill", name: "symbol.briefcase", keywordsKey: "symbol.briefcase.keywords", attributes: [.fill, .cropped]),
+                SymbolDefinition(icon: "house", name: "symbol.house", keywordsKey: "symbol.house.keywords", attributes: []),
+                SymbolDefinition(icon: "house.fill", name: "symbol.house", keywordsKey: "symbol.house.keywords", attributes: [.fill]),
+                SymbolDefinition(icon: "house.circle.fill", name: "symbol.house", keywordsKey: "symbol.house.keywords", attributes: [.fill, .cropped]),
+                SymbolDefinition(icon: "cross.case", name: "symbol.firstaid", keywordsKey: "symbol.firstaid.keywords", attributes: []),
+                SymbolDefinition(icon: "cross.case.fill", name: "symbol.firstaid", keywordsKey: "symbol.firstaid.keywords", attributes: [.fill])
             ]
         }
     }
