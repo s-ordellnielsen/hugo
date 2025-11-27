@@ -12,6 +12,7 @@ struct TrackerPicker: View {
     @Environment(\.dismiss) private var dismiss
     
     @Binding var selection: Tracker?
+    var dismissOnSelection: Bool = false
 
     @Query private var trackers: [Tracker] = []
     
@@ -28,30 +29,20 @@ struct TrackerPicker: View {
                             ForEach(filtered, id: \.id) { tracker in
                                 Button {
                                     selection = tracker
+                                    
+                                    if dismissOnSelection {
+                                        dismiss()
+                                    }
                                 } label: {
                                     HStack {
                                         Label {
                                             Text(tracker.name)
                                         } icon: {
                                             Image(systemName: tracker.iconName)
-                                                .foregroundStyle(
-                                                    Color(
-                                                        hue: tracker.hue,
-                                                        saturation: 0.8,
-                                                        brightness: 0.9
-                                                    )
-                                                )
                                         }
                                         Spacer()
                                         if selection?.id == tracker.id {
                                             Image(systemName: "checkmark")
-                                                .foregroundColor(
-                                                    Color(
-                                                        hue: tracker.hue,
-                                                        saturation: 0.8,
-                                                        brightness: 0.9
-                                                    )
-                                                )
                                         }
                                     }
                                 }

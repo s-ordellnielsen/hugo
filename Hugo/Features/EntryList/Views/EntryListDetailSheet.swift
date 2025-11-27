@@ -104,9 +104,10 @@ extension EntryList {
                     }
                 }
                 .sheet(isPresented: $selectTrackerIsPresented) {
-                    SelectTracker(entry: entry)
+                    TrackerPicker(selection: $entry.tracker, dismissOnSelection: true)
                         .presentationDetents([.medium, .large])
                 }
+                .tint(.primary)
             }
         }
 

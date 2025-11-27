@@ -72,13 +72,7 @@ extension EntrySheet {
                                             ?? "entry.add.tracker.none"
                                     )
                                 }
-                                .foregroundStyle(
-                                    Color(
-                                        hue: selectedTracker?.hue ?? 0.5,
-                                        saturation: 0.8,
-                                        brightness: 0.9
-                                    )
-                                )
+                                .foregroundStyle(.accent)
                             }
                         }.sheet(isPresented: $showTrackerSheet) {
                             TrackerPicker(selection: $selectedTracker)
@@ -182,7 +176,7 @@ extension EntrySheet {
                 let entry = Entry(
                     date: newDate,
                     duration: durationInSeconds(),
-                    tracker: trackers.first!,
+                    tracker: selectedTracker ?? trackers.first!,
                     bibleStudies: bibleStudies
                 )
                 context.insert(entry)
