@@ -21,6 +21,10 @@ extension MonthlyReportListView {
         var leftoverMinutes: TimeInterval {
             month.totalSeconds.truncatingRemainder(dividingBy: 3600) / 60
         }
+        
+        var trackers: [MonthlySummaryTracker] {
+            month.trackers.sorted { $0.total > $1.total }
+        }
 
         var body: some View {
             NavigationLink(destination: MonthlyReportDetailView(summary: month)) {
@@ -55,8 +59,8 @@ extension MonthlyReportListView {
                         .fontDesign(.rounded)
                     }
                     Divider()
-                    VStack {
-                        ForEach(month.trackers) { t in
+                    VStack(spacing: 8) {
+                        ForEach(trackers) { t in
                             HStack {
                                 Label(t.tracker.name, systemImage: t.tracker.iconName)
                                 Spacer()

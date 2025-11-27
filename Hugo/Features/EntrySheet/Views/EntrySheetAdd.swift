@@ -152,7 +152,11 @@ extension EntrySheet {
             }
             .onAppear {
                 if selectedTracker == nil {
-                    selectedTracker = trackers.first
+                    if let defaultTracker = trackers.first(where: \.isDefault) {
+                        selectedTracker = defaultTracker
+                    } else {
+                        selectedTracker = trackers.first
+                    }
                 }
             }
 

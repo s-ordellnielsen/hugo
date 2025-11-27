@@ -14,6 +14,7 @@ struct CurrentMonthProgressView<SheetContent: View>: View {
     var value: Double
 
     @State private var showAddItemSheet: Bool = false
+    @State private var showDetailSheet: Bool = false
     @State private var valueText: String = "0"
     @State private var monthlyGoal: Double = 0.00
     
@@ -70,9 +71,15 @@ struct CurrentMonthProgressView<SheetContent: View>: View {
             .offset(x: 128, y: 128)
 
         }
+        .onTapGesture {
+            showDetailSheet = true
+        }
         .sheet(isPresented: $showAddItemSheet) {
             addItemSheet()
         }
+        .sheet(isPresented: $showDetailSheet, content: {
+            DetailSheet()
+        })
         .onAppear {
             monthlyGoal = getMonthlyGoal()
         }
