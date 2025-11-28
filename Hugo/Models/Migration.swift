@@ -12,13 +12,14 @@ enum MigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
-            SchemaV4.self, SchemaV5.self, SchemaV6.self
+            SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self
         ]
     }
 
     static var stages: [MigrationStage] {
         [
-            migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4, migrateV4toV5, migrateV5toV6
+            migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4,
+            migrateV4toV5, migrateV5toV6, migrateV6toV7
         ]
     }
 
@@ -74,14 +75,37 @@ enum MigrationPlan: SchemaMigrationPlan {
         },
         didMigrate: nil
     )
-    
+
     static let migrateV4toV5: MigrationStage = .lightweight(
         fromVersion: SchemaV4.self,
         toVersion: SchemaV5.self
     )
-    
+
     static let migrateV5toV6: MigrationStage = .lightweight(
         fromVersion: SchemaV5.self,
         toVersion: SchemaV6.self
+    )
+
+    static let migrateV6toV7: MigrationStage = .custom(
+        fromVersion: SchemaV6.self,
+        toVersion: SchemaV7.self,
+        willMigrate: { context in
+            print("Migrating from v6 to v7 ...")
+
+            let trackers = try context.fetch(
+                FetchDescriptor<SchemaV6.Tracker>()
+            )
+
+            for tracker in trackers {
+                if tracker.type.rawValue == "none" {
+                    tracker.type = .separate
+                }
+                
+                tracker.hue = 0.0
+            }
+            
+            try context.save()
+        },
+        didMigrate: nil
     )
 }

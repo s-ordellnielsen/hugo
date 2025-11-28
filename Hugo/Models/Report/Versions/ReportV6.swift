@@ -137,7 +137,7 @@ extension SchemaV6 {
                     let summary = TrackerSummary(
                         name: e.tracker?.name ?? "Unknown",
                         duration: duration,
-                        type: e.tracker?.type ?? .none,
+                        type: e.tracker?.type ?? .separate,
                         hue: e.tracker?.hue ?? 0,
                         sat: 0.8,
                         bri: 0.9,

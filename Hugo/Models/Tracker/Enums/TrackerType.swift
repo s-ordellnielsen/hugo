@@ -11,7 +11,6 @@ import Foundation
 enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
     case main
     case separate
-    case none
     
     var id: String { self.rawValue }
     
@@ -19,7 +18,6 @@ enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
         switch self {
         case .main: return String(localized: "tracker.outputtype.main.label")
         case .separate: return String(localized: "tracker.outputtype.separate.label")
-        case .none: return String(localized: "tracker.outputtype.none.label")
         }
     }
     
@@ -27,14 +25,13 @@ enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
         switch self {
         case .main: return String(localized: "tracker.outputtype.main.description")
         case .separate: return String(localized: "tracker.outputtype.separate.description")
-        case .none: return String(localized: "tracker.outputtype.none.description")
         }
     }
     
     static func < (lhs: TrackerType, rhs: TrackerType) -> Bool {
         // Define a custom sorting order if needed
         // For example, you might want a specific order like this:
-        let order: [TrackerType] = [.main, .separate, .none]
+        let order: [TrackerType] = [.main, .separate]
         
         guard let lhsIndex = order.firstIndex(of: lhs),
               let rhsIndex = order.firstIndex(of: rhs) else {

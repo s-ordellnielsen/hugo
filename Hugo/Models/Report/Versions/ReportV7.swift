@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-extension SchemaV4 {
+extension SchemaV7 {
     @Model
     final class Report {
         var id: UUID = UUID()
