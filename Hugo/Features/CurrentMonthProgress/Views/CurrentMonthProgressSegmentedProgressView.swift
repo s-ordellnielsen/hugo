@@ -30,8 +30,12 @@ extension CurrentMonthProgressView {
         
         @AppStorage(UserDefaults.publisherStatusKey) private var publisherStatus: String = ""
         
-        var goal: Int {
-            (PublisherStatusConfig.current(publisherStatus)?.monthlyGoal() ?? 0)
+        var max: Double {
+            guard let goal = PublisherStatusConfig.current(publisherStatus)?.monthlyGoal() else { return 0 }
+            
+            let total = entries.reduce(0) { $0 + $1.duration } / 3600
+            
+            return Swift.max(Double(goal), total)
         }
         
         var colors: [Color] {
@@ -45,7 +49,7 @@ extension CurrentMonthProgressView {
         }
 
         var body: some View {
-            if goal != 0 {
+            if max != 0 {
                 VStack(alignment: .leading, spacing: 4) {
                     GeometryReader { geometry in
                         HStack(spacing: 0) {
@@ -56,7 +60,7 @@ extension CurrentMonthProgressView {
                                 let total = filtered.reduce(0) {
                                     $0 + $1.duration
                                 }
-                                let normalized = CGFloat(total) / (CGFloat(self.goal) * 3600)
+                                let normalized = CGFloat(total) / (CGFloat(self.max) * 3600)
                                 let width = geometry.size.width * normalized
                                 
                                 print("Tracker \(tracker.name) total: \(total), normalized: \(normalized)")
