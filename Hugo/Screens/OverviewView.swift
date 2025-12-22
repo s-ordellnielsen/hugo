@@ -52,9 +52,7 @@ struct OverviewView: View {
                     CurrentMonthProgressView(value: current) {
                         EntrySheet.Add()
                     }
-                    .padding(.horizontal, 48)
-                    .padding(.bottom, 32)
-                    .padding(.top, 16)
+                    Spacer(minLength: 32)
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             VStack(alignment: .leading) {
@@ -69,17 +67,17 @@ struct OverviewView: View {
                             Spacer()
                         }
                         .frame(maxWidth: .infinity)
-                        .padding()
+                        .padding(.horizontal)
+                        .padding(.top)
+                        .padding(.bottom, 4)
                         EntryList.Content(entries: entries)
                         Spacer()
                     }
-                    .padding(.vertical)
-                    .padding(.horizontal, 20)
                     .background(Color(.systemGroupedBackground))
                     .frame(maxWidth: .infinity)
                 }
-
                 .frame(maxWidth: .infinity)
+                .padding()
             }
             .navigationTitle("overview.title")
             .navigationBarTitleDisplayMode(.inline)
