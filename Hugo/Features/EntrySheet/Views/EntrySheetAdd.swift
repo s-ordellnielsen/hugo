@@ -69,7 +69,10 @@ extension EntrySheet {
                                     )
                                     Text(
                                         selectedTracker?.name
-                                            ?? "entry.add.tracker.none"
+                                            ?? String(
+                                                localized:
+                                                    "entry.add.tracker.none"
+                                            )
                                     )
                                 }
                                 .foregroundStyle(.accent)
@@ -79,7 +82,7 @@ extension EntrySheet {
                                 .presentationDetents([.medium])
                         }
                     }
-                    .onChange(of: trackers) { old, new in
+                    .onChange(of: trackers, initial: false) { old, new in
                         selectedTracker = new.first
                     }
 
@@ -156,6 +159,13 @@ extension EntrySheet {
                         selectedTracker = defaultTracker
                     } else {
                         selectedTracker = trackers.first
+                    }
+                }
+            }
+            .onChange(of: trackers) { _, new in
+                if selectedTracker == nil {
+                    if let defaultTracker = new.first(where: \.isDefault) {
+                        selectedTracker = defaultTracker
                     }
                 }
             }

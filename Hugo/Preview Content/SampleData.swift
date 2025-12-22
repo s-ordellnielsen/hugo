@@ -30,23 +30,34 @@ extension ModelContainer {
                     await AppInitializer.initialize(modelContext: context)
 
                     // Add a custom tracker
-                    let customTracker = Tracker(
+                    let fieldServiceTracker = Tracker(
                         name: "Field Service",
                         isDefault: true,
                         iconName: "figure.walk",
-                        hue: 0.1,
                     )
-                    print("Adding testing tracker")
-                    context.insert(customTracker)
+                    print("Adding Field Service testing tracker")
+                    context.insert(fieldServiceTracker)
 
                     // Add an entry to the custom tracker
                     let entry1 = Entry(date: Date().addingTimeInterval(-86400), duration: 3600)
-                    entry1.tracker = customTracker
+                    entry1.tracker = fieldServiceTracker
                     context.insert(entry1)
 
                     let entry2 = Entry(date: Date(), duration: 9000)
-                    entry2.tracker = customTracker
+                    entry2.tracker = fieldServiceTracker
                     context.insert(entry2)
+                    
+                    let phoneServiceTracker = Tracker(
+                        name: "Phone Service",
+                        isDefault: false,
+                        iconName: "phone.fill"
+                    )
+                    print("Adding Phone Service testing tracker")
+                    context.insert(phoneServiceTracker)
+                    
+                    let entry3 = Entry(date: Date(), duration: 7200)
+                    entry3.tracker = phoneServiceTracker
+                    context.insert(entry3)
                     
                     try context.save()
                     print("Sample data added for preview.")
