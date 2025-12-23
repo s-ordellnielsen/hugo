@@ -28,7 +28,7 @@ struct ReportView: View {
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(.green)
 
-                        Text("You have reported all entries.")
+                        Text("report.pending.empty")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .fontDesign(.rounded)
@@ -45,7 +45,7 @@ struct ReportView: View {
                 }
 
                 VStack(alignment: .leading) {
-                    Text("Submitted Reports")
+                    Text("report.submitted.title")
                         .padding(.horizontal)
                         .font(.callout)
                         .fontWeight(.semibold)
@@ -92,8 +92,8 @@ struct ReportView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("report.title")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("reports.title")
+            .navigationBarTitleDisplayMode(.automatic)
             .toolbar {
                 ToolbarItem {
                     Menu {

@@ -37,14 +37,10 @@ extension MonthlyReportListView {
                             .fontWeight(.semibold)
                             .foregroundStyle(.red)
                         Spacer()
-                        Button {
-                        } label: {
-                            Label("Show details", systemImage: "chevron.right")
-                                .foregroundStyle(.tertiary)
-                                .labelStyle(.iconOnly)
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                        }
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.tertiary)
+                            .font(.caption)
+                            .fontWeight(.semibold)
                     }
                     HStack {
                         HStack(alignment: .firstTextBaseline) {
@@ -52,7 +48,7 @@ extension MonthlyReportListView {
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.top, 4)
-                            Text("hours")
+                            Text("reportList.row.hours.label")
                                 .foregroundStyle(.secondary)
                                 .fontWeight(.medium)
                         }
@@ -77,7 +73,7 @@ extension MonthlyReportListView {
                         HStack {
                             Label("report.bible-studies", systemImage: "book")
                             Spacer()
-                            Text("\(month.totalBibleStudies)")
+                            Text(String("\(month.totalBibleStudies)"))
                                 .fontDesign(.monospaced)
                                 .foregroundStyle(.secondary)
                         }

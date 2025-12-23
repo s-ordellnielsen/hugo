@@ -77,7 +77,7 @@ extension EntryList {
                     }
                     ToolbarItem {
                         Menu {
-                            Button("Change Tracker...", systemImage: "checklist") {
+                            Button("entry.action.tracker.change", systemImage: "checklist") {
                                 selectTrackerIsPresented = true
                             }
                             Button("entry.delete.label", systemImage: "trash", role: .destructive) {
@@ -85,7 +85,7 @@ extension EntryList {
                             }
                             .tint(.red)
                         } label: {
-                            Label("More options", systemImage: "ellipsis")
+                            Label("common.more", systemImage: "ellipsis")
                         }
                         .confirmationDialog(
                             "entry.delete.confirmation.label",

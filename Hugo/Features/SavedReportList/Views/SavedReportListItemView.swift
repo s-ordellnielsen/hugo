@@ -28,7 +28,7 @@ extension SavedReportListView {
         }
 
         var body: some View {
-            NavigationLink(destination: Text("report.title")) {
+//            NavigationLink(destination: Text("report.title")) {
                 VStack(alignment: .leading) {
                     HStack {
                         Text(formattedMonth)
@@ -38,14 +38,10 @@ extension SavedReportListView {
                             .fontWeight(.semibold)
                             .foregroundStyle(.red)
                         Spacer()
-                        Button {
-                        } label: {
-                            Label("Show details", systemImage: "chevron.right")
-                                .foregroundStyle(.tertiary)
-                                .labelStyle(.iconOnly)
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                        }
+//                        Image(systemName: "chevron.right")
+//                            .foregroundStyle(.tertiary)
+//                            .font(.caption)
+//                            .fontWeight(.semibold)
                     }
                     HStack {
                         HStack(alignment: .firstTextBaseline) {
@@ -53,7 +49,7 @@ extension SavedReportListView {
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.top, 4)
-                            Text("hours")
+                            Text("reportList.row.hours.label")
                                 .foregroundStyle(.secondary)
                                 .fontWeight(.medium)
                         }
@@ -64,7 +60,7 @@ extension SavedReportListView {
                         HStack {
                             Label("report.bible-studies", systemImage: "book")
                             Spacer()
-                            Text("\(report.bibleStudies)")
+                            Text(String("\(report.bibleStudies)"))
                                 .fontDesign(.monospaced)
                                 .foregroundStyle(.secondary)
                         }
@@ -83,7 +79,7 @@ extension SavedReportListView {
                 .background(Color(.secondarySystemGroupedBackground))
                 .cornerRadius(32)
             }
-        }
+//        }
     }
 }
 

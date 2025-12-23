@@ -56,7 +56,7 @@ extension EntryList {
                     if entry.bibleStudies != 0 {
                         VStack(spacing: 4) {
                             Image(systemName: "book")
-                            Text("\(entry.bibleStudies)")
+                            Text(String("\(entry.bibleStudies)"))
                                 .fontDesign(.rounded)
                         }
                         .fontWeight(.medium)

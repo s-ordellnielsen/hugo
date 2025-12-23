@@ -91,4 +91,5 @@ struct OverviewView: View {
 
 #Preview {
     OverviewView()
+        .modelContainer(.preview)
 }

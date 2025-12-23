@@ -13,7 +13,7 @@ extension TrackerSettingsView {
         
         var body: some View {
             Form {
-                Toggle("Can add Bible Studies", isOn: $tracker.allowBibleStudies)
+                Toggle("tracker.options.allow-bible-studies", isOn: $tracker.allowBibleStudies)
             }
         }
     }

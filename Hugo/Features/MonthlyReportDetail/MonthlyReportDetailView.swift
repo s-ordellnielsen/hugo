@@ -16,40 +16,37 @@ struct MonthlyReportDetailView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack {
-                LargeTotal(summary: summary)
+            VStack {
+                LazyVStack {
+                    LargeTotal(summary: summary)
+                }
             }
             .padding()
         }
-        .navigationTitle("report.title")
-        .navigationSubtitle(summary.displayName)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(summary.displayName)
+        .navigationSubtitle("report.title")
+        .navigationBarTitleDisplayMode(.automatic)
         .background(Color(.systemGroupedBackground))
         .toolbar {
-            Button {
+            Button("report.submit.action.message", systemImage: "arrow.up.message") {
                 
-            } label: {
-                Label("Submit", systemImage: "arrow.up.message")
             }
             Menu {
-                Button {
+                Button("report.submit.action.message", systemImage: "arrow.up.message") {
                     
-                } label: {
-                    Label("Copy Report", systemImage: "square.on.square")
                 }
-                Button {
+                Button("report.submit.action.email", systemImage: "envelope") {
                     
-                } label: {
-                    Label("Send as Mail", systemImage: "envelope")
                 }
-                Button {
+                Button("report.submit.action.copy", systemImage: "square.on.square") {
+                    
+                }
+                Button("report.submit.action.lock", systemImage: "lock") {
                     _ = makeReport()
                     dismiss()
-                } label: {
-                    Label("Lock Report", systemImage: "lock")
                 }
             } label: {
-                Label("Submit Options", systemImage: "ellipsis")
+                Label("common.more", systemImage: "ellipsis")
             }
         }
     }

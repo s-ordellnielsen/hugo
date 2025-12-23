@@ -68,7 +68,7 @@ struct SymbolPicker: View {
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Pick an icon")
+            .navigationTitle("symbolPicker.field.icon.pickAnIcon")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem {
@@ -76,10 +76,10 @@ struct SymbolPicker: View {
                         Button {
                             attributes = nil
                         } label: {
-                            Text("Show All")
+                            Text("symbolPicker.filter.showAll.label")
                         }
                         Divider()
-                        Picker("Attributes", selection: $attributes) {
+                        Picker("symbolPicker.filter.attributes.label", selection: $attributes) {
                             ForEach(SymbolAttribute.allCases, id: \.id) { attribute in
                                 Label(attribute.label, systemImage: attribute.icon)
                                     .tag(attribute)

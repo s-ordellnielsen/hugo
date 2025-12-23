@@ -39,7 +39,7 @@ extension MonthlyReportDetailView {
                             .font(.callout)
                             .fontDesign(.monospaced)
                             .fontWeight(.medium)
-                        Text("Field Service")
+                        Text("monthlyReport.detail.largeTotal.main.label")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -50,7 +50,7 @@ extension MonthlyReportDetailView {
                                 .font(.title)
                                 .fontDesign(.monospaced)
                                 .fontWeight(.bold)
-                        Text("Total")
+                        Text("monthlyReport.detail.largeTotal.total.label")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -60,7 +60,7 @@ extension MonthlyReportDetailView {
                             .font(.callout)
                             .fontDesign(.monospaced)
                             .fontWeight(.medium)
-                        Text("Other")
+                        Text("monthlyReport.detail.largeTotal.separate.label")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

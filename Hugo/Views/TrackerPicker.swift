@@ -52,7 +52,7 @@ struct TrackerPicker: View {
                     }
                 }
             }
-            .navigationTitle("Select Tracker")
+            .navigationTitle("trackerPicker.title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -64,7 +64,7 @@ struct TrackerPicker: View {
                     Button {
                         showAddTrackerSheet = true
                     } label: {
-                        Label("Add Tracker", systemImage: "plus")
+                        Label("addTrackerSheet.title", systemImage: "plus")
                     }
                 }
             }

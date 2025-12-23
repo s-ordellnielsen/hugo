@@ -49,12 +49,12 @@ struct AddReportSheet: View {
         NavigationStack {
             Form(content: {
                 Section {
-                    Picker("Year", selection: $year) {
+                    Picker("addReport.field.year.label", selection: $year) {
                         ForEach(lastFiveYears, id: \.self) { year in
                             Text(String(year))
                         }
                     }
-                    Picker("Month", selection: $month) {
+                    Picker("addReport.field.month.label", selection: $month) {
                         ForEach(1...12, id: \.self) { month in
                             Text(Calendar.current.monthSymbols[month - 1]).tag(
                                 month
@@ -63,12 +63,12 @@ struct AddReportSheet: View {
                     }
                 }
 
-                Section("Trackers") {
+                Section("addReport.field.trackers.label") {
                     ForEach(trackers) { tracker in
                         HStack {
                             Label(tracker.name, systemImage: tracker.iconName)
                             Spacer()
-                            TextField("0", text: binding(for: tracker.id))
+                            TextField(String("0"), text: binding(for: tracker.id))
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
                                 .focused($focusedTracker, equals: tracker.id)
@@ -84,7 +84,7 @@ struct AddReportSheet: View {
                     HStack {
                         Text("goal.label")
                         Spacer()
-                        TextField("0", text: $goal)
+                        TextField(String("0"), text: $goal)
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .focused($focusedTracker, equals: goalInputID)
@@ -109,7 +109,7 @@ struct AddReportSheet: View {
                         
                         dismiss()
                     } label: {
-                        Label("Submit", systemImage: "plus")
+                        Label("addReport.action.add.label", systemImage: "plus")
                     }
                     .buttonStyle(.glassProminent)
                 }

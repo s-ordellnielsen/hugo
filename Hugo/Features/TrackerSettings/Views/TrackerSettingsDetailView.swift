@@ -45,8 +45,8 @@ extension TrackerSettingsView {
                 }
                 .listRowBackground(Color.clear)
 
-                Section("Name") {
-                    TextField("Tracker Name", text: $tracker.name)
+                Section("tracker.settings.name.label") {
+                    TextField("tracker.settings.name.placeholder", text: $tracker.name)
                 }
                 
                 Section {
@@ -63,7 +63,7 @@ extension TrackerSettingsView {
                 
                 Section {
                     NavigationLink(destination: OptionView(tracker: tracker)) {
-                        Text("Advanced Options")
+                        Text("tracker.settings.advancedOptions.label")
                     }
                 }
             }
@@ -85,9 +85,9 @@ extension TrackerSettingsView {
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
                     } label: {
-                        Label("Delete Tracker", systemImage: "trash")
+                        Label("tracker.action.delete", systemImage: "trash")
                     }
-                    .confirmationDialog("Delete \(tracker.name)?", isPresented: $showDeleteConfirmation) {
+                    .confirmationDialog("tracker.action.delete.\(tracker.name)?", isPresented: $showDeleteConfirmation) {
                         Button("common.delete", role: .destructive) {
                             context.delete(tracker)
                             dismiss()
@@ -95,8 +95,8 @@ extension TrackerSettingsView {
                         Button(role: .cancel) {}
                     } message: {
                         VStack {
-                            Text("Delete \(tracker.name)?")
-                            Text("All entries connected to this tracker will be deleted as well")
+                            Text("tracker.action.delete.confirmation.\(tracker.name)")
+                            Text("tracker.action.delete.confirmation.warning")
                         }
                     }
                 }

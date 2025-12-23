@@ -44,7 +44,7 @@ struct AddTrackerSheet: View {
                 .listRowBackground(Color.clear)
 
                 Section {
-                    TextField("Name", text: $tracker.name)
+                    TextField("addTracker.field.name.placeholder", text: $tracker.name)
                 }
                 
                 Section {
@@ -68,12 +68,12 @@ struct AddTrackerSheet: View {
                     Text("tracker.options.label")
                 } footer: {
                     if trackers.first(where: { $0.isDefault == true }) != nil {
-                        Text("Turning this on will override the current default tracker: \(trackers.first(where: { $0.isDefault == true })!.name).")
+                        Text("addTracker.option.useAsDefault.warning.\(trackers.first(where: { $0.isDefault == true })!.name)")
                     }
                 }
                 .tint(.green)
             }
-            .navigationTitle("Add Tracker")
+            .navigationTitle("addTrackerSheet.title")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $iconPickerIsPresented, content: {
                 SymbolPicker(set: .tracker, selectedSymbol: $tracker.iconName)

@@ -17,19 +17,15 @@ struct OnboardingView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("The app that *\"Helps U Go Out\"*")
-                    Text(
-                        "Hugo helps you keep track of your report, so you can focus on your field service."
-                    )
-                    Text(
-                        "But before we begin, we need to know a bit about you."
-                    )
-                    Text("Publisher Status")
+                    Text("splash.subtitle")
+                    Text("splash.description.1")
+                    Text("splash.description.2")
+                    Text("splash.section.publisherStatus.title")
                         .font(.title3)
                         .fontWeight(.semibold)
                         .fontDesign(.rounded)
                         .padding(.top, 32)
-                    Text("Please select your current publisher status below")
+                    Text("splash.section.publisherStatus.description")
 
                     VStack(spacing: 8) {
                         ForEach(PublisherStatusConfig.defaults) { status in
@@ -78,7 +74,7 @@ struct OnboardingView: View {
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .navigationTitle("Welcome to Hugo")
+            .navigationTitle("splash.title")
             .safeAreaInset(edge: .bottom) {
                 Button {
                     Task {
@@ -91,8 +87,11 @@ struct OnboardingView: View {
                                 .tint(.white)
                                 .transition(.blurReplace)
                         } else {
-                            Label("Let's Get Started", systemImage: "arrow.right")
-                                .transition(.blurReplace)
+                            Label(
+                                "splash.action.complete",
+                                systemImage: "arrow.right"
+                            )
+                            .transition(.blurReplace)
                         }
                     }
                     .animation(.smooth, value: isLoading)
@@ -106,7 +105,6 @@ struct OnboardingView: View {
                 }
                 .disabled(currentStatus == "")
                 .padding()
-                //                .background(Color(uiColor: .systemBackground))
             }
         }
         .background(Color(.systemGroupedBackground))

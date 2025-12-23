@@ -131,11 +131,9 @@ struct AccountView: View {
                 }
             }
             .toolbar {
-                ToolbarItem {
-                    Button {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
                         dismiss()
-                    } label: {
-                        Label("navigation.dismiss", systemImage: "xmark")
                     }
                 }
             }

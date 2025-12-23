@@ -21,7 +21,7 @@ extension CurrentMonthProgressView {
                     .frame(maxWidth: .infinity)
                 }
                 .background(Color(.systemGroupedBackground))
-                .navigationTitle("Detailed Report")
+                .navigationTitle("monthlyReport.detailView.title")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
