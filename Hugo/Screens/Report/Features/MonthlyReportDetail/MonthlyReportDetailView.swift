@@ -22,7 +22,6 @@ struct MonthlyReportDetailView: View {
         .navigationTitle(summary.displayName)
         .navigationSubtitle("report.title")
         .navigationBarTitleDisplayMode(.automatic)
-        .background(Color(.systemGroupedBackground))
         .toolbar {
             Button("report.submit.action.message", systemImage: "arrow.up.message") {
                 

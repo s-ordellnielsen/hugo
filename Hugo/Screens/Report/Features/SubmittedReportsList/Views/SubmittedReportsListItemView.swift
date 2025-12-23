@@ -28,7 +28,7 @@ extension SubmittedReportsListView {
         }
 
         var body: some View {
-            NavigationLink(destination: Text("report.title") ) {
+            NavigationLink(destination: SubmittedReportDetailView(report: report)) {
                 VStack(alignment: .leading) {
                     HStack {
                         Text(formattedMonth)
