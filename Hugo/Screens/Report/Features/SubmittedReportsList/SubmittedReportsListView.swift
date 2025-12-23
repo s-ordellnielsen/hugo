@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SavedReportListView: View {
+struct SubmittedReportsListView: View {
     
     let reports: [Report]
     
@@ -28,7 +28,7 @@ struct SavedReportListView: View {
     
     NavigationStack {
         ScrollView {
-            SavedReportListView(reports: reports)
+            SubmittedReportsListView(reports: reports)
                 .navigationTitle("Reports")
                 .navigationBarTitleDisplayMode(.inline)
         }

@@ -8,7 +8,7 @@
 import Charts
 import SwiftUI
 
-extension SavedReportListView {
+extension SubmittedReportsListView {
     struct ListItem: View {
         let report: Report
 
@@ -28,7 +28,7 @@ extension SavedReportListView {
         }
 
         var body: some View {
-//            NavigationLink(destination: Text("report.title")) {
+            NavigationLink(destination: Text("report.title") ) {
                 VStack(alignment: .leading) {
                     HStack {
                         Text(formattedMonth)
@@ -38,10 +38,10 @@ extension SavedReportListView {
                             .fontWeight(.semibold)
                             .foregroundStyle(.red)
                         Spacer()
-//                        Image(systemName: "chevron.right")
-//                            .foregroundStyle(.tertiary)
-//                            .font(.caption)
-//                            .fontWeight(.semibold)
+                        Image(systemName: "chevron.right") 
+                            .foregroundStyle(.tertiary)
+                            .font(.caption)
+                            .fontWeight(.semibold)
                     }
                     HStack {
                         HStack(alignment: .firstTextBaseline) {
@@ -79,7 +79,7 @@ extension SavedReportListView {
                 .background(Color(.secondarySystemGroupedBackground))
                 .cornerRadius(32)
             }
-//        }
+        }
     }
 }
 
@@ -88,7 +88,7 @@ extension SavedReportListView {
 
     NavigationStack {
         ScrollView {
-            SavedReportListView(reports: reports)
+            SubmittedReportsListView(reports: reports)
                 .navigationTitle("Reports")
                 .navigationBarTitleDisplayMode(.inline)
                 .padding()

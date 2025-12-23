@@ -62,7 +62,7 @@ struct ReportView: View {
                         )
                         .padding(.top, 48)
                     } else {
-                        SavedReportListView(reports: reports)
+                        SubmittedReportsListView(reports: reports)
                     }
 
                     NavigationLink(destination: Text("reports.all")) {

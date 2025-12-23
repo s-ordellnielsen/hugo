@@ -15,13 +15,9 @@ struct MonthlyReportDetailView: View {
     let summary: MonthlySummary
 
     var body: some View {
-        ScrollView {
-            VStack {
-                LazyVStack {
-                    LargeTotal(summary: summary)
-                }
-            }
-            .padding()
+        List {
+            LargeTotal(summary: summary)
+            DailyList(summary: summary)
         }
         .navigationTitle(summary.displayName)
         .navigationSubtitle("report.title")
