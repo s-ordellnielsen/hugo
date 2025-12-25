@@ -45,17 +45,18 @@ extension MonthlyReportListView {
                     HStack {
                         HStack(alignment: .firstTextBaseline) {
                             Text(formatDuration(month.totalSeconds))
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .padding(.top, 4)
+                                .font(.title)
+                                .fontWeight(.heavy)
+                                .padding(.top, 2)
                             Text("reportList.row.hours.label")
                                 .foregroundStyle(.secondary)
                                 .fontWeight(.medium)
+                                .font(.title3)
                         }
                         .fontDesign(.rounded)
                     }
                     Divider()
-                    VStack(spacing: 8) {
+                    VStack(spacing: 12) {
                         ForEach(trackers) { t in
                             HStack {
                                 Label(t.tracker.name, systemImage: t.tracker.iconName)
@@ -66,22 +67,22 @@ extension MonthlyReportListView {
                             }
                         }
                         .font(.callout)
-                    }
-                    .padding(.vertical, 8)
-                    Divider()
-                    VStack {
-                        HStack {
-                            Label("report.bible-studies", systemImage: "book")
-                            Spacer()
-                            Text(String("\(month.totalBibleStudies)"))
-                                .fontDesign(.monospaced)
-                                .foregroundStyle(.secondary)
+                        Divider()
+                            .padding(.vertical, 8)
+                        VStack {
+                            HStack {
+                                Label("report.bible-studies", systemImage: "book")
+                                Spacer()
+                                Text(String("\(month.totalBibleStudies)"))
+                                    .fontDesign(.monospaced)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .font(.callout)
                         }
-                        .font(.callout)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, 12)
+                    .labelReservedIconWidth(24)
                 }
-                .labelReservedIconWidth(24)
                 .padding(24)
                 .background(Color(.secondarySystemGroupedBackground))
                 .cornerRadius(32)
