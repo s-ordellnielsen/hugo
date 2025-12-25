@@ -39,12 +39,10 @@ extension ModelContainer {
                     context.insert(fieldServiceTracker)
 
                     // Add an entry to the custom tracker
-                    let entry1 = Entry(date: Date().addingTimeInterval(-86400), duration: 3600)
-                    entry1.tracker = fieldServiceTracker
+                    let entry1 = Entry(date: Date().addingTimeInterval(-86400), duration: 3600, tracker: fieldServiceTracker)
                     context.insert(entry1)
 
-                    let entry2 = Entry(date: Date(), duration: 9000)
-                    entry2.tracker = fieldServiceTracker
+                    let entry2 = Entry(date: Date(), duration: 9000, tracker: fieldServiceTracker)
                     context.insert(entry2)
                     
                     let phoneServiceTracker = Tracker(
@@ -55,8 +53,7 @@ extension ModelContainer {
                     print("Adding Phone Service testing tracker")
                     context.insert(phoneServiceTracker)
                     
-                    let entry3 = Entry(date: Date(), duration: 7200)
-                    entry3.tracker = phoneServiceTracker
+                    let entry3 = Entry(date: Date(), duration: 7200, tracker: phoneServiceTracker)
                     context.insert(entry3)
                     
                     try context.save()
@@ -71,33 +68,4 @@ extension ModelContainer {
             fatalError("Failed to create preview ModelContainer: \(error)")
         }
     }
-}
-
-func sampleReports() -> [Report] {
-    let tracker1: Tracker = .init(
-        name: "Field Service",
-        type: .main,
-        isDefault: true,
-        iconName: "figure.walk"
-    )
-    let tracker2: Tracker = .init(
-        name: "Bethel",
-        type: .separate,
-        isDefault: false,
-        iconName: "building"
-    )
-
-    let entries: [Entry] = [
-        Entry(date: Date(), duration: 3600, tracker: tracker1, bibleStudies: 1),
-        Entry(date: Date(), duration: 7200, tracker: tracker2),
-        .init(date: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(), duration: 3600, tracker: tracker1)
-    ]
-
-    let report = Report.makePure(from: entries, goal: 30)
-    
-    if report == nil {
-        return []
-    }
-    
-    return [report!]
 }

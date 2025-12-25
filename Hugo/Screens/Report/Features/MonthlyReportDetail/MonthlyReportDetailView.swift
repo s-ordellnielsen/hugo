@@ -22,50 +22,6 @@ struct MonthlyReportDetailView: View {
         .navigationTitle(summary.displayName)
         .navigationSubtitle("report.title")
         .navigationBarTitleDisplayMode(.automatic)
-        .toolbar {
-            Button("report.submit.action.message", systemImage: "arrow.up.message") {
-                
-            }
-            Menu {
-                Button("report.submit.action.message", systemImage: "arrow.up.message") {
-                    
-                }
-                Button("report.submit.action.email", systemImage: "envelope") {
-                    
-                }
-                Button("report.submit.action.copy", systemImage: "square.on.square") {
-                    
-                }
-                Button("report.submit.action.lock", systemImage: "lock") {
-                    _ = makeReport()
-                    dismiss()
-                }
-            } label: {
-                Label("common.more", systemImage: "ellipsis")
-            }
-        }
-    }
-    
-    private func makeReport() -> Result<Report, ReportError> {
-        let report = Report.make(from: summary.entries, in: context)
-        
-        if report == nil {
-            // TODO: Handle error case correctly
-            
-            print("Unable to generate report")
-            
-            return .failure(.unableToGenerateReport)
-        }
-        
-        for entry in summary.entries {
-            context.delete(entry)
-        }
-        
-        return .success(report!)
-    }
-    
-    enum ReportError: Error {
-        case unableToGenerateReport
     }
 }
 

@@ -12,14 +12,15 @@ enum MigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
-            SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self
+            SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self,
+            SchemaV8.self,
         ]
     }
 
     static var stages: [MigrationStage] {
         [
             migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4,
-            migrateV4toV5, migrateV5toV6, migrateV6toV7
+            migrateV4toV5, migrateV5toV6, migrateV6toV7, migrateV7toV8,
         ]
     }
 
@@ -100,12 +101,72 @@ enum MigrationPlan: SchemaMigrationPlan {
                 if tracker.type.rawValue == "none" {
                     tracker.type = .separate
                 }
-                
+
                 tracker.hue = 0.0
             }
-            
+
             try context.save()
         },
         didMigrate: nil
     )
+
+    static let migrateV7toV8: MigrationStage = .custom(
+        fromVersion: SchemaV7.self,
+        toVersion: SchemaV8.self,
+        willMigrate: { context in
+            print("Migrating from v7 to v8 ...")
+
+            let reports = try context.fetch(
+                FetchDescriptor<SchemaV7.Report>()
+            )
+
+            var calendar = Calendar.current
+
+            for report in reports {
+                var components = DateComponents()
+                components.year = report.year
+                components.month = report.month
+                components.day = 1
+                components.hour = 0
+                components.minute = 0
+                components.second = 0
+
+                let date = calendar.date(from: components) ?? Date()
+                let trackers = try context.fetch(
+                    FetchDescriptor<SchemaV7.Tracker>()
+                )
+
+                for trackerSummary in report.trackers {
+                    let tracker = trackers.first {
+                        $0.name == trackerSummary.name
+                    }
+
+                    let entry = SchemaV7.Entry(
+                        date: date,
+                        duration: trackerSummary.duration,
+                        tracker: tracker
+                    )
+                }
+                
+                context.delete(report)
+            }
+
+            try context.save()
+        },
+        didMigrate: { context in
+            let entries = try context.fetch(FetchDescriptor<SchemaV8.Entry>())
+
+            for entry in entries {
+                if entry.tracker !== nil && entry.storedTracker == nil {
+                    let storedTracker = SchemaV8.Entry.EntryTracker(
+                        name: entry.tracker!.name, icon: entry.tracker!.iconName, type: entry.tracker!.type
+                    )
+                    entry.storedTracker = storedTracker
+                }
+            }
+            
+            try context.save()
+        }
+    )
+
 }

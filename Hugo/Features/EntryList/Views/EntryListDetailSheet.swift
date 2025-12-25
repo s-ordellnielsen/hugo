@@ -126,7 +126,7 @@ extension EntryList {
 }
 
 #Preview {
-    let entry = Entry(date: Date(), duration: 3600)
+    let entry = Entry(date: Date(), duration: 3600, tracker: nil)
     
     EntryList.DetailSheet(entry: entry)
 }

@@ -72,7 +72,15 @@ enum SchemaV7: VersionedSchema {
     }
 }
 
-typealias CurrentSchema = SchemaV7
+enum SchemaV8: VersionedSchema {
+    static var versionIdentifier = Schema.Version(5, 0, 0)
+    
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self, Report.self]
+    }
+}
+
+typealias CurrentSchema = SchemaV8
 
 typealias Entry = CurrentSchema.Entry
 typealias Tracker = CurrentSchema.Tracker
