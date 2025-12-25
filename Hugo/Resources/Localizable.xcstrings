@@ -117,13 +117,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackere"
+            "value" : "Kategorier"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackers"
+            "value" : "Categories"
           }
         }
       }
@@ -170,14 +170,14 @@
       "localizations" : {
         "da" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Hvis denne er til vil det overskrive den nuværende standard-tracker: %(trackerName)@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Turning this on will override the current default tracker: %1$(trackerName)@"
+            "value" : "Turning this on will override the current default type: %1$(trackerName)@"
           }
         }
       }
@@ -189,13 +189,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføj tracker"
+            "value" : "Tilføj kategori"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add Tracker"
+            "value" : "Add Category"
           }
         }
       }
@@ -349,13 +349,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skift tracker…"
+            "value" : "Skift kategori…"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change Tracker…"
+            "value" : "Change Category…"
           }
         }
       }
@@ -419,13 +419,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tracker"
+            "value" : "Kategori"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tracker"
+            "value" : "Category"
           }
         }
       }
@@ -437,13 +437,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen tracker"
+            "value" : "Ingen kategori"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Tracker"
+            "value" : "No Category"
           }
         }
       }
@@ -1449,13 +1449,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilpas hvordan du holder styr på din tjeneste med dine egne trackere"
+            "value" : "Tilpas hvordan du holder styr på din tjeneste med dine egne kategorier"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Customize how you track your field service with custom trackers"
+            "value" : "Customize how you track your field service with custom categories"
           }
         }
       }
@@ -1467,13 +1467,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackere"
+            "value" : "Kategorier"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackers"
+            "value" : "Categories"
           }
         }
       }
@@ -1503,13 +1503,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackere"
+            "value" : "Kategorier"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trackers"
+            "value" : "Categories"
           }
         }
       }
@@ -2352,13 +2352,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slet tracker"
+            "value" : "Slet kategori"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Tracker"
+            "value" : "Delete Category"
           }
         }
       }
@@ -2406,13 +2406,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All timer forbundet med denne tracker vil ikke længere være tilknyttet en tracker"
+            "value" : "All timer forbundet med denne tracker vil ikke længere være tilknyttet en kategori"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All entries connected to this tracker will not be connected to any tracker"
+            "value" : "All entries connected to this tracker will not be connected to any category"
           }
         }
       }
@@ -2496,13 +2496,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All primære trackere vil blive sammenlagt til ét felt i din rapport: Tjeneste"
+            "value" : "All primære kategorier vil blive sammenlagt til ét felt i din rapport: Tjeneste"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All main trackers will be combined into one single metric in the report: Field Service"
+            "value" : "All main categories will be combined into one single metric in the report: Field Service"
           }
         }
       }
@@ -2532,13 +2532,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separate trackere bliver føjet til din rapport separat fra “Tjeneste” og kan bruges til at holde styr på andre aspekter af din tjeneste, fx betel eller LDC"
+            "value" : "Separate kategorier bliver føjet til din rapport separat fra “Tjeneste” og kan bruges til at holde styr på andre aspekter af din tjeneste, fx betel eller LDC"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separate trackers will be added to the report separate from Field Service and can be used to track other aspects of our ministry like Bethel or LDC"
+            "value" : "Separate categories will be added to the report separate from Field Service and can be used to track other aspects of our ministry like Bethel or LDC"
           }
         }
       }
@@ -2600,13 +2600,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tracker navn"
+            "value" : "Navn"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tracker Name"
+            "value" : "Category Name"
           }
         }
       }
@@ -2618,13 +2618,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tracker type"
+            "value" : "Type"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tracker Type"
+            "value" : "Category Type"
           }
         }
       }
@@ -2636,13 +2636,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg tracker"
+            "value" : "Vælg kategori"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Tracker"
+            "value" : "Select Category"
           }
         }
       }
