@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CurrentMonthProgressView<SheetContent: View>: View {
     @Environment(\.modelContext) private var modelContext

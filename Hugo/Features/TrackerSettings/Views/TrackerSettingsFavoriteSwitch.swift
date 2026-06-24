@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 extension TrackerSettingsView {
     struct FavoriteSwitch: View {
