@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */; };
 		E0A7569C3017877900828739 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E0A7569B3017877900828739 /* README.md */; };
+		E0A7569E30178DCB00828739 /* AGENTS.md in Resources */ = {isa = PBXBuildFile; fileRef = E0A7569D30178DCB00828739 /* AGENTS.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +27,7 @@
 		E090544F2E91E99900254125 /* Hugo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hugo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E090548A2E951E2C00254125 /* HugoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HugoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A7569B3017877900828739 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E0A7569D30178DCB00828739 /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -75,6 +77,7 @@
 		E09054462E91E99900254125 = {
 			isa = PBXGroup;
 			children = (
+				E0A7569D30178DCB00828739 /* AGENTS.md */,
 				E0A7569B3017877900828739 /* README.md */,
 				E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */,
 				E09054512E91E99900254125 /* Hugo */,
@@ -189,6 +192,7 @@
 			files = (
 				E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */,
 				E0A7569C3017877900828739 /* README.md in Resources */,
+				E0A7569E30178DCB00828739 /* AGENTS.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
