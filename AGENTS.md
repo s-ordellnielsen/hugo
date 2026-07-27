@@ -107,6 +107,13 @@ extension Date {
         }
     }
 }
+```
+
+## 6. Principles
+
+- **Simplicity.** Always keep the app as simple as possible, do not add unnecessary features. No fluff that is unrelated should be added.
+- **Ease of use.** The app should be accessible to all, the user base ranges from around 13 to 70 years. As there will be a lot of older users, the app should always explain itself and make good use of accessibility features. Meanwhile the app should also cater to the younger audience.
+- **Modularity.** The app will be used by non-tech users and power users. So the app should be modular and be able to adapt to the users needs. But this should under no circumstance be at the expense of the **Simplicity** and **Ease of use** principles.
 
 ## Final repository conventions
 
