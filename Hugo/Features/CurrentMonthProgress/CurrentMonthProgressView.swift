@@ -96,6 +96,6 @@ struct CurrentMonthProgressView<SheetContent: View>: View {
 
 #Preview {
     CurrentMonthProgressView(value: 34) {
-        EntrySheet.Add()
+        AddEntryView()
     }
 }

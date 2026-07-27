@@ -49,7 +49,7 @@ struct OverviewView: View {
             ScrollView {
                 VStack {
                     CurrentMonthProgressView(value: current) {
-                        EntrySheet.Add()
+                        AddEntryView()
                     }
                     Spacer(minLength: 32)
                     VStack(alignment: .leading, spacing: 8) {
@@ -69,7 +69,7 @@ struct OverviewView: View {
                         .padding(.horizontal)
                         .padding(.top)
                         .padding(.bottom, 4)
-                        EntryList.Content(entries: entries)
+                        EntryListView(entries: entries)
                         Spacer()
                     }
                     .background(Color(.systemGroupedBackground))

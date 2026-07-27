@@ -7,20 +7,18 @@
 
 import SwiftUI
 
-extension EntryList {
-    struct Content: View {
+struct EntryListView: View {
         var entries: [Entry]
 
         @State var selectedEntry: Entry? = nil
 
         var body: some View {
             ForEach(entries) { entry in
-                EntryList.Row(entry: entry, selectedEntry: $selectedEntry)
+                EntryRow(entry: entry, selectedEntry: $selectedEntry)
             }
             .sheet(item: $selectedEntry) { entry in
-                EntryList.DetailSheet(entry: entry)
+                EntryDetailView(entry: entry)
                     .presentationDetents([.medium])
             }
         }
     }
-}

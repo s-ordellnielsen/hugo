@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-extension EntryList {
-    struct DurationPicker: View {
+struct EntryDurationPicker: View {
         @Binding var duration: TimeInterval
         
         @State var durationAsDate: Date
@@ -31,4 +30,3 @@ extension EntryList {
             duration = TimeInterval(hours + minutes + seconds)
         }
     }
-}

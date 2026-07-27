@@ -6,7 +6,7 @@ struct MonthlyReportEntryListView: View {
     var body: some View {
         Section {
             ForEach(summary.entries) { entry in
-                NavigationLink(destination: EntryList.DetailSheet(entry: entry)) {
+                NavigationLink(destination: EntryDetailView(entry: entry)) {
                     Label {
                         HStack {
                             Text(entry.date, format: Date.FormatStyle(date: .abbreviated, time: .none))

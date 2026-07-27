@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-extension EntryList {
-    struct Row: View {
+struct EntryRow: View {
         @Environment(\.colorScheme) var colorScheme
 
         var entry: Entry
@@ -77,11 +76,10 @@ extension EntryList {
             .buttonStyle(.plain)
         }
     }
-}
 
 #Preview {
     @Previewable @State var selectedEntry: Entry? = nil
     let tracker = Tracker()
     
-    EntryList.Row(entry: Entry(date: Date(), duration: 3600, tracker: tracker, bibleStudies: 2), selectedEntry: $selectedEntry)
+    EntryRow(entry: Entry(date: Date(), duration: 3600, tracker: tracker, bibleStudies: 2), selectedEntry: $selectedEntry)
 }

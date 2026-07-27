@@ -59,7 +59,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 003 | Reorganize and harden SwiftData persistence | P1 | L | 001, 002 | DONE |
 | 004 | Extract and rename the monthly reporting domain | P1 | L | 001, 003 | DONE |
 | 005 | Refactor settings and tracker UI around category vocabulary | P1 | L | 001, 002, 003 | DONE |
-| 006 | Refactor entry creation and editing into idiomatic SwiftUI features | P1 | L | 001, 003, 005 | TODO |
+| 006 | Refactor entry creation and editing into idiomatic SwiftUI features | P1 | L | 001, 003, 005 | DONE |
 | 007 | Refactor overview and monthly progress presentation | P2 | L | 001, 004, 006 | TODO |
 | 008 | Modernize app composition, bootstrap, and Swift concurrency | P1 | L | 001–007 | TODO |
 | 009 | Normalize Xcode project hygiene, formatting, and documentation | P2 | M | 001–008 | TODO |

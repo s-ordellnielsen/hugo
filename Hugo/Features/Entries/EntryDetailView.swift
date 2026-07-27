@@ -8,11 +8,10 @@
 import SwiftData
 import SwiftUI
 
-extension EntryList {
-    struct DetailSheet: View {
+struct EntryDetailView: View {
         @Environment(\.dismiss) var dismiss
         @Environment(\.modelContext) private var context
-        @State var entry: Entry
+        var entry: Entry
         @State var selectTrackerIsPresented: Bool = false
 
         @State private var deleteConfirmationShown: Bool = false
@@ -40,10 +39,11 @@ extension EntryList {
         }
 
         var body: some View {
+            @Bindable var entry = entry
             NavigationStack {
                 Form {
                     Section {
-                        EntryList.DurationPicker(
+                        EntryDurationPicker(
                             duration: $entry.duration,
                             durationAsDate: durationAsDate
                         )
@@ -119,10 +119,9 @@ extension EntryList {
             entry.bibleStudies -= 1
         }
     }
-}
 
 #Preview {
     let entry = Entry(date: Date(), duration: 3600, tracker: nil)
     
-    EntryList.DetailSheet(entry: entry)
+    EntryDetailView(entry: entry)
 }
