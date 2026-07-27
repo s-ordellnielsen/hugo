@@ -82,7 +82,7 @@ struct OverviewView: View {
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(.systemGroupedBackground))
             .toolbar {
-                AccountViewButton()
+                SettingsButton()
             }
         }
     }

@@ -1,5 +1,5 @@
 //
-//  AccountView.swift
+//  SettingsView.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 09/10/2025.
@@ -8,9 +8,9 @@
 import SwiftData
 import SwiftUI
 
-struct AccountView: View {
+struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
-    @AppStorage(UserDefaults.publisherStatusKey) var publisherStatus = ""
+    @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
 
     var body: some View {
         NavigationStack {
@@ -21,7 +21,7 @@ struct AccountView: View {
                         Label {
                             Text("account.group.main.item.publisher.status")
                             Text(
-                                PublisherStatusConfig.current(publisherStatus)?
+                                PublisherStatus.status(for: publisherStatus)?
                                     .nameKey
                                     ?? "account.group.main.item.publisher.status.empty"
                             )
@@ -32,14 +32,14 @@ struct AccountView: View {
                 }
                 
                 Section {
-                    NavigationLink(destination: TrackerSettingsView()) {
+                    NavigationLink(destination: CategoryListView()) {
                         Label("settings.link.trackers", systemImage: "chart.line.text.clipboard.fill")
                     }
                 } footer: {
                     Text("settings.group.trackers.description")
                 }
                 Section {
-                    NavigationLink(destination: DebuggingView()) {
+                    NavigationLink(destination: DebugSettingsView()) {
                         Label("debug.title", systemImage: "ant.fill")
                             .foregroundStyle(.red)
                     }
@@ -59,7 +59,7 @@ struct AccountView: View {
     }
 }
 
-struct AccountViewButton: View {
+struct SettingsButton: View {
     @State private var showAccount: Bool = false
 
     var body: some View {
@@ -69,13 +69,13 @@ struct AccountViewButton: View {
             Image(systemName: "person.fill")
         }
         .sheet(isPresented: $showAccount) {
-            AccountView()
+            SettingsView()
                 .presentationDetents([.large])
         }
     }
 }
 
 #Preview {
-    AccountView()
+    SettingsView()
         .modelContainer(.preview)
 }

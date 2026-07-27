@@ -1,5 +1,5 @@
 //
-//  TrackerPicker.swift
+//  CategoryPicker.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 21/11/2025.
@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct TrackerPicker: View {
+struct CategoryPicker: View {
     @Environment(\.dismiss) private var dismiss
     
     @Binding var selection: Tracker?
@@ -16,7 +16,7 @@ struct TrackerPicker: View {
 
     @Query private var trackers: [Tracker] = []
     
-    @State private var showAddTrackerSheet: Bool = false
+    @State private var showAddCategoryView: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -62,14 +62,14 @@ struct TrackerPicker: View {
                 }
                 ToolbarItem {
                     Button {
-                        showAddTrackerSheet = true
+                        showAddCategoryView = true
                     } label: {
                         Label("addTrackerSheet.title", systemImage: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showAddTrackerSheet) {
-                AddTrackerSheet()
+            .sheet(isPresented: $showAddCategoryView) {
+                AddCategoryView()
             }
         }
     }
@@ -78,6 +78,6 @@ struct TrackerPicker: View {
 #Preview {
     @Previewable @State var selection: Tracker? = nil
 
-    TrackerPicker(selection: $selection)
+    CategoryPicker(selection: $selection)
         .modelContainer(.preview)
 }

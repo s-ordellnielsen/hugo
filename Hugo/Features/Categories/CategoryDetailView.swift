@@ -8,17 +8,17 @@
 import SwiftData
 import SwiftUI
 
-extension TrackerSettingsView {
-    struct DetailView: View {
+struct CategoryDetailView: View {
         @Environment(\.modelContext) private var context
         @Environment(\.dismiss) private var dismiss
         
-        @State var tracker: Tracker
+        var tracker: Tracker
         
         @State private var showDeleteConfirmation = false
         @State private var iconPickerIsPresented: Bool = false
         
         var body: some View {
+            @Bindable var tracker = tracker
             Form {
                 Section {
                     VStack(alignment: .center, spacing: 8) {
@@ -60,7 +60,7 @@ extension TrackerSettingsView {
                 }
                 
                 Section {
-                    NavigationLink(destination: OptionView(tracker: tracker)) {
+                    NavigationLink(destination: CategoryAdvancedOptionsView(tracker: tracker)) {
                         Text("tracker.settings.advancedOptions.label")
                     }
                 }
@@ -76,7 +76,7 @@ extension TrackerSettingsView {
                     }
                 }
                 ToolbarItem {
-                    FavoriteSwitch(tracker: tracker)
+                    DefaultCategoryButton(tracker: tracker)
                 }
                 ToolbarSpacer()
                 ToolbarItem {
@@ -88,6 +88,7 @@ extension TrackerSettingsView {
                     .confirmationDialog("tracker.action.delete.\(tracker.name)?", isPresented: $showDeleteConfirmation) {
                         Button("common.delete", role: .destructive) {
                             context.delete(tracker)
+                            try? context.save()
                             dismiss()
                         }
                         Button(role: .cancel) {}
@@ -101,10 +102,9 @@ extension TrackerSettingsView {
             }
         }
     }
-}
 
 #Preview {
     NavigationStack {
-        TrackerSettingsView.DetailView(tracker: Tracker(name: "Field Service"))
+        CategoryDetailView(tracker: Tracker(name: "Field Service"))
     }
 }

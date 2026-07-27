@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct PublisherStatusSelectionView: View {
-    @AppStorage(UserDefaults.publisherStatusKey) var currentStatus: String = ""
+    @AppStorage(UserDefaultsKeys.publisherStatus) var currentStatus: String = ""
 
     var body: some View {
         List {
             CurrentPublisherStatusView(currentStatus: currentStatus)
 
             Section {
-                ForEach(PublisherStatusConfig.defaults) { status in
+                ForEach(PublisherStatus.all) { status in
                     Button {
                         currentStatus = status.id
                     } label: {
@@ -26,7 +26,7 @@ struct PublisherStatusSelectionView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(status.nameKey)
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("publisher.status.goaltype.label.\(status.goalType.label)")
+                                    Text("publisher.status.goaltype.label.\(status.goalPeriod.label)")
                                     Text("publisher.status.goal.label.\(status.goal)")
                                 }
                                 .font(.caption)
@@ -59,7 +59,7 @@ private struct CurrentPublisherStatusView: View {
     var body: some View {
         VStack {
             HStack(spacing: 16) {
-                Image(systemName: PublisherStatusConfig.current(currentStatus) != nil ? "circle.badge.checkmark" : "circle")
+                Image(systemName: PublisherStatus.status(for: currentStatus) != nil ? "circle.badge.checkmark" : "circle")
                     .font(.title)
                     .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
                     .symbolRenderingMode(.hierarchical)
@@ -68,7 +68,7 @@ private struct CurrentPublisherStatusView: View {
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
-                    Text(PublisherStatusConfig.current(currentStatus)?.nameKey ?? "publisher.status.empty")
+                    Text(PublisherStatus.status(for: currentStatus)?.nameKey ?? "publisher.status.empty")
                         .font(.title2)
                         .fontDesign(.rounded)
                 }

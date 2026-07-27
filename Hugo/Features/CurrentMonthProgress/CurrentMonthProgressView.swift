@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CurrentMonthProgressView<SheetContent: View>: View {
-    @AppStorage(UserDefaults.publisherStatusKey) var publisherStatusId = ""
+    @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatusId = ""
 
     var value: Double
 
@@ -88,9 +88,9 @@ struct CurrentMonthProgressView<SheetContent: View>: View {
     }
 
     private func getMonthlyGoal() -> Double {
-        let currentConfig = PublisherStatusConfig.current(publisherStatusId)
+        let currentConfig = PublisherStatus.status(for: publisherStatusId)
 
-        return Double(currentConfig?.monthlyGoal() ?? 0)
+        return Double(currentConfig?.monthlyGoal ?? 0)
     }
 }
 

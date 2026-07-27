@@ -76,7 +76,7 @@ extension EntrySheet {
                                 .foregroundStyle(.accent)
                             }
                         }.sheet(isPresented: $showTrackerSheet) {
-                            TrackerPicker(selection: $selectedTracker)
+                            CategoryPicker(selection: $selectedTracker)
                                 .presentationDetents([.medium])
                         }
                     }

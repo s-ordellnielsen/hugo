@@ -100,7 +100,7 @@ extension EntryList {
                     }
                 }
                 .sheet(isPresented: $selectTrackerIsPresented) {
-                    TrackerPicker(selection: $entry.tracker, dismissOnSelection: true)
+                    CategoryPicker(selection: $entry.tracker, dismissOnSelection: true)
                         .presentationDetents([.medium, .large])
                 }
                 .tint(.primary)

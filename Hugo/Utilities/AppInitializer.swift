@@ -20,7 +20,7 @@ class AppInitializer {
     }
 
     private static func checkAndSeedIfNeeded(modelContext: ModelContext) async {
-        let runKey = UserDefaults.hasRunInitialSetupKey
+        let runKey = UserDefaultsKeys.hasRunInitialSetup
 
         if UserDefaults.standard.bool(forKey: runKey) {
             return

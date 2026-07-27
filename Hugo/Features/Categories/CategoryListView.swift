@@ -1,5 +1,5 @@
 //
-//  TrackerSettingsView.swift
+//  CategoryListView.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 27/11/2025.
@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct TrackerSettingsView: View {
+struct CategoryListView: View {
     @Query private var trackers: [Tracker]
 
     @State private var addTrackerSheetIsPresented: Bool = false
@@ -22,7 +22,7 @@ struct TrackerSettingsView: View {
                     Section(type.label) {
                         ForEach(filtered, id: \.id) { tracker in
                             NavigationLink(
-                                destination: DetailView(tracker: tracker)
+                                destination: CategoryDetailView(tracker: tracker)
                             ) {
                                 HStack {
                                     Label {
@@ -56,14 +56,14 @@ struct TrackerSettingsView: View {
             }
         }
         .sheet(isPresented: $addTrackerSheetIsPresented) {
-            AddTrackerSheet()
+            AddCategoryView()
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        TrackerSettingsView()
+        CategoryListView()
             .modelContainer(.preview)
             .navigationBarTitleDisplayMode(.inline)
     }

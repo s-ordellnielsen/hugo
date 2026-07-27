@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(UserDefaults.publisherStatusKey) var currentStatus: String = ""
+    @AppStorage(UserDefaultsKeys.publisherStatus) var currentStatus: String = ""
 
     @State private var isLoading: Bool = false
 
@@ -28,7 +28,7 @@ struct OnboardingView: View {
                     Text("splash.section.publisherStatus.description")
 
                     VStack(spacing: 8) {
-                        ForEach(PublisherStatusConfig.defaults) { status in
+                        ForEach(PublisherStatus.all) { status in
                             Button {
                                 currentStatus = status.id
                             } label: {
@@ -46,7 +46,7 @@ struct OnboardingView: View {
                                         VStack(alignment: .leading, spacing: 4)
                                         {
                                             Text(
-                                                "publisher.status.goaltype.label.\(status.goalType.label)"
+                                                "publisher.status.goaltype.label.\(status.goalPeriod.label)"
                                             )
                                             Text(
                                                 "publisher.status.goal.label.\(status.goal)"

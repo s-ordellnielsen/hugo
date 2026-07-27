@@ -28,10 +28,10 @@ extension CurrentMonthProgressView {
             [Entry]
         @Query private var trackers: [Tracker]
         
-        @AppStorage(UserDefaults.publisherStatusKey) private var publisherStatus: String = ""
+        @AppStorage(UserDefaultsKeys.publisherStatus) private var publisherStatus: String = ""
         
         var max: Double {
-            guard let goal = PublisherStatusConfig.current(publisherStatus)?.monthlyGoal() else { return 0 }
+            guard let goal = PublisherStatus.status(for: publisherStatus)?.monthlyGoal else { return 0 }
             
             let total = entries.reduce(0) { $0 + $1.duration } / 3600
             
