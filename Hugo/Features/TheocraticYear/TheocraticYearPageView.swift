@@ -1,0 +1,68 @@
+import SwiftData
+import SwiftUI
+
+struct TheocraticYearPageView: View {
+    let report: TheocraticYearReport
+    let initialMonth: YearMonth?
+    @State private var didScrollToCurrentMonth = false
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 24) {
+                    if report.hasEntries {
+                        TheocraticYearTotalsView(report: report)
+                    } else {
+                        emptyYearCard
+                    }
+
+                    ForEach(report.months) { month in
+                        Group {
+                            if let summary = month.summary {
+                                MonthlyReportRow(summary: summary)
+                            } else {
+                                MonthlyReportEmptyRow(month: month)
+                            }
+                        }
+                        .id(month.id)
+                    }
+                }
+                .padding()
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemGroupedBackground))
+            .onAppear {
+                guard let initialMonth, !didScrollToCurrentMonth else { return }
+                proxy.scrollTo(initialMonth, anchor: .top)
+                didScrollToCurrentMonth = true
+            }
+        }
+    }
+
+    private var emptyYearCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Image(systemName: "calendar")
+                .font(.system(size: 40))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.secondary)
+            Text("year.empty.title")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .fontDesign(.rounded)
+            Text("year.empty.description")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .cornerRadius(32)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        TheocraticYearPageView(report: ReportPreviewFixtures.yearReport, initialMonth: nil)
+    }
+    .modelContainer(.preview)
+}

@@ -14,4 +14,14 @@ enum ReportPreviewFixtures {
     static var summary: MonthlyReportSummary {
         MonthlyReportBuilder.summaries(from: entries).first!
     }
+
+    static var currentYear: TheocraticYear { Date().theocraticYear() }
+
+    static var yearReport: TheocraticYearReport {
+        TheocraticYearReportBuilder.report(for: currentYear, entries: entries)
+    }
+
+    static var emptyMonth: TheocraticYearMonth {
+        yearReport.months.first { $0.summary == nil } ?? yearReport.months[0]
+    }
 }

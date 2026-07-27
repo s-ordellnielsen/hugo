@@ -63,6 +63,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 007 | Refactor overview and monthly progress presentation | P2 | L | 001, 004, 006 | DONE |
 | 008 | Modernize app composition, bootstrap, and Swift concurrency | P1 | L | 001–007 | TODO |
 | 009 | Normalize Xcode project hygiene, formatting, and documentation | P2 | M | 001–008 | TODO |
+| 010 | Replace the Report tab with a Year screen | P2 | M | 004 | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale).

@@ -9,7 +9,6 @@ struct AppRootView: View {
     var body: some View {
         TabView {
             Tab("tab.overview", systemImage: "house") { OverviewView() }
-            Tab("tab.report", systemImage: "tray.full.fill") { ReportsView() }
             Tab("tab.year", systemImage: "tray.full.fill") { TheocraticYearView() }
         }
         .task { await bootstrapper.start(context: context) }

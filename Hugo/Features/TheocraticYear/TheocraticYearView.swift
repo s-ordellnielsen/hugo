@@ -1,46 +1,48 @@
-//
-//  TheocraticYearView.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 27/07/2026.
-//
-
+import SwiftData
 import SwiftUI
 
 struct TheocraticYearView: View {
+    @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
+    @State private var selectedYear: TheocraticYear?
+
+    private var years: [TheocraticYear] {
+        TheocraticYear.availableYears(entryDates: entries.map(\.date), now: .now)
+    }
+
+    private var currentYear: TheocraticYear {
+        Date().theocraticYear()
+    }
+
+    private var activeYear: TheocraticYear {
+        selectedYear ?? currentYear
+    }
+
+    private var yearSelection: Binding<TheocraticYear> {
+        Binding(get: { activeYear }, set: { selectedYear = $0 })
+    }
+
     var body: some View {
-        TabView {
-			NavigationStack {
-				List {
-					Text("1")
-				}
-				.navigationTitle("2025/2026")
-				.navigationSubtitle("Theocratic Year")
-				.navigationBarTitleDisplayMode(.inline)
-			}
-			NavigationStack {
-				List {
-					Text("2")
-				}
-				.navigationTitle("2026/2027")
-				.navigationSubtitle("Theocratic Year")
-				.navigationBarTitleDisplayMode(.inline)
-			}
-			NavigationStack {
-				List {
-					Text("3")
-				}
-				.navigationTitle("2027/2028")
-				.navigationSubtitle("Theocratic Year")
-				.navigationBarTitleDisplayMode(.inline)
-			}
+        TabView(selection: yearSelection) {
+            ForEach(years) { year in
+                NavigationStack {
+                    TheocraticYearPageView(
+                        report: TheocraticYearReportBuilder.report(for: year, entries: entries),
+                        initialMonth: year == currentYear ? Date().yearMonth() : nil
+                    )
+                    .navigationTitle(year.displayName)
+                    .navigationSubtitle("year.subtitle")
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+                .tag(year)
+            }
         }
-		.tabViewStyle(.page(indexDisplayMode: .never))
-		.ignoresSafeArea(edges: .vertical)
-		.background(Color(.secondarySystemBackground))
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .background(Color(.systemGroupedBackground))
+        .ignoresSafeArea(edges: .vertical)
     }
 }
 
 #Preview {
     TheocraticYearView()
+        .modelContainer(.preview)
 }
