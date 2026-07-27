@@ -54,7 +54,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |---|---|---:|---:|---|---|
-| 001 | Establish a refactoring safety net | P1 | M | — | TODO |
+| 001 | Establish a refactoring safety net | P1 | M | — | DONE |
 | 002 | Remove confirmed dead code and stale project artifacts | P1 | M | 001 | TODO |
 | 003 | Reorganize and harden SwiftData persistence | P1 | L | 001, 002 | TODO |
 | 004 | Extract and rename the monthly reporting domain | P1 | L | 001, 003 | TODO |
