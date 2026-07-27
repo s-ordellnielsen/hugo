@@ -37,8 +37,6 @@ extension EntrySheet {
         @State var showTimeSheet: Bool = false
         @State var showTrackerSheet: Bool = false
 
-        @State var includeTime: Bool = false
-
         var body: some View {
             NavigationStack {
                 Form {
@@ -230,15 +228,6 @@ extension EntrySheet {
             return formatter.string(from: date)
         }
 
-        private func isDateAtMidnight() -> Bool {
-            let calendar = Calendar.current
-            let components = calendar.dateComponents(
-                [.hour, .minute],
-                from: date
-            )
-            return components.hour == 0 && components.minute == 0
-        }
-
         private func incrementBibleStudies() {
             bibleStudies += 1
         }
@@ -249,14 +238,6 @@ extension EntrySheet {
             if bibleStudies < 0 {
                 bibleStudies = 0
             }
-        }
-
-        private func setBibleStudies(_ value: Int) {
-            if value < 0 {
-                return
-            }
-
-            bibleStudies = value
         }
 
         struct SelectTimeSheet: View {

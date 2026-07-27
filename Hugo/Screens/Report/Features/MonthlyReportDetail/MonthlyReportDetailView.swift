@@ -5,13 +5,9 @@
 //  Created by Sebastian Nielsen on 13/11/2025.
 //
 
-import SwiftData
 import SwiftUI
 
 struct MonthlyReportDetailView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
-
     let summary: MonthlySummary
 
     var body: some View {

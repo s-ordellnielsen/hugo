@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */; };
-		E0A7569C3017877900828739 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E0A7569B3017877900828739 /* README.md */; };
-		E0A7569E30178DCB00828739 /* AGENTS.md in Resources */ = {isa = PBXBuildFile; fileRef = E0A7569D30178DCB00828739 /* AGENTS.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -193,8 +191,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */,
-				E0A7569C3017877900828739 /* README.md in Resources */,
-				E0A7569E30178DCB00828739 /* AGENTS.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

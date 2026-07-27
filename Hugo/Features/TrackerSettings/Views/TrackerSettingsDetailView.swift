@@ -5,15 +5,13 @@
 //  Created by Sebastian Nielsen on 17/10/2025.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 extension TrackerSettingsView {
     struct DetailView: View {
         @Environment(\.modelContext) private var context
         @Environment(\.dismiss) private var dismiss
-        
-        @Query private var trackers: [Tracker]
         
         @State var tracker: Tracker
         

@@ -12,7 +12,6 @@ extension MonthlyReportListView {
     struct Row: View {
         var month: MonthlySummary
 
-        @State private var showCopyAlert: Bool = false
 
         var fullHours: TimeInterval {
             month.totalSeconds / (60 * 60)

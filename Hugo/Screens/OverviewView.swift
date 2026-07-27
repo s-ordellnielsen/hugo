@@ -28,7 +28,6 @@ struct OverviewView: View {
         order: .reverse
     ) private var entries: [Entry]
 
-    @State private var showAddItemSheet: Bool = false
 
     var current: Double {
         let totalSeconds = entries.reduce(0) { $0 + Double($1.duration) }

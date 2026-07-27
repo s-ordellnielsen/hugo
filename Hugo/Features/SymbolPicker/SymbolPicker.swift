@@ -32,27 +32,6 @@ struct SymbolPicker: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                //                VStack(alignment: .leading, spacing: 12) {
-                //                    HStack {
-                //                        Text("Missing an icon?")
-                //                            .font(.headline)
-                //                        Spacer()
-                //                        Button {
-                //
-                //                        } label: {
-                //                            Label("Request Icon", systemImage: "envelope")
-                //                        }
-                //                        .buttonStyle(.bordered)
-                //                    }
-                //                    .frame(maxWidth: .infinity, alignment: .leading)
-                //                    Text("Let me know! I'll see if I can add it soon.")
-                //                        .font(.callout)
-                //                        .foregroundStyle(.secondary)
-                //                }
-                //                .padding()
-                //                .background(Color(.secondarySystemGroupedBackground))
-                //                .cornerRadius(24)
-                //                .padding()
                 LazyVGrid(columns: columns) {
                     ForEach(filteredSymbols, id: \.id) { symbol in
                         Button {

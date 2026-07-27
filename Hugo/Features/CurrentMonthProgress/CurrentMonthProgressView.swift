@@ -6,10 +6,8 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct CurrentMonthProgressView<SheetContent: View>: View {
-    @Environment(\.modelContext) private var modelContext
     @AppStorage(UserDefaults.publisherStatusKey) var publisherStatusId = ""
 
     var value: Double

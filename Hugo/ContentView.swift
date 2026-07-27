@@ -18,19 +18,10 @@ struct ContentView: View {
             Tab("tab.overview", systemImage: "house") {
                 OverviewView()
             }
-            //                Tab("tab.planner", systemImage: "calendar") {
-            //                    PlannerView()
-            //                }
             Tab("tab.report", systemImage: "tray.full.fill") {
                 ReportView()
             }
         }
-//        .tint(.primary)
-//        .task {
-//            await AppInitializer.initialize(
-//                modelContext: context
-//            )
-//        }
         .sheet(isPresented: $isOnboarding) {
             Task {
                 await AppInitializer.initialize(

@@ -6,12 +6,9 @@
 //
 
 import SwiftUI
-import SwiftData
 
 extension EntryList {
     struct Content: View {
-        @Environment(\.modelContext) var modelContext
-
         var entries: [Entry]
 
         @State var selectedEntry: Entry? = nil

@@ -6,12 +6,9 @@
 //
 
 import SwiftUI
-import SwiftData
 
 extension EntryList {
     struct DurationPicker: View {
-        @Environment(\.modelContext) private var context
-        
         @Binding var duration: TimeInterval
         
         @State var durationAsDate: Date

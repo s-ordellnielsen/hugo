@@ -12,10 +12,6 @@ extension EntryList {
     struct DetailSheet: View {
         @Environment(\.dismiss) var dismiss
         @Environment(\.modelContext) private var context
-        @Environment(\.colorScheme) private var colorScheme
-
-        @Query private var trackers: [Tracker]
-
         @State var entry: Entry
         @State var selectTrackerIsPresented: Bool = false
 

@@ -63,8 +63,6 @@ extension CurrentMonthProgressView {
                                 let normalized = CGFloat(total) / (CGFloat(self.max) * 3600)
                                 let width = geometry.size.width * normalized
                                 
-                                print("Tracker \(tracker.name) total: \(total), normalized: \(normalized)")
-                                
                                 return Rectangle()
                                     .fill(colors[index])
                                     .frame(width: width)
