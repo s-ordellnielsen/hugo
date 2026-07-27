@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct YearMonth: Hashable, Comparable {
+nonisolated struct YearMonth: Hashable, Comparable {
     let year: Int
     let month: Int
 
