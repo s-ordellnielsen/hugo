@@ -32,8 +32,8 @@
 		E090545C2E91E99A00254125 /* Exceptions for "Hugo" folder in "Hugo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				ConfigDebug.xcconfig,
-				ConfigRelease.xcconfig,
+				../Configuration/Debug.xcconfig,
+				../Configuration/Release.xcconfig,
 				Info.plist,
 			);
 			target = E090544E2E91E99900254125 /* Hugo */;
@@ -303,7 +303,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Hugo/Resources/Entitlements/Hugo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Hugo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CAJA48GKTR;
@@ -370,7 +370,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Hugo/Resources/Entitlements/Hugo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Hugo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CAJA48GKTR;
@@ -414,7 +414,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Hugo/Resources/Entitlements/Hugo.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Configuration/Hugo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CAJA48GKTR;
@@ -455,7 +455,7 @@
 		E09054602E91E99A00254125 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = E09054512E91E99900254125 /* Hugo */;
-			baseConfigurationReferenceRelativePath = ConfigDebug.xcconfig;
+			baseConfigurationReferenceRelativePath = ../Configuration/Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -526,7 +526,7 @@
 		E09054612E91E99A00254125 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = E09054512E91E99900254125 /* Hugo */;
-			baseConfigurationReferenceRelativePath = ConfigRelease.xcconfig;
+			baseConfigurationReferenceRelativePath = ../Configuration/Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

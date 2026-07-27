@@ -74,7 +74,7 @@ struct FeatureView: View {
 ```swift
 /// PREFERRED PATTERN FOR PREVIEWS
 #Preview {
-    ReportView()
+    ReportsView()
         .modelContainer(.preview)
 }
 ```
@@ -107,3 +107,10 @@ extension Date {
         }
     }
 }
+
+## Final repository conventions
+
+* Add new code under `Hugo/App`, `Hugo/Domain`, `Hugo/Persistence`, `Hugo/Features`, or `Hugo/PreviewSupport` rather than catch-all `Views`, `Managers`, or `Utilities` folders.
+* Pure value logic does not need a ViewModel. Simple views may own local state; use `@Observable` for stateful workflows and `@Bindable` for SwiftData models when bindings are required.
+* Persistence names remain `Tracker` even where the UI says Category. Historical SwiftData schemas are compatibility definitions.
+* Swift 6 complete concurrency checking and MainActor default isolation are intentional project settings.
