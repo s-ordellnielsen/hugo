@@ -24,6 +24,10 @@ nonisolated enum MonthlyProgressStatus: Equatable {
     }
 
     var icon: String {
-        switch self { case .wayAboveTarget, .aboveTarget: "chevron.up.circle.fill"; case .onTarget: "checkmark.circle.fill"; case .belowTarget, .wayBelowTarget: "chevron.down.circle.fill" }
+        switch self {
+        case .wayAboveTarget, .aboveTarget: "chevron.up.circle.fill"
+        case .onTarget: "checkmark.circle.fill"
+        case .belowTarget, .wayBelowTarget: "chevron.down.circle.fill"
+        }
     }
 }
