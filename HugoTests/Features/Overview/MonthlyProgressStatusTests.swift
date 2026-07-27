@@ -1,6 +1,7 @@
 import Testing
 @testable import Hugo
 
+@MainActor
 struct MonthlyProgressStatusTests {
     @Test(arguments: [
         (6.0, MonthlyProgressStatus.wayAboveTarget),

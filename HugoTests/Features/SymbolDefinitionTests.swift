@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import Hugo
 
+@MainActor
 struct SymbolDefinitionTests {
     private let symbol = SymbolDefinition(
         icon: "phone.fill",

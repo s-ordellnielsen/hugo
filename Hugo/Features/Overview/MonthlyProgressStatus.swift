@@ -1,6 +1,6 @@
 import Foundation
 
-enum MonthlyProgressStatus: Equatable {
+nonisolated enum MonthlyProgressStatus: Equatable {
     case wayBelowTarget, belowTarget, onTarget, aboveTarget, wayAboveTarget
 
     static func make(expected: Double, current: Double) -> Self {

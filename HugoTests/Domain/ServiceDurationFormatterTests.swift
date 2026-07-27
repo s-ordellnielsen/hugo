@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import Hugo
 
+@MainActor
 struct DurationFormattingTests {
     @Test func formatsZeroSeconds() { #expect(ServiceDurationFormatter.string(from: 0) == "00:00") }
     @Test func formatsFiftyNineSeconds() { #expect(ServiceDurationFormatter.string(from: 59) == "00:00") }

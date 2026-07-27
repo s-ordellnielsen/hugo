@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    let onComplete: () -> Void
     @Environment(\.dismiss) private var dismiss
     @AppStorage(UserDefaultsKeys.publisherStatus) var currentStatus: String = ""
 
@@ -78,7 +79,7 @@ struct OnboardingView: View {
             .safeAreaInset(edge: .bottom) {
                 Button {
                     Task {
-                        await onDismiss()
+                        onComplete()
                     }
                 } label: {
                     HStack {
@@ -111,14 +112,8 @@ struct OnboardingView: View {
         .interactiveDismissDisabled(true)
     }
 
-    private func onDismiss() async {
-        isLoading = true
-
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        dismiss()
-    }
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(onComplete: {})
 }

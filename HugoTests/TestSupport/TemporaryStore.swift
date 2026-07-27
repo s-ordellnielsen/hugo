@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 struct TemporaryStore {
     let directoryURL: URL
     let storeURL: URL

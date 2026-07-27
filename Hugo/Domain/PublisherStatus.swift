@@ -1,6 +1,6 @@
 import Foundation
 
-enum PublisherGoalPeriod {
+nonisolated enum PublisherGoalPeriod {
     case yearly
     case monthly
 
@@ -12,7 +12,7 @@ enum PublisherGoalPeriod {
     }
 }
 
-struct PublisherStatus: Identifiable {
+nonisolated struct PublisherStatus: Identifiable {
     let id: String
     let nameKey: LocalizedStringResource
     let shortName: LocalizedStringResource

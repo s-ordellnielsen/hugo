@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import Hugo
 
+@MainActor
 struct PublisherStatusTests {
     @Test
     func convertsYearlyGoalToMonthlyGoal() {
