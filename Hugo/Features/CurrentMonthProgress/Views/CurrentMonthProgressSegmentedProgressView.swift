@@ -88,7 +88,7 @@ extension CurrentMonthProgressView {
                                     .frame(width: 12, height: 12)
                                 Text(tracker.name)
                                 Spacer()
-                                Text(formatDuration(total))
+                                Text(ServiceDurationFormatter.string(from: total))
                                     .fontDesign(.monospaced)
                                     .foregroundStyle(.secondary)
                             }

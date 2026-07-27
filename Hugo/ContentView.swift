@@ -19,7 +19,7 @@ struct ContentView: View {
                 OverviewView()
             }
             Tab("tab.report", systemImage: "tray.full.fill") {
-                ReportView()
+                ReportsView()
             }
         }
         .sheet(isPresented: $isOnboarding) {

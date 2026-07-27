@@ -1,16 +1,9 @@
-//
-//  ReportView.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 08/10/2025.
-//
-
 import SwiftData
 import SwiftUI
 
-struct ReportView: View {
+struct ReportsView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -20,7 +13,6 @@ struct ReportView: View {
                             .font(.system(size: 48))
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(.green)
-
                         Text("report.pending.empty")
                             .font(.title3)
                             .fontWeight(.semibold)
@@ -33,19 +25,17 @@ struct ReportView: View {
                     .cornerRadius(24)
                     .padding()
                 } else {
-                    MonthlyReportListView()
+                    MonthlyReportListView(entries: entries)
                         .padding()
                 }
             }
             .frame(maxWidth: .infinity)
             .background(Color(.systemGroupedBackground))
             .navigationTitle("reports.title")
-            .navigationBarTitleDisplayMode(.automatic)
         }
     }
 }
 
 #Preview {
-    ReportView()
-        .modelContainer(.preview)
+    ReportsView().modelContainer(.preview)
 }

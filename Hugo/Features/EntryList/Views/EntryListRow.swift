@@ -33,7 +33,7 @@ extension EntryList {
                     )
                     VStack(alignment: .leading) {
                         HStack(spacing: 6) {
-                            Text(formatDuration(entry.duration))
+                            Text(ServiceDurationFormatter.string(from: entry.duration))
                                 .fontWeight(.bold)
                             Text(entry.tracker != nil ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked"))
                                 .fontWeight(.medium)
