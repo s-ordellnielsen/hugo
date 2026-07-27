@@ -82,6 +82,7 @@ enum SchemaV8: VersionedSchema {
 
 typealias CurrentSchema = SchemaV8
 
+// SchemaV8.Report remains as migration compatibility ballast until a tested
+// future schema version can remove it safely.
 typealias Entry = CurrentSchema.Entry
 typealias Tracker = CurrentSchema.Tracker
-typealias Report = CurrentSchema.Report

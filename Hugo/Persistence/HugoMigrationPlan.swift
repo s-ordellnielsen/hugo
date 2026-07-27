@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 
 enum MigrationPlan: SchemaMigrationPlan {
+    private static let logger = Logger(subsystem: "Hugo.Persistence", category: "Migration")
+
     static var schemas: [any VersionedSchema.Type] {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
@@ -28,7 +31,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         fromVersion: SchemaV1.self,
         toVersion: SchemaV2.self,
         willMigrate: { context in
-            print("Migrating from V1 to V2...")
+            logger.debug("Migrating from V1 to V2")
             let entries = try context.fetch(
                 FetchDescriptor<SchemaV1.Entry>()
             )
@@ -59,7 +62,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         fromVersion: SchemaV2_1.self,
         toVersion: SchemaV3.self,
         willMigrate: { context in
-            print("Migrating from v2.1 to v3 (adding Report model)")
+            logger.debug("Migrating from V2.1 to V3")
 
             try context.save()
         },
@@ -70,7 +73,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         fromVersion: SchemaV3.self,
         toVersion: SchemaV4.self,
         willMigrate: { context in
-            print("Migrating from v3 to v4")
+            logger.debug("Migrating from V3 to V4")
 
             try context.save()
         },
@@ -91,7 +94,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         fromVersion: SchemaV6.self,
         toVersion: SchemaV7.self,
         willMigrate: { context in
-            print("Migrating from v6 to v7 ...")
+            logger.debug("Migrating from V6 to V7")
 
             let trackers = try context.fetch(
                 FetchDescriptor<SchemaV6.Tracker>()
@@ -114,7 +117,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         fromVersion: SchemaV7.self,
         toVersion: SchemaV8.self,
         willMigrate: { context in
-            print("Migrating from v7 to v8 ...")
+            logger.debug("Migrating from V7 to V8")
 
             let reports = try context.fetch(
                 FetchDescriptor<SchemaV7.Report>()
@@ -146,6 +149,7 @@ enum MigrationPlan: SchemaMigrationPlan {
                         duration: trackerSummary.duration,
                         tracker: tracker
                     )
+                    context.insert(entry)
                 }
                 
                 context.delete(report)
@@ -157,9 +161,9 @@ enum MigrationPlan: SchemaMigrationPlan {
             let entries = try context.fetch(FetchDescriptor<SchemaV8.Entry>())
 
             for entry in entries {
-                if entry.tracker !== nil && entry.storedTracker == nil {
+                if let tracker = entry.tracker, entry.storedTracker == nil {
                     let storedTracker = SchemaV8.Entry.EntryTracker(
-                        name: entry.tracker!.name, icon: entry.tracker!.iconName, type: entry.tracker!.type
+                        name: tracker.name, icon: tracker.iconName, type: tracker.type
                     )
                     entry.storedTracker = storedTracker
                 }

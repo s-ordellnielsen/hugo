@@ -21,29 +21,7 @@ extension SchemaV1 {
             self.duration = duration
         }
 
-        public func delete(in context: ModelContext) {
-            context.delete(self)
-        }
 
-        static func makeSampleData(in container: ModelContainer) {
-            let context = ModelContext(container)
-            let data = [
-                Entry(type: .fieldService, timestamp: Date(), duration: 3600),
-                Entry(
-                    type: .bethel,
-                    timestamp: Date().addingTimeInterval(-86_400),
-                    duration: 3600
-                ),
-                Entry(
-                    type: .custom,
-                    timestamp: Date().addingTimeInterval(-1_728_000),
-                    duration: 3600
-                ),
-            ]
-            for event in data {
-                context.insert(event)
-            }
-        }
     }
 
     enum EventType: String, Codable, CaseIterable, Identifiable {

@@ -31,23 +31,6 @@ extension SchemaV2_1 {
             self.bibleStudies = bibleStudies ?? 0
         }
 
-        public func delete(in context: ModelContext) {
-            context.delete(self)
-        }
 
-        static func makeSampleData(in container: ModelContainer) {
-            let context = ModelContext(container)
-            let data = [
-                Entry(date: Date(), duration: 3600),
-                Entry(date: Date().addingTimeInterval(-86_400), duration: 3600),
-                Entry(
-                    date: Date().addingTimeInterval(-1_728_000),
-                    duration: 3600
-                ),
-            ]
-            for event in data {
-                context.insert(event)
-            }
-        }
     }
 }
