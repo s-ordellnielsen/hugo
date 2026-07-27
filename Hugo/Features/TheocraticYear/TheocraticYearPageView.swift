@@ -31,11 +31,6 @@ struct TheocraticYearPageView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color(.systemGroupedBackground))
-            .onAppear {
-                guard let initialMonth, !didScrollToCurrentMonth else { return }
-                proxy.scrollTo(initialMonth, anchor: .top)
-                didScrollToCurrentMonth = true
-            }
         }
     }
 

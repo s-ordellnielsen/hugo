@@ -3,56 +3,62 @@ import SwiftUI
 struct MonthlyReportRow: View {
     let summary: MonthlyReportSummary
 
+    @State private var isExpanded: Bool = false
+
     var body: some View {
-        NavigationLink(destination: MonthlyReportDetailView(summary: summary)) {
-            VStack(alignment: .leading) {
-                HStack {
-                    Text(summary.displayName)
-                        .font(.caption)
-                        .textCase(.uppercase)
-                        .tracking(1.5)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.red)
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundStyle(.tertiary)
-                        .font(.caption)
-                }
-                HStack(alignment: .firstTextBaseline) {
-                    Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
-                        .font(.title)
-                        .fontWeight(.heavy)
-                    Text("reportList.row.hours.label")
-                        .foregroundStyle(.secondary)
-                        .font(.title3)
-                }
-                Divider()
-                VStack(spacing: 12) {
-                    ForEach(summary.categories) { category in
-                        HStack {
-                            Label(category.name, systemImage: category.iconName)
-                            Spacer()
-                            Text(ServiceDurationFormatter.string(from: category.duration))
-                                .fontDesign(.monospaced)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    Divider().padding(.vertical, 8)
+        VStack(alignment: .leading) {
+            HStack {
+                Text(summary.displayName)
+                    .font(.caption)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.red)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.tertiary)
+                    .font(.caption)
+            }
+            HStack(alignment: .firstTextBaseline) {
+                Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
+                    .font(.title)
+                    .fontWeight(.heavy)
+                Text("reportList.row.hours.label")
+                    .foregroundStyle(.secondary)
+                    .font(.title3)
+            }
+            Divider()
+            VStack(spacing: 12) {
+                ForEach(summary.categories) { category in
                     HStack {
-                        Label("report.bible-studies", systemImage: "book")
+                        Label(category.name, systemImage: category.iconName)
                         Spacer()
-                        Text(String(summary.totalBibleStudies))
+                        Text(ServiceDurationFormatter.string(from: category.duration))
                             .fontDesign(.monospaced)
                             .foregroundStyle(.secondary)
                     }
                 }
-                .padding(.top, 12)
-                .labelReservedIconWidth(24)
+                Divider().padding(.vertical, 8)
+                HStack {
+                    Label("report.bible-studies", systemImage: "book")
+                    Spacer()
+                    Text(String(summary.totalBibleStudies))
+                        .fontDesign(.monospaced)
+                        .foregroundStyle(.secondary)
+                }
             }
-            .padding(24)
-            .background(Color(.secondarySystemGroupedBackground))
-            .cornerRadius(32)
-            .tint(.primary)
+            .padding(.top, 12)
+            .labelReservedIconWidth(24)
         }
+		.onTapGesture {
+			isExpanded.toggle()
+		}
+        .sheet(isPresented: $isExpanded) {
+            MonthlyReportDetailView(summary: summary)
+        }
+        .padding(24)
+        .background(Color(.secondarySystemGroupedBackground))
+        .cornerRadius(32)
+        .tint(.primary)
     }
 }
