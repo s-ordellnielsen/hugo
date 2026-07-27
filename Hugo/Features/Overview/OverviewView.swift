@@ -18,6 +18,6 @@ struct OverviewView: View {
 
     private var metrics: OverviewMetrics { OverviewMetrics.make(entries: entries, status: PublisherStatus.status(for: statusID), now: now, calendar: calendar) }
     var body: some View {
-        NavigationStack { ScrollView { VStack { MonthlyProgressCard(value: metrics.progress, monthlyGoal: metrics.monthlyGoal, expectedProgress: metrics.expectedProgress, onAddEntry: { showingAddEntry = true }, onShowDetails: { showingDetails = true }); Spacer(minLength: 32); EntryListView(entries: entries) }.padding() }.navigationTitle("overview.title").toolbar { SettingsButton() }.sheet(isPresented: $showingAddEntry) { AddEntryView() }.sheet(isPresented: $showingDetails) { MonthlyProgressDetailView() } }
+        NavigationStack { ScrollView { VStack { MonthlyProgressCard(value: metrics.progress, monthlyGoal: metrics.monthlyGoal, expectedProgress: metrics.expectedProgress, onAddEntry: { showingAddEntry = true }, onShowDetails: { showingDetails = true }); Spacer(minLength: 32); EntryListView(entries: entries) }.padding() }.frame(maxWidth: .infinity).background(Color(.systemGroupedBackground)).navigationTitle("overview.title").toolbar { SettingsButton() }.sheet(isPresented: $showingAddEntry) { AddEntryView() }.sheet(isPresented: $showingDetails) { MonthlyProgressDetailView() } }
     }
 }
