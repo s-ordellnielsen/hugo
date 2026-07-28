@@ -174,7 +174,7 @@ struct SubmitReportView: View {
         HStack {
             Label(category.name, systemImage: category.iconName)
             Spacer()
-            Text("\(model.computation.categoryHours[category.id] ?? 0) h")
+            Text("\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))")
                 .fontDesign(.monospaced)
                 .foregroundStyle(.secondary)
         }
