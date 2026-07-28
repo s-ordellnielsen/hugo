@@ -4,12 +4,32 @@ import SwiftUI
 struct AppRootView: View {
     @Environment(\.modelContext) private var context
     @AppStorage("isOnboarding") private var needsOnboarding = true
+
     @State private var bootstrapper = AppBootstrapper()
+    @State private var selectedTab: AppTab = .overview
+    @State private var yearResetID = UUID()
+
+    private var tabSelection: Binding<AppTab> {
+        Binding(
+            get: { selectedTab },
+            set: { newValue in
+                if newValue == .year && selectedTab == .year {
+                    yearResetID = UUID()
+                }
+                selectedTab = newValue
+            }
+        )
+    }
 
     var body: some View {
-        TabView {
-            Tab("tab.overview", systemImage: "house") { OverviewView() }
-            Tab("tab.year", systemImage: "tray.full.fill") { ServiceYearView() }
+        TabView(selection: tabSelection) {
+			Tab("tab.overview", systemImage: "house", value: AppTab.overview) {
+				OverviewView()
+			}
+			Tab("tab.year", systemImage: "tray.full.fill", value: AppTab.year) {
+                ServiceYearView()
+                    .id(yearResetID)
+            }
         }
         .task { await bootstrapper.start(context: context) }
         .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
@@ -19,4 +39,8 @@ struct AppRootView: View {
             Text(bootstrapper.errorMessage ?? "common.error")
         }
     }
+}
+
+enum AppTab: Hashable {
+    case overview, year
 }
