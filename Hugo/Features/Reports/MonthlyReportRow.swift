@@ -12,7 +12,7 @@ struct MonthlyReportRow: View {
     }
 
     private var submitButtonTitle: String {
-        month.isSubmitted && month.hasUnreportedEntries
+        month.isSubmitted
             ? String(localized: "report.submit.resubmit")
             : String(localized: "report.submit.button")
     }
@@ -27,9 +27,20 @@ struct MonthlyReportRow: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.red)
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(.tertiary)
-                    .font(.caption)
+                Menu {
+                    if !month.isFuture {
+                        Button(submitButtonTitle, systemImage: "paperplane") {
+                            isPresentingSubmitSheet = true
+                        }
+                    }
+                    Button("report.row.menu.details", systemImage: "doc.text.magnifyingglass") {
+                        isExpanded = true
+                    }
+                } label: {
+                    Label("common.more", systemImage: "ellipsis")
+                        .labelStyle(.iconOnly)
+                        .font(.caption)
+                }
             }
             HStack(alignment: .firstTextBaseline) {
                 Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
@@ -65,13 +76,6 @@ struct MonthlyReportRow: View {
             .padding(.top, 12)
             .labelReservedIconWidth(24)
 
-            if !month.isFuture && (!month.isSubmitted || month.hasUnreportedEntries) {
-                Button(submitButtonTitle) {
-                    isPresentingSubmitSheet.toggle()
-                }
-                .buttonStyle(.bordered)
-                .padding(.top, 12)
-            }
         }
         .sheet(isPresented: $isExpanded) {
             NavigationStack {

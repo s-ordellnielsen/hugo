@@ -1681,6 +1681,23 @@
         }
       }
     },
+    "report.row.menu.details" : {
+      "comment" : "Menu item on a month card that opens the month's detail view.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis detaljer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Details"
+          }
+        }
+      }
+    },
     "report.submit.button" : {
       "comment" : "Button that starts the monthly report submission flow.",
       "localizations" : {
