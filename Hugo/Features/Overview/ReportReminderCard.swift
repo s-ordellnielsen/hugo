@@ -34,14 +34,10 @@ struct ReportReminderCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(32)
-        // Stub sheet — replaced by SubmitReportView(month:) in Task 5.
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
-                Text("report.submit.placeholder")
-                    .navigationTitle(monthName)
-                    .navigationBarTitleDisplayMode(.inline)
+                SubmitReportView(month: month)
             }
-            .presentationDetents([.medium])
         }
     }
 }

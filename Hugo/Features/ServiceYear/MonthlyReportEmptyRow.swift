@@ -46,14 +46,10 @@ struct MonthlyReportEmptyRow: View {
 		.sheet(isPresented: $isPresented) {
 			AddEntryView(seededDate: month.id.date())
 		}
-        // Stub sheet — replaced by SubmitReportView(month:) in Task 5.
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
-                Text("report.submit.placeholder")
-                    .navigationTitle(month.displayName)
-                    .navigationBarTitleDisplayMode(.inline)
+                SubmitReportView(month: month.id)
             }
-            .presentationDetents([.medium])
         }
     }
 }

@@ -78,14 +78,10 @@ struct MonthlyReportRow: View {
                 MonthlyReportDetailView(month: month)
             }
         }
-        // Stub sheet — replaced by SubmitReportView(month:) in Task 5.
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
-                Text("report.submit.placeholder")
-                    .navigationTitle(summary.displayName)
-                    .navigationBarTitleDisplayMode(.inline)
+                SubmitReportView(month: month.id)
             }
-            .presentationDetents([.medium])
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
