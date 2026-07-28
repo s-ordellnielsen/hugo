@@ -136,6 +136,7 @@ struct SubmitReportView: View {
 					.frame(maxWidth: .infinity)
 			}
 			.buttonStyle(.borderedProminent)
+			.tint(.orange)
 			.controlSize(.large)
 			.disabled(!model.isSubmittable || !MessageComposeView.canSendText)
 			.padding(.horizontal)
