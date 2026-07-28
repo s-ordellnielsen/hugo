@@ -108,11 +108,6 @@ struct SubmitReportView: View {
             }
 
             Section {
-                Button("report.submit.send") {
-                    sendViaMessages()
-                }
-                .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
-
                 Button("report.submit.copy") {
                     copyReport()
                 }
@@ -133,6 +128,19 @@ struct SubmitReportView: View {
                 Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
             }
         }
+		.safeAreaInset(edge: .bottom) {
+			Button {
+				sendViaMessages()
+			} label: {
+				Text("report.submit.send")
+					.frame(maxWidth: .infinity)
+			}
+			.buttonStyle(.borderedProminent)
+			.controlSize(.large)
+			.disabled(!model.isSubmittable || !MessageComposeView.canSendText)
+			.padding(.horizontal)
+			.padding(.vertical, 8)
+		}
         .sheet(isPresented: $showingSettings) {
             SettingsView()
                 .presentationDetents([.large])
