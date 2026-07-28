@@ -37,7 +37,7 @@ nonisolated enum ReportReminderSchedule {
     /// At 30 days the previous month stays reachable for essentially the whole
     /// following month — it is only superseded once the current month itself
     /// becomes due on its own last day.
-    private static let previousMonthGraceDays = 30
+    private static let previousMonthGraceDays = 7
 
     /// True when the month has never been submitted (no report, or a sentinel
     /// report left by the V8→V9 backfill), or when entries exist that were
