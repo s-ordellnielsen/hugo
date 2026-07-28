@@ -65,7 +65,7 @@ nonisolated enum ReportRoundingCalculator {
         submittedHours: Int,
         categories: [MonthlyCategorySummary]
     ) -> [String: Int] {
-        var hours: [String: Int] = [:]
+        let hours: [String: Int] = [:]
         guard !categories.isEmpty else { return hours }
 
         var floors: [String: Int] = [:]
