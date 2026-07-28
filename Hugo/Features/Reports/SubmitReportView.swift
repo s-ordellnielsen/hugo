@@ -25,15 +25,6 @@ struct SubmitReportView: View {
     var body: some View {
         List {
             Section {
-                Picker("settings.report.rounding-rule", selection: $model.selectedRule) {
-                    ForEach(RoundingRule.allCases) { rule in
-                        Text(LocalizedStringKey(rule.nameKey)).tag(rule)
-                    }
-                }
-                .pickerStyle(.segmented)
-            }
-
-            Section {
                 if let summary {
                     ForEach(summary.categories.filter { $0.type == .main }) { category in
                         computedRow(category)
@@ -53,32 +44,6 @@ struct SubmitReportView: View {
                     }
                 }
 
-                if model.computation.carriedOutSeconds > 0 {
-                    HStack {
-                        Label("report.submit.carried-out", systemImage: "arrow.up.right")
-                        Spacer()
-                        Text("+\(ServiceDurationFormatter.string(from: model.computation.carriedOutSeconds))")
-                            .fontDesign(.monospaced)
-                            .foregroundStyle(.secondary)
-                    }
-                } else if model.computation.roundedUpSeconds > 0 {
-                    HStack {
-                        Label("report.submit.rounded-up", systemImage: "arrow.up")
-                        Spacer()
-                        Text("+\(ServiceDurationFormatter.string(from: model.computation.roundedUpSeconds))")
-                            .fontDesign(.monospaced)
-                            .foregroundStyle(.secondary)
-                    }
-                } else if model.computation.roundedDownSeconds > 0 {
-                    HStack {
-                        Label("report.submit.rounded-down", systemImage: "arrow.down")
-                        Spacer()
-                        Text("−\(ServiceDurationFormatter.string(from: model.computation.roundedDownSeconds))")
-                            .fontDesign(.monospaced)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
                 HStack {
                     Label("report.bible-studies", systemImage: "book")
                     Spacer()
@@ -86,9 +51,45 @@ struct SubmitReportView: View {
                         .fontDesign(.monospaced)
                         .foregroundStyle(.secondary)
                 }
-            } header: {
-                Text("report.submit.totals.header")
             }
+			
+			Section {
+				Picker("settings.report.rounding-rule", selection: $model.selectedRule) {
+					ForEach(RoundingRule.allCases) { rule in
+						Text(LocalizedStringKey(rule.nameKey)).tag(rule)
+					}
+				}
+				.pickerStyle(.navigationLink)
+				
+				if model.computation.carriedOutSeconds > 0 {
+					HStack {
+						Label("report.submit.carried-out", systemImage: "arrow.up.right.circle.fill")
+							.symbolRenderingMode(.hierarchical)
+						Spacer()
+						Text("+\(ServiceDurationFormatter.string(from: model.computation.carriedOutSeconds))")
+							.fontDesign(.monospaced)
+							.foregroundStyle(.secondary)
+					}
+				} else if model.computation.roundedUpSeconds > 0 {
+					HStack {
+						Label("report.submit.rounded-up", systemImage: "arrow.up.circle.fill")
+							.symbolRenderingMode(.hierarchical)
+						Spacer()
+						Text("+\(ServiceDurationFormatter.string(from: model.computation.roundedUpSeconds))")
+							.fontDesign(.monospaced)
+							.foregroundStyle(.secondary)
+					}
+				} else if model.computation.roundedDownSeconds > 0 {
+					HStack {
+						Label("report.submit.rounded-down", systemImage: "arrow.down.circle.fill")
+							.symbolRenderingMode(.hierarchical)
+						Spacer()
+						Text("−\(ServiceDurationFormatter.string(from: model.computation.roundedDownSeconds))")
+							.fontDesign(.monospaced)
+							.foregroundStyle(.secondary)
+					}
+				}
+			}
 
             Section {
                 if model.hasOverseer {

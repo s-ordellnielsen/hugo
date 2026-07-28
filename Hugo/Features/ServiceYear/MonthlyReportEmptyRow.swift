@@ -50,6 +50,7 @@ struct MonthlyReportEmptyRow: View {
             NavigationStack {
                 SubmitReportView(month: month.id)
             }
+			.presentationDetents([.medium, .large])
         }
     }
 }

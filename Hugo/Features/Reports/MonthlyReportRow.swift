@@ -81,6 +81,7 @@ struct MonthlyReportRow: View {
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
                 SubmitReportView(month: month.id)
+					.presentationDetents([.medium, .large])
             }
         }
         .padding(24)
