@@ -30,14 +30,6 @@ struct TheocraticYearTotalsView: View {
 			Text("monthlyReport.detail.largeTotal.disclaimer")
 				.font(.system(size: 11))
 				.foregroundStyle(.secondary)
-            Divider().padding(.vertical, 8)
-            HStack {
-                Label("report.bible-studies", systemImage: "book")
-                Spacer()
-                Text(String(report.totalBibleStudies))
-                    .fontDesign(.monospaced)
-                    .foregroundStyle(.secondary)
-            }
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
