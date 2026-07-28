@@ -7,6 +7,12 @@ struct MonthlyReportEmptyRow: View {
 	@State private var isPresented: Bool = false
 	@State private var isPresentingSubmitSheet: Bool = false
 
+    private var submitButtonTitle: String {
+        month.isSubmitted
+            ? String(localized: "report.submit.resubmit")
+            : String(localized: "report.submit.button")
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -22,24 +28,36 @@ struct MonthlyReportEmptyRow: View {
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
+                Menu {
+                    if !month.isFuture {
+                        Button(submitButtonTitle, systemImage: "paperplane") {
+                            isPresentingSubmitSheet = true
+                        }
+                    }
+                    Button("navigation.add", systemImage: "plus") {
+                        isPresented = true
+                    }
+                } label: {
+                    Label("common.more", systemImage: "ellipsis")
+                        .labelStyle(.iconOnly)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle())
+                }
+                .padding(.trailing, -12)
+                .padding(.vertical, -8)
             }
 
             MonthSubmissionStatusView(month: month)
-
-            if !month.isFuture && !month.isSubmitted {
-                Button("report.submit.button") {
-                    isPresentingSubmitSheet.toggle()
-                }
-                .buttonStyle(.bordered)
-                .font(.caption)
-            }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(24)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
 		.onTapGesture {
 			isPresented.toggle()
 		}

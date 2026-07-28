@@ -39,8 +39,13 @@ struct MonthlyReportRow: View {
                 } label: {
                     Label("common.more", systemImage: "ellipsis")
                         .labelStyle(.iconOnly)
-                        .font(.caption)
+                        .font(.body)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle())
                 }
+                .padding(.trailing, -12)
+                .padding(.vertical, -8)
             }
             HStack(alignment: .firstTextBaseline) {
                 Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
