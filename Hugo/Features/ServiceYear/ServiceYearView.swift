@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ServiceYearView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
+    @Query(sort: \SubmittedReport.year) private var submissions: [SubmittedReport]
     @State private var selectedYear: TheocraticYear?
 	
 	var resetToken: UUID = UUID()
@@ -28,7 +29,7 @@ struct ServiceYearView: View {
             ForEach(years) { year in
                 NavigationStack {
                     ServiceYearPageView(
-                        report: TheocraticYearReportBuilder.report(for: year, entries: entries),
+                        report: TheocraticYearReportBuilder.report(for: year, entries: entries, submissions: submissions),
                         initialMonth: year == currentYear ? Date().yearMonth() : nil
                     )
                     .navigationTitle(year.displayName)

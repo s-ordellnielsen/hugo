@@ -1309,6 +1309,23 @@
         }
       }
     },
+    "report.detail.unreported.banner": {
+      "comment": "Banner at the top of a submitted month's detail view when newer entries exist.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registreringer tilføjet efter indsendelsen er markeret nedenfor. Indsend en opdateret rapport for at medtage dem."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries added after submission are marked below. Submit an updated report to include them."
+          }
+        }
+      }
+    },
     "report.pending.empty": {
       "comment": "A message displayed when a user has not yet submitted any monthly reports.",
       "extractionState": "stale",
@@ -1324,6 +1341,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "You have reported all entries"
+          }
+        }
+      }
+    },
+    "report.status.submitted.%@": {
+      "comment": "Status line on a submitted month; the argument is the submission date.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indsendt %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submitted %@"
+          }
+        }
+      }
+    },
+    "report.status.unreported-entries": {
+      "comment": "Warning that entries were added after the month was submitted.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nye registreringer er ikke med i den indsendte rapport"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New entries are not included in the submitted report"
           }
         }
       }
@@ -1400,6 +1451,57 @@
           "stringUnit": {
             "state": "translated",
             "value": "Send as Message"
+          }
+        }
+      }
+    },
+    "report.submit.button": {
+      "comment": "Button that starts the monthly report submission flow.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indsend rapport"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submit Report"
+          }
+        }
+      }
+    },
+    "report.submit.placeholder": {
+      "comment": "Temporary placeholder content for the report submission sheet.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indsend rapport"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submit report"
+          }
+        }
+      }
+    },
+    "report.submit.resubmit": {
+      "comment": "Button that re-submits a month whose entries changed after the first submission.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indsend opdateret rapport"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submit Updated Report"
           }
         }
       }

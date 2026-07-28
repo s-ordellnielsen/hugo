@@ -1,9 +1,21 @@
 import SwiftUI
 
 struct MonthlyReportRow: View {
-    let summary: MonthlyReportSummary
+    let month: TheocraticYearMonth
 
     @State private var isExpanded: Bool = false
+    @State private var isPresentingSubmitSheet: Bool = false
+
+    private var summary: MonthlyReportSummary {
+        // Callers only render this row for months with entries.
+        month.summary!
+    }
+
+    private var submitButtonTitle: String {
+        month.isSubmitted && month.hasUnreportedEntries
+            ? String(localized: "report.submit.resubmit")
+            : String(localized: "report.submit.button")
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -27,6 +39,9 @@ struct MonthlyReportRow: View {
                     .foregroundStyle(.secondary)
                     .font(.title3)
             }
+
+            MonthSubmissionStatusView(month: month)
+
             Divider()
             VStack(spacing: 12) {
                 ForEach(summary.categories) { category in
@@ -49,18 +64,35 @@ struct MonthlyReportRow: View {
             }
             .padding(.top, 12)
             .labelReservedIconWidth(24)
+
+            if !month.isFuture && (!month.isSubmitted || month.hasUnreportedEntries) {
+                Button(submitButtonTitle) {
+                    isPresentingSubmitSheet.toggle()
+                }
+                .buttonStyle(.bordered)
+                .padding(.top, 12)
+            }
         }
         .sheet(isPresented: $isExpanded) {
-			NavigationStack {
-				MonthlyReportDetailView(summary: summary)
-			}
+            NavigationStack {
+                MonthlyReportDetailView(month: month)
+            }
+        }
+        // Stub sheet — replaced by SubmitReportView(month:) in Task 5.
+        .sheet(isPresented: $isPresentingSubmitSheet) {
+            NavigationStack {
+                Text("report.submit.placeholder")
+                    .navigationTitle(summary.displayName)
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .presentationDetents([.medium])
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(32)
         .tint(.primary)
-		.onTapGesture {
-			isExpanded.toggle()
-		}
+        .onTapGesture {
+            isExpanded.toggle()
+        }
     }
 }

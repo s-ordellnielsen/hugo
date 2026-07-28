@@ -3,22 +3,35 @@ import SwiftUI
 
 struct MonthlyReportEmptyRow: View {
     let month: TheocraticYearMonth
-	
+
 	@State private var isPresented: Bool = false
+	@State private var isPresentingSubmitSheet: Bool = false
 
     var body: some View {
-        HStack {
-            Text(month.displayName)
-                .font(.caption)
-                .textCase(.uppercase)
-                .tracking(1.5)
-                .fontWeight(.semibold)
-                .foregroundStyle(month.isFuture ? .tertiary : .secondary)
-            Spacer()
-            if !month.isFuture {
-                Text("year.month.empty")
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(month.displayName)
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(month.isFuture ? .tertiary : .secondary)
+                Spacer()
+                if !month.isFuture && !month.isSubmitted {
+                    Text("year.month.empty")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
+            MonthSubmissionStatusView(month: month)
+
+            if !month.isFuture && !month.isSubmitted {
+                Button("report.submit.button") {
+                    isPresentingSubmitSheet.toggle()
+                }
+                .buttonStyle(.bordered)
+                .font(.caption)
             }
         }
         .padding(.horizontal, 24)
@@ -33,6 +46,15 @@ struct MonthlyReportEmptyRow: View {
 		.sheet(isPresented: $isPresented) {
 			AddEntryView(seededDate: month.id.date())
 		}
+        // Stub sheet — replaced by SubmitReportView(month:) in Task 5.
+        .sheet(isPresented: $isPresentingSubmitSheet) {
+            NavigationStack {
+                Text("report.submit.placeholder")
+                    .navigationTitle(month.displayName)
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .presentationDetents([.medium])
+        }
     }
 }
 

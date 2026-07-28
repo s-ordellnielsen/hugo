@@ -2,6 +2,14 @@ import SwiftUI
 
 struct MonthlyReportEntryListView: View {
     let summary: MonthlyReportSummary
+    /// The month's submission, if any. Entries created after the submission's
+    /// `entriesClosedAt` cutoff are marked as not included in the report.
+    var report: SubmittedReport? = nil
+
+    private func isUnreported(_ entry: Entry) -> Bool {
+        guard let report, report.submittedAt != .distantPast else { return false }
+        return entry.createdAt > report.entriesClosedAt
+    }
 
     var body: some View {
         Section {
@@ -11,6 +19,11 @@ struct MonthlyReportEntryListView: View {
                         HStack {
                             Text(entry.date, format: Date.FormatStyle(date: .abbreviated, time: .none))
                             Spacer()
+                            if isUnreported(entry) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.orange)
+                                    .font(.caption)
+                            }
                             Text(ServiceDurationFormatter.string(from: entry.duration))
                                 .fontDesign(.monospaced)
                                 .foregroundStyle(.secondary)

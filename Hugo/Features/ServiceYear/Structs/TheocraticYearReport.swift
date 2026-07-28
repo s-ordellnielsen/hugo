@@ -5,6 +5,15 @@ struct TheocraticYearMonth: Identifiable {
     let displayName: String
     let summary: MonthlyReportSummary?
     let isFuture: Bool
+    let submittedReport: SubmittedReport?
+    let hasUnreportedEntries: Bool
+
+    /// True only for real submissions — the V8→V9 backfill sentinel
+    /// (`submittedAt == .distantPast`) means "never submitted".
+    var isSubmitted: Bool {
+        guard let submittedReport else { return false }
+        return submittedReport.submittedAt != .distantPast
+    }
 }
 
 struct TheocraticYearReport {

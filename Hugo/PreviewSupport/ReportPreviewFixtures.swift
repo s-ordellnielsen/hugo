@@ -24,4 +24,44 @@ enum ReportPreviewFixtures {
     static var emptyMonth: TheocraticYearMonth {
         yearReport.months.first { $0.summary == nil } ?? yearReport.months[0]
     }
+
+    static var currentMonth: YearMonth { Date().yearMonth() }
+
+    /// A real submission for the current month, closed after the fixture
+    /// entries were created — renders the plain "submitted" state.
+    static var submittedMonth: TheocraticYearMonth {
+        TheocraticYearMonth(
+            id: currentMonth,
+            displayName: currentMonth.monthYearString(),
+            summary: summary,
+            isFuture: false,
+            submittedReport: SubmittedReport(
+                year: currentMonth.year,
+                month: currentMonth.month,
+                firstSubmittedAt: Date(timeIntervalSinceNow: -3_600),
+                submittedAt: Date(timeIntervalSinceNow: -3_600),
+                entriesClosedAt: Date(timeIntervalSinceNow: 3_600)
+            ),
+            hasUnreportedEntries: false
+        )
+    }
+
+    /// Same month, but the submission closed *before* the fixture entries
+    /// were created — renders the "new entries not included" warning.
+    static var submittedMonthWithUnreportedEntries: TheocraticYearMonth {
+        TheocraticYearMonth(
+            id: currentMonth,
+            displayName: currentMonth.monthYearString(),
+            summary: summary,
+            isFuture: false,
+            submittedReport: SubmittedReport(
+                year: currentMonth.year,
+                month: currentMonth.month,
+                firstSubmittedAt: Date(timeIntervalSinceNow: -86_400),
+                submittedAt: Date(timeIntervalSinceNow: -86_400),
+                entriesClosedAt: Date(timeIntervalSinceNow: -86_400)
+            ),
+            hasUnreportedEntries: true
+        )
+    }
 }

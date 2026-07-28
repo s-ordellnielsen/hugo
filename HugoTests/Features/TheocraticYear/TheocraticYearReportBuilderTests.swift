@@ -67,8 +67,100 @@ struct TheocraticYearReportBuilderTests {
         #expect(report.months[2].isFuture == true)
     }
 
+    @Test
+    func monthsWithoutSubmissionsAreNotSubmitted() throws {
+        let report = makeReport(entries: [Entry(date: date(2026, 9, 1), duration: 3_600, tracker: nil)])
+        let september = try #require(report.months.first)
+
+        #expect(september.submittedReport == nil)
+        #expect(!september.isSubmitted)
+        // No report exists, so the month is per definition unreported.
+        #expect(september.hasUnreportedEntries)
+    }
+
+    @Test
+    func sentinelSubmissionsAreNotTreatedAsSubmitted() throws {
+        let sentinel = SubmittedReport(
+            year: 2026,
+            month: 9,
+            entriesClosedAt: date(2026, 9, 30)
+        )
+        let report = makeReport(
+            entries: [Entry(date: date(2026, 9, 1), duration: 3_600, tracker: nil)],
+            submissions: [sentinel]
+        )
+        let september = try #require(report.months.first)
+
+        #expect(september.submittedReport != nil)
+        #expect(!september.isSubmitted)
+        // The backfill sentinel must never surface "added after submission"
+        // warnings for pre-existing entries.
+        #expect(september.hasUnreportedEntries)
+    }
+
+    @Test
+    func realSubmissionMarksTheMonthAsSubmittedWithoutWarnings() throws {
+        let entry = Entry(date: date(2026, 9, 1), duration: 3_600, tracker: nil)
+        entry.createdAt = date(2026, 9, 1)
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            firstSubmittedAt: date(2026, 10, 1),
+            submittedAt: date(2026, 10, 1),
+            entriesClosedAt: date(2026, 9, 30)
+        )
+        let report = makeReport(entries: [entry], submissions: [submission])
+        let september = try #require(report.months.first)
+
+        #expect(september.isSubmitted)
+        #expect(!september.hasUnreportedEntries)
+    }
+
+    @Test
+    func entriesCreatedAfterSubmissionTriggerTheWarning() throws {
+        let entry = Entry(date: date(2026, 9, 5), duration: 3_600, tracker: nil)
+        entry.createdAt = date(2026, 10, 2)
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            firstSubmittedAt: date(2026, 10, 1),
+            submittedAt: date(2026, 10, 1),
+            entriesClosedAt: date(2026, 10, 1)
+        )
+        let report = makeReport(entries: [entry], submissions: [submission])
+        let september = try #require(report.months.first)
+
+        #expect(september.isSubmitted)
+        #expect(september.hasUnreportedEntries)
+    }
+
+    @Test
+    func submissionsAttachToTheirMatchingMonthOnly() throws {
+        let submission = SubmittedReport(
+            year: 2027,
+            month: 1,
+            firstSubmittedAt: date(2027, 2, 1),
+            submittedAt: date(2027, 2, 1)
+        )
+        let report = makeReport(entries: [], submissions: [submission])
+
+        #expect(report.months.first { $0.id == YearMonth(year: 2027, month: 1) }?.isSubmitted == true)
+        #expect(report.months.filter { $0.isSubmitted }.count == 1)
+    }
+
     private func makeReport(entries: [Entry]) -> TheocraticYearReport {
         makeReport(for: TheocraticYear(startYear: 2026), entries: entries, now: date(2026, 10, 15))
+    }
+
+    private func makeReport(entries: [Entry], submissions: [SubmittedReport]) -> TheocraticYearReport {
+        TheocraticYearReportBuilder.report(
+            for: TheocraticYear(startYear: 2026),
+            entries: entries,
+            submissions: submissions,
+            now: date(2026, 10, 15),
+            calendar: calendar,
+            locale: locale
+        )
     }
 
     private func makeReport(entries: [Entry], now: Date) -> TheocraticYearReport {

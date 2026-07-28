@@ -18,8 +18,8 @@ struct ServiceYearPageView: View {
 
                     ForEach(report.months) { month in
                         Group {
-                            if let summary = month.summary {
-                                MonthlyReportRow(summary: summary)
+                            if month.summary != nil {
+                                MonthlyReportRow(month: month)
                             } else {
                                 MonthlyReportEmptyRow(month: month)
                             }
