@@ -4,6 +4,8 @@ import SwiftUI
 struct ServiceYearView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @State private var selectedYear: TheocraticYear?
+	
+	var resetToken: UUID = UUID()
 
     private var years: [TheocraticYear] {
         TheocraticYear.availableYears(entryDates: entries.map(\.date), now: .now)
@@ -39,6 +41,11 @@ struct ServiceYearView: View {
         .tabViewStyle(.page(indexDisplayMode: .never))
         .background(Color(.systemGroupedBackground))
         .ignoresSafeArea(edges: .vertical)
+		.onChange(of: resetToken) {
+			withAnimation {
+				selectedYear = nil
+			}
+		}
     }
 }
 

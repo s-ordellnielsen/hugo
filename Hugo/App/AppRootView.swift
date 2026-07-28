@@ -7,14 +7,14 @@ struct AppRootView: View {
 
     @State private var bootstrapper = AppBootstrapper()
     @State private var selectedTab: AppTab = .overview
-    @State private var yearResetID = UUID()
+    @State private var yearResetToken = UUID()
 
     private var tabSelection: Binding<AppTab> {
         Binding(
             get: { selectedTab },
             set: { newValue in
                 if newValue == .year && selectedTab == .year {
-                    yearResetID = UUID()
+                    yearResetToken = UUID()
                 }
                 selectedTab = newValue
             }
@@ -27,8 +27,7 @@ struct AppRootView: View {
 				OverviewView()
 			}
 			Tab("tab.year", systemImage: "tray.full.fill", value: AppTab.year) {
-                ServiceYearView()
-                    .id(yearResetID)
+                ServiceYearView(resetToken: yearResetToken)
             }
         }
         .task { await bootstrapper.start(context: context) }
