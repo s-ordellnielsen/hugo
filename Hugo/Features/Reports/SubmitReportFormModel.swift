@@ -82,9 +82,11 @@ final class SubmitReportFormModel {
         submissions.first { $0.year == month.year && $0.month == month.month }
     }
 
+    /// A report can be submitted for every past or current month, including
+    /// a zero-activity month. Persisting that zero-valued snapshot records an
+    /// intentional report submission and prevents the reminder from recurring.
     var isSubmittable: Bool {
-        guard month <= now.yearMonth(using: calendar) else { return false }
-        return summary != nil || carriedIn > 0
+        month <= now.yearMonth(using: calendar)
     }
 
     var overseerFullName: String {

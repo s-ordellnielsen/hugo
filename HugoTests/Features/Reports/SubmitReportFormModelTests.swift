@@ -119,11 +119,12 @@ struct SubmitReportFormModelTests {
         model.load(entries: [entry(2026, 6, 5)], submissions: [])
         #expect(model.isSubmittable)
 
-        // Empty month without carry-in → not submittable.
+        // An empty month without carry-in is still submittable: a zero-value
+        // submission records that the user intentionally reported no activity.
         model.load(entries: [], submissions: [])
-        #expect(!model.isSubmittable)
+        #expect(model.isSubmittable)
 
-        // Empty month WITH carry-in → submittable.
+        // Empty month WITH carry-in is likewise submittable.
         let previous = SubmittedReport(
             year: 2026, month: 5,
             firstSubmittedAt: date(2026, 6, 1), submittedAt: date(2026, 6, 1),
@@ -132,9 +133,10 @@ struct SubmitReportFormModelTests {
         model.load(entries: [], submissions: [previous])
         #expect(model.isSubmittable)
 
-        // Entries in a different month do not make this month submittable.
+        // Entries in a different month still leave this month as a valid
+        // zero-activity report.
         model.load(entries: [entry(2026, 7, 1)], submissions: [])
-        #expect(!model.isSubmittable)
+        #expect(model.isSubmittable)
     }
 
     @Test
@@ -229,15 +231,21 @@ struct SubmitReportFormModelTests {
     }
 
     @Test
-    func persistRefusesWhenNotSubmittable() throws {
+    func persistStoresAZeroValuedSubmissionForAnEmptyMonth() throws {
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext
 
         let model = makeModel()
         model.load(entries: [], submissions: [])
 
-        #expect(model.persistSubmission(in: context) == nil)
-        #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 0)
+        let report = try #require(model.persistSubmission(in: context))
+        #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
+        #expect(report.fieldServiceSeconds == 0)
+        #expect(report.actualTotalSeconds == 0)
+        #expect(report.submittedHours == 0)
+        #expect(report.totalBibleStudies == 0)
+        #expect(report.categories.isEmpty)
+        #expect(report.entriesClosedAt == now)
     }
 
     // MARK: - Composer handoff
@@ -268,9 +276,13 @@ struct SubmitReportFormModelTests {
     }
 
     @Test
-    func prepareSubmissionRefusesWhenNotSubmittable() {
+    func prepareSubmissionComposesAZeroValuedReportForAnEmptyMonth() {
         let model = makeModel()
         model.load(entries: [], submissions: [])
-        #expect(model.prepareSubmission() == nil)
+
+        let content = model.prepareSubmission()
+        #expect(content != nil)
+        #expect(content?.body.contains("Field Service: 0 h") == true)
+        #expect(content?.body.contains("Bible studies: 0") == true)
     }
 }

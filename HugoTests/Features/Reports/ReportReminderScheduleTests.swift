@@ -25,9 +25,23 @@ struct ReportReminderScheduleTests {
     }
 
     @Test
-    func notDueBeforeTheLastDayOfTheMonth() {
-        #expect(ReportReminderSchedule.dueMonth(now: date(2026, 7, 15), calendar: calendar) == nil)
-        #expect(ReportReminderSchedule.dueMonth(now: date(2026, 7, 30), calendar: calendar) == nil)
+    func previousMonthStaysDueThroughoutTheGraceWindow() {
+        // With a 30-day grace window the previous month stays due for the
+        // entire following month, and the current month takes over on its own
+        // last day — so from the first due date onward the reminder is
+        // effectively always active for exactly one month at a time.
+        #expect(
+            ReportReminderSchedule.dueMonth(now: date(2026, 6, 28), calendar: calendar)
+                == YearMonth(year: 2026, month: 5)
+        )
+        #expect(
+            ReportReminderSchedule.dueMonth(now: date(2026, 7, 30), calendar: calendar)
+                == YearMonth(year: 2026, month: 6)
+        )
+        #expect(
+            ReportReminderSchedule.dueMonth(now: date(2026, 7, 31), calendar: calendar)
+                == YearMonth(year: 2026, month: 7)
+        )
     }
 
     @Test
@@ -40,23 +54,25 @@ struct ReportReminderScheduleTests {
 
     @Test
     func previousMonthStaysDueDuringTheGraceWindow() {
+        // The grace window is 30 days (see `previousMonthGraceDays`), so the
+        // previous month stays reachable for essentially the whole following
+        // month — only superseded once the current month itself becomes due.
         #expect(
             ReportReminderSchedule.dueMonth(now: date(2026, 8, 1), calendar: calendar)
                 == YearMonth(year: 2026, month: 7)
         )
         #expect(
-            ReportReminderSchedule.dueMonth(now: date(2026, 8, 7), calendar: calendar)
+            ReportReminderSchedule.dueMonth(now: date(2026, 8, 15), calendar: calendar)
+                == YearMonth(year: 2026, month: 7)
+        )
+        #expect(
+            ReportReminderSchedule.dueMonth(now: date(2026, 8, 30), calendar: calendar)
                 == YearMonth(year: 2026, month: 7)
         )
     }
 
     @Test
-    func reminderGoesQuietAfterTheGraceWindow() {
-        // FLAGGED: plan 012 keeps the previous month due until submitted; the
-        // cutoff below is an implementation decision (see dueMonth's doc
-        // comment) so the card stops nagging about a stale month.
-        #expect(ReportReminderSchedule.dueMonth(now: date(2026, 8, 8), calendar: calendar) == nil)
-        #expect(ReportReminderSchedule.dueMonth(now: date(2026, 8, 15), calendar: calendar) == nil)
+    func currentMonthSupersedesThePreviousOnItsLastDay() {
         #expect(
             ReportReminderSchedule.dueMonth(now: date(2026, 8, 31), calendar: calendar)
                 == YearMonth(year: 2026, month: 8)

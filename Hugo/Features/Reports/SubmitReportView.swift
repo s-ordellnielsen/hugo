@@ -108,9 +108,20 @@ struct SubmitReportView: View {
 
             Section {
                 Button("report.submit.send") {
-                    submit()
+                    sendViaMessages()
+                }
+                .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
+
+                Button("report.submit.copy") {
+                    copyReport()
                 }
                 .disabled(!model.isSubmittable)
+            } footer: {
+                if !MessageComposeView.canSendText {
+                    Text("report.submit.unavailable")
+                } else if !model.hasOverseer {
+                    Text("report.submit.no-recipient-hint")
+                }
             }
         }
         .navigationTitle(model.month.monthYearString())
@@ -164,15 +175,15 @@ struct SubmitReportView: View {
         model.load(entries: entries, submissions: submissions)
     }
 
-    private func submit() {
+    private func sendViaMessages() {
         guard model.prepareSubmission() != nil else { return }
+        isComposingMessage = true
+    }
 
-        if MessageComposeView.canSendText {
-            isComposingMessage = true
-        } else if let content = model.preparedContent {
-            UIPasteboard.general.string = content.body
-            showingCopiedNotice = true
-        }
+    private func copyReport() {
+        guard let content = model.prepareSubmission() else { return }
+        UIPasteboard.general.string = content.body
+        showingCopiedNotice = true
     }
 }
 

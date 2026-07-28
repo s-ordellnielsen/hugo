@@ -1718,6 +1718,40 @@
         }
       }
     },
+    "report.submit.copy": {
+      "comment": "Button that copies the composed report to the pasteboard instead of opening Messages.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiér rapport"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Report"
+          }
+        }
+      }
+    },
+    "report.submit.no-recipient-hint": {
+      "comment": "Footer shown when no overseer is selected; the composer opens without a recipient, or copy the report instead.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingen gruppetjener valgt — beskeden åbner uden modtager, eller kopiér rapporten og vælg selv en."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No group overseer selected — the message opens without a recipient, or copy the report and choose one yourself."
+          }
+        }
+      }
+    },
     "report.submit.overseer.settings-link": {
       "comment": "Button in the submission sheet opening Settings when no group overseer is selected.",
       "localizations": {
@@ -1851,6 +1885,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Submitted totals"
+          }
+        }
+      }
+    },
+    "report.submit.unavailable": {
+      "comment": "Footer shown when the device cannot send messages; copy becomes the way to share the report.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denne enhed kan ikke sende beskeder. Kopiér rapporten og sæt den ind i en besked til din gruppetjener."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This device can't send messages. Copy the report and paste it into a message to your group overseer."
           }
         }
       }

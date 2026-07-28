@@ -34,6 +34,9 @@ nonisolated enum ReportReminderSchedule {
     }
 
     /// Days into month M+1 during which month M's report is still prompted.
+    /// At 30 days the previous month stays reachable for essentially the whole
+    /// following month — it is only superseded once the current month itself
+    /// becomes due on its own last day.
     private static let previousMonthGraceDays = 30
 
     /// True when the month has never been submitted (no report, or a sentinel
