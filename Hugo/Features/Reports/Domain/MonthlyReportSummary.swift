@@ -1,6 +1,6 @@
 import Foundation
 
-struct MonthlyCategorySummary: Identifiable {
+nonisolated struct MonthlyCategorySummary: Identifiable {
     let id: String
     let name: String
     let iconName: String
@@ -8,7 +8,7 @@ struct MonthlyCategorySummary: Identifiable {
     let duration: TimeInterval
 }
 
-struct MonthlyReportSummary: Identifiable {
+nonisolated struct MonthlyReportSummary: Identifiable {
     let id: YearMonth
     let displayName: String
     let totalSeconds: TimeInterval

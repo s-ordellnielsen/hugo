@@ -10,6 +10,40 @@ nonisolated struct YearMonth: Hashable, Comparable {
     }
 }
 
+extension YearMonth {
+    nonisolated func nextMonth(calendar: Calendar = .current) -> YearMonth {
+        let start = date(calendar: calendar)
+        guard let next = calendar.date(byAdding: .month, value: 1, to: start) else {
+            return month == 12
+                ? YearMonth(year: year + 1, month: 1)
+                : YearMonth(year: year, month: month + 1)
+        }
+        return next.yearMonth(using: calendar)
+    }
+
+    nonisolated static func previous(before month: YearMonth, calendar: Calendar = .current) -> YearMonth {
+        let start = month.date(calendar: calendar)
+        guard let previous = calendar.date(byAdding: .month, value: -1, to: start) else {
+            return month.month == 1
+                ? YearMonth(year: month.year - 1, month: 12)
+                : YearMonth(year: month.year, month: month.month - 1)
+        }
+        return previous.yearMonth(using: calendar)
+    }
+
+    nonisolated func lastDay(calendar: Calendar = .current) -> Int {
+        guard let range = calendar.range(of: .day, in: .month, for: date(calendar: calendar)) else {
+            return 31
+        }
+        return range.count
+    }
+
+    nonisolated func endDate(calendar: Calendar = .current) -> Date {
+        let startOfNextMonth = nextMonth(calendar: calendar).date(calendar: calendar)
+        return calendar.date(byAdding: .second, value: -1, to: startOfNextMonth) ?? startOfNextMonth
+    }
+}
+
 extension Date {
     nonisolated func yearMonth(using calendar: Calendar = .current) -> YearMonth {
         let components = calendar.dateComponents([.year, .month], from: self)
@@ -18,7 +52,7 @@ extension Date {
 }
 
 extension YearMonth {
-    func monthYearString(locale: Locale = .current, calendar: Calendar = .current) -> String {
+    nonisolated func monthYearString(locale: Locale = .current, calendar: Calendar = .current) -> String {
         var components = DateComponents()
 		
         components.year = year
@@ -34,7 +68,7 @@ extension YearMonth {
         return formatter.string(from: date)
     }
 	
-	func date(day: Int = 1, calendar: Calendar = .current) -> Date {
+	nonisolated func date(day: Int = 1, calendar: Calendar = .current) -> Date {
 		var components = DateComponents()
 		
 		components.year = year
