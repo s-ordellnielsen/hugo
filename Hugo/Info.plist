@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSContactsUsageDescription</key>
+	<string>Hugo bruger dine kontakter til at udfylde gruppetjenerens navn og telefonnummer på månedsrapporten. Hugo uses your contacts to fill in the group overseer's name and phone number for the monthly report.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

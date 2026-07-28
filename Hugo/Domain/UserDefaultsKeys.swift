@@ -5,4 +5,6 @@ enum UserDefaultsKeys {
     static let overseerFullName = "overseerFullName"
     static let overseerPhoneNumber = "overseerPhoneNumber"
     static let overseerGreetingTemplate = "overseerGreetingTemplate"
+    static let overseerFirstName = "overseerFirstName"
+    static let overseerLastName = "overseerLastName"
 }
