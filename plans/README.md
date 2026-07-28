@@ -65,7 +65,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 009 | Normalize Xcode project hygiene, formatting, and documentation | P2 | M | 001–008 | TODO |
 | 010 | Replace the Report tab with a Year screen | P2 | M | 004 | DONE |
 | 012 | Monthly report submission — reminder, rounding, and send-to-overseer | P1 | L | 010, 011 | DONE |
-| 013 | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2 | S | 012 | TODO |
+| 013 | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2 | S | 012 | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale).
