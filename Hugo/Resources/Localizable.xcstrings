@@ -1345,6 +1345,57 @@
         }
       }
     },
+    "report.reminder.action": {
+      "comment": "Button on the report reminder card that opens the submission flow.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gennemse rapport"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review Report"
+          }
+        }
+      }
+    },
+    "report.reminder.description": {
+      "comment": "Body text of the report reminder card on the Overview tab.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Måneden er slut. Send din rapport til din gruppetjener."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The month has ended. Send your report to your group overseer."
+          }
+        }
+      }
+    },
+    "report.reminder.title.%@": {
+      "comment": "Title of the report reminder card on the Overview tab; the argument is the month name.",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tid til at indsende din rapport for %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time to submit your %@ report"
+          }
+        }
+      }
+    },
     "report.status.submitted.%@": {
       "comment": "Status line on a submitted month; the argument is the submission date.",
       "localizations": {
