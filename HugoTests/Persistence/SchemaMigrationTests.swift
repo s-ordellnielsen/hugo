@@ -113,6 +113,155 @@ struct SchemaMigrationTests {
         #expect(fetchedEntry.storedTracker?.icon == "figure.walk")
     }
 
+    @Test
+    func migratingV8StoreBackfillsSubmittedReportSentinelsPerMonth() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+
+        let calendar = Calendar.current
+        let tracker = SchemaV8.Tracker(name: "Field Service", type: .main)
+        let julyFirst = try #require(calendar.date(from: DateComponents(year: 2026, month: 7, day: 1)))
+        let julySecond = try #require(calendar.date(from: DateComponents(year: 2026, month: 7, day: 15)))
+        let june = try #require(calendar.date(from: DateComponents(year: 2026, month: 6, day: 10)))
+
+        try makeV8Store(at: store.storeURL, trackers: [tracker], seeds: [
+            (julyFirst, Date(timeIntervalSince1970: 1_000)),
+            (julySecond, Date(timeIntervalSince1970: 2_000)),
+            (june, Date(timeIntervalSince1970: 3_000)),
+        ])
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let reports = try container.mainContext.fetch(
+            FetchDescriptor<SchemaV9.SubmittedReport>()
+        )
+
+        #expect(reports.count == 2)
+
+        let julyReport = try #require(reports.first { $0.year == 2026 && $0.month == 7 })
+        let juneReport = try #require(reports.first { $0.year == 2026 && $0.month == 6 })
+
+        for report in [julyReport, juneReport] {
+            #expect(report.firstSubmittedAt == .distantPast)
+            #expect(report.submittedAt == .distantPast)
+            #expect(report.roundingRuleRaw.isEmpty)
+            #expect(report.submittedHours == 0)
+            #expect(report.categories.isEmpty)
+        }
+
+        #expect(julyReport.entriesClosedAt == Date(timeIntervalSince1970: 2_000))
+        #expect(juneReport.entriesClosedAt == Date(timeIntervalSince1970: 3_000))
+        #expect(julyReport.yearMonth == YearMonth(year: 2026, month: 7))
+    }
+
+    @Test
+    func migratingEmptyV8StoreCreatesNoSubmittedReports() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+        try makeV8Store(at: store.storeURL)
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let reports = try container.mainContext.fetch(
+            FetchDescriptor<SchemaV9.SubmittedReport>()
+        )
+
+        #expect(reports.isEmpty)
+    }
+
+    @Test
+    func currentStoreRoundTripsSubmittedReportWithCategorySnapshots() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+
+        let report = SubmittedReport(
+            year: 2026,
+            month: 7,
+            firstSubmittedAt: Date(timeIntervalSince1970: 10_000),
+            submittedAt: Date(timeIntervalSince1970: 20_000),
+            entriesClosedAt: Date(timeIntervalSince1970: 9_000),
+            roundingRuleRaw: "transfer",
+            fieldServiceSeconds: 19_200,
+            actualTotalSeconds: 20_400,
+            submittedHours: 5,
+            carriedInSeconds: 1_200,
+            carriedOutSeconds: 2_400,
+            roundedUpSeconds: 0,
+            roundedDownSeconds: 0,
+            totalBibleStudies: 3,
+            categories: [
+                SubmittedReport.SubmittedCategory(
+                    name: "Field Service",
+                    iconName: "figure.walk",
+                    typeRaw: TrackerType.main.rawValue,
+                    actualSeconds: 19_200,
+                    submittedHours: 5
+                ),
+                SubmittedReport.SubmittedCategory(
+                    name: "Bethel",
+                    iconName: "building",
+                    typeRaw: TrackerType.separate.rawValue,
+                    actualSeconds: 1_200,
+                    submittedHours: 0
+                ),
+            ]
+        )
+        context.insert(report)
+        try context.save()
+
+        let fetched = try #require(
+            try context.fetch(FetchDescriptor<SubmittedReport>()).first
+        )
+
+        #expect(fetched.year == 2026)
+        #expect(fetched.month == 7)
+        #expect(fetched.yearMonth == YearMonth(year: 2026, month: 7))
+        #expect(fetched.firstSubmittedAt == Date(timeIntervalSince1970: 10_000))
+        #expect(fetched.submittedAt == Date(timeIntervalSince1970: 20_000))
+        #expect(fetched.entriesClosedAt == Date(timeIntervalSince1970: 9_000))
+        #expect(fetched.roundingRuleRaw == "transfer")
+        #expect(fetched.fieldServiceSeconds == 19_200)
+        #expect(fetched.actualTotalSeconds == 20_400)
+        #expect(fetched.submittedHours == 5)
+        #expect(fetched.carriedInSeconds == 1_200)
+        #expect(fetched.carriedOutSeconds == 2_400)
+        #expect(fetched.roundedUpSeconds == 0)
+        #expect(fetched.roundedDownSeconds == 0)
+        #expect(fetched.totalBibleStudies == 3)
+        #expect(fetched.categories.count == 2)
+        #expect(fetched.categories.first?.name == "Field Service")
+        #expect(fetched.categories.first?.iconName == "figure.walk")
+        #expect(fetched.categories.first?.type == .main)
+        #expect(fetched.categories.first?.actualSeconds == 19_200)
+        #expect(fetched.categories.first?.submittedHours == 5)
+        #expect(fetched.categories.last?.type == .separate)
+        #expect(fetched.categories.map(\.id) == ["Field Service", "Bethel"])
+    }
+
+    private func makeV8Store(
+        at url: URL,
+        trackers: [SchemaV8.Tracker] = [],
+        seeds: [(date: Date, createdAt: Date)] = []
+    ) throws {
+        let schema = Schema(versionedSchema: SchemaV8.self)
+        let configuration = ModelConfiguration(
+            schema: schema,
+            url: url,
+            cloudKitDatabase: .none
+        )
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        let context = container.mainContext
+        trackers.forEach(context.insert)
+        for seed in seeds {
+            let entry = SchemaV8.Entry(
+                date: seed.date,
+                duration: 3_600,
+                tracker: trackers.first
+            )
+            entry.createdAt = seed.createdAt
+            context.insert(entry)
+        }
+        try context.save()
+    }
+
     private func makeV7Store(
         at url: URL,
         trackers: [SchemaV7.Tracker] = [],

@@ -16,7 +16,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
             SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self,
-            SchemaV8.self,
+            SchemaV8.self, SchemaV9.self,
         ]
     }
 
@@ -24,6 +24,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         [
             migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4,
             migrateV4toV5, migrateV5toV6, migrateV6toV7, migrateV7toV8,
+            migrateV8toV9,
         ]
     }
 
@@ -169,6 +170,51 @@ enum MigrationPlan: SchemaMigrationPlan {
                 }
             }
             
+            try context.save()
+        }
+    )
+
+    static let migrateV8toV9: MigrationStage = .custom(
+        fromVersion: SchemaV8.self,
+        toVersion: SchemaV9.self,
+        willMigrate: { context in
+            logger.debug("Migrating from V8 to V9")
+            try context.save()
+        },
+        didMigrate: { context in
+            logger.debug("Backfilling V8 to V9 SubmittedReport sentinels")
+
+            let entries = try context.fetch(
+                FetchDescriptor<SchemaV9.Entry>()
+            )
+
+            // Backfill one sentinel SubmittedReport per month that has
+            // entries: `submittedAt == .distantPast` marks the month as
+            // "never submitted", while `entriesClosedAt` (the newest
+            // `Entry.createdAt` of the month) keeps pre-existing entries
+            // from being falsely flagged as "added after submission".
+            var newestCreatedAtByMonth: [YearMonth: Date] = [:]
+
+            for entry in entries {
+                let yearMonth = entry.date.yearMonth()
+                let createdAt = entry.createdAt
+                if let current = newestCreatedAtByMonth[yearMonth] {
+                    newestCreatedAtByMonth[yearMonth] = max(current, createdAt)
+                } else {
+                    newestCreatedAtByMonth[yearMonth] = createdAt
+                }
+            }
+
+            for (yearMonth, entriesClosedAt) in newestCreatedAtByMonth {
+                context.insert(
+                    SchemaV9.SubmittedReport(
+                        year: yearMonth.year,
+                        month: yearMonth.month,
+                        entriesClosedAt: entriesClosedAt
+                    )
+                )
+            }
+
             try context.save()
         }
     )

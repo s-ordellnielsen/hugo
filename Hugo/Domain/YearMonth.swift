@@ -11,7 +11,7 @@ nonisolated struct YearMonth: Hashable, Comparable {
 }
 
 extension Date {
-    func yearMonth(using calendar: Calendar = .current) -> YearMonth {
+    nonisolated func yearMonth(using calendar: Calendar = .current) -> YearMonth {
         let components = calendar.dateComponents([.year, .month], from: self)
         return YearMonth(year: components.year ?? 0, month: components.month ?? 0)
     }
