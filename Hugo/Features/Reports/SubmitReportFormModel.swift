@@ -185,7 +185,7 @@ final class SubmitReportFormModel {
 
     private var greetingTemplate: String {
         let stored = userDefaults.string(forKey: UserDefaultsKeys.overseerGreetingTemplate)
-        return stored?.isEmpty == false ? stored! : "Hi {first}!"
+        return stored?.isEmpty == false ? stored! : "Hi {first}!\nHere is my report for {month}."
     }
 
     private var overseerFirstName: String {

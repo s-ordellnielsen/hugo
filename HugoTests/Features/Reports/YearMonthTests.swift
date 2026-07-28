@@ -22,6 +22,19 @@ struct YearMonthTests {
         let month = YearMonth(year: 2025, month: 9)
         #expect(month.monthYearString(locale: Locale(identifier: "en_US_POSIX")) == "September 2025")
     }
+
+    @Test
+    func monthNameFormatsTheMonthOnly() {
+        let calendar = gregorianGMT()
+        let month = YearMonth(year: 2026, month: 6)
+
+        #expect(
+            month.monthName(locale: Locale(identifier: "en_US_POSIX"), calendar: calendar) == "June"
+        )
+        #expect(
+            month.monthName(locale: Locale(identifier: "da_DK"), calendar: calendar) == "juni"
+        )
+    }
 }
 
 extension YearMonthTests {

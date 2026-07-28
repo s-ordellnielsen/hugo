@@ -6,19 +6,26 @@ nonisolated struct ReportMessageContent {
 }
 
 nonisolated enum ReportComposer {
-    /// Renders the greeting template. Supported tags: `{first}`, `{last}`.
-    /// Unknown tags are left untouched; empty names never leave double
-    /// whitespace behind.
-    static func render(template: String, firstName: String, lastName: String) -> String {
+    /// Renders the greeting template. Supported tags: `{first}`, `{last}`,
+    /// `{month}`, `{year}`. Unknown tags are left untouched; empty names
+    /// never leave double whitespace behind. Intentional line breaks are
+    /// preserved; empty lines are dropped.
+    static func render(template: String, firstName: String, lastName: String, month: String, year: String) -> String {
         let rendered = template
             .replacingOccurrences(of: "{first}", with: firstName)
             .replacingOccurrences(of: "{last}", with: lastName)
+            .replacingOccurrences(of: "{month}", with: month)
+            .replacingOccurrences(of: "{year}", with: year)
 
         return rendered
-            .components(separatedBy: .whitespacesAndNewlines)
+            .components(separatedBy: .newlines)
+            .map { line in
+                line.components(separatedBy: .whitespaces)
+                    .filter { !$0.isEmpty }
+                    .joined(separator: " ")
+            }
             .filter { !$0.isEmpty }
-            .joined(separator: " ")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .joined(separator: "\n")
     }
 
     static func message(
@@ -31,10 +38,15 @@ nonisolated enum ReportComposer {
         calendar: Calendar = .current
     ) -> ReportMessageContent {
         let hoursUnit = String(localized: "report.hours.unit")
-        let greeting = render(template: template, firstName: firstName, lastName: lastName)
-        let month = summary.id.monthYearString(locale: locale, calendar: calendar)
+        let greeting = render(
+            template: template,
+            firstName: firstName,
+            lastName: lastName,
+            month: summary.id.monthName(locale: locale, calendar: calendar),
+            year: String(summary.id.year)
+        )
 
-        var lines: [String] = [greeting, "", month]
+        var lines: [String] = [greeting, ""]
 
         let mainCategories = summary.categories.filter { $0.type == .main }
         let otherCategories = summary.categories.filter { $0.type != .main }

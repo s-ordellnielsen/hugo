@@ -44,11 +44,17 @@ struct GreetingTemplateView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
+    private var previewMonth: YearMonth {
+        Date().yearMonth()
+    }
+
     private var preview: String {
         ReportComposer.render(
             template: effectiveTemplate,
             firstName: previewFirstName,
-            lastName: previewLastName
+            lastName: previewLastName,
+            month: previewMonth.monthName(),
+            year: String(previewMonth.year)
         )
     }
 }

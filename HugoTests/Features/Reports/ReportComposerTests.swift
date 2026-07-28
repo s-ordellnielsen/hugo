@@ -45,7 +45,7 @@ struct ReportComposerTests {
     @Test
     func renderSubstitutesFirstAndLastNameTags() {
         #expect(
-            ReportComposer.render(template: "Hi {first} {last}!", firstName: "John", lastName: "Smith")
+            ReportComposer.render(template: "Hi {first} {last}!", firstName: "John", lastName: "Smith", month: "June", year: "2026")
                 == "Hi John Smith!"
         )
     }
@@ -53,7 +53,7 @@ struct ReportComposerTests {
     @Test
     func renderLeavesUnknownTagsUntouched() {
         #expect(
-            ReportComposer.render(template: "Hi {first}, {foo}!", firstName: "John", lastName: "Smith")
+            ReportComposer.render(template: "Hi {first}, {foo}!", firstName: "John", lastName: "Smith", month: "June", year: "2026")
                 == "Hi John, {foo}!"
         )
     }
@@ -61,16 +61,42 @@ struct ReportComposerTests {
     @Test
     func renderCollapsesWhitespaceLeftByEmptyNames() {
         #expect(
-            ReportComposer.render(template: "Hi {first} {last}!", firstName: "John", lastName: "")
+            ReportComposer.render(template: "Hi {first} {last}!", firstName: "John", lastName: "", month: "June", year: "2026")
                 == "Hi John !"
         )
         #expect(
-            ReportComposer.render(template: "{first}{last} Hi", firstName: "John", lastName: "")
+            ReportComposer.render(template: "{first}{last} Hi", firstName: "John", lastName: "", month: "June", year: "2026")
                 == "John Hi"
         )
         #expect(
-            ReportComposer.render(template: "Hi {first} {last}!", firstName: "", lastName: "")
+            ReportComposer.render(template: "Hi {first} {last}!", firstName: "", lastName: "", month: "June", year: "2026")
                 == "Hi !"
+        )
+    }
+
+    @Test
+    func renderSubstitutesMonthAndYearTags() {
+        #expect(
+            ReportComposer.render(
+                template: "Report for {month} {year}.",
+                firstName: "",
+                lastName: "",
+                month: "June",
+                year: "2026"
+            ) == "Report for June 2026."
+        )
+    }
+
+    @Test
+    func renderPreservesLineBreaksAndDropsEmptyLines() {
+        #expect(
+            ReportComposer.render(
+                template: "A\n\nB {month}",
+                firstName: "",
+                lastName: "",
+                month: "June",
+                year: "2026"
+            ) == "A\nB June"
         )
     }
 
@@ -101,13 +127,39 @@ struct ReportComposerTests {
 
         // Field Service 5h20m + LDC 0h30m = 5h50m → ceil 6h; the extra hour
         // lands on LDC (largest remainder, 30m), Field Service keeps 5h.
-        #expect(lines[0] == "Hi John!")
-        #expect(lines[1] == "")
-        #expect(lines[2] == "June 2026")
-        #expect(lines[3] == "Field Service: 5 h")
-        #expect(lines[4] == "LDC: 1 h")
-        #expect(lines[5] == "Bible studies: 3")
+        #expect(lines == ["Hi John!", "", "Field Service: 5 h", "LDC: 1 h", "Bible studies: 3"])
         #expect(computation.submittedHours == 6)
+    }
+
+    @Test
+    func messageRendersMonthAndYearTagsInlineInTheGreeting() {
+        let categories = [
+            category("field", name: "Field Service", type: .main, seconds: 19_200),
+            category("ldc", name: "LDC", type: .separate, seconds: 1_800),
+        ]
+        let summary = summary(categories: categories, bibleStudies: 3)
+        let computation = ReportRoundingCalculator.compute(
+            summary: summary,
+            carriedIn: 0,
+            rule: .up
+        )
+
+        let content = ReportComposer.message(
+            summary: summary,
+            computation: computation,
+            template: "Hi {first}!\nReport for {month} {year}.",
+            firstName: "John",
+            lastName: "Smith",
+            locale: locale,
+            calendar: calendar
+        )
+
+        let lines = content.body.components(separatedBy: "\n")
+
+        #expect(lines[0] == "Hi John!")
+        #expect(lines[1] == "Report for June 2026.")
+        #expect(lines[2] == "")
+        #expect(lines[3] == "Field Service: 5 h")
     }
 
     @Test
@@ -161,7 +213,7 @@ struct ReportComposerTests {
         let content = ReportComposer.message(
             summary: summary,
             computation: computation,
-            template: "Hej {first}!",
+            template: "Hej {first}! {month}",
             firstName: "Jens",
             lastName: "",
             locale: danish,
@@ -170,9 +222,8 @@ struct ReportComposerTests {
 
         let lines = content.body.components(separatedBy: "\n")
 
-        #expect(lines[0] == "Hej Jens!")
-        #expect(lines[2] == "juni 2026")
-        #expect(lines[3] == "Field Service: 5 h")
-        #expect(lines[4] == "Bible studies: 2")
+        #expect(lines[0] == "Hej Jens! juni")
+        #expect(lines[2] == "Field Service: 5 h")
+        #expect(lines[3] == "Bible studies: 2")
     }
 }

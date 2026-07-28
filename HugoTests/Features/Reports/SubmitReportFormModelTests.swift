@@ -264,7 +264,7 @@ struct SubmitReportFormModelTests {
         // 5h20m with the default round-up rule → 6 submitted hours.
         #expect(content != nil)
         #expect(content?.body.contains("Hi Jens!") == true)
-        #expect(content?.body.contains("June 2026") == true)
+        #expect(content?.body.contains("Here is my report for June.") == true)
         #expect(content?.body.contains("Field Service: 6 h") == true)
         #expect(content?.body.contains("Bible studies: 0") == true)
 

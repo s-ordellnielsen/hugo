@@ -67,6 +67,22 @@ extension YearMonth {
 		
         return formatter.string(from: date)
     }
+
+    nonisolated func monthName(locale: Locale = .current, calendar: Calendar = .current) -> String {
+        var components = DateComponents()
+
+        components.year = year
+        components.month = month
+
+        guard let date = calendar.date(from: components) else { return "\(month)" }
+
+        let formatter = DateFormatter()
+        formatter.locale = locale
+        formatter.calendar = calendar
+        formatter.dateFormat = "LLLL"
+
+        return formatter.string(from: date)
+    }
 	
 	nonisolated func date(day: Int = 1, calendar: Calendar = .current) -> Date {
 		var components = DateComponents()
