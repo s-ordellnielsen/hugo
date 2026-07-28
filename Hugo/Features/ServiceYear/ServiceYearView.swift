@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-struct TheocraticYearView: View {
+struct ServiceYearView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @State private var selectedYear: TheocraticYear?
 
@@ -25,7 +25,7 @@ struct TheocraticYearView: View {
         TabView(selection: yearSelection) {
             ForEach(years) { year in
                 NavigationStack {
-                    TheocraticYearPageView(
+                    ServiceYearPageView(
                         report: TheocraticYearReportBuilder.report(for: year, entries: entries),
                         initialMonth: year == currentYear ? Date().yearMonth() : nil
                     )
@@ -43,6 +43,6 @@ struct TheocraticYearView: View {
 }
 
 #Preview {
-    TheocraticYearView()
+    ServiceYearView()
         .modelContainer(.preview)
 }

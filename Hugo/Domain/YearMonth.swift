@@ -20,13 +20,27 @@ extension Date {
 extension YearMonth {
     func monthYearString(locale: Locale = .current, calendar: Calendar = .current) -> String {
         var components = DateComponents()
+		
         components.year = year
         components.month = month
+		
         guard let date = calendar.date(from: components) else { return "\(month)/\(year)" }
+		
         let formatter = DateFormatter()
         formatter.locale = locale
         formatter.calendar = calendar
         formatter.dateFormat = "LLLL yyyy"
+		
         return formatter.string(from: date)
     }
+	
+	func date(day: Int = 1, calendar: Calendar = .current) -> Date {
+		var components = DateComponents()
+		
+		components.year = year
+		components.month = month
+		components.day = day
+		
+		return calendar.date(from: components) ?? .now
+	}
 }

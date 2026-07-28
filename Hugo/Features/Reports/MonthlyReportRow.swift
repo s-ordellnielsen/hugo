@@ -50,15 +50,17 @@ struct MonthlyReportRow: View {
             .padding(.top, 12)
             .labelReservedIconWidth(24)
         }
-		.onTapGesture {
-			isExpanded.toggle()
-		}
         .sheet(isPresented: $isExpanded) {
-            MonthlyReportDetailView(summary: summary)
+			NavigationStack {
+				MonthlyReportDetailView(summary: summary)
+			}
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(32)
         .tint(.primary)
+		.onTapGesture {
+			isExpanded.toggle()
+		}
     }
 }

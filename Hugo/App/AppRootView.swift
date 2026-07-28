@@ -9,7 +9,7 @@ struct AppRootView: View {
     var body: some View {
         TabView {
             Tab("tab.overview", systemImage: "house") { OverviewView() }
-            Tab("tab.year", systemImage: "tray.full.fill") { TheocraticYearView() }
+            Tab("tab.year", systemImage: "tray.full.fill") { ServiceYearView() }
         }
         .task { await bootstrapper.start(context: context) }
         .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }

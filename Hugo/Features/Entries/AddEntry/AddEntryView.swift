@@ -4,8 +4,14 @@ import SwiftUI
 struct AddEntryView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+	
     @Query private var trackers: [Tracker]
-    @State private var form = AddEntryFormModel()
+	
+	@State private var form: AddEntryFormModel
+	
+	init(seededDate: Date? = nil) {
+		_form = State(initialValue: AddEntryFormModel(seededDate: seededDate))
+	}
 
     var body: some View {
         @Bindable var form = form

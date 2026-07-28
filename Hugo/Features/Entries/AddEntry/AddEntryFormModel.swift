@@ -23,10 +23,10 @@ final class AddEntryFormModel {
     private let calendar: Calendar
     private let now: Date
 
-    init(calendar: Calendar = .current, now: Date = .now) {
+	init(calendar: Calendar = .current, now: Date = .now, seededDate: Date? = nil) {
         self.calendar = calendar
         self.now = now
-        self.date = calendar.startOfDay(for: now)
+        self.date = calendar.startOfDay(for: seededDate ?? now)
         self.durationDate = calendar.startOfDay(for: now)
     }
 

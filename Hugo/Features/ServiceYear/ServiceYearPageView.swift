@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-struct TheocraticYearPageView: View {
+struct ServiceYearPageView: View {
     let report: TheocraticYearReport
     let initialMonth: YearMonth?
     @State private var didScrollToCurrentMonth = false
@@ -57,7 +57,7 @@ struct TheocraticYearPageView: View {
 
 #Preview {
     NavigationStack {
-        TheocraticYearPageView(report: ReportPreviewFixtures.yearReport, initialMonth: nil)
+        ServiceYearPageView(report: ReportPreviewFixtures.yearReport, initialMonth: nil)
     }
     .modelContainer(.preview)
 }

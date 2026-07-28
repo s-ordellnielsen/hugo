@@ -3,6 +3,8 @@ import SwiftUI
 
 struct MonthlyReportEmptyRow: View {
     let month: TheocraticYearMonth
+	
+	@State private var isPresented: Bool = false
 
     var body: some View {
         HStack {
@@ -25,6 +27,12 @@ struct MonthlyReportEmptyRow: View {
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(24)
         .accessibilityElement(children: .combine)
+		.onTapGesture {
+			isPresented.toggle()
+		}
+		.sheet(isPresented: $isPresented) {
+			AddEntryView(seededDate: month.id.date())
+		}
     }
 }
 
