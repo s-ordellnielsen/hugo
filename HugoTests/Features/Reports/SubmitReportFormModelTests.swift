@@ -204,6 +204,31 @@ struct SubmitReportFormModelTests {
     }
 
     @Test
+    func persistingIntoSentinelUpdatesInPlace() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+
+        // A V8→V9 backfill sentinel: `submittedAt`/`firstSubmittedAt` stay at
+        // the `.distantPast` default, marking the month as never submitted.
+        let sentinel = SubmittedReport(year: 2026, month: 6)
+        context.insert(sentinel)
+        try context.save()
+
+        let model = makeModel()
+        model.load(entries: [entry(2026, 6, 5, createdAt: date(2026, 6, 5, hour: 9))], submissions: [sentinel])
+
+        let report = try #require(model.persistSubmission(in: context))
+
+        // Still exactly one row: the sentinel became the real submission.
+        #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
+        #expect(report === sentinel)
+        let stored = try #require(context.fetch(FetchDescriptor<SubmittedReport>()).first)
+        #expect(stored.submittedAt == now)
+        #expect(stored.firstSubmittedAt == now)
+        #expect(stored.submittedHours == 1)
+    }
+
+    @Test
     func persistSnapshotsCategoriesFromTheComputation() throws {
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext

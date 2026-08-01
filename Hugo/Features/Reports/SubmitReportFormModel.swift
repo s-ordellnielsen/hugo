@@ -133,20 +133,49 @@ final class SubmitReportFormModel {
         return content
     }
 
-    /// Persists the submission snapshot. Re-submitting the same month
-    /// replaces the previous report, preserving `firstSubmittedAt`.
+    /// Persists the submission snapshot. An existing row for the same month
+    /// (a real submission or a V8→V9 backfill sentinel) is updated in place,
+    /// preserving `firstSubmittedAt` and the CloudKit record identity; the
+    /// theocratic-year rollup keys submissions by month and would double-count
+    /// a delete-and-insert duplicate.
     /// Returns the stored report (nil when not submittable).
     @discardableResult
     func persistSubmission(in context: ModelContext) -> SubmittedReport? {
         guard isSubmittable else { return nil }
 
         let summary = self.summary
-        let previous = existingSubmission
+        let snapshots = (summary?.categories ?? []).map { category in
+            SubmittedReport.SubmittedCategory(
+                name: category.name,
+                iconName: category.iconName,
+                typeRaw: category.type?.rawValue,
+                actualSeconds: category.duration,
+                submittedHours: computation.categoryHours[category.id] ?? 0
+            )
+        }
+
+        if let existing = existingSubmission {
+            existing.firstSubmittedAt = existing.firstSubmittedAt ?? now
+            existing.submittedAt = now
+            existing.entriesClosedAt = monthEntries.map(\.createdAt).max() ?? now
+            existing.roundingRuleRaw = selectedRule.rawValue
+            existing.fieldServiceSeconds = summary?.mainDuration ?? 0
+            existing.actualTotalSeconds = (summary?.totalSeconds ?? 0) + carriedIn
+            existing.submittedHours = computation.submittedHours
+            existing.carriedInSeconds = carriedIn
+            existing.carriedOutSeconds = computation.carriedOutSeconds
+            existing.roundedUpSeconds = computation.roundedUpSeconds
+            existing.roundedDownSeconds = computation.roundedDownSeconds
+            existing.totalBibleStudies = summary?.totalBibleStudies ?? 0
+            existing.categories = snapshots
+            try? context.save()
+            return existing
+        }
 
         let report = SubmittedReport(
             year: month.year,
             month: month.month,
-            firstSubmittedAt: previous?.firstSubmittedAt ?? now,
+            firstSubmittedAt: now,
             submittedAt: now,
             entriesClosedAt: monthEntries.map(\.createdAt).max() ?? now,
             roundingRuleRaw: selectedRule.rawValue,
@@ -158,20 +187,8 @@ final class SubmitReportFormModel {
             roundedUpSeconds: computation.roundedUpSeconds,
             roundedDownSeconds: computation.roundedDownSeconds,
             totalBibleStudies: summary?.totalBibleStudies ?? 0,
-            categories: (summary?.categories ?? []).map { category in
-                SubmittedReport.SubmittedCategory(
-                    name: category.name,
-                    iconName: category.iconName,
-                    typeRaw: category.type?.rawValue,
-                    actualSeconds: category.duration,
-                    submittedHours: computation.categoryHours[category.id] ?? 0
-                )
-            }
+            categories: snapshots
         )
-
-        if let previous {
-            context.delete(previous)
-        }
         context.insert(report)
         try? context.save()
         return report

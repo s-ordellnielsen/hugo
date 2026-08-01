@@ -143,9 +143,9 @@ struct SchemaMigrationTests {
         for report in [julyReport, juneReport] {
             #expect(report.firstSubmittedAt == .distantPast)
             #expect(report.submittedAt == .distantPast)
-            #expect(report.roundingRuleRaw.isEmpty)
+            #expect(report.roundingRuleRaw?.isEmpty == true)
             #expect(report.submittedHours == 0)
-            #expect(report.categories.isEmpty)
+            #expect(report.categories?.isEmpty == true)
         }
 
         #expect(julyReport.entriesClosedAt == Date(timeIntervalSince1970: 2_000))
@@ -226,14 +226,14 @@ struct SchemaMigrationTests {
         #expect(fetched.roundedUpSeconds == 0)
         #expect(fetched.roundedDownSeconds == 0)
         #expect(fetched.totalBibleStudies == 3)
-        #expect(fetched.categories.count == 2)
-        #expect(fetched.categories.first?.name == "Field Service")
-        #expect(fetched.categories.first?.iconName == "figure.walk")
-        #expect(fetched.categories.first?.type == .main)
-        #expect(fetched.categories.first?.actualSeconds == 19_200)
-        #expect(fetched.categories.first?.submittedHours == 5)
-        #expect(fetched.categories.last?.type == .separate)
-        #expect(fetched.categories.map(\.id) == ["Field Service", "Bethel"])
+        #expect(fetched.categories?.count == 2)
+        #expect(fetched.categories?.first?.name == "Field Service")
+        #expect(fetched.categories?.first?.iconName == "figure.walk")
+        #expect(fetched.categories?.first?.type == .main)
+        #expect(fetched.categories?.first?.actualSeconds == 19_200)
+        #expect(fetched.categories?.first?.submittedHours == 5)
+        #expect(fetched.categories?.last?.type == .separate)
+        #expect(fetched.categories?.map(\.id) == ["Field Service", "Bethel"])
     }
 
     private func makeV8Store(
