@@ -63,6 +63,7 @@ extension YearMonth {
         let formatter = DateFormatter()
         formatter.locale = locale
         formatter.calendar = calendar
+		formatter.timeZone = calendar.timeZone
         formatter.dateFormat = "LLLL yyyy"
 		
         return formatter.string(from: date)
@@ -79,6 +80,7 @@ extension YearMonth {
         let formatter = DateFormatter()
         formatter.locale = locale
         formatter.calendar = calendar
+		formatter.timeZone = calendar.timeZone
         formatter.dateFormat = "LLLL"
 
         return formatter.string(from: date)
