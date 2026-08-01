@@ -143,9 +143,9 @@ struct SchemaMigrationTests {
         for report in [julyReport, juneReport] {
             #expect(report.firstSubmittedAt == .distantPast)
             #expect(report.submittedAt == .distantPast)
-            #expect(report.roundingRuleRaw?.isEmpty == true)
+            #expect(report.roundingRuleRaw.isEmpty)
             #expect(report.submittedHours == 0)
-            #expect(report.categories?.isEmpty == true)
+            #expect(report.categories.isEmpty)
         }
 
         #expect(julyReport.entriesClosedAt == Date(timeIntervalSince1970: 2_000))
@@ -165,6 +165,63 @@ struct SchemaMigrationTests {
         )
 
         #expect(reports.isEmpty)
+    }
+
+    @Test
+    func migratingV9StorePreservesSubmittedReportsAcrossTheEligibilityRepair() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+
+        // The deployed V9 (non-optional) shape, as written by the internal
+        // TestFlight build: one sentinel and one real submission.
+        let sentinel = SchemaV9.SubmittedReport(
+            year: 2026, month: 6,
+            entriesClosedAt: Date(timeIntervalSince1970: 3_000)
+        )
+        let real = SchemaV9.SubmittedReport(
+            year: 2026, month: 7,
+            firstSubmittedAt: Date(timeIntervalSince1970: 10_000),
+            submittedAt: Date(timeIntervalSince1970: 20_000),
+            entriesClosedAt: Date(timeIntervalSince1970: 9_000),
+            roundingRuleRaw: "transfer",
+            fieldServiceSeconds: 19_200,
+            actualTotalSeconds: 20_400,
+            submittedHours: 5,
+            carriedOutSeconds: 2_400,
+            totalBibleStudies: 3,
+            categories: [
+                SchemaV9.SubmittedReport.SubmittedCategory(
+                    name: "Field Service",
+                    iconName: "figure.walk",
+                    typeRaw: TrackerType.main.rawValue,
+                    actualSeconds: 19_200,
+                    submittedHours: 5
+                )
+            ]
+        )
+        try makeV9Store(at: store.storeURL, submissions: [sentinel, real])
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let reports = try container.mainContext.fetch(FetchDescriptor<SubmittedReport>())
+
+        #expect(reports.count == 2)
+
+        let migratedSentinel = try #require(reports.first { $0.year == 2026 && $0.month == 6 })
+        #expect(migratedSentinel.submittedAt == .distantPast)
+        #expect(migratedSentinel.firstSubmittedAt == .distantPast)
+        #expect(migratedSentinel.entriesClosedAt == Date(timeIntervalSince1970: 3_000))
+
+        let migratedReal = try #require(reports.first { $0.year == 2026 && $0.month == 7 })
+        #expect(migratedReal.firstSubmittedAt == Date(timeIntervalSince1970: 10_000))
+        #expect(migratedReal.submittedAt == Date(timeIntervalSince1970: 20_000))
+        #expect(migratedReal.entriesClosedAt == Date(timeIntervalSince1970: 9_000))
+        #expect(migratedReal.roundingRuleRaw == "transfer")
+        #expect(migratedReal.fieldServiceSeconds == 19_200)
+        #expect(migratedReal.submittedHours == 5)
+        #expect(migratedReal.carriedOutSeconds == 2_400)
+        #expect(migratedReal.totalBibleStudies == 3)
+        #expect(migratedReal.categories?.first?.name == "Field Service")
+        #expect(migratedReal.yearMonth == YearMonth(year: 2026, month: 7))
     }
 
     @Test
@@ -259,6 +316,34 @@ struct SchemaMigrationTests {
             entry.createdAt = seed.createdAt
             context.insert(entry)
         }
+        try context.save()
+    }
+
+    private func makeV9Store(
+        at url: URL,
+        trackers: [SchemaV8.Tracker] = [],
+        seeds: [(date: Date, createdAt: Date)] = [],
+        submissions: [SchemaV9.SubmittedReport] = []
+    ) throws {
+        let schema = Schema(versionedSchema: SchemaV9.self)
+        let configuration = ModelConfiguration(
+            schema: schema,
+            url: url,
+            cloudKitDatabase: .none
+        )
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        let context = container.mainContext
+        trackers.forEach(context.insert)
+        for seed in seeds {
+            let entry = SchemaV8.Entry(
+                date: seed.date,
+                duration: 3_600,
+                tracker: trackers.first
+            )
+            entry.createdAt = seed.createdAt
+            context.insert(entry)
+        }
+        submissions.forEach(context.insert)
         try context.save()
     }
 

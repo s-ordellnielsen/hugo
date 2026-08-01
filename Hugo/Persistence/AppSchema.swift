@@ -92,7 +92,19 @@ enum SchemaV9: VersionedSchema {
     }
 }
 
-typealias CurrentSchema = SchemaV9
+enum SchemaV10: VersionedSchema {
+    static let versionIdentifier = Schema.Version(7, 0, 0)
+
+    typealias Entry = SchemaV9.Entry
+    typealias Tracker = SchemaV9.Tracker
+    typealias Report = SchemaV9.Report
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self, Report.self, SubmittedReport.self]
+    }
+}
+
+typealias CurrentSchema = SchemaV10
 
 // SchemaV8/V9.Report remains as migration compatibility ballast until a tested
 // future schema version can remove it safely.

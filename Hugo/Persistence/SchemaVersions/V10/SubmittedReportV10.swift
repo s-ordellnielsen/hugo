@@ -1,5 +1,5 @@
 //
-//  SubmittedReportV9.swift
+//  SubmittedReportV10.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 28/07/2026.
@@ -8,47 +8,47 @@
 import Foundation
 import SwiftData
 
-extension SchemaV9 {
+extension SchemaV10 {
     @Model
     final class SubmittedReport {
         /// Gregorian calendar month identity (matches `YearMonth`).
-        var year: Int = 0
-        var month: Int = 0
+        var year: Int?
+        var month: Int?
 
         /// First submission of this month.
-        var firstSubmittedAt: Date = Date.distantPast
+        var firstSubmittedAt: Date?
         /// Latest submission (== `firstSubmittedAt` unless re-submitted).
-        var submittedAt: Date = Date.distantPast
+        var submittedAt: Date?
         /// `max(Entry.createdAt)` included in this submission; entries with
         /// `createdAt > entriesClosedAt` are "unreported".
-        var entriesClosedAt: Date = Date.distantPast
+        var entriesClosedAt: Date?
 
         /// `RoundingRule` raw value used for this submission (empty until a
         /// real submission happens; Task 2 introduces the enum).
-        var roundingRuleRaw: String = ""
+        var roundingRuleRaw: String?
 
         /// Actual (unrounded) total of `.main` categories — "Field Service".
-        var fieldServiceSeconds: TimeInterval = 0
+        var fieldServiceSeconds: TimeInterval?
         /// Actual grand total incl. carry-in, before rounding.
-        var actualTotalSeconds: TimeInterval = 0
+        var actualTotalSeconds: TimeInterval?
         /// The whole-hour total sent to the overseer.
-        var submittedHours: Int = 0
+        var submittedHours: Int?
 
         /// Minutes carried in from the previous month's submission.
-        var carriedInSeconds: TimeInterval = 0
+        var carriedInSeconds: TimeInterval?
         /// Minutes carried out to next month (transfer rule only).
-        var carriedOutSeconds: TimeInterval = 0
+        var carriedOutSeconds: TimeInterval?
         /// Minutes added by rounding up (0 otherwise).
-        var roundedUpSeconds: TimeInterval = 0
+        var roundedUpSeconds: TimeInterval?
         /// Minutes dropped by rounding down (0 otherwise).
-        var roundedDownSeconds: TimeInterval = 0
+        var roundedDownSeconds: TimeInterval?
 
-        var totalBibleStudies: Int = 0
+        var totalBibleStudies: Int?
 
         /// Value-type snapshot list; a `Tracker` may be renamed or deleted
         /// later, so categories must be self-contained (same reasoning as
         /// `Entry.EntryTracker`).
-        var categories: [SubmittedCategory] = []
+        var categories: [SubmittedCategory]?
 
         init(
             year: Int = 0,
@@ -85,7 +85,7 @@ extension SchemaV9 {
         }
 
         var yearMonth: YearMonth {
-            YearMonth(year: year, month: month)
+            YearMonth(year: year ?? 0, month: month ?? 0)
         }
 
         struct SubmittedCategory: Codable, Hashable, Identifiable {

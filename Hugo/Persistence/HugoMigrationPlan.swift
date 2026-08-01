@@ -16,7 +16,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
             SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self,
-            SchemaV8.self, SchemaV9.self,
+            SchemaV8.self, SchemaV9.self, SchemaV10.self,
         ]
     }
 
@@ -24,7 +24,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         [
             migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4,
             migrateV4toV5, migrateV5toV6, migrateV6toV7, migrateV7toV8,
-            migrateV8toV9,
+            migrateV8toV9, migrateV9toV10,
         ]
     }
 
@@ -217,6 +217,14 @@ enum MigrationPlan: SchemaMigrationPlan {
 
             try context.save()
         }
+    )
+
+    /// Optionality-only CloudKit-eligibility repair for `SubmittedReport`.
+    /// No data transform: the on-disk columns are identical, so this is a
+    /// lightweight inferred-mapping migration that re-stamps the store hash.
+    static let migrateV9toV10: MigrationStage = .lightweight(
+        fromVersion: SchemaV9.self,
+        toVersion: SchemaV10.self
     )
 
 }
