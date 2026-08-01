@@ -37,7 +37,7 @@ nonisolated enum ReportComposer {
         locale: Locale = .current,
         calendar: Calendar = .current
     ) -> ReportMessageContent {
-        let hoursUnit = String(localized: "report.hours.unit")
+        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
         let greeting = render(
             template: template,
             firstName: firstName,
@@ -57,14 +57,14 @@ nonisolated enum ReportComposer {
         // NOTE: labels always resolve against the development locale (en) for
         // now — see the Task 2 note in the PR. Task 6 decides the real
         // language strategy for the message body.
-        let fieldServiceLabel = String(localized: "report.compose.field-service")
+        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
         lines.append("\(fieldServiceLabel): \(fieldServiceHours) \(hoursUnit)")
 
         for category in otherCategories {
             lines.append("\(category.name): \(computation.categoryHours[category.id] ?? 0) \(hoursUnit)")
         }
 
-        let studiesLabel = String(localized: "report.compose.bible-studies")
+        let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
         lines.append("\(studiesLabel): \(summary.totalBibleStudies)")
 
         return ReportMessageContent(recipient: nil, body: lines.joined(separator: "\n"))

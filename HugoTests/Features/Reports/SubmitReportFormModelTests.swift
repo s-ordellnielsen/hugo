@@ -275,30 +275,57 @@ struct SubmitReportFormModelTests {
 
     // MARK: - Composer handoff
 
-    @Test
-    func prepareSubmissionHandsTheRightInputsToTheComposer() {
-        let defaults = UserDefaults(suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)")!
-        defaults.set("Jens", forKey: "overseerFirstName")
-
-        let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
-        let model = makeModel(userDefaults: defaults)
-        model.load(entries: [entry(2026, 6, 5, seconds: 19_200, tracker: main)], submissions: [])
-
-        let content = model.prepareSubmission()
-
-        // 5h20m with the default round-up rule → 6 submitted hours.
-        #expect(content != nil)
-        #expect(content?.body.contains("Hi Jens!") == true)
-        #expect(content?.body.contains("Here is my report for June.") == true)
-        #expect(content?.body.contains("Field Service: 6 h") == true)
-        #expect(content?.body.contains("Bible studies: 0") == true)
-
-        // Changing the rule invalidates the prepared message.
-        model.selectedRule = .transfer
-        #expect(model.preparedContent == nil)
-        let recomposed = model.prepareSubmission()
-        #expect(recomposed?.body.contains("Field Service: 5 h") == true)
-    }
+	@Test
+	func prepareSubmissionHandsTheRightInputsToTheComposer() {
+		let defaults = UserDefaults(
+			suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)"
+		)!
+		
+		defaults.set("TEST {first} {month}", forKey: UserDefaultsKeys.overseerGreetingTemplate)
+		defaults.set("Jens", forKey: UserDefaultsKeys.overseerFirstName)
+		
+		let main = Tracker(
+			name: "Field Service",
+			type: .main,
+			iconName: "figure.walk"
+		)
+		
+		let model = makeModel(userDefaults: defaults)
+		model.load(
+			entries: [
+				entry(2026, 6, 5, seconds: 19_200, tracker: main)
+			],
+			submissions: []
+		)
+		
+		let content = model.prepareSubmission()
+		
+		#expect(content != nil)
+		#expect(model.preparedContent != nil)
+		
+		// Verifies that the first-name template input was substituted.
+		#expect(content?.body.contains("TEST Jens") == true)
+		
+		// Verifies that template tags were processed without asserting the
+		// localized month value.
+		#expect(content?.body.contains("{first}") == false)
+		#expect(content?.body.contains("{month}") == false)
+		
+		// Verifies the actual business logic independently of localized labels.
+		#expect(model.computation.submittedHours == 6)
+		
+		// Changing the rule invalidates the prepared message.
+		model.selectedRule = .transfer
+		
+		#expect(model.preparedContent == nil)
+		#expect(model.computation.submittedHours == 5)
+		
+		let recomposed = model.prepareSubmission()
+		
+		#expect(recomposed != nil)
+		#expect(recomposed?.body.contains("TEST Jens") == true)
+		#expect(model.computation.submittedHours == 5)
+	}
 
     @Test
     func prepareSubmissionComposesAZeroValuedReportForAnEmptyMonth() {

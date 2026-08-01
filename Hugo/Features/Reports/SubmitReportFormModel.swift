@@ -20,6 +20,7 @@ final class SubmitReportFormModel {
 
     private let calendar: Calendar
     private let now: Date
+    private let locale: Locale
     private let userDefaults: UserDefaults
 
     private var entries: [Entry] = []
@@ -29,11 +30,13 @@ final class SubmitReportFormModel {
         month: YearMonth,
         calendar: Calendar = .current,
         now: Date = .now,
+        locale: Locale = .current,
         userDefaults: UserDefaults = .standard
     ) {
         self.month = month
         self.calendar = calendar
         self.now = now
+        self.locale = locale
         self.userDefaults = userDefaults
         let rawDefault = userDefaults.string(forKey: UserDefaultsKeys.defaultRoundingRule)
         self.selectedRule = RoundingRule(rawValue: rawDefault ?? "") ?? .up
@@ -59,9 +62,11 @@ final class SubmitReportFormModel {
     /// missing submissions both yield zero carry-in.
     var previousSubmission: SubmittedReport? {
         let previousMonth = YearMonth.previous(before: month, calendar: calendar)
-        guard let submission = submissions.first(where: {
-            $0.year == previousMonth.year && $0.month == previousMonth.month
-        }), (submission.submittedAt ?? .distantPast) != .distantPast else { return nil }
+        guard
+            let submission = submissions.first(where: {
+                $0.year == previousMonth.year && $0.month == previousMonth.month
+            }), (submission.submittedAt ?? .distantPast) != .distantPast
+        else { return nil }
         return submission
     }
 
@@ -110,16 +115,18 @@ final class SubmitReportFormModel {
     func prepareSubmission() -> ReportMessageContent? {
         guard isSubmittable else { return nil }
 
-        let summary = self.summary ?? MonthlyReportSummary(
-            id: month,
-            displayName: month.monthYearString(calendar: calendar),
-            totalSeconds: 0,
-            totalBibleStudies: 0,
-            mainDuration: 0,
-            separateDuration: 0,
-            categories: [],
-            entries: []
-        )
+        let summary =
+            self.summary
+            ?? MonthlyReportSummary(
+                id: month,
+                displayName: month.monthYearString(calendar: calendar),
+                totalSeconds: 0,
+                totalBibleStudies: 0,
+                mainDuration: 0,
+                separateDuration: 0,
+                categories: [],
+                entries: []
+            )
 
         let content = ReportComposer.message(
             summary: summary,
@@ -127,6 +134,7 @@ final class SubmitReportFormModel {
             template: greetingTemplate,
             firstName: overseerFirstName,
             lastName: overseerLastName,
+            locale: locale,
             calendar: calendar
         )
         preparedContent = content
@@ -155,7 +163,9 @@ final class SubmitReportFormModel {
         }
 
         if let existing = existingSubmission {
-            existing.firstSubmittedAt = existing.firstSubmittedAt ?? now
+            if existing.firstSubmittedAt == nil || existing.firstSubmittedAt == .distantPast {
+                existing.firstSubmittedAt = now
+            }
             existing.submittedAt = now
             existing.entriesClosedAt = monthEntries.map(\.createdAt).max() ?? now
             existing.roundingRuleRaw = selectedRule.rawValue
@@ -202,7 +212,10 @@ final class SubmitReportFormModel {
 
     private var greetingTemplate: String {
         let stored = userDefaults.string(forKey: UserDefaultsKeys.overseerGreetingTemplate)
-        return stored?.isEmpty == false ? stored! : "Hi {first}!\nHere is my report for {month}."
+
+        return stored?.isEmpty == false
+            ? stored!
+            : String(localized: "report.greeting.default", locale: locale)
     }
 
     private var overseerFirstName: String {
@@ -217,16 +230,17 @@ final class SubmitReportFormModel {
     private func recompute() {
         preparedContent = nil
         computation = ReportRoundingCalculator.compute(
-            summary: summary ?? MonthlyReportSummary(
-                id: month,
-                displayName: month.monthYearString(calendar: calendar),
-                totalSeconds: 0,
-                totalBibleStudies: 0,
-                mainDuration: 0,
-                separateDuration: 0,
-                categories: [],
-                entries: []
-            ),
+            summary: summary
+                ?? MonthlyReportSummary(
+                    id: month,
+                    displayName: month.monthYearString(calendar: calendar),
+                    totalSeconds: 0,
+                    totalBibleStudies: 0,
+                    mainDuration: 0,
+                    separateDuration: 0,
+                    categories: [],
+                    entries: []
+                ),
             carriedIn: carriedIn,
             rule: selectedRule
         )

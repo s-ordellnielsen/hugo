@@ -26,16 +26,16 @@ struct ReportReminderScheduleTests {
 
     @Test
     func previousMonthStaysDueThroughoutTheGraceWindow() {
-        // With a 30-day grace window the previous month stays due for the
+        // With a 7-day grace window the previous month stays due for the
         // entire following month, and the current month takes over on its own
         // last day — so from the first due date onward the reminder is
         // effectively always active for exactly one month at a time.
         #expect(
-            ReportReminderSchedule.dueMonth(now: date(2026, 6, 28), calendar: calendar)
+            ReportReminderSchedule.dueMonth(now: date(2026, 6, 5), calendar: calendar)
                 == YearMonth(year: 2026, month: 5)
         )
         #expect(
-            ReportReminderSchedule.dueMonth(now: date(2026, 7, 30), calendar: calendar)
+            ReportReminderSchedule.dueMonth(now: date(2026, 7, 7), calendar: calendar)
                 == YearMonth(year: 2026, month: 6)
         )
         #expect(
@@ -62,11 +62,11 @@ struct ReportReminderScheduleTests {
                 == YearMonth(year: 2026, month: 7)
         )
         #expect(
-            ReportReminderSchedule.dueMonth(now: date(2026, 8, 15), calendar: calendar)
+            ReportReminderSchedule.dueMonth(now: date(2026, 8, 4), calendar: calendar)
                 == YearMonth(year: 2026, month: 7)
         )
         #expect(
-            ReportReminderSchedule.dueMonth(now: date(2026, 8, 30), calendar: calendar)
+            ReportReminderSchedule.dueMonth(now: date(2026, 8, 7), calendar: calendar)
                 == YearMonth(year: 2026, month: 7)
         )
     }

@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import Testing
+
 @testable import Hugo
 
 @MainActor
@@ -22,8 +23,12 @@ struct SchemaMigrationTests {
                     goalMonthlyHours: 0,
                     extraTime: 0,
                     trackers: [
-                        TrackerSummary(name: "Field Service", duration: 3_600, type: .main, hue: 0.1, sat: 0.8, bri: 0.9, icon: "figure.walk"),
-                        TrackerSummary(name: "Bethel", duration: 1_800, type: .separate, hue: 0.2, sat: 0.8, bri: 0.9, icon: "building"),
+                        TrackerSummary(
+                            name: "Field Service", duration: 3_600, type: .main, hue: 0.1, sat: 0.8, bri: 0.9,
+                            icon: "figure.walk"),
+                        TrackerSummary(
+                            name: "Bethel", duration: 1_800, type: .separate, hue: 0.2, sat: 0.8, bri: 0.9,
+                            icon: "building"),
                     ]
                 )
             ]
@@ -63,7 +68,9 @@ struct SchemaMigrationTests {
                     goalMonthlyHours: 0,
                     extraTime: 0,
                     trackers: [
-                        TrackerSummary(name: "Field Service", duration: 3_600, type: .main, hue: 0.1, sat: 0.8, bri: 0.9, icon: "figure.walk")
+                        TrackerSummary(
+                            name: "Field Service", duration: 3_600, type: .main, hue: 0.1, sat: 0.8, bri: 0.9,
+                            icon: "figure.walk")
                     ]
                 )
             ]
@@ -124,15 +131,17 @@ struct SchemaMigrationTests {
         let julySecond = try #require(calendar.date(from: DateComponents(year: 2026, month: 7, day: 15)))
         let june = try #require(calendar.date(from: DateComponents(year: 2026, month: 6, day: 10)))
 
-        try makeV8Store(at: store.storeURL, trackers: [tracker], seeds: [
-            (julyFirst, Date(timeIntervalSince1970: 1_000)),
-            (julySecond, Date(timeIntervalSince1970: 2_000)),
-            (june, Date(timeIntervalSince1970: 3_000)),
-        ])
+        try makeV8Store(
+            at: store.storeURL, trackers: [tracker],
+            seeds: [
+                (julyFirst, Date(timeIntervalSince1970: 1_000)),
+                (julySecond, Date(timeIntervalSince1970: 2_000)),
+                (june, Date(timeIntervalSince1970: 3_000)),
+            ])
 
         let container = try makeCurrentStore(at: store.storeURL)
         let reports = try container.mainContext.fetch(
-            FetchDescriptor<SchemaV9.SubmittedReport>()
+            FetchDescriptor<SubmittedReport>()
         )
 
         #expect(reports.count == 2)
@@ -141,11 +150,11 @@ struct SchemaMigrationTests {
         let juneReport = try #require(reports.first { $0.year == 2026 && $0.month == 6 })
 
         for report in [julyReport, juneReport] {
-            #expect(report.firstSubmittedAt == .distantPast)
-            #expect(report.submittedAt == .distantPast)
-            #expect(report.roundingRuleRaw.isEmpty)
-            #expect(report.submittedHours == 0)
-            #expect(report.categories.isEmpty)
+			#expect(report.firstSubmittedAt == .distantPast)
+			#expect(report.submittedAt == .distantPast)
+			#expect((report.roundingRuleRaw ?? "").isEmpty)
+			#expect(report.submittedHours == 0)
+			#expect((report.categories ?? []).isEmpty)
         }
 
         #expect(julyReport.entriesClosedAt == Date(timeIntervalSince1970: 2_000))
@@ -161,7 +170,7 @@ struct SchemaMigrationTests {
 
         let container = try makeCurrentStore(at: store.storeURL)
         let reports = try container.mainContext.fetch(
-            FetchDescriptor<SchemaV9.SubmittedReport>()
+            FetchDescriptor<SubmittedReport>()
         )
 
         #expect(reports.isEmpty)
