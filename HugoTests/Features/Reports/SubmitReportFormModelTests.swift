@@ -327,14 +327,35 @@ struct SubmitReportFormModelTests {
 		#expect(model.computation.submittedHours == 5)
 	}
 
-    @Test
-    func prepareSubmissionComposesAZeroValuedReportForAnEmptyMonth() {
-        let model = makeModel()
-        model.load(entries: [], submissions: [])
-
-        let content = model.prepareSubmission()
-        #expect(content != nil)
-        #expect(content?.body.contains("Field Service: 0 h") == true)
-        #expect(content?.body.contains("Bible studies: 0") == true)
-    }
+	@Test
+	func prepareSubmissionComposesAZeroValuedReportForAnEmptyMonth() {
+		let model = makeModel()
+		model.load(entries: [], submissions: [])
+		
+		let content = model.prepareSubmission()
+		
+		#expect(content != nil)
+		
+		let reportLines = content?.body
+			.components(separatedBy: "\n\n")
+			.last?
+			.split(separator: "\n")
+			.map(String.init) ?? []
+		
+		#expect(reportLines.count == 2)
+		
+		let reportValues = reportLines.compactMap { line -> Int? in
+			guard let valuePart = line.split(separator: ":", maxSplits: 1).last else {
+				return nil
+			}
+			
+			let numericValue = valuePart
+				.split(whereSeparator: \.isWhitespace)
+				.first
+			
+			return numericValue.flatMap { Int($0) }
+		}
+		
+		#expect(reportValues == [0, 0])
+	}
 }

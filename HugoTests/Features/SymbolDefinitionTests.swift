@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Hugo
 
 @MainActor
@@ -17,13 +18,20 @@ struct SymbolDefinitionTests {
     }
 
     @Test
-    func localizedNameMatchesCaseInsensitively() {
-        #expect(symbol.matches("PHONE", nil))
+    func localizedNameMatchesWithDifferentCasing() {
+        let localizedName = String(localized: symbol.name)
+        let differentlyCasedName = localizedName.uppercased()
+
+        #expect(symbol.matches(differentlyCasedName, nil))
     }
 
     @Test
     func commaSeparatedKeywordMatches() {
-        #expect(symbol.matches("call", nil))
+        let keywords = String(localized: symbol.keywordsKey)
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+        #expect(symbol.matches(String(keywords[1]), nil))
     }
 
     @Test
