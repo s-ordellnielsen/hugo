@@ -60,15 +60,21 @@ final class SubmitReportFormModel {
 
     /// The previous month's real submission, if any. Backfill sentinels and
     /// missing submissions both yield zero carry-in.
-    var previousSubmission: SubmittedReport? {
-        let previousMonth = YearMonth.previous(before: month, calendar: calendar)
-        guard
-            let submission = submissions.first(where: {
-                $0.year == previousMonth.year && $0.month == previousMonth.month
-            }), (submission.submittedAt ?? .distantPast) != .distantPast
-        else { return nil }
-        return submission
-    }
+	var previousSubmission: SubmittedReport? {
+		let previousMonth = YearMonth.previous(before: month, calendar: calendar)
+		
+		guard
+			let submission = TheocraticYearReportBuilder.canonicalSubmission(
+				for: previousMonth,
+				in: submissions
+			),
+			(submission.submittedAt ?? .distantPast) != .distantPast
+		else {
+			return nil
+		}
+		
+		return submission
+	}
 
     var carriedIn: TimeInterval {
         previousSubmission?.carriedOutSeconds ?? 0
@@ -83,9 +89,12 @@ final class SubmitReportFormModel {
     )
 
     /// An existing report for this exact month (re-submission replaces it).
-    var existingSubmission: SubmittedReport? {
-        submissions.first { $0.year == month.year && $0.month == month.month }
-    }
+	var existingSubmission: SubmittedReport? {
+		TheocraticYearReportBuilder.canonicalSubmission(
+			for: month,
+			in: submissions
+		)
+	}
 
     /// A report can be submitted for every past or current month, including
     /// a zero-activity month. Persisting that zero-valued snapshot records an
