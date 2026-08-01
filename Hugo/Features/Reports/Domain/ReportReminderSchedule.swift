@@ -48,10 +48,10 @@ nonisolated enum ReportReminderSchedule {
         month: YearMonth,
         calendar: Calendar = .current
     ) -> Bool {
-        guard let report, report.submittedAt != .distantPast else { return true }
+        guard let report, (report.submittedAt ?? .distantPast) != .distantPast else { return true }
 
         return entries.contains {
-            $0.date.yearMonth(using: calendar) == month && $0.createdAt > report.entriesClosedAt
+            $0.date.yearMonth(using: calendar) == month && $0.createdAt > (report.entriesClosedAt ?? .distantPast)
         }
     }
 }

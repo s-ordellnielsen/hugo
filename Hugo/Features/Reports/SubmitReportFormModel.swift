@@ -61,7 +61,7 @@ final class SubmitReportFormModel {
         let previousMonth = YearMonth.previous(before: month, calendar: calendar)
         guard let submission = submissions.first(where: {
             $0.year == previousMonth.year && $0.month == previousMonth.month
-        }), submission.submittedAt != .distantPast else { return nil }
+        }), (submission.submittedAt ?? .distantPast) != .distantPast else { return nil }
         return submission
     }
 

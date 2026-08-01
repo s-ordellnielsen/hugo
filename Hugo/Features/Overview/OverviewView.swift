@@ -31,7 +31,7 @@ struct OverviewView: View {
         guard let submission = submissions.first(where: { $0.year == due.year && $0.month == due.month }) else {
             return due
         }
-        return submission.submittedAt == .distantPast ? due : nil
+        return (submission.submittedAt ?? .distantPast) == .distantPast ? due : nil
     }
     var body: some View {
         NavigationStack {

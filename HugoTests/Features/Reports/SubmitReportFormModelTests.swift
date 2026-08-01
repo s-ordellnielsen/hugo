@@ -223,11 +223,11 @@ struct SubmitReportFormModelTests {
         // larger remainder (separate, 40m).
         #expect(report.submittedHours == 4)
         #expect(report.fieldServiceSeconds == 8_400)
-        #expect(report.categories.count == 2)
-        #expect(report.categories.first { $0.name == "Field Service" }?.submittedHours == 2)
-        #expect(report.categories.first { $0.name == "LDC" }?.submittedHours == 2)
-        #expect(report.categories.first { $0.name == "LDC" }?.type == .separate)
-        #expect(report.categories.first { $0.name == "Field Service" }?.iconName == "figure.walk")
+        #expect(report.categories?.count == 2)
+        #expect(report.categories?.first { $0.name == "Field Service" }?.submittedHours == 2)
+        #expect(report.categories?.first { $0.name == "LDC" }?.submittedHours == 2)
+        #expect(report.categories?.first { $0.name == "LDC" }?.type == .separate)
+        #expect(report.categories?.first { $0.name == "Field Service" }?.iconName == "figure.walk")
     }
 
     @Test
@@ -244,7 +244,7 @@ struct SubmitReportFormModelTests {
         #expect(report.actualTotalSeconds == 0)
         #expect(report.submittedHours == 0)
         #expect(report.totalBibleStudies == 0)
-        #expect(report.categories.isEmpty)
+        #expect(report.categories?.isEmpty == true)
         #expect(report.entriesClosedAt == now)
     }
 

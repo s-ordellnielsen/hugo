@@ -12,7 +12,7 @@ struct TheocraticYearMonth: Identifiable {
     /// (`submittedAt == .distantPast`) means "never submitted".
     var isSubmitted: Bool {
         guard let submittedReport else { return false }
-        return submittedReport.submittedAt != .distantPast
+        return (submittedReport.submittedAt ?? .distantPast) != .distantPast
     }
 }
 

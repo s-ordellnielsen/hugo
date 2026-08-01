@@ -7,8 +7,8 @@ struct MonthlyReportEntryListView: View {
     var report: SubmittedReport? = nil
 
     private func isUnreported(_ entry: Entry) -> Bool {
-        guard let report, report.submittedAt != .distantPast else { return false }
-        return entry.createdAt > report.entriesClosedAt
+        guard let report, (report.submittedAt ?? .distantPast) != .distantPast else { return false }
+        return entry.createdAt > (report.entriesClosedAt ?? .distantPast)
     }
 
     var body: some View {
