@@ -66,6 +66,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 010 | Replace the Report tab with a Year screen | P2 | M | 004 | DONE |
 | 012 | Monthly report submission — reminder, rounding, and send-to-overseer | P1 | L | 010, 011 | DONE |
 | 013 | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2 | S | 012 | DONE |
+| 014 | Make SubmittedReport CloudKit-eligible so V9 schema pushes and syncs (no V10) | P1 | S | — | IN PROGRESS (code complete; unit-test run blocked by broken local simulator/xcode-select env — see plan) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale).
@@ -81,6 +82,7 @@ REJECTED (with one-line rationale).
 * Plan 007 consumes the add-entry and reporting domain APIs established by Plans 004 and 006.
 * Plan 008 enables Swift 6 only after mutable async code has been isolated behind testable boundaries.
 * Plan 009 is intentionally last because formatting and project-file cleanup should operate on final paths.
+* Plan 014 is a correctness fix to plan 012's `SubmittedReport` model (not CloudKit-eligible → schema never pushed, production sync fails). It edits V9 in place because the fix is optionality-only and V9 never reached CloudKit or users; it depends on 012 being DONE and must land before any build that ships V9 to Production.
 
 ## Architecture decisions
 
