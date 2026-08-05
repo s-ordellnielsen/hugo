@@ -42,6 +42,22 @@ struct SubmitReportFormModelTests {
         return SubmitReportFormModel(month: month, calendar: calendar, now: now, userDefaults: defaults)
     }
 
+    // MARK: - Cached derived values
+
+    @Test
+    func summaryIsNilBeforeLoad() {
+        #expect(makeModel().summary == nil)
+    }
+
+    @Test
+    func summaryIsPopulatedAfterLoad() {
+        let model = makeModel()
+        model.load(entries: [entry(2026, 6, 5, seconds: 3_600)], submissions: [])
+
+        #expect(model.summary != nil)
+        #expect(model.summary?.totalSeconds == 3_600)
+    }
+
     // MARK: - Defaults & rule selection
 
     @Test
