@@ -55,7 +55,7 @@ struct OverviewView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { SettingsButton() }.sheet(isPresented: $showingAddEntry) { AddEntryView() }.sheet(
                 isPresented: $showingDetails
-            ) { MonthlyProgressDetailView() }
+            ) { MonthlyProgressDetailView(month: now.yearMonth()) }
         }
     }
 }

@@ -6,6 +6,12 @@ struct CategoryProgressBreakdownView: View {
     @Query private var trackers: [Tracker]
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
 
+    init(month: YearMonth = Date().yearMonth()) {
+        let start = month.date()
+        let end = month.nextMonth().date()
+        _entries = Query(filter: #Predicate<Entry> { $0.date >= start && $0.date < end })
+    }
+
     private var rows: [CategoryProgressRow] { CategoryProgressAggregator.rows(entries: entries, trackers: trackers) }
 
     var body: some View {

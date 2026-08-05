@@ -62,6 +62,15 @@ struct AddEntryFormModelTests {
     }
 
     @Test
+    func draftWithoutTrackerProducesLocalizedValidationMessage() {
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
+        model.durationDate = date(2026, 1, 1, hour: 1)
+        #expect(model.draft() == nil)
+        #expect(model.validationMessage != "entry.add.validation.invalid")
+        #expect(model.validationMessage?.isEmpty == false)
+    }
+
+    @Test
     func selectionPrefersDefaultAndPreservesExistingSelection() {
         let first = Tracker(name: "First")
         let selected = Tracker(name: "Selected")

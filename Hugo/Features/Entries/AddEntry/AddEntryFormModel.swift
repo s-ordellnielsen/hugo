@@ -71,7 +71,7 @@ final class AddEntryFormModel {
 
     func draft() -> EntryDraft? {
         guard let combinedDate, let selectedTracker, durationInSeconds > 0 else {
-            validationMessage = "entry.add.validation.invalid"
+            validationMessage = String(localized: "entry.add.validation.invalid")
             return nil
         }
         validationMessage = nil

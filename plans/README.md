@@ -69,7 +69,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 014 | Make SubmittedReport CloudKit-eligible so V9 schema pushes and syncs (no V10) | P1 | S | — | BLOCKED (in-place edit broke the entity version hash — existing V9 stores crash with loadIssueModelContainer; superseded by 015) |
 | 015 | SchemaV10 with eligible SubmittedReport + V9→V10 lightweight migration (repair 014's hash break) | P1 | S | 014 | DONE |
 | 016 | Green verification gate — mechanically format so Scripts/verify.sh runs | P1 | S | — | DONE |
-| 017 | User-visible correctness — shared error alert, validation, month-scoped breakdown, throwing saves, stable sheets | P1 | M | 016 | TODO |
+| 017 | User-visible correctness — shared error alert, validation, month-scoped breakdown, throwing saves, stable sheets | P1 | M | 016 | DONE |
 | 018 | Reporting aggregation performance — cached formatters, summaries, year reports | P2 | M | 016 | TODO |
 | 019 | Symbol catalog performance — static catalog, precomputed search index | P2 | S | 016 | TODO |
 | 020 | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1 | L | 016, 017 | TODO |

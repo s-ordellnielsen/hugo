@@ -157,7 +157,7 @@ final class SubmitReportFormModel {
     /// a delete-and-insert duplicate.
     /// Returns the stored report (nil when not submittable).
     @discardableResult
-    func persistSubmission(in context: ModelContext) -> SubmittedReport? {
+    func persistSubmission(in context: ModelContext) throws -> SubmittedReport? {
         guard isSubmittable else { return nil }
 
         let summary = self.summary
@@ -187,7 +187,7 @@ final class SubmitReportFormModel {
             existing.roundedDownSeconds = computation.roundedDownSeconds
             existing.totalBibleStudies = summary?.totalBibleStudies ?? 0
             existing.categories = snapshots
-            try? context.save()
+            try context.save()
             return existing
         }
 
@@ -209,7 +209,7 @@ final class SubmitReportFormModel {
             categories: snapshots
         )
         context.insert(report)
-        try? context.save()
+        try context.save()
         return report
     }
 

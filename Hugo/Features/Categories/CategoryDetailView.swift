@@ -16,6 +16,7 @@ struct CategoryDetailView: View {
 
     @State private var showDeleteConfirmation = false
     @State private var iconPickerIsPresented: Bool = false
+    @State private var errorMessage: String?
 
     var body: some View {
         @Bindable var tracker = tracker
@@ -91,8 +92,13 @@ struct CategoryDetailView: View {
                 .confirmationDialog("tracker.action.delete.\(tracker.name)?", isPresented: $showDeleteConfirmation) {
                     Button("common.delete", role: .destructive) {
                         context.delete(tracker)
-                        try? context.save()
-                        dismiss()
+                        do {
+                            try context.save()
+                            dismiss()
+                        } catch {
+                            context.rollback()
+                            errorMessage = error.localizedDescription
+                        }
                     }
                     Button(role: .cancel) {}
                 } message: {
@@ -103,6 +109,7 @@ struct CategoryDetailView: View {
                 }
             }
         }
+        .errorAlert(message: $errorMessage)
     }
 }
 

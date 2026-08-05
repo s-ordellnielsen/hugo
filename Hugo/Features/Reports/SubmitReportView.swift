@@ -12,6 +12,7 @@ struct SubmitReportView: View {
     @State private var model: SubmitReportFormModel
     @State private var isComposingMessage = false
     @State private var showingCopiedNotice = false
+    @State private var saveErrorMessage: String?
     @State private var showingSettings = false
 
     init(month: YearMonth) {
@@ -157,18 +158,17 @@ struct SubmitReportView: View {
                 ) { sent in
                     isComposingMessage = false
                     if sent {
-                        model.persistSubmission(in: context)
-                        dismiss()
+                        persist()
                     }
                 }
             }
         }
         .alert("report.submit.copied", isPresented: $showingCopiedNotice) {
             Button("common.ok") {
-                model.persistSubmission(in: context)
-                dismiss()
+                persist()
             }
         }
+        .errorAlert(message: $saveErrorMessage)
     }
 
     private func computedRow(_ category: MonthlyCategorySummary) -> some View {
@@ -178,6 +178,16 @@ struct SubmitReportView: View {
             Text("\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))")
                 .fontDesign(.monospaced)
                 .foregroundStyle(.secondary)
+        }
+    }
+
+    private func persist() {
+        do {
+            try model.persistSubmission(in: context)
+            dismiss()
+        } catch {
+            context.rollback()
+            saveErrorMessage = error.localizedDescription
         }
     }
 

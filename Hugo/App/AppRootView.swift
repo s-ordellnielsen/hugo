@@ -8,6 +8,7 @@ struct AppRootView: View {
     @State private var bootstrapper = AppBootstrapper()
     @State private var selectedTab: AppTab = .overview
     @State private var yearResetToken = UUID()
+    @State private var bootstrapErrorMessage: String?
 
     private var tabSelection: Binding<AppTab> {
         Binding(
@@ -32,11 +33,8 @@ struct AppRootView: View {
         }
         .task { await bootstrapper.start(context: context) }
         .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
-        .alert("common.error", isPresented: Binding(get: { bootstrapper.state == .failed }, set: { _ in })) {
-            Button("common.retry") { Task { await bootstrapper.retry(context: context) } }
-        } message: {
-            Text(bootstrapper.errorMessage ?? "common.error")
-        }
+        .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
+        .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
     }
 }
 

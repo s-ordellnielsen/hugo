@@ -19,18 +19,7 @@ struct DefaultCategoryButton: View {
                 .foregroundStyle(tracker.isDefault ? .yellow : .primary)
                 .contentTransition(.symbolEffect(.replace))
         }
-        .alert("common.error", isPresented: errorAlertBinding) {
-            Button("common.dismiss", role: .cancel) { errorMessage = nil }
-        } message: {
-            Text(errorMessage ?? "common.error")
-        }
-    }
-
-    private var errorAlertBinding: Binding<Bool> {
-        Binding(
-            get: { errorMessage != nil },
-            set: { if !$0 { errorMessage = nil } }
-        )
+        .errorAlert(message: $errorMessage)
     }
 }
 

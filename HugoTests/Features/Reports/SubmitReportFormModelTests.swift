@@ -150,6 +150,16 @@ struct SubmitReportFormModelTests {
 
     // MARK: - Persistence
 
+    // The throwing signature is intentional: persistence failures must reach the UI.
+    @Test
+    func persistSubmissionHappyPathUsesThrowingSignature() throws {
+        let container = try InMemoryModelContainer.make()
+        let model = makeModel()
+        model.load(entries: [], submissions: [])
+        let report = try model.persistSubmission(in: container.mainContext)
+        #expect(report != nil)
+    }
+
     @Test
     func persistInsertsOneSnapshotWithCorrectTotals() throws {
         let container = try InMemoryModelContainer.make()
@@ -162,7 +172,7 @@ struct SubmitReportFormModelTests {
         model.selectedRule = .down
 
         // 3h30m → floor 3h, 30m dropped.
-        let report = try #require(model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(in: context))
 
         #expect(report.year == 2026)
         #expect(report.month == 6)
@@ -186,7 +196,7 @@ struct SubmitReportFormModelTests {
         let first = entry(2026, 6, 5, seconds: 3_600, createdAt: date(2026, 6, 5, hour: 9))
         model.load(entries: [first], submissions: [])
 
-        let original = try #require(model.persistSubmission(in: context))
+        let original = try #require(try model.persistSubmission(in: context))
         let firstSubmittedAt = original.firstSubmittedAt
 
         // A new entry arrives after the first submission; the user re-submits.
@@ -195,7 +205,7 @@ struct SubmitReportFormModelTests {
         let remodel = SubmitReportFormModel(month: month, calendar: calendar, now: laterNow)
         remodel.load(entries: [first, later], submissions: [original])
 
-        let replacement = try #require(remodel.persistSubmission(in: context))
+        let replacement = try #require(try remodel.persistSubmission(in: context))
 
         #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
         #expect(replacement.firstSubmittedAt == firstSubmittedAt)
@@ -218,7 +228,7 @@ struct SubmitReportFormModelTests {
         let model = makeModel()
         model.load(entries: [entry(2026, 6, 5, createdAt: date(2026, 6, 5, hour: 9))], submissions: [sentinel])
 
-        let report = try #require(model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(in: context))
 
         // Still exactly one row: the sentinel became the real submission.
         #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
@@ -244,7 +254,7 @@ struct SubmitReportFormModelTests {
             ], submissions: [])
         model.selectedRule = .down
 
-        let report = try #require(model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(in: context))
 
         // 2h20m main + 1h40m separate = 4h → floors 2+1, extra hour to the
         // larger remainder (separate, 40m).
@@ -265,7 +275,7 @@ struct SubmitReportFormModelTests {
         let model = makeModel()
         model.load(entries: [], submissions: [])
 
-        let report = try #require(model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(in: context))
         #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
         #expect(report.fieldServiceSeconds == 0)
         #expect(report.actualTotalSeconds == 0)

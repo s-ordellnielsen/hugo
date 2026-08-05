@@ -72,20 +72,12 @@ struct AddEntryView: View {
                 EntryTimePickerView(date: $form.time)
                     .presentationDetents([.height(300)])
             }
-            .alert("common.error", isPresented: errorAlertBinding) {
-                Button("common.dismiss", role: .cancel) { form.validationMessage = nil }
-            } message: {
-                Text(form.validationMessage ?? String(localized: "common.error"))
-            }
+            .errorAlert(message: $form.validationMessage)
         }
         .task { form.reconcileSelection(with: trackers) }
         .onChange(of: trackers) { _, newTrackers in
             form.reconcileSelection(with: newTrackers)
         }
-    }
-
-    private var errorAlertBinding: Binding<Bool> {
-        Binding(get: { form.validationMessage != nil }, set: { if !$0 { form.validationMessage = nil } })
     }
 
     private func submit() {

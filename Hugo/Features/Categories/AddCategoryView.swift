@@ -74,19 +74,8 @@ struct AddCategoryView: View {
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .alert("common.error", isPresented: errorAlertBinding) {
-                Button("common.dismiss", role: .cancel) { errorMessage = nil }
-            } message: {
-                Text(errorMessage ?? "common.error")
-            }
+            .errorAlert(message: $errorMessage)
         }
-    }
-
-    private var errorAlertBinding: Binding<Bool> {
-        Binding(
-            get: { errorMessage != nil },
-            set: { if !$0 { errorMessage = nil } }
-        )
     }
 
     private func submit() {

@@ -13,8 +13,10 @@ struct EntryListView: View {
     @State var selectedEntry: Entry? = nil
 
     var body: some View {
-        ForEach(entries) { entry in
-            EntryRow(entry: entry, selectedEntry: $selectedEntry)
+        LazyVStack(spacing: 12) {
+            ForEach(entries) { entry in
+                EntryRow(entry: entry, selectedEntry: $selectedEntry)
+            }
         }
         .sheet(item: $selectedEntry) { entry in
             EntryDetailView(entry: entry)
