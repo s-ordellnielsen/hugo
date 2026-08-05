@@ -7,43 +7,38 @@
 
 import Foundation
 
-nonisolated struct SymbolDefinition: Codable, Identifiable {
+nonisolated struct SymbolDefinition: Identifiable, Sendable {
     let icon: String
     let name: LocalizedStringResource
     let keywordsKey: LocalizedStringResource
     let attributes: [SymbolAttribute]
+    let searchIndex: [String]
 
-    var id: String { self.icon }
+    var id: String { icon }
 
-    nonisolated private var localizedName: String {
-        String(localized: name)
-    }
+    init(
+        icon: String,
+        name: LocalizedStringResource,
+        keywordsKey: LocalizedStringResource,
+        attributes: [SymbolAttribute]
+    ) {
+        self.icon = icon
+        self.name = name
+        self.keywordsKey = keywordsKey
+        self.attributes = attributes
 
-    nonisolated private var keywords: [String] {
-        let keywordsString = String(localized: keywordsKey)
-        return
-            keywordsString
+        let localizedName = String(localized: name).lowercased()
+        let keywords = String(localized: keywordsKey)
             .split(separator: ",")
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+        self.searchIndex = [localizedName] + keywords
     }
 
-    nonisolated func matches(_ searchText: String, _ attr: SymbolAttribute?) -> Bool {
-        var satisfiesAttributes: Bool = true
-
-        if attr != nil && !attributes.contains(attr!) {
-            satisfiesAttributes = false
-        }
-
-        guard !searchText.isEmpty && satisfiesAttributes else {
-            return satisfiesAttributes
-        }
-
+    func matches(_ searchText: String, _ attribute: SymbolAttribute?) -> Bool {
+        if let attribute, !attributes.contains(attribute) { return false }
+        guard !searchText.isEmpty else { return true }
         let query = searchText.lowercased()
-
-        if localizedName.lowercased().contains(query) {
-            return true
-        }
-
-        return keywords.contains { $0.lowercased().contains(query) }
+        return searchIndex.contains { $0.contains(query) }
     }
 }
