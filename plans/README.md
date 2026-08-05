@@ -72,7 +72,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 017  | User-visible correctness — shared error alert, validation, month-scoped breakdown, throwing saves, stable sheets | P1       | M      | 016             | DONE                                                         |
 | 018  | Reporting aggregation performance — cached formatters, summaries, year reports | P2       | M      | 016             | DONE                                                         |
 | 019  | Symbol catalog performance — static catalog, precomputed search index | P2       | S      | 016             | DONE                                                         |
-| 020  | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1       | L      | 016, 017        | TODO                                                         |
+| 020  | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1       | L      | 016, 017        | DONE                                                         |
 | 021  | Dynamic Type and adaptive layout — flexible circle, scaled type, adaptive grids | P2       | M      | 020             | TODO                                                         |
 | 022  | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2       | M      | 020             | TODO                                                         |
 | 023  | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2       | M      | 016, 022        | TODO                                                         |
