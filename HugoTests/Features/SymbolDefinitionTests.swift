@@ -43,4 +43,40 @@ struct SymbolDefinitionTests {
     func attributeOnlyFilterMatchesExistingAttribute() {
         #expect(symbol.matches("", .fill))
     }
+
+    @Test
+    func searchIndexContainsLowercasedName() {
+        let localizedName = String(localized: symbol.name).lowercased()
+        #expect(symbol.searchIndex.first == localizedName)
+    }
+
+    @Test
+    func matchesIsCaseInsensitive() {
+        #expect(symbol.matches("HOUSE", nil) == symbol.matches("house", nil))
+    }
+
+    @Test
+    func matchesWithAttributeFiltersOut() {
+        let unfilled = SymbolDefinition(
+            icon: "phone",
+            name: "symbol.phone",
+            keywordsKey: "symbol.phone.keywords",
+            attributes: []
+        )
+        #expect(!unfilled.matches("", .fill))
+    }
+
+    @Test
+    func emptyQueryWithNoAttributeMatchesEverything() {
+        #expect(symbol.matches("", nil))
+    }
+
+    @Test
+    func catalogIdentityIsStable() {
+        let first = SymbolSet.tracker.symbols.map(\.id)
+        let second = SymbolSet.tracker.symbols.map(\.id)
+
+        #expect(first == second)
+        #expect(Set(first).count == 52)
+    }
 }
