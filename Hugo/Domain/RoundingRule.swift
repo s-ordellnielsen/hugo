@@ -7,7 +7,11 @@ nonisolated enum RoundingRule: String, Codable, CaseIterable, Identifiable, Send
 
     var id: String { rawValue }
 
-    var nameKey: String {
-        "rounding-rule.\(rawValue)"
+    var localizedName: LocalizedStringResource {
+        switch self {
+        case .up: "rounding-rule.up"
+        case .down: "rounding-rule.down"
+        case .transfer: "rounding-rule.transfer"
+        }
     }
 }

@@ -56,7 +56,7 @@ struct SubmitReportView: View {
 			Section {
 				Picker("settings.report.rounding-rule", selection: $model.selectedRule) {
 					ForEach(RoundingRule.allCases) { rule in
-						Text(LocalizedStringKey(rule.nameKey)).tag(rule)
+						Text(rule.localizedName).tag(rule)
 					}
 				}
 				.pickerStyle(.navigationLink)

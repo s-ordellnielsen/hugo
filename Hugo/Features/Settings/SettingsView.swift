@@ -41,17 +41,17 @@ struct SettingsView: View {
                 Section {
                     Picker(selection: $defaultRoundingRule) {
                         ForEach(RoundingRule.allCases) { rule in
-                            Text(LocalizedStringKey(rule.nameKey)).tag(rule.rawValue)
+							Text(rule.localizedName).tag(rule.rawValue)
                         }
                     } label: {
                         Label {
                             Text("settings.report.rounding-rule")
-                            Text(LocalizedStringKey(currentRoundingRule.nameKey))
+                            Text(currentRoundingRule.localizedName)
                         } icon: {
                             Image(systemName: "arrow.up.arrow.down")
                         }
                     }
-                    .pickerStyle(.menu)
+                    .pickerStyle(.navigationLink)
 
                     NavigationLink(destination: OverseerSettingsView()) {
                         Label {

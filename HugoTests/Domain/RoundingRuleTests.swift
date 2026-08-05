@@ -10,13 +10,6 @@ struct RoundingRuleTests {
     }
 
     @Test
-    func mapsEachCaseToItsLocalizationKey() {
-        #expect(RoundingRule.up.nameKey == "rounding-rule.up")
-        #expect(RoundingRule.down.nameKey == "rounding-rule.down")
-        #expect(RoundingRule.transfer.nameKey == "rounding-rule.transfer")
-    }
-
-    @Test
     func rawValuesRoundTripThroughCodable() throws {
         let encoded = try JSONEncoder().encode(RoundingRule.transfer)
         #expect(String(data: encoded, encoding: .utf8) == "\"transfer\"")
