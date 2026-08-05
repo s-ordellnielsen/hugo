@@ -52,13 +52,13 @@ extension Date {
 }
 
 extension YearMonth {
-    private static let formatterCache = FormatterCache()
+    nonisolated(unsafe) private static let formatterCache = FormatterCache()
 
     private final class FormatterCache: @unchecked Sendable {
-        private let lock = NSLock()
-        private var storage: [String: DateFormatter] = [:]
+        nonisolated(unsafe) private let lock = NSLock()
+        nonisolated(unsafe) private var storage: [String: DateFormatter] = [:]
 
-        func formatter(format: String, locale: Locale, calendar: Calendar) -> DateFormatter {
+        nonisolated func formatter(format: String, locale: Locale, calendar: Calendar) -> DateFormatter {
             let key = "\(format)|\(locale.identifier)|\(calendar.identifier)|\(calendar.timeZone.identifier)"
             lock.lock()
             defer { lock.unlock() }
