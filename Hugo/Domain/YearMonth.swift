@@ -52,10 +52,10 @@ extension Date {
 }
 
 extension YearMonth {
-    nonisolated(unsafe) private static let formatterCache = FormatterCache()
+    nonisolated private static let formatterCache = FormatterCache()
 
     private final class FormatterCache: @unchecked Sendable {
-        nonisolated(unsafe) private let lock = NSLock()
+        nonisolated private let lock = NSLock()
         nonisolated(unsafe) private var storage: [String: DateFormatter] = [:]
 
         nonisolated func formatter(format: String, locale: Locale, calendar: Calendar) -> DateFormatter {
