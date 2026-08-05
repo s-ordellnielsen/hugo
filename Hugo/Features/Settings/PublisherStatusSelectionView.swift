@@ -23,6 +23,7 @@ struct PublisherStatusSelectionView: View {
                             Image(systemName: currentStatus == status.id ? "checkmark.circle.fill" : "circle")
                                 .contentTransition(.symbolEffect(.replace.downUp.byLayer, options: .nonRepeating))
                                 .font(.title2)
+                                .accessibilityAddTraits(currentStatus == status.id ? .isSelected : [])
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(status.nameKey)
                                 VStack(alignment: .leading, spacing: 4) {

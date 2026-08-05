@@ -75,6 +75,9 @@ struct EntryRow: View {
             )
             .cornerRadius(32)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(entry.tracker?.name ?? String(localized: "entry.untracked")))
+        .accessibilityValue(Text(ServiceDurationFormatter.accessibilityString(from: entry.duration)))
         .buttonStyle(.plain)
     }
 }

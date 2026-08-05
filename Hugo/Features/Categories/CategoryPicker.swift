@@ -46,7 +46,9 @@ struct CategoryPicker: View {
                                         }
                                     }
                                 }
-                                .foregroundColor(.primary)
+                                .foregroundStyle(.primary)
+                                .accessibilityAddTraits(
+                                    selection?.id == tracker.id ? [.isButton, .isSelected] : .isButton)
                             }
                         }
                     }
