@@ -52,7 +52,7 @@ struct OverviewView: View {
             .frame(maxWidth: .infinity)
             .background(Color(.systemGroupedBackground))
             .navigationTitle("overview.title")
-			.navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar { SettingsButton() }.sheet(isPresented: $showingAddEntry) { AddEntryView() }.sheet(
                 isPresented: $showingDetails
             ) { MonthlyProgressDetailView() }

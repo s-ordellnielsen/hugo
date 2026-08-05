@@ -30,16 +30,20 @@ enum MonthlyReportBuilder {
                     let key = "stored:\(snapshot.name)|\(snapshot.icon)|\(snapshot.type.rawValue)"
                     metadata = (key, snapshot.name, snapshot.icon, snapshot.type)
                 } else {
-                    metadata = ("untracked", String(localized: "entry.untracked", locale: locale), "questionmark.circle", nil)
+                    metadata = (
+                        "untracked", String(localized: "entry.untracked", locale: locale), "questionmark.circle", nil
+                    )
                 }
 
                 if metadata.type == .main { mainDuration += entry.duration }
                 if metadata.type == .separate { separateDuration += entry.duration }
-                categories[metadata.key, default: (metadata.name, metadata.iconName, metadata.type, 0)].duration += entry.duration
+                categories[metadata.key, default: (metadata.name, metadata.iconName, metadata.type, 0)].duration +=
+                    entry.duration
             }
 
             let categorySummaries = categories.map { key, value in
-                MonthlyCategorySummary(id: key, name: value.name, iconName: value.iconName, type: value.type, duration: value.duration)
+                MonthlyCategorySummary(
+                    id: key, name: value.name, iconName: value.iconName, type: value.type, duration: value.duration)
             }.sorted {
                 if $0.duration != $1.duration { return $0.duration > $1.duration }
                 if $0.name != $1.name { return $0.name.localizedStandardCompare($1.name) == .orderedAscending }

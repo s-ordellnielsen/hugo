@@ -11,13 +11,15 @@ nonisolated enum ReportComposer {
     /// never leave double whitespace behind. Intentional line breaks are
     /// preserved; empty lines are dropped.
     static func render(template: String, firstName: String, lastName: String, month: String, year: String) -> String {
-        let rendered = template
+        let rendered =
+            template
             .replacingOccurrences(of: "{first}", with: firstName)
             .replacingOccurrences(of: "{last}", with: lastName)
             .replacingOccurrences(of: "{month}", with: month)
             .replacingOccurrences(of: "{year}", with: year)
 
-        return rendered
+        return
+            rendered
             .components(separatedBy: .newlines)
             .map { line in
                 line.components(separatedBy: .whitespaces)

@@ -1,4 +1,5 @@
 import SwiftData
+
 @testable import Hugo
 
 @MainActor

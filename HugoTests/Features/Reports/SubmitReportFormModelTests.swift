@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import Testing
+
 @testable import Hugo
 
 @MainActor
@@ -11,7 +12,7 @@ struct SubmitReportFormModelTests {
         return calendar
     }()
     private let month = YearMonth(year: 2026, month: 6)
-    private let now = Date(timeIntervalSince1970: 1_800_000_000) // fixed "now"
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)  // fixed "now"
 
     private func date(_ year: Int, _ month: Int, _ day: Int, hour: Int = 12) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour))!
@@ -236,10 +237,11 @@ struct SubmitReportFormModelTests {
         let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
         let separate = Tracker(name: "LDC", type: .separate, iconName: "building")
         let model = makeModel()
-        model.load(entries: [
-            entry(2026, 6, 5, seconds: 8_400, tracker: main),
-            entry(2026, 6, 10, seconds: 6_000, tracker: separate),
-        ], submissions: [])
+        model.load(
+            entries: [
+                entry(2026, 6, 5, seconds: 8_400, tracker: main),
+                entry(2026, 6, 10, seconds: 6_000, tracker: separate),
+            ], submissions: [])
         model.selectedRule = .down
 
         let report = try #require(model.persistSubmission(in: context))
@@ -275,87 +277,89 @@ struct SubmitReportFormModelTests {
 
     // MARK: - Composer handoff
 
-	@Test
-	func prepareSubmissionHandsTheRightInputsToTheComposer() {
-		let defaults = UserDefaults(
-			suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)"
-		)!
-		
-		defaults.set("TEST {first} {month}", forKey: UserDefaultsKeys.overseerGreetingTemplate)
-		defaults.set("Jens", forKey: UserDefaultsKeys.overseerFirstName)
-		
-		let main = Tracker(
-			name: "Field Service",
-			type: .main,
-			iconName: "figure.walk"
-		)
-		
-		let model = makeModel(userDefaults: defaults)
-		model.load(
-			entries: [
-				entry(2026, 6, 5, seconds: 19_200, tracker: main)
-			],
-			submissions: []
-		)
-		
-		let content = model.prepareSubmission()
-		
-		#expect(content != nil)
-		#expect(model.preparedContent != nil)
-		
-		// Verifies that the first-name template input was substituted.
-		#expect(content?.body.contains("TEST Jens") == true)
-		
-		// Verifies that template tags were processed without asserting the
-		// localized month value.
-		#expect(content?.body.contains("{first}") == false)
-		#expect(content?.body.contains("{month}") == false)
-		
-		// Verifies the actual business logic independently of localized labels.
-		#expect(model.computation.submittedHours == 6)
-		
-		// Changing the rule invalidates the prepared message.
-		model.selectedRule = .transfer
-		
-		#expect(model.preparedContent == nil)
-		#expect(model.computation.submittedHours == 5)
-		
-		let recomposed = model.prepareSubmission()
-		
-		#expect(recomposed != nil)
-		#expect(recomposed?.body.contains("TEST Jens") == true)
-		#expect(model.computation.submittedHours == 5)
-	}
+    @Test
+    func prepareSubmissionHandsTheRightInputsToTheComposer() {
+        let defaults = UserDefaults(
+            suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)"
+        )!
 
-	@Test
-	func prepareSubmissionComposesAZeroValuedReportForAnEmptyMonth() {
-		let model = makeModel()
-		model.load(entries: [], submissions: [])
-		
-		let content = model.prepareSubmission()
-		
-		#expect(content != nil)
-		
-		let reportLines = content?.body
-			.components(separatedBy: "\n\n")
-			.last?
-			.split(separator: "\n")
-			.map(String.init) ?? []
-		
-		#expect(reportLines.count == 2)
-		
-		let reportValues = reportLines.compactMap { line -> Int? in
-			guard let valuePart = line.split(separator: ":", maxSplits: 1).last else {
-				return nil
-			}
-			
-			let numericValue = valuePart
-				.split(whereSeparator: \.isWhitespace)
-				.first
-			
-			return numericValue.flatMap { Int($0) }
-		}
-		
-		#expect(reportValues == [0, 0])
-	}
+        defaults.set("TEST {first} {month}", forKey: UserDefaultsKeys.overseerGreetingTemplate)
+        defaults.set("Jens", forKey: UserDefaultsKeys.overseerFirstName)
+
+        let main = Tracker(
+            name: "Field Service",
+            type: .main,
+            iconName: "figure.walk"
+        )
+
+        let model = makeModel(userDefaults: defaults)
+        model.load(
+            entries: [
+                entry(2026, 6, 5, seconds: 19_200, tracker: main)
+            ],
+            submissions: []
+        )
+
+        let content = model.prepareSubmission()
+
+        #expect(content != nil)
+        #expect(model.preparedContent != nil)
+
+        // Verifies that the first-name template input was substituted.
+        #expect(content?.body.contains("TEST Jens") == true)
+
+        // Verifies that template tags were processed without asserting the
+        // localized month value.
+        #expect(content?.body.contains("{first}") == false)
+        #expect(content?.body.contains("{month}") == false)
+
+        // Verifies the actual business logic independently of localized labels.
+        #expect(model.computation.submittedHours == 6)
+
+        // Changing the rule invalidates the prepared message.
+        model.selectedRule = .transfer
+
+        #expect(model.preparedContent == nil)
+        #expect(model.computation.submittedHours == 5)
+
+        let recomposed = model.prepareSubmission()
+
+        #expect(recomposed != nil)
+        #expect(recomposed?.body.contains("TEST Jens") == true)
+        #expect(model.computation.submittedHours == 5)
+    }
+
+    @Test
+    func prepareSubmissionComposesAZeroValuedReportForAnEmptyMonth() {
+        let model = makeModel()
+        model.load(entries: [], submissions: [])
+
+        let content = model.prepareSubmission()
+
+        #expect(content != nil)
+
+        let reportLines =
+            content?.body
+            .components(separatedBy: "\n\n")
+            .last?
+            .split(separator: "\n")
+            .map(String.init) ?? []
+
+        #expect(reportLines.count == 2)
+
+        let reportValues = reportLines.compactMap { line -> Int? in
+            guard let valuePart = line.split(separator: ":", maxSplits: 1).last else {
+                return nil
+            }
+
+            let numericValue =
+                valuePart
+                .split(whereSeparator: \.isWhitespace)
+                .first
+
+            return numericValue.flatMap { Int($0) }
+        }
+
+        #expect(reportValues == [0, 0])
+    }
 }

@@ -11,7 +11,9 @@ struct DefaultCategoryService {
 
     func setDefault(_ tracker: Tracker?) throws {
         let defaults = try context.fetch(FetchDescriptor<Tracker>(predicate: #Predicate { $0.isDefault }))
-        defaults.forEach { $0.isDefault = false }
+        for category in defaults {
+            category.isDefault = false
+        }
         tracker?.isDefault = true
         try context.save()
     }

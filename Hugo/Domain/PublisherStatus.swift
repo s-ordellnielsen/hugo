@@ -28,9 +28,15 @@ nonisolated struct PublisherStatus: Identifiable {
     }
 
     static let all: [PublisherStatus] = [
-        PublisherStatus(id: "regular-pioneer", nameKey: "publisher.status.regularpioneer.full", shortName: "publisher.status.regularpioneer.short", goalPeriod: .yearly, goal: 600),
-        PublisherStatus(id: "auxiliary-pioneer", nameKey: "publisher.status.auxiliary.full", shortName: "publisher.status.auxiliary.short", goalPeriod: .monthly, goal: 30),
-        PublisherStatus(id: "publisher", nameKey: "publisher.status.publisher.full", shortName: "publisher.status.publisher.short", goalPeriod: .monthly, goal: 0),
+        PublisherStatus(
+            id: "regular-pioneer", nameKey: "publisher.status.regularpioneer.full",
+            shortName: "publisher.status.regularpioneer.short", goalPeriod: .yearly, goal: 600),
+        PublisherStatus(
+            id: "auxiliary-pioneer", nameKey: "publisher.status.auxiliary.full",
+            shortName: "publisher.status.auxiliary.short", goalPeriod: .monthly, goal: 30),
+        PublisherStatus(
+            id: "publisher", nameKey: "publisher.status.publisher.full", shortName: "publisher.status.publisher.short",
+            goalPeriod: .monthly, goal: 0),
     ]
 
     static func status(for identifier: String) -> PublisherStatus? {

@@ -30,10 +30,11 @@ struct OverseerContactPicker: UIViewControllerRepresentable {
 
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
             guard let phone = contact.phoneNumbers.first?.value.stringValue, !phone.isEmpty else { return }
-            let fullName = CNContactFormatter.string(from: contact, style: .fullName)
+            let fullName =
+                CNContactFormatter.string(from: contact, style: .fullName)
                 ?? [contact.givenName, contact.familyName]
-                    .filter { !$0.isEmpty }
-                    .joined(separator: " ")
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
             onPick(fullName, phone, contact.givenName, contact.familyName)
         }
     }

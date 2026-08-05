@@ -23,7 +23,7 @@ final class AddEntryFormModel {
     private let calendar: Calendar
     private let now: Date
 
-	init(calendar: Calendar = .current, now: Date = .now, seededDate: Date? = nil) {
+    init(calendar: Calendar = .current, now: Date = .now, seededDate: Date? = nil) {
         self.calendar = calendar
         self.now = now
         self.date = calendar.startOfDay(for: seededDate ?? now)
@@ -39,7 +39,9 @@ final class AddEntryFormModel {
     }
 
     var combinedDate: Date? {
-        guard var components = calendar.dateComponents([.year, .month, .day], from: date) as DateComponents? else { return nil }
+        guard var components = calendar.dateComponents([.year, .month, .day], from: date) as DateComponents? else {
+            return nil
+        }
         if let time {
             components.hour = calendar.component(.hour, from: time)
             components.minute = calendar.component(.minute, from: time)
@@ -73,7 +75,8 @@ final class AddEntryFormModel {
             return nil
         }
         validationMessage = nil
-        return EntryDraft(date: combinedDate, duration: durationInSeconds, tracker: selectedTracker, bibleStudies: bibleStudies)
+        return EntryDraft(
+            date: combinedDate, duration: durationInSeconds, tracker: selectedTracker, bibleStudies: bibleStudies)
     }
 }
 

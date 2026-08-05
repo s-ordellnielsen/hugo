@@ -21,7 +21,6 @@ extension SchemaV1 {
             self.duration = duration
         }
 
-
     }
 
     enum EventType: String, Codable, CaseIterable, Identifiable {

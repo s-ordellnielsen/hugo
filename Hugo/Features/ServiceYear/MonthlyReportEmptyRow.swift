@@ -4,8 +4,8 @@ import SwiftUI
 struct MonthlyReportEmptyRow: View {
     let month: TheocraticYearMonth
 
-	@State private var isPresented: Bool = false
-	@State private var isPresentingSubmitSheet: Bool = false
+    @State private var isPresented: Bool = false
+    @State private var isPresentingSubmitSheet: Bool = false
 
     private var submitButtonTitle: String {
         month.isSubmitted
@@ -58,17 +58,17 @@ struct MonthlyReportEmptyRow: View {
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(24)
         .accessibilityElement(children: .contain)
-		.onTapGesture {
-			isPresented.toggle()
-		}
-		.sheet(isPresented: $isPresented) {
-			AddEntryView(seededDate: month.id.date())
-		}
+        .onTapGesture {
+            isPresented.toggle()
+        }
+        .sheet(isPresented: $isPresented) {
+            AddEntryView(seededDate: month.id.date())
+        }
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
                 SubmitReportView(month: month.id)
             }
-			.presentationDetents([.medium, .large])
+            .presentationDetents([.medium, .large])
         }
     }
 }

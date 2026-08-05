@@ -1,6 +1,6 @@
 import Foundation
-import Observation
 import OSLog
+import Observation
 import SwiftData
 
 @MainActor

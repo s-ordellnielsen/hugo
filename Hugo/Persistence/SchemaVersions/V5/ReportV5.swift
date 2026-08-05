@@ -12,23 +12,23 @@ extension SchemaV5 {
     @Model
     final class Report {
         var id: UUID = UUID()
-        
+
         var year: Int = 0
         var month: Int = 0
-        
+
         var fieldService: TimeInterval = 0
         var bibleStudies: Int = 0
-        
+
         var goalID: String? = nil
         var goal: Int = 0
-        
+
         var extraTime: TimeInterval = 0
-        
+
         var trackers: [TrackerSummary] = []
         var dailyPoints: [DailyPoint] = []
-        
+
         var createdAt: Date = Date()
-        
+
         init(
             year: Int,
             month: Int,
@@ -44,20 +44,20 @@ extension SchemaV5 {
             self.month = month
             self.fieldService = fieldService
             self.bibleStudies = bibleStudies
-            
+
             self.goalID = goalID
             self.goal = goalMonthlyHours
-            
+
             self.extraTime = extraTime
-            
+
             if !trackers.isEmpty {
                 self.trackers = trackers
             }
-            
+
             if !dailyPoints.isEmpty {
                 self.dailyPoints = dailyPoints
             }
         }
-        
+
     }
 }

@@ -23,10 +23,10 @@ struct AppRootView: View {
 
     var body: some View {
         TabView(selection: tabSelection) {
-			Tab("tab.overview", systemImage: "house", value: AppTab.overview) {
-				OverviewView()
-			}
-			Tab("tab.year", systemImage: "tray.full.fill", value: AppTab.year) {
+            Tab("tab.overview", systemImage: "house", value: AppTab.overview) {
+                OverviewView()
+            }
+            Tab("tab.year", systemImage: "tray.full.fill", value: AppTab.year) {
                 ServiceYearView(resetToken: yearResetToken)
             }
         }

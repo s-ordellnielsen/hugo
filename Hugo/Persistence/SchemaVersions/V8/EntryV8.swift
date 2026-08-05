@@ -36,7 +36,7 @@ extension SchemaV8 {
                 self.storedTracker = storedTracker
             }
         }
-        
+
         struct EntryTracker: Codable, Hashable, Identifiable {
             var name: String = ""
             var icon: String = "questionmark.circle"

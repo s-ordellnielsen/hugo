@@ -34,8 +34,8 @@ nonisolated enum ReportReminderSchedule {
     }
 
     /// 7 days into the following month during which the previous month's
-	/// report is still prompted; after that the reminder goes quiet until the
-	/// current month itself becomes due.
+    /// report is still prompted; after that the reminder goes quiet until the
+    /// current month itself becomes due.
     private static let previousMonthGraceDays = 7
 
     /// True when the month has never been submitted (no report, or a sentinel

@@ -44,8 +44,7 @@ struct OnboardingView: View {
                                         Text(status.nameKey)
                                             .fontWeight(.medium)
                                             .fontDesign(.rounded)
-                                        VStack(alignment: .leading, spacing: 4)
-                                        {
+                                        VStack(alignment: .leading, spacing: 4) {
                                             Text(
                                                 "publisher.status.goaltype.label.\(status.goalPeriod.label)"
                                             )

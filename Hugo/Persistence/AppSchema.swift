@@ -34,7 +34,7 @@ enum SchemaV2_1: VersionedSchema {
 
 enum SchemaV3: VersionedSchema {
     static let versionIdentifier = Schema.Version(3, 0, 0)
-    
+
     static var models: [any PersistentModel.Type] {
         [Entry.self, Tracker.self, Report.self]
     }
@@ -42,7 +42,7 @@ enum SchemaV3: VersionedSchema {
 
 enum SchemaV4: VersionedSchema {
     static let versionIdentifier = Schema.Version(4, 0, 0)
-    
+
     static var models: [any PersistentModel.Type] {
         [Entry.self, Tracker.self, Report.self]
     }
@@ -50,7 +50,7 @@ enum SchemaV4: VersionedSchema {
 
 enum SchemaV5: VersionedSchema {
     static let versionIdentifier = Schema.Version(4, 1, 0)
-    
+
     static var models: [any PersistentModel.Type] {
         [Entry.self, Tracker.self, Report.self]
     }
@@ -58,7 +58,7 @@ enum SchemaV5: VersionedSchema {
 
 enum SchemaV6: VersionedSchema {
     static let versionIdentifier = Schema.Version(4, 1, 1)
-    
+
     static var models: [any PersistentModel.Type] {
         [Entry.self, Tracker.self, Report.self]
     }
@@ -66,7 +66,7 @@ enum SchemaV6: VersionedSchema {
 
 enum SchemaV7: VersionedSchema {
     static let versionIdentifier = Schema.Version(4, 2, 0)
-    
+
     static var models: [any PersistentModel.Type] {
         [Entry.self, Tracker.self, Report.self]
     }
@@ -74,7 +74,7 @@ enum SchemaV7: VersionedSchema {
 
 enum SchemaV8: VersionedSchema {
     static let versionIdentifier = Schema.Version(5, 0, 0)
-    
+
     static var models: [any PersistentModel.Type] {
         [Entry.self, Tracker.self, Report.self]
     }

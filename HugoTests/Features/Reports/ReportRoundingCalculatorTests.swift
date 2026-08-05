@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Hugo
 
 struct ReportRoundingCalculatorTests {
@@ -37,7 +38,7 @@ struct ReportRoundingCalculatorTests {
     @Test
     func roundUpAddsRoundedUpSecondsAndYieldsCeil() {
         let result = ReportRoundingCalculator.compute(
-            summary: summary(categories: [category("field", seconds: 19_200)]), // 5h20m
+            summary: summary(categories: [category("field", seconds: 19_200)]),  // 5h20m
             carriedIn: 0,
             rule: .up
         )
@@ -51,7 +52,7 @@ struct ReportRoundingCalculatorTests {
     @Test
     func roundDownYieldsFloorWithRoundedDownSeconds() {
         let result = ReportRoundingCalculator.compute(
-            summary: summary(categories: [category("field", seconds: 19_200)]), // 5h20m
+            summary: summary(categories: [category("field", seconds: 19_200)]),  // 5h20m
             carriedIn: 0,
             rule: .down
         )
@@ -65,7 +66,7 @@ struct ReportRoundingCalculatorTests {
     @Test
     func transferYieldsFloorAndCarriesOutTheRemainder() {
         let result = ReportRoundingCalculator.compute(
-            summary: summary(categories: [category("field", seconds: 19_200)]), // 5h20m
+            summary: summary(categories: [category("field", seconds: 19_200)]),  // 5h20m
             carriedIn: 0,
             rule: .transfer
         )
@@ -102,9 +103,9 @@ struct ReportRoundingCalculatorTests {
     @Test
     func categoryHoursRedistributeByLargestRemainderWithSortOrderTieBreak() {
         let categories = [
-            category("a", seconds: 8_400),   // 2h20m
-            category("b", seconds: 6_000),   // 1h40m
-            category("c", seconds: 2_400),   // 0h40m
+            category("a", seconds: 8_400),  // 2h20m
+            category("b", seconds: 6_000),  // 1h40m
+            category("c", seconds: 2_400),  // 0h40m
         ]
         // Total 4h40m → floor 4h: floors sum to 3, the extra hour goes to
         // the largest remainder (b, 40m — tie with c broken by category sort
@@ -124,9 +125,9 @@ struct ReportRoundingCalculatorTests {
     @Test
     func roundingUpDistributesTheExtraHourToTheLargestRemainder() {
         let categories = [
-            category("a", seconds: 8_400),   // 2h20m
-            category("b", seconds: 6_000),   // 1h40m
-            category("c", seconds: 2_400),   // 0h40m
+            category("a", seconds: 8_400),  // 2h20m
+            category("b", seconds: 6_000),  // 1h40m
+            category("c", seconds: 2_400),  // 0h40m
         ]
         // Total 4h40m → ceil 5h: floors sum to 3, both extra hours go to the
         // 40m remainders in category sort order (b before c).
@@ -145,9 +146,9 @@ struct ReportRoundingCalculatorTests {
     @Test
     func transferKeepsCategoriesAtTheirFloorWhileRemainderRidesAlong() {
         let categories = [
-            category("a", seconds: 8_400),   // 2h20m
-            category("b", seconds: 6_000),   // 1h40m
-            category("c", seconds: 2_400),   // 0h40m
+            category("a", seconds: 8_400),  // 2h20m
+            category("b", seconds: 6_000),  // 1h40m
+            category("c", seconds: 2_400),  // 0h40m
         ]
         // Total 4h40m → floor 4h: the extra hour goes to the largest
         // remainder (b, 40m — tie with c broken by category sort order); the
@@ -167,9 +168,9 @@ struct ReportRoundingCalculatorTests {
     @Test
     func carriedInMinutesCanCompleteAnExtraHour() {
         let categories = [
-            category("a", seconds: 8_400),   // 2h20m
-            category("b", seconds: 6_000),   // 1h40m
-            category("c", seconds: 2_400),   // 0h40m
+            category("a", seconds: 8_400),  // 2h20m
+            category("b", seconds: 6_000),  // 1h40m
+            category("c", seconds: 2_400),  // 0h40m
         ]
         // Total 4h40m with 40m carried in → 5h20m → floor 5h: both extra
         // hours go to the 40m remainders in category sort order (b before c);
@@ -189,8 +190,8 @@ struct ReportRoundingCalculatorTests {
     @Test
     func wholeHourCategoriesAreTrimmedToKeepTheSum() {
         let categories = [
-            category("a", seconds: 10_800),          // exactly 3h
-            category("b", seconds: 1_800),           // 0h30m
+            category("a", seconds: 10_800),  // exactly 3h
+            category("b", seconds: 1_800),  // 0h30m
         ]
         // Total 3h30m → floor 3h: floors already sum to 3, b stays 0.
         let result = ReportRoundingCalculator.compute(

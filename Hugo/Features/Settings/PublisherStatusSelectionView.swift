@@ -59,10 +59,12 @@ private struct CurrentPublisherStatusView: View {
     var body: some View {
         VStack {
             HStack(spacing: 16) {
-                Image(systemName: PublisherStatus.status(for: currentStatus) != nil ? "circle.badge.checkmark" : "circle")
-                    .font(.title)
-                    .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
-                    .symbolRenderingMode(.hierarchical)
+                Image(
+                    systemName: PublisherStatus.status(for: currentStatus) != nil ? "circle.badge.checkmark" : "circle"
+                )
+                .font(.title)
+                .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
+                .symbolRenderingMode(.hierarchical)
                 VStack(alignment: .leading) {
                     Text("account.page.publisherselect.current")
                         .font(.caption)

@@ -150,11 +150,11 @@ struct SchemaMigrationTests {
         let juneReport = try #require(reports.first { $0.year == 2026 && $0.month == 6 })
 
         for report in [julyReport, juneReport] {
-			#expect(report.firstSubmittedAt == .distantPast)
-			#expect(report.submittedAt == .distantPast)
-			#expect((report.roundingRuleRaw ?? "").isEmpty)
-			#expect(report.submittedHours == 0)
-			#expect((report.categories ?? []).isEmpty)
+            #expect(report.firstSubmittedAt == .distantPast)
+            #expect(report.submittedAt == .distantPast)
+            #expect((report.roundingRuleRaw ?? "").isEmpty)
+            #expect(report.submittedHours == 0)
+            #expect((report.categories ?? []).isEmpty)
         }
 
         #expect(julyReport.entriesClosedAt == Date(timeIntervalSince1970: 2_000))

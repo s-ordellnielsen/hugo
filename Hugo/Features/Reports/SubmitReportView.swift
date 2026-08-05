@@ -52,44 +52,44 @@ struct SubmitReportView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-			
-			Section {
-				Picker("settings.report.rounding-rule", selection: $model.selectedRule) {
-					ForEach(RoundingRule.allCases) { rule in
-						Text(rule.localizedName).tag(rule)
-					}
-				}
-				.pickerStyle(.navigationLink)
-				
-				if model.computation.carriedOutSeconds > 0 {
-					HStack {
-						Label("report.submit.carried-out", systemImage: "arrow.up.right.circle.fill")
-							.symbolRenderingMode(.hierarchical)
-						Spacer()
-						Text("+\(ServiceDurationFormatter.string(from: model.computation.carriedOutSeconds))")
-							.fontDesign(.monospaced)
-							.foregroundStyle(.secondary)
-					}
-				} else if model.computation.roundedUpSeconds > 0 {
-					HStack {
-						Label("report.submit.rounded-up", systemImage: "arrow.up.circle.fill")
-							.symbolRenderingMode(.hierarchical)
-						Spacer()
-						Text("+\(ServiceDurationFormatter.string(from: model.computation.roundedUpSeconds))")
-							.fontDesign(.monospaced)
-							.foregroundStyle(.secondary)
-					}
-				} else if model.computation.roundedDownSeconds > 0 {
-					HStack {
-						Label("report.submit.rounded-down", systemImage: "arrow.down.circle.fill")
-							.symbolRenderingMode(.hierarchical)
-						Spacer()
-						Text("−\(ServiceDurationFormatter.string(from: model.computation.roundedDownSeconds))")
-							.fontDesign(.monospaced)
-							.foregroundStyle(.secondary)
-					}
-				}
-			}
+
+            Section {
+                Picker("settings.report.rounding-rule", selection: $model.selectedRule) {
+                    ForEach(RoundingRule.allCases) { rule in
+                        Text(rule.localizedName).tag(rule)
+                    }
+                }
+                .pickerStyle(.navigationLink)
+
+                if model.computation.carriedOutSeconds > 0 {
+                    HStack {
+                        Label("report.submit.carried-out", systemImage: "arrow.up.right.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                        Spacer()
+                        Text("+\(ServiceDurationFormatter.string(from: model.computation.carriedOutSeconds))")
+                            .fontDesign(.monospaced)
+                            .foregroundStyle(.secondary)
+                    }
+                } else if model.computation.roundedUpSeconds > 0 {
+                    HStack {
+                        Label("report.submit.rounded-up", systemImage: "arrow.up.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                        Spacer()
+                        Text("+\(ServiceDurationFormatter.string(from: model.computation.roundedUpSeconds))")
+                            .fontDesign(.monospaced)
+                            .foregroundStyle(.secondary)
+                    }
+                } else if model.computation.roundedDownSeconds > 0 {
+                    HStack {
+                        Label("report.submit.rounded-down", systemImage: "arrow.down.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                        Spacer()
+                        Text("−\(ServiceDurationFormatter.string(from: model.computation.roundedDownSeconds))")
+                            .fontDesign(.monospaced)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
 
             Section {
                 if model.hasOverseer {
@@ -128,20 +128,20 @@ struct SubmitReportView: View {
                 Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
             }
         }
-		.safeAreaInset(edge: .bottom) {
-			Button {
-				sendViaMessages()
-			} label: {
-				Text("report.submit.send")
-					.frame(maxWidth: .infinity)
-			}
-			.buttonStyle(.borderedProminent)
-			.tint(.orange)
-			.controlSize(.large)
-			.disabled(!model.isSubmittable || !MessageComposeView.canSendText)
-			.padding(.horizontal)
-			.padding(.vertical, 8)
-		}
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                sendViaMessages()
+            } label: {
+                Text("report.submit.send")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.orange)
+            .controlSize(.large)
+            .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+        }
         .sheet(isPresented: $showingSettings) {
             SettingsView()
                 .presentationDetents([.large])

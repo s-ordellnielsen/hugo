@@ -44,7 +44,9 @@ enum CategoryProgressAggregator {
         }
         return trackers.enumerated().compactMap { index, tracker in
             guard totals[tracker.id, default: 0] > 0 else { return nil }
-            return CategoryProgressRow(id: tracker.id.uuidString, name: tracker.name, iconName: tracker.iconName, duration: totals[tracker.id, default: 0], colorIndex: index)
+            return CategoryProgressRow(
+                id: tracker.id.uuidString, name: tracker.name, iconName: tracker.iconName,
+                duration: totals[tracker.id, default: 0], colorIndex: index)
         }
     }
 }

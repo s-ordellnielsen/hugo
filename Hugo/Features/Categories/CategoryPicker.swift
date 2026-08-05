@@ -10,12 +10,12 @@ import SwiftUI
 
 struct CategoryPicker: View {
     @Environment(\.dismiss) private var dismiss
-    
+
     @Binding var selection: Tracker?
     var dismissOnSelection: Bool = false
 
     @Query private var trackers: [Tracker] = []
-    
+
     @State private var showAddCategoryView: Bool = false
 
     var body: some View {
@@ -23,13 +23,13 @@ struct CategoryPicker: View {
             List {
                 ForEach(TrackerType.allCases, id: \.self) { type in
                     let filtered = trackers.filter { $0.type == type }
-                    
+
                     if !filtered.isEmpty {
                         Section(type.label) {
                             ForEach(filtered, id: \.id) { tracker in
                                 Button {
                                     selection = tracker
-                                    
+
                                     if dismissOnSelection {
                                         dismiss()
                                     }

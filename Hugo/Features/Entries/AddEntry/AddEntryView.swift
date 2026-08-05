@@ -4,29 +4,33 @@ import SwiftUI
 struct AddEntryView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-	
+
     @Query private var trackers: [Tracker]
-	
-	@State private var form: AddEntryFormModel
-	
-	init(seededDate: Date? = nil) {
-		_form = State(initialValue: AddEntryFormModel(seededDate: seededDate))
-	}
+
+    @State private var form: AddEntryFormModel
+
+    init(seededDate: Date? = nil) {
+        _form = State(initialValue: AddEntryFormModel(seededDate: seededDate))
+    }
 
     var body: some View {
         @Bindable var form = form
         NavigationStack {
             Form {
                 Section("entry.duration.label") {
-                    DatePicker("entry.duration.label", selection: $form.durationDate, displayedComponents: .hourAndMinute)
-                        .datePickerStyle(.wheel)
-                        .labelsHidden()
+                    DatePicker(
+                        "entry.duration.label", selection: $form.durationDate, displayedComponents: .hourAndMinute
+                    )
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
                 }
                 Section {
                     Button {
                         form.isCategoryPickerPresented = true
                     } label: {
-                        Label(form.selectedTracker?.name ?? "entry.add.tracker.none", systemImage: form.selectedTracker?.iconName ?? "circle")
+                        Label(
+                            form.selectedTracker?.name ?? "entry.add.tracker.none",
+                            systemImage: form.selectedTracker?.iconName ?? "circle")
                     }
                 }
                 Section {
@@ -86,7 +90,8 @@ struct AddEntryView: View {
 
     private func submit() {
         guard let draft = form.draft() else { return }
-        let entry = Entry(date: draft.date, duration: draft.duration, tracker: draft.tracker, bibleStudies: draft.bibleStudies)
+        let entry = Entry(
+            date: draft.date, duration: draft.duration, tracker: draft.tracker, bibleStudies: draft.bibleStudies)
         context.insert(entry)
         do {
             try context.save()
@@ -96,7 +101,6 @@ struct AddEntryView: View {
             form.validationMessage = error.localizedDescription
         }
     }
-
 
     private var bibleStudiesLabel: some View {
         Text("entry.biblestudies.count.label.\(form.bibleStudies)")

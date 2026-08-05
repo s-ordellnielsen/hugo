@@ -147,92 +147,92 @@ struct TheocraticYearReportBuilderTests {
         #expect(report.months.first { $0.id == YearMonth(year: 2027, month: 1) }?.isSubmitted == true)
         #expect(report.months.filter { $0.isSubmitted }.count == 1)
     }
-	
-	@Test
-	func duplicateSubmissionsDoNotCrashAndLatestRealSubmissionWins() throws {
-		let sentinel = SubmittedReport(
-			year: 2026,
-			month: 9,
-			entriesClosedAt: date(2026, 9, 30)
-		)
-		
-		let olderSubmission = SubmittedReport(
-			year: 2026,
-			month: 9,
-			firstSubmittedAt: date(2026, 10, 1),
-			submittedAt: date(2026, 10, 1),
-			entriesClosedAt: date(2026, 9, 30)
-		)
-		
-		let latestSubmission = SubmittedReport(
-			year: 2026,
-			month: 9,
-			firstSubmittedAt: date(2026, 10, 1),
-			submittedAt: date(2026, 10, 3),
-			entriesClosedAt: date(2026, 10, 2)
-		)
-		
-		let report = makeReport(
-			entries: [],
-			submissions: [
-				sentinel,
-				olderSubmission,
-				latestSubmission,
-			]
-		)
-		
-		let september = try #require(report.months.first)
-		
-		#expect(september.submittedReport === latestSubmission)
-		#expect(september.isSubmitted)
-	}
-	
-	@Test
-	func duplicateSentinelsPreferTheOneWithLatestEntriesClosedAt() throws {
-		let olderSentinel = SubmittedReport(
-			year: 2026,
-			month: 9,
-			entriesClosedAt: date(2026, 9, 20)
-		)
-		
-		let latestSentinel = SubmittedReport(
-			year: 2026,
-			month: 9,
-			entriesClosedAt: date(2026, 9, 30)
-		)
-		
-		let report = makeReport(
-			entries: [],
-			submissions: [
-				olderSentinel,
-				latestSentinel,
-			]
-		)
-		
-		let september = try #require(report.months.first)
-		
-		#expect(september.submittedReport === latestSentinel)
-		#expect(!september.isSubmitted)
-	}
-	
-	@Test
-	func invalidOptionalSubmissionIsIgnored() throws {
-		let invalidSubmission = SubmittedReport(
-			year: 2026,
-			month: 9
-		)
-		
-		invalidSubmission.year = nil
-		
-		let report = makeReport(
-			entries: [],
-			submissions: [invalidSubmission]
-		)
-		
-		let september = try #require(report.months.first)
-		
-		#expect(september.submittedReport == nil)
-	}
+
+    @Test
+    func duplicateSubmissionsDoNotCrashAndLatestRealSubmissionWins() throws {
+        let sentinel = SubmittedReport(
+            year: 2026,
+            month: 9,
+            entriesClosedAt: date(2026, 9, 30)
+        )
+
+        let olderSubmission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            firstSubmittedAt: date(2026, 10, 1),
+            submittedAt: date(2026, 10, 1),
+            entriesClosedAt: date(2026, 9, 30)
+        )
+
+        let latestSubmission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            firstSubmittedAt: date(2026, 10, 1),
+            submittedAt: date(2026, 10, 3),
+            entriesClosedAt: date(2026, 10, 2)
+        )
+
+        let report = makeReport(
+            entries: [],
+            submissions: [
+                sentinel,
+                olderSubmission,
+                latestSubmission,
+            ]
+        )
+
+        let september = try #require(report.months.first)
+
+        #expect(september.submittedReport === latestSubmission)
+        #expect(september.isSubmitted)
+    }
+
+    @Test
+    func duplicateSentinelsPreferTheOneWithLatestEntriesClosedAt() throws {
+        let olderSentinel = SubmittedReport(
+            year: 2026,
+            month: 9,
+            entriesClosedAt: date(2026, 9, 20)
+        )
+
+        let latestSentinel = SubmittedReport(
+            year: 2026,
+            month: 9,
+            entriesClosedAt: date(2026, 9, 30)
+        )
+
+        let report = makeReport(
+            entries: [],
+            submissions: [
+                olderSentinel,
+                latestSentinel,
+            ]
+        )
+
+        let september = try #require(report.months.first)
+
+        #expect(september.submittedReport === latestSentinel)
+        #expect(!september.isSubmitted)
+    }
+
+    @Test
+    func invalidOptionalSubmissionIsIgnored() throws {
+        let invalidSubmission = SubmittedReport(
+            year: 2026,
+            month: 9
+        )
+
+        invalidSubmission.year = nil
+
+        let report = makeReport(
+            entries: [],
+            submissions: [invalidSubmission]
+        )
+
+        let september = try #require(report.months.first)
+
+        #expect(september.submittedReport == nil)
+    }
 
     private func makeReport(entries: [Entry]) -> TheocraticYearReport {
         makeReport(for: TheocraticYear(startYear: 2026), entries: entries, now: date(2026, 10, 15))

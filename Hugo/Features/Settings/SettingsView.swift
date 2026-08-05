@@ -23,8 +23,7 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
-                    NavigationLink(destination: PublisherStatusSelectionView())
-                    {
+                    NavigationLink(destination: PublisherStatusSelectionView()) {
                         Label {
                             Text("account.group.main.item.publisher.status")
                             Text(
@@ -41,7 +40,7 @@ struct SettingsView: View {
                 Section {
                     Picker(selection: $defaultRoundingRule) {
                         ForEach(RoundingRule.allCases) { rule in
-							Text(rule.localizedName).tag(rule.rawValue)
+                            Text(rule.localizedName).tag(rule.rawValue)
                         }
                     } label: {
                         Label {
@@ -56,9 +55,10 @@ struct SettingsView: View {
                     NavigationLink(destination: OverseerSettingsView()) {
                         Label {
                             Text("settings.report.overseer")
-                            Text(overseerFullName.isEmpty
-                                ? String(localized: "report.overseer.empty")
-                                : overseerFullName)
+                            Text(
+                                overseerFullName.isEmpty
+                                    ? String(localized: "report.overseer.empty")
+                                    : overseerFullName)
                         } icon: {
                             Image(systemName: "person.crop.circle")
                         }
@@ -67,10 +67,12 @@ struct SettingsView: View {
                     NavigationLink(destination: GreetingTemplateView()) {
                         Label {
                             Text("settings.report.greeting")
-                            Text(greetingTemplate.isEmpty
-                                ? String(localized: "report.greeting.default")
-                                : greetingTemplate)
-                                .lineLimit(1)
+                            Text(
+                                greetingTemplate.isEmpty
+                                    ? String(localized: "report.greeting.default")
+                                    : greetingTemplate
+                            )
+                            .lineLimit(1)
                         } icon: {
                             Image(systemName: "text.quote")
                         }
@@ -78,7 +80,7 @@ struct SettingsView: View {
                 } header: {
                     Text("settings.group.report")
                 }
-                
+
                 Section {
                     NavigationLink(destination: CategoryListView()) {
                         Label("settings.link.trackers", systemImage: "chart.line.text.clipboard.fill")

@@ -8,78 +8,82 @@
 import SwiftUI
 
 struct EntryRow: View {
-        @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) var colorScheme
 
-        var entry: Entry
-        @Binding var selectedEntry: Entry?
+    var entry: Entry
+    @Binding var selectedEntry: Entry?
 
-        var body: some View {
-            Button {
-                selectedEntry = entry
-            } label: {
-                HStack(spacing: 16) {
-                    Image(
-                        systemName: entry.tracker?.iconName ?? "questionmark.circle"
-                    )
-                    .font(.title)
-                    .fontWeight(.medium)
-                    .frame(width: 32, height: 32)
-                    .alignmentGuide(
-                        .leading,
-                        computeValue: { dimension in
-                            dimension[.leading]
-                        }
-                    )
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 6) {
-                            Text(ServiceDurationFormatter.string(from: entry.duration))
-                                .fontWeight(.bold)
-                            Text(entry.tracker != nil ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked"))
-                                .fontWeight(.medium)
-                                .foregroundStyle(.secondary)
-                        }
-                        .foregroundStyle(.primary)
-                        .font(.system(size: 17))
-                        .fontDesign(.rounded)
-                        Text(
-                            entry.date,
-                            format: Date.FormatStyle(
-                                date: .abbreviated,
-                                time: .none
-                            )
-                        )
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+    var body: some View {
+        Button {
+            selectedEntry = entry
+        } label: {
+            HStack(spacing: 16) {
+                Image(
+                    systemName: entry.tracker?.iconName ?? "questionmark.circle"
+                )
+                .font(.title)
+                .fontWeight(.medium)
+                .frame(width: 32, height: 32)
+                .alignmentGuide(
+                    .leading,
+                    computeValue: { dimension in
+                        dimension[.leading]
                     }
-                    Spacer()
-                    if entry.bibleStudies != 0 {
-                        VStack(spacing: 4) {
-                            Image(systemName: "book")
-                            Text(String("\(entry.bibleStudies)"))
-                                .fontDesign(.rounded)
-                        }
+                )
+                VStack(alignment: .leading) {
+                    HStack(spacing: 6) {
+                        Text(ServiceDurationFormatter.string(from: entry.duration))
+                            .fontWeight(.bold)
+                        Text(
+                            entry.tracker != nil
+                                ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked")
+                        )
                         .fontWeight(.medium)
                         .foregroundStyle(.secondary)
-                        
                     }
+                    .foregroundStyle(.primary)
+                    .font(.system(size: 17))
+                    .fontDesign(.rounded)
+                    Text(
+                        entry.date,
+                        format: Date.FormatStyle(
+                            date: .abbreviated,
+                            time: .none
+                        )
+                    )
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
                 }
-                .padding(.vertical, 24)
-                .padding(.horizontal, 24)
-                .background(
-                    colorScheme == .dark
-                        ? Color(.secondarySystemBackground)
-                        : Color(.systemBackground)
-                )
-                .cornerRadius(32)
-                .shadow(color: .primary.opacity(0.05), radius: 16, y: 12)
+                Spacer()
+                if entry.bibleStudies != 0 {
+                    VStack(spacing: 4) {
+                        Image(systemName: "book")
+                        Text(String("\(entry.bibleStudies)"))
+                            .fontDesign(.rounded)
+                    }
+                    .fontWeight(.medium)
+                    .foregroundStyle(.secondary)
+
+                }
             }
-            .buttonStyle(.plain)
+            .padding(.vertical, 24)
+            .padding(.horizontal, 24)
+            .background(
+                colorScheme == .dark
+                    ? Color(.secondarySystemBackground)
+                    : Color(.systemBackground)
+            )
+            .cornerRadius(32)
+            .shadow(color: .primary.opacity(0.05), radius: 16, y: 12)
         }
+        .buttonStyle(.plain)
     }
+}
 
 #Preview {
     @Previewable @State var selectedEntry: Entry? = nil
     let tracker = Tracker()
-    
-    EntryRow(entry: Entry(date: Date(), duration: 3600, tracker: tracker, bibleStudies: 2), selectedEntry: $selectedEntry)
+
+    EntryRow(
+        entry: Entry(date: Date(), duration: 3600, tracker: tracker, bibleStudies: 2), selectedEntry: $selectedEntry)
 }

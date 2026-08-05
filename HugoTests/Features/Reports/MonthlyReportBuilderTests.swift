@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import Testing
+
 @testable import Hugo
 
 @MainActor
@@ -38,7 +39,8 @@ struct MonthlyReportBuilderTests {
             Entry(date: date(2026, 1, 2), duration: 1_800, tracker: main, bibleStudies: 2),
             Entry(date: date(2026, 1, 3), duration: 900, tracker: separate),
         ]
-        let summary = try! #require(MonthlyReportBuilder.summaries(from: entries, calendar: calendar, locale: locale).first)
+        let summary = try! #require(
+            MonthlyReportBuilder.summaries(from: entries, calendar: calendar, locale: locale).first)
 
         #expect(summary.totalSeconds == 6_300)
         #expect(summary.totalBibleStudies == 3)
@@ -61,7 +63,8 @@ struct MonthlyReportBuilderTests {
         try context.save()
         let persistedEntry = try #require(context.fetch(FetchDescriptor<Entry>()).first)
 
-        let summary = try #require(MonthlyReportBuilder.summaries(from: [persistedEntry], calendar: calendar, locale: locale).first)
+        let summary = try #require(
+            MonthlyReportBuilder.summaries(from: [persistedEntry], calendar: calendar, locale: locale).first)
         #expect(summary.categories.count == 1)
         #expect(summary.categories.first?.name == "Deleted")
         #expect(summary.categories.first?.iconName == "archivebox")
@@ -71,7 +74,8 @@ struct MonthlyReportBuilderTests {
     @Test
     func includesFullyUntrackedEntriesInTotal() throws {
         let entry = Entry(date: date(2026, 1, 1), duration: 600, tracker: nil)
-        let summary = try #require(MonthlyReportBuilder.summaries(from: [entry], calendar: calendar, locale: locale).first)
+        let summary = try #require(
+            MonthlyReportBuilder.summaries(from: [entry], calendar: calendar, locale: locale).first)
 
         #expect(summary.totalSeconds == 600)
         #expect(summary.categories.count == 1)
@@ -82,7 +86,8 @@ struct MonthlyReportBuilderTests {
     @Test
     func usesInjectedLocaleForDisplayName() throws {
         let entry = Entry(date: date(2026, 9, 1), duration: 60, tracker: nil)
-        let summary = try #require(MonthlyReportBuilder.summaries(from: [entry], calendar: calendar, locale: locale).first)
+        let summary = try #require(
+            MonthlyReportBuilder.summaries(from: [entry], calendar: calendar, locale: locale).first)
         #expect(summary.displayName == "September 2026")
     }
 

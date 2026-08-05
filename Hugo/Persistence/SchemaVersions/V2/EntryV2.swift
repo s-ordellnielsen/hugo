@@ -24,6 +24,5 @@ extension SchemaV2 {
             self.tracker = tracker
         }
 
-
     }
 }

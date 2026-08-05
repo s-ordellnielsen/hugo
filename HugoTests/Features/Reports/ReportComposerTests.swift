@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Hugo
 
 struct ReportComposerTests {
@@ -45,7 +46,8 @@ struct ReportComposerTests {
     @Test
     func renderSubstitutesFirstAndLastNameTags() {
         #expect(
-            ReportComposer.render(template: "Hi {first} {last}!", firstName: "John", lastName: "Smith", month: "June", year: "2026")
+            ReportComposer.render(
+                template: "Hi {first} {last}!", firstName: "John", lastName: "Smith", month: "June", year: "2026")
                 == "Hi John Smith!"
         )
     }
@@ -53,7 +55,8 @@ struct ReportComposerTests {
     @Test
     func renderLeavesUnknownTagsUntouched() {
         #expect(
-            ReportComposer.render(template: "Hi {first}, {foo}!", firstName: "John", lastName: "Smith", month: "June", year: "2026")
+            ReportComposer.render(
+                template: "Hi {first}, {foo}!", firstName: "John", lastName: "Smith", month: "June", year: "2026")
                 == "Hi John, {foo}!"
         )
     }
@@ -61,15 +64,18 @@ struct ReportComposerTests {
     @Test
     func renderCollapsesWhitespaceLeftByEmptyNames() {
         #expect(
-            ReportComposer.render(template: "Hi {first} {last}!", firstName: "John", lastName: "", month: "June", year: "2026")
+            ReportComposer.render(
+                template: "Hi {first} {last}!", firstName: "John", lastName: "", month: "June", year: "2026")
                 == "Hi John !"
         )
         #expect(
-            ReportComposer.render(template: "{first}{last} Hi", firstName: "John", lastName: "", month: "June", year: "2026")
+            ReportComposer.render(
+                template: "{first}{last} Hi", firstName: "John", lastName: "", month: "June", year: "2026")
                 == "John Hi"
         )
         #expect(
-            ReportComposer.render(template: "Hi {first} {last}!", firstName: "", lastName: "", month: "June", year: "2026")
+            ReportComposer.render(
+                template: "Hi {first} {last}!", firstName: "", lastName: "", month: "June", year: "2026")
                 == "Hi !"
         )
     }
@@ -100,46 +106,47 @@ struct ReportComposerTests {
         )
     }
 
-	@Test
-	func messageContainsGreetingMonthHoursAndBibleStudies() {
-		let categories = [
-			category("field", name: "Field Service", type: .main, seconds: 19_200),
-			category("ldc", name: "LDC", type: .separate, seconds: 1_800),
-		]
-		let summary = summary(categories: categories, bibleStudies: 3)
-		let computation = ReportRoundingCalculator.compute(
-			summary: summary,
-			carriedIn: 0,
-			rule: .up
-		)
-		
-		let content = ReportComposer.message(
-			summary: summary,
-			computation: computation,
-			template: "Hi {first}!",
-			firstName: "John",
-			lastName: "Smith",
-			locale: locale,
-			calendar: calendar
-		)
-		
-		let lines = content.body.components(separatedBy: "\n")
-		
-		let hoursUnit = String(localized: "report.hours.unit", locale: locale)
-		let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
-		let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
-		
-		// Field Service 5h20m + LDC 0h30m = 5h50m → ceil 6h; the extra hour
-		// lands on LDC (largest remainder, 30m), Field Service keeps 5h.
-		#expect(lines == [
-			"Hi John!",
-			"",
-			"\(fieldServiceLabel): 5 \(hoursUnit)",
-			"LDC: 1 \(hoursUnit)",
-			"\(studiesLabel): 3",
-		])
-		#expect(computation.submittedHours == 6)
-	}
+    @Test
+    func messageContainsGreetingMonthHoursAndBibleStudies() {
+        let categories = [
+            category("field", name: "Field Service", type: .main, seconds: 19_200),
+            category("ldc", name: "LDC", type: .separate, seconds: 1_800),
+        ]
+        let summary = summary(categories: categories, bibleStudies: 3)
+        let computation = ReportRoundingCalculator.compute(
+            summary: summary,
+            carriedIn: 0,
+            rule: .up
+        )
+
+        let content = ReportComposer.message(
+            summary: summary,
+            computation: computation,
+            template: "Hi {first}!",
+            firstName: "John",
+            lastName: "Smith",
+            locale: locale,
+            calendar: calendar
+        )
+
+        let lines = content.body.components(separatedBy: "\n")
+
+        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
+        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
+        let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
+
+        // Field Service 5h20m + LDC 0h30m = 5h50m → ceil 6h; the extra hour
+        // lands on LDC (largest remainder, 30m), Field Service keeps 5h.
+        #expect(
+            lines == [
+                "Hi John!",
+                "",
+                "\(fieldServiceLabel): 5 \(hoursUnit)",
+                "LDC: 1 \(hoursUnit)",
+                "\(studiesLabel): 3",
+            ])
+        #expect(computation.submittedHours == 6)
+    }
 
     @Test
     func messageRendersMonthAndYearTagsInlineInTheGreeting() {
@@ -165,9 +172,9 @@ struct ReportComposerTests {
         )
 
         let lines = content.body.components(separatedBy: "\n")
-		
-		let hoursUnit = String(localized: "report.hours.unit", locale: locale)
-		let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
+
+        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
+        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
 
         #expect(lines[0] == "Hi John!")
         #expect(lines[1] == "Report for June 2026.")
@@ -200,10 +207,10 @@ struct ReportComposerTests {
         )
 
         let lines = content.body.components(separatedBy: "\n")
-		
-		let hoursUnit = String(localized: "report.hours.unit", locale: locale)
-		let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
-		let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
+
+        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
+        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
+        let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
 
         #expect(lines.contains("\(fieldServiceLabel): 3 \(hoursUnit)"))
         #expect(lines.contains("LDC: 0 \(hoursUnit)"))
@@ -238,10 +245,10 @@ struct ReportComposerTests {
         )
 
         let lines = content.body.components(separatedBy: "\n")
-		
-		let hoursUnit = String(localized: "report.hours.unit", locale: locale)
-		let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
-		let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
+
+        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
+        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
+        let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
 
         #expect(lines[0] == "Hej Jens! juni")
         #expect(lines[2] == "\(fieldServiceLabel): 5 \(hoursUnit)")

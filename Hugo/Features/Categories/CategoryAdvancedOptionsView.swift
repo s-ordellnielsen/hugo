@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct CategoryAdvancedOptionsView: View {
-        var tracker: Tracker
-        
-        var body: some View {
-            @Bindable var tracker = tracker
-            Form {
-                Toggle("tracker.options.allow-bible-studies", isOn: $tracker.allowBibleStudies)
-            }
+    var tracker: Tracker
+
+    var body: some View {
+        @Bindable var tracker = tracker
+        Form {
+            Toggle("tracker.options.allow-bible-studies", isOn: $tracker.allowBibleStudies)
         }
     }
+}
 
 #Preview {
     CategoryAdvancedOptionsView(tracker: Tracker(name: "Field Service"))

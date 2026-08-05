@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct MonthlyReportDetailView: View {
-	@Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) private var dismiss
 
     let month: TheocraticYearMonth
 
-	@State private var showingAddEntry = false
+    @State private var showingAddEntry = false
 
     private var summary: MonthlyReportSummary {
         // Presented only from months that have a summary.
@@ -27,19 +27,19 @@ struct MonthlyReportDetailView: View {
         }
         .navigationTitle(summary.displayName)
         .navigationSubtitle("report.title")
-		.navigationBarTitleDisplayMode(.inline)
-		.toolbar {
-			ToolbarItem(placement: .topBarLeading) {
-				Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
-			}
-			ToolbarItem {
-				Button("common.add", systemImage: "plus") {
-					showingAddEntry.toggle()
-				}
-			}
-		}
-		.sheet(isPresented: $showingAddEntry) {
-			AddEntryView(seededDate: summary.id.date())
-		}
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+            }
+            ToolbarItem {
+                Button("common.add", systemImage: "plus") {
+                    showingAddEntry.toggle()
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddEntry) {
+            AddEntryView(seededDate: summary.id.date())
+        }
     }
 }

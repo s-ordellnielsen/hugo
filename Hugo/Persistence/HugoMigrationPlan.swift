@@ -22,7 +22,7 @@ enum MigrationPlan: SchemaMigrationPlan {
 
     static var stages: [MigrationStage] {
         [
-            migrateV1toV2, migrateV2toV2_1, migrateV2_1toV3, migrateV3toV4,
+            migrateV1toV2, migrateV2ToV21, migrateV21ToV3, migrateV3toV4,
             migrateV4toV5, migrateV5toV6, migrateV6toV7, migrateV7toV8,
             migrateV8toV9, migrateV9toV10,
         ]
@@ -54,12 +54,12 @@ enum MigrationPlan: SchemaMigrationPlan {
         didMigrate: nil
     )
 
-    static let migrateV2toV2_1 = MigrationStage.lightweight(
+    static let migrateV2ToV21 = MigrationStage.lightweight(
         fromVersion: SchemaV2.self,
         toVersion: SchemaV2_1.self
     )
 
-    static let migrateV2_1toV3 = MigrationStage.custom(
+    static let migrateV21ToV3 = MigrationStage.custom(
         fromVersion: SchemaV2_1.self,
         toVersion: SchemaV3.self,
         willMigrate: { context in
@@ -152,7 +152,7 @@ enum MigrationPlan: SchemaMigrationPlan {
                     )
                     context.insert(entry)
                 }
-                
+
                 context.delete(report)
             }
 
@@ -169,7 +169,7 @@ enum MigrationPlan: SchemaMigrationPlan {
                     entry.storedTracker = storedTracker
                 }
             }
-            
+
             try context.save()
         }
     )

@@ -37,7 +37,7 @@ struct ReportReminderCard: View {
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
                 SubmitReportView(month: month)
-					.presentationDetents([.medium, .large])
+                    .presentationDetents([.medium, .large])
             }
         }
     }

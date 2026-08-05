@@ -5,8 +5,8 @@ struct ServiceYearView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @Query(sort: \SubmittedReport.year) private var submissions: [SubmittedReport]
     @State private var selectedYear: TheocraticYear?
-	
-	var resetToken: UUID = UUID()
+
+    var resetToken: UUID = UUID()
 
     private var years: [TheocraticYear] {
         TheocraticYear.availableYears(entryDates: entries.map(\.date), now: .now)
@@ -29,7 +29,8 @@ struct ServiceYearView: View {
             ForEach(years) { year in
                 NavigationStack {
                     ServiceYearPageView(
-                        report: TheocraticYearReportBuilder.report(for: year, entries: entries, submissions: submissions),
+                        report: TheocraticYearReportBuilder.report(
+                            for: year, entries: entries, submissions: submissions),
                         initialMonth: year == currentYear ? Date().yearMonth() : nil
                     )
                     .navigationTitle(year.displayName)
@@ -42,11 +43,11 @@ struct ServiceYearView: View {
         .tabViewStyle(.page(indexDisplayMode: .never))
         .background(Color(.systemGroupedBackground))
         .ignoresSafeArea(edges: .vertical)
-		.onChange(of: resetToken) {
-			withAnimation {
-				selectedYear = nil
-			}
-		}
+        .onChange(of: resetToken) {
+            withAnimation {
+                selectedYear = nil
+            }
+        }
     }
 }
 

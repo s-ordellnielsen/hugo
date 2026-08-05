@@ -31,6 +31,5 @@ extension SchemaV2_1 {
             self.bibleStudies = bibleStudies ?? 0
         }
 
-
     }
 }

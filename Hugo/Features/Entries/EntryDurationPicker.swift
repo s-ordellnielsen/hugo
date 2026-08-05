@@ -8,25 +8,25 @@
 import SwiftUI
 
 struct EntryDurationPicker: View {
-        @Binding var duration: TimeInterval
-        
-        @State var durationAsDate: Date
-        
-        var body: some View {
-            DatePicker(selection: $durationAsDate, displayedComponents: .hourAndMinute) {
-                Label("entry.duration.label", systemImage: "clock")
-            }
-            .onChange(of: durationAsDate, updateDuration)
+    @Binding var duration: TimeInterval
+
+    @State var durationAsDate: Date
+
+    var body: some View {
+        DatePicker(selection: $durationAsDate, displayedComponents: .hourAndMinute) {
+            Label("entry.duration.label", systemImage: "clock")
         }
-        
-        private func updateDuration() {
-            let calendar = Calendar.current
-            let components = calendar.dateComponents([.hour, .minute, .second], from: durationAsDate)
-            
-            let hours: Int = (components.hour ?? 0) * 60 * 60
-            let minutes: Int = (components.minute ?? 0) * 60
-            let seconds: Int = components.second ?? 0
-            
-            duration = TimeInterval(hours + minutes + seconds)
-        }
+        .onChange(of: durationAsDate, updateDuration)
     }
+
+    private func updateDuration() {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute, .second], from: durationAsDate)
+
+        let hours: Int = (components.hour ?? 0) * 60 * 60
+        let minutes: Int = (components.minute ?? 0) * 60
+        let seconds: Int = components.second ?? 0
+
+        duration = TimeInterval(hours + minutes + seconds)
+    }
+}

@@ -26,10 +26,10 @@ struct TheocraticYearTotalsView: View {
                     alignment: .trailing
                 )
             }
-			Divider().padding(.vertical, 8)
-			Text("monthlyReport.detail.largeTotal.disclaimer")
-				.font(.system(size: 11))
-				.foregroundStyle(.secondary)
+            Divider().padding(.vertical, 8)
+            Text("monthlyReport.detail.largeTotal.disclaimer")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Hugo
 
 @MainActor
@@ -22,7 +23,9 @@ struct OverviewMetricsTests {
     @Test
     func metricsCalculateGoalAndExpectedProgress() {
         let status = PublisherStatus.status(for: "auxiliary-pioneer")
-        let metrics = OverviewMetrics.make(entries: [Entry(date: date(2026, 1, 1), duration: 7_200, tracker: nil)], status: status, now: date(2026, 1, 15), calendar: calendar)
+        let metrics = OverviewMetrics.make(
+            entries: [Entry(date: date(2026, 1, 1), duration: 7_200, tracker: nil)], status: status,
+            now: date(2026, 1, 15), calendar: calendar)
         #expect(metrics.totalHours == 2)
         #expect(metrics.monthlyGoal == 30)
         #expect(abs(metrics.expectedProgress - (15.0 / 31.0 * 30.0)) < 0.0001)
@@ -30,7 +33,9 @@ struct OverviewMetricsTests {
 
     @Test
     func missingStatusAndNegativeDurationsAreSafe() {
-        let metrics = OverviewMetrics.make(entries: [Entry(date: date(2026, 1, 1), duration: -100, tracker: nil)], status: nil, now: date(2026, 1, 1), calendar: calendar)
+        let metrics = OverviewMetrics.make(
+            entries: [Entry(date: date(2026, 1, 1), duration: -100, tracker: nil)], status: nil, now: date(2026, 1, 1),
+            calendar: calendar)
         #expect(metrics.totalHours == 0)
         #expect(metrics.monthlyGoal == 0)
         #expect(metrics.expectedProgress == 0)
@@ -40,10 +45,15 @@ struct OverviewMetricsTests {
     func categoryRowsConserveDuration() {
         let first = Tracker(name: "First")
         let second = Tracker(name: "Second")
-        let entries = [Entry(date: date(2026, 1, 1), duration: 100, tracker: first), Entry(date: date(2026, 1, 2), duration: 200, tracker: second)]
+        let entries = [
+            Entry(date: date(2026, 1, 1), duration: 100, tracker: first),
+            Entry(date: date(2026, 1, 2), duration: 200, tracker: second),
+        ]
         let rows = CategoryProgressAggregator.rows(entries: entries, trackers: [first, second])
         #expect(rows.map(\.duration).reduce(0, +) == 300)
     }
 
-    private func date(_ year: Int, _ month: Int, _ day: Int) -> Date { calendar.date(from: DateComponents(year: year, month: month, day: day))! }
+    private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
+        calendar.date(from: DateComponents(year: year, month: month, day: day))!
+    }
 }

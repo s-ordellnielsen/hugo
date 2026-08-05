@@ -26,10 +26,10 @@ struct MonthlyProgressCard: View {
                 .circle
             )
             .font(.largeTitle)
-			.labelStyle(.iconOnly)
-			.buttonStyle(.glass)
-			.offset(x: 128, y: 128)
+            .labelStyle(.iconOnly)
+            .buttonStyle(.glass)
+            .offset(x: 128, y: 128)
         }
-		.contentShape(Rectangle()).onTapGesture(perform: onShowDetails)
+        .contentShape(Rectangle()).onTapGesture(perform: onShowDetails)
     }
 }
