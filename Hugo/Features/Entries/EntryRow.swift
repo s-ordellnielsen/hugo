@@ -74,7 +74,6 @@ struct EntryRow: View {
                     : Color(.systemBackground)
             )
             .cornerRadius(32)
-            .shadow(color: .primary.opacity(0.05), radius: 16, y: 12)
         }
         .buttonStyle(.plain)
     }
