@@ -61,13 +61,26 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 005 | Refactor settings and tracker UI around category vocabulary | P1 | L | 001, 002, 003 | DONE |
 | 006 | Refactor entry creation and editing into idiomatic SwiftUI features | P1 | L | 001, 003, 005 | DONE |
 | 007 | Refactor overview and monthly progress presentation | P2 | L | 001, 004, 006 | DONE |
-| 008 | Modernize app composition, bootstrap, and Swift concurrency | P1 | L | 001–007 | TODO |
-| 009 | Normalize Xcode project hygiene, formatting, and documentation | P2 | M | 001–008 | TODO |
+| 008 | Modernize app composition, bootstrap, and Swift concurrency | P1 | L | 001–007 | STALE — partly overtaken by current code and 016–028; re-scope before executing |
+| 009 | Normalize Xcode project hygiene, formatting, and documentation | P2 | M | 001–008 | STALE — superseded in part by 016 (format gate) and 025 (organization); re-scope before executing |
 | 010 | Replace the Report tab with a Year screen | P2 | M | 004 | DONE |
 | 012 | Monthly report submission — reminder, rounding, and send-to-overseer | P1 | L | 010, 011 | DONE |
 | 013 | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2 | S | 012 | DONE |
 | 014 | Make SubmittedReport CloudKit-eligible so V9 schema pushes and syncs (no V10) | P1 | S | — | BLOCKED (in-place edit broke the entity version hash — existing V9 stores crash with loadIssueModelContainer; superseded by 015) |
 | 015 | SchemaV10 with eligible SubmittedReport + V9→V10 lightweight migration (repair 014's hash break) | P1 | S | 014 | DONE |
+| 016 | Green verification gate — mechanically format so Scripts/verify.sh runs | P1 | S | — | TODO |
+| 017 | User-visible correctness — shared error alert, validation, month-scoped breakdown, throwing saves, stable sheets | P1 | M | 016 | TODO |
+| 018 | Reporting aggregation performance — cached formatters, summaries, year reports | P2 | M | 016 | TODO |
+| 019 | Symbol catalog performance — static catalog, precomputed search index | P2 | S | 016 | TODO |
+| 020 | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1 | L | 016, 017 | TODO |
+| 021 | Dynamic Type and adaptive layout — flexible circle, scaled type, adaptive grids | P2 | M | 020 | TODO |
+| 022 | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2 | M | 020 | TODO |
+| 023 | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2 | M | 016, 022 | TODO |
+| 024 | Localization completeness — Danish gaps, stale keys, catalog audit | P2 | S | 017, 020, 023 | TODO |
+| 025 | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3 | S | 016, 023 | TODO |
+| 026 | Purpose-built scroll-wheel duration picker — configurable minute interval and max duration | P2 | M | 016, 017 | TODO |
+| 027 | Local report-reminder notification (design + spike) | P3 | M | 017, 024 (rec.) | TODO |
+| 028 | Export / backup (design + spike) | P3 | M | 023, 024 (rec.) | TODO |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale).
@@ -86,6 +99,19 @@ REJECTED (with one-line rationale).
 * Plan 014 is a correctness fix to plan 012's `SubmittedReport` model (not CloudKit-eligible → schema never pushed, production sync fails). It edits V9 in place because the fix is optionality-only and V9 never reached CloudKit or users; it depends on 012 being DONE and must land before any build that ships V9 to Production.
 * Plan 015 supersedes 014 after the in-place edit proved unsafe: making `SubmittedReport` optional changed the entity version hash, so existing V9 stores (iPhone TestFlight build, simulators) fail to open with `loadIssueModelContainer` ("Cannot use staged migration with an unknown model version", NSCocoaErrorDomain 134504). 015 keeps V9 frozen at its deployed shape, adds SchemaV10 (7.0.0) with the eligible all-optional model, and re-stamps existing stores via a lightweight V9→V10 migration. The in-place submission update and optional-chaining read fixes from 014 are kept (they target the shared `SubmittedReport` typealias, now V10).
 
+### Audit of 2026-08-06 (commit d65afec) — plans 016-028
+
+* Plan 016 lands first: `swift-format lint --strict` reports 1,061 diagnostics, so `Scripts/verify.sh` fails at the formatting step before tests/analyze run. Every later plan depends on a green gate.
+* Plan 017 fixes user-visible correctness (shared error alert, the missing `entry.add.validation.invalid` localization, month-scoped category breakdown, throwing saves, stable `.sheet(item:)` ownership) and is the base for 020 and 026.
+* Plans 018/019 are independent performance wins (no behavior change) and depend only on the green gate.
+* Plan 020 (accessibility) is the largest and gates 021 (Dynamic Type) and 022 (motion); 022's `CardButtonStyle` comes from 020.
+* Plan 023 removes dead/inert code and deprecated API; it depends on 022 (which replaces the legacy progress spring) and feeds 024 (which deletes the orphaned `navigation.help` key) and 025.
+* Plan 024 is localization-only (one catalog file) and depends on the keys that 017/020 add and the key 023 orphans.
+* Plan 025 flattens the `Enums`/`Structs` technical buckets and strips stale headers; safe because the project uses filesystem-synchronized groups (no pbxproj edit). It also reconciles stale plans 008/009.
+* Plan 026 replaces the repurposed-`DatePicker` duration input with a purpose-built scroll-wheel picker whose minute interval (1/5/15) is a user setting and whose max duration is a property (24 h for same-day entries, larger for the future backfill feature). No App Intent/widget work.
+* Plans 027 (local report reminder) and 028 (export/backup) are direction/spike plans whose deliverable is a decision record plus a feature-flagged proof-of-concept; full production features are follow-ups informed by those records. They reuse patterns from 017/024/023 and are sequenced last.
+
+
 ## Architecture decisions
 
 * Organize source by feature, not by React-like technical buckets such as `Views`, `Structs`, `Enums`, and `Managers`.
@@ -103,3 +129,17 @@ REJECTED (with one-line rationale).
 * Deleting historical `SchemaV1`–`SchemaV7` models as “unused”: rejected. They are required by the declared migration chain and existing user stores.
 * Renaming the persisted SwiftData `Tracker` model to `Category` during this refactor: rejected. CloudKit and migration compatibility make that a separate data-model project; this refactor limits the rename to UI/domain-facing symbols.
 * Deleting the empty `SchemaV8.Report` immediately: rejected. It is migration ballast from the recent report-to-entry transition. Plan 003 documents it and removes the current alias, but a future schema version must prove safe removal with migration fixtures.
+
+### Explicitly deferred by the operator (2026-08-06) — do NOT plan
+
+These findings from the 2026-08-06 audit (Part 1, items 12-15) were reviewed and intentionally skipped. They have a reason behind them and have been finicky to configure before:
+
+* Debug/release CloudKit container configuration — kept as-is.
+* Debug UI reachable in release builds (`DebugSettingsView` link) — kept as-is.
+* Dead/orphaned Xcode configuration cleanup — kept as-is.
+* `fatalError` on production model-container failure — kept as-is.
+
+And one approved-but-deferred direction:
+
+* Add-entry App Intent and home-screen widget — a good idea the operator will implement later; not planned now. Plans 026/027/028 explicitly exclude it.
+
