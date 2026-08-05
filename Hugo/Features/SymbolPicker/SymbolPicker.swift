@@ -16,12 +16,14 @@ struct SymbolPicker: View {
 
     @State private var searchText: String = ""
     @State private var attributes: SymbolAttribute? = nil
+    @State private var filteredSymbols: [SymbolDefinition] = []
 
-    var filteredSymbols: [SymbolDefinition] {
+    private func refreshFilter() {
         if searchText.isEmpty && attributes == nil {
-            return set.symbols
+            filteredSymbols = set.symbols
+        } else {
+            filteredSymbols = set.symbols.filter { $0.matches(searchText, attributes) }
         }
-        return set.symbols.filter { $0.matches(searchText, attributes) }
     }
 
     private var columns: [GridItem] {
@@ -77,6 +79,15 @@ struct SymbolPicker: View {
             }
         }
         .searchable(text: $searchText)
+        .onAppear {
+            refreshFilter()
+        }
+        .onChange(of: searchText) {
+            refreshFilter()
+        }
+        .onChange(of: attributes) {
+            refreshFilter()
+        }
     }
 
     @ViewBuilder
