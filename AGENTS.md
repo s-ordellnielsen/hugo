@@ -121,3 +121,4 @@ extension Date {
 * Pure value logic does not need a ViewModel. Simple views may own local state; use `@Observable` for stateful workflows and `@Bindable` for SwiftData models when bindings are required.
 * Persistence names remain `Tracker` even where the UI says Category. Historical SwiftData schemas are compatibility definitions.
 * Swift 6 complete concurrency checking and MainActor default isolation are intentional project settings.
+* All SwiftData models must be compatible with CloudKit. Unless specifically specified as not being synced in the cloud, all models will be synced with CloudKit and thus their models will *have* to be compatible with CloudKit.
