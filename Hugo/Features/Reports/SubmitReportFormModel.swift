@@ -25,6 +25,9 @@ final class SubmitReportFormModel {
 
     private var entries: [Entry] = []
     private var submissions: [SubmittedReport] = []
+    private var submissionsByMonth: [YearMonth: SubmittedReport] = [:]
+    private var monthEntries: [Entry] = []
+    private(set) var summary: MonthlyReportSummary?
 
     init(
         month: YearMonth,
@@ -49,14 +52,13 @@ final class SubmitReportFormModel {
     func load(entries: [Entry], submissions: [SubmittedReport]) {
         self.entries = entries
         self.submissions = submissions
+        self.submissionsByMonth = TheocraticYearReportBuilder.canonicalSubmissionsByMonth(submissions)
+        self.monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
+        self.summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
         recompute()
     }
 
     // MARK: - Derived values
-
-    var summary: MonthlyReportSummary? {
-        MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
-    }
 
     /// The previous month's real submission, if any. Backfill sentinels and
     /// missing submissions both yield zero carry-in.
@@ -64,10 +66,7 @@ final class SubmitReportFormModel {
         let previousMonth = YearMonth.previous(before: month, calendar: calendar)
 
         guard
-            let submission = TheocraticYearReportBuilder.canonicalSubmission(
-                for: previousMonth,
-                in: submissions
-            ),
+            let submission = submissionsByMonth[previousMonth],
             (submission.submittedAt ?? .distantPast) != .distantPast
         else {
             return nil
@@ -90,10 +89,7 @@ final class SubmitReportFormModel {
 
     /// An existing report for this exact month (re-submission replaces it).
     var existingSubmission: SubmittedReport? {
-        TheocraticYearReportBuilder.canonicalSubmission(
-            for: month,
-            in: submissions
-        )
+        submissionsByMonth[month]
     }
 
     /// A report can be submitted for every past or current month, including
@@ -214,10 +210,6 @@ final class SubmitReportFormModel {
     }
 
     // MARK: - Private
-
-    private var monthEntries: [Entry] {
-        entries.filter { $0.date.yearMonth(using: calendar) == month }
-    }
 
     private var greetingTemplate: String {
         let stored = userDefaults.string(forKey: UserDefaultsKeys.overseerGreetingTemplate)

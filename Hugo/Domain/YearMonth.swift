@@ -52,6 +52,27 @@ extension Date {
 }
 
 extension YearMonth {
+    nonisolated private static let formatterCache = FormatterCache()
+
+    private final class FormatterCache: @unchecked Sendable {
+        nonisolated private let lock = NSLock()
+        nonisolated(unsafe) private var storage: [String: DateFormatter] = [:]
+
+        nonisolated func formatter(format: String, locale: Locale, calendar: Calendar) -> DateFormatter {
+            let key = "\(format)|\(locale.identifier)|\(calendar.identifier)|\(calendar.timeZone.identifier)"
+            lock.lock()
+            defer { lock.unlock() }
+            if let existing = storage[key] { return existing }
+            let formatter = DateFormatter()
+            formatter.locale = locale
+            formatter.calendar = calendar
+            formatter.timeZone = calendar.timeZone
+            formatter.dateFormat = format
+            storage[key] = formatter
+            return formatter
+        }
+    }
+
     nonisolated func monthYearString(locale: Locale = .current, calendar: Calendar = .current) -> String {
         var components = DateComponents()
 
@@ -60,13 +81,9 @@ extension YearMonth {
 
         guard let date = calendar.date(from: components) else { return "\(month)/\(year)" }
 
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "LLLL yyyy"
-
-        return formatter.string(from: date)
+        return Self.formatterCache.formatter(
+            format: "LLLL yyyy", locale: locale, calendar: calendar
+        ).string(from: date)
     }
 
     nonisolated func monthName(locale: Locale = .current, calendar: Calendar = .current) -> String {
@@ -77,13 +94,9 @@ extension YearMonth {
 
         guard let date = calendar.date(from: components) else { return "\(month)" }
 
-        let formatter = DateFormatter()
-        formatter.locale = locale
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "LLLL"
-
-        return formatter.string(from: date)
+        return Self.formatterCache.formatter(
+            format: "LLLL", locale: locale, calendar: calendar
+        ).string(from: date)
     }
 
     nonisolated func date(day: Int = 1, calendar: Calendar = .current) -> Date {

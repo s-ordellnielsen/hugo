@@ -50,7 +50,7 @@ enum TheocraticYearReportBuilder {
         canonicalSubmissionsByMonth(submissions)[month]
     }
 
-    private static func canonicalSubmissionsByMonth(
+    static func canonicalSubmissionsByMonth(
         _ submissions: [SubmittedReport]
     ) -> [YearMonth: SubmittedReport] {
         submissions.reduce(into: [YearMonth: SubmittedReport]()) { result, candidate in

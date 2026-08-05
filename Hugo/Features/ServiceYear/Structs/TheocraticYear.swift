@@ -33,9 +33,12 @@ nonisolated struct TheocraticYear: Hashable, Comparable, Identifiable, Sendable 
         calendar: Calendar = .current
     ) -> [TheocraticYear] {
         let currentYear = containing(now, calendar: calendar)
-        let entryYears = entryDates.map { containing($0, calendar: calendar) }
-        let firstYear = min(entryYears.min() ?? currentYear, currentYear)
-        let lastYear = max(entryYears.max() ?? currentYear, currentYear)
+        guard let earliest = entryDates.min(), let latest = entryDates.max() else {
+            return [currentYear]
+        }
+
+        let firstYear = min(containing(earliest, calendar: calendar), currentYear)
+        let lastYear = max(containing(latest, calendar: calendar), currentYear)
 
         return (firstYear.startYear...lastYear.startYear).map(TheocraticYear.init(startYear:))
     }
