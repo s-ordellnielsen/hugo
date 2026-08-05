@@ -52,35 +52,35 @@ stateful workflows such as add/edit forms and app bootstrap state.
 
 ## Execution order and status
 
-| Plan | Title | Priority | Effort | Depends on | Status |
-|---|---|---:|---:|---|---|
-| 001 | Establish a refactoring safety net | P1 | M | — | DONE |
-| 002 | Remove confirmed dead code and stale project artifacts | P1 | M | 001 | DONE |
-| 003 | Reorganize and harden SwiftData persistence | P1 | L | 001, 002 | DONE |
-| 004 | Extract and rename the monthly reporting domain | P1 | L | 001, 003 | DONE |
-| 005 | Refactor settings and tracker UI around category vocabulary | P1 | L | 001, 002, 003 | DONE |
-| 006 | Refactor entry creation and editing into idiomatic SwiftUI features | P1 | L | 001, 003, 005 | DONE |
-| 007 | Refactor overview and monthly progress presentation | P2 | L | 001, 004, 006 | DONE |
-| 008 | Modernize app composition, bootstrap, and Swift concurrency | P1 | L | 001–007 | STALE — partly overtaken by current code and 016–028; re-scope before executing |
-| 009 | Normalize Xcode project hygiene, formatting, and documentation | P2 | M | 001–008 | STALE — superseded in part by 016 (format gate) and 025 (organization); re-scope before executing |
-| 010 | Replace the Report tab with a Year screen | P2 | M | 004 | DONE |
-| 012 | Monthly report submission — reminder, rounding, and send-to-overseer | P1 | L | 010, 011 | DONE |
-| 013 | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2 | S | 012 | DONE |
-| 014 | Make SubmittedReport CloudKit-eligible so V9 schema pushes and syncs (no V10) | P1 | S | — | BLOCKED (in-place edit broke the entity version hash — existing V9 stores crash with loadIssueModelContainer; superseded by 015) |
-| 015 | SchemaV10 with eligible SubmittedReport + V9→V10 lightweight migration (repair 014's hash break) | P1 | S | 014 | DONE |
-| 016 | Green verification gate — mechanically format so Scripts/verify.sh runs | P1 | S | — | DONE |
-| 017 | User-visible correctness — shared error alert, validation, month-scoped breakdown, throwing saves, stable sheets | P1 | M | 016 | DONE |
-| 018 | Reporting aggregation performance — cached formatters, summaries, year reports | P2 | M | 016 | TODO |
-| 019 | Symbol catalog performance — static catalog, precomputed search index | P2 | S | 016 | TODO |
-| 020 | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1 | L | 016, 017 | TODO |
-| 021 | Dynamic Type and adaptive layout — flexible circle, scaled type, adaptive grids | P2 | M | 020 | TODO |
-| 022 | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2 | M | 020 | TODO |
-| 023 | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2 | M | 016, 022 | TODO |
-| 024 | Localization completeness — Danish gaps, stale keys, catalog audit | P2 | S | 017, 020, 023 | TODO |
-| 025 | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3 | S | 016, 023 | TODO |
-| 026 | Purpose-built scroll-wheel duration picker — configurable minute interval and max duration | P2 | M | 016, 017 | TODO |
-| 027 | Local report-reminder notification (design + spike) | P3 | M | 017, 024 (rec.) | TODO |
-| 028 | Export / backup (design + spike) | P3 | M | 023, 024 (rec.) | TODO |
+| Plan | Title                                                        | Priority | Effort | Depends on      | Status                                                       |
+|------|--------------------------------------------------------------|---------:|-------:|-----------------|--------------------------------------------------------------|
+| 001  | Establish a refactoring safety net                           | P1       | M      | —               | DONE                                                         |
+| 002  | Remove confirmed dead code and stale project artifacts       | P1       | M      | 001             | DONE                                                         |
+| 003  | Reorganize and harden SwiftData persistence                  | P1       | L      | 001, 002        | DONE                                                         |
+| 004  | Extract and rename the monthly reporting domain              | P1       | L      | 001, 003        | DONE                                                         |
+| 005  | Refactor settings and tracker UI around category vocabulary  | P1       | L      | 001, 002, 003   | DONE                                                         |
+| 006  | Refactor entry creation and editing into idiomatic SwiftUI features | P1       | L      | 001, 003, 005   | DONE                                                         |
+| 007  | Refactor overview and monthly progress presentation          | P2       | L      | 001, 004, 006   | DONE                                                         |
+| 008  | Modernize app composition, bootstrap, and Swift concurrency  | P1       | L      | 001–007         | STALE — partly overtaken by current code and 016–028; re-scope before executing |
+| 009  | Normalize Xcode project hygiene, formatting, and documentation | P2       | M      | 001–008         | STALE — superseded in part by 016 (format gate) and 025 (organization); re-scope before executing |
+| 010  | Replace the Report tab with a Year screen                    | P2       | M      | 004             | DONE                                                         |
+| 012  | Monthly report submission — reminder, rounding, and send-to-overseer | P1       | L      | 010, 011        | DONE                                                         |
+| 013  | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2       | S      | 012             | DONE                                                         |
+| 014  | Make SubmittedReport CloudKit-eligible so V9 schema pushes and syncs (no V10) | P1       | S      | —               | BLOCKED (in-place edit broke the entity version hash — existing V9 stores crash with loadIssueModelContainer; superseded by 015) |
+| 015  | SchemaV10 with eligible SubmittedReport + V9→V10 lightweight migration (repair 014's hash break) | P1       | S      | 014             | DONE                                                         |
+| 016  | Green verification gate — mechanically format so Scripts/verify.sh runs | P1       | S      | —               | DONE                                                         |
+| 017  | User-visible correctness — shared error alert, validation, month-scoped breakdown, throwing saves, stable sheets | P1       | M      | 016             | DONE                                                         |
+| 018  | Reporting aggregation performance — cached formatters, summaries, year reports | P2       | M      | 016             | DONE                                                         |
+| 019  | Symbol catalog performance — static catalog, precomputed search index | P2       | S      | 016             | DONE                                                         |
+| 020  | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1       | L      | 016, 017        | TODO                                                         |
+| 021  | Dynamic Type and adaptive layout — flexible circle, scaled type, adaptive grids | P2       | M      | 020             | TODO                                                         |
+| 022  | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2       | M      | 020             | TODO                                                         |
+| 023  | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2       | M      | 016, 022        | TODO                                                         |
+| 024  | Localization completeness — Danish gaps, stale keys, catalog audit | P2       | S      | 017, 020, 023   | TODO                                                         |
+| 025  | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3       | S      | 016, 023        | TODO                                                         |
+| 026  | Purpose-built scroll-wheel duration picker — configurable minute interval and max duration | P2       | M      | 016, 017        | TODO                                                         |
+| 027  | Local report-reminder notification (design + spike)          | P3       | M      | 017, 024 (rec.) | TODO                                                         |
+| 028  | Export / backup (design + spike)                             | P3       | M      | 023, 024 (rec.) | TODO                                                         |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) |
 REJECTED (with one-line rationale).
