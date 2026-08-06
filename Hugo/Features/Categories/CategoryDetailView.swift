@@ -1,10 +1,3 @@
-//
-//  TrackerDetailView.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 17/10/2025.
-//
-
 import SwiftData
 import SwiftUI
 

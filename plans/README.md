@@ -61,8 +61,8 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 005  | Refactor settings and tracker UI around category vocabulary  | P1       | L      | 001, 002, 003   | DONE                                                         |
 | 006  | Refactor entry creation and editing into idiomatic SwiftUI features | P1       | L      | 001, 003, 005   | DONE                                                         |
 | 007  | Refactor overview and monthly progress presentation          | P2       | L      | 001, 004, 006   | DONE                                                         |
-| 008  | Modernize app composition, bootstrap, and Swift concurrency  | P1       | L      | 001–007         | STALE — partly overtaken by current code and 016–028; re-scope before executing |
-| 009  | Normalize Xcode project hygiene, formatting, and documentation | P2       | M      | 001–008         | STALE — superseded in part by 016 (format gate) and 025 (organization); re-scope before executing |
+| 008  | Modernize app composition, bootstrap, and Swift concurrency  | P1       | L      | 001–007         | STALE — superseded in part by 016–025; re-scope before executing |
+| 009  | Normalize Xcode project hygiene, formatting, and documentation | P2       | M      | 001–008         | STALE — superseded in part by 016–025; re-scope before executing |
 | 010  | Replace the Report tab with a Year screen                    | P2       | M      | 004             | DONE                                                         |
 | 012  | Monthly report submission — reminder, rounding, and send-to-overseer | P1       | L      | 010, 011        | DONE                                                         |
 | 013  | Submit report flow polish — hours unit, greeting month/year tags, orange send button, card dropdown | P2       | S      | 012             | DONE                                                         |
@@ -77,7 +77,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 022  | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2       | M      | 020             | DONE                                                         |
 | 023  | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2       | M      | 016, 022        | DONE                                                         |
 | 024  | Localization completeness — Danish gaps, stale keys, catalog audit | P2       | S      | 017, 020, 023   | DONE                                                         |
-| 025  | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3       | S      | 016, 023        | TODO                                                         |
+| 025  | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3       | S      | 016, 023        | DONE                                                         |
 | 026  | Purpose-built scroll-wheel duration picker — configurable minute interval and max duration | P2       | M      | 016, 017        | TODO                                                         |
 | 027  | Local report-reminder notification (design + spike)          | P3       | M      | 017, 024 (rec.) | TODO                                                         |
 | 028  | Export / backup (design + spike)                             | P3       | M      | 023, 024 (rec.) | TODO                                                         |
