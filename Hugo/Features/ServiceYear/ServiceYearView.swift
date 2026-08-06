@@ -41,13 +41,10 @@ struct ServiceYearView: View {
     private func page(for year: TheocraticYear) -> some View {
         if let report = reportsByYear[year] {
             NavigationStack {
-                ServiceYearPageView(
-                    report: report,
-                    initialMonth: year == currentYear ? Date().yearMonth() : nil
-                )
-                .navigationTitle(year.displayName)
-                .navigationSubtitle("year.subtitle")
-                .navigationBarTitleDisplayMode(.inline)
+                ServiceYearPageView(report: report)
+                    .navigationTitle(year.displayName)
+                    .navigationSubtitle("year.subtitle")
+                    .navigationBarTitleDisplayMode(.inline)
             }
             .tag(year)
         }
