@@ -26,9 +26,10 @@ struct SymbolPicker: View {
         }
     }
 
+    @ScaledMetric(relativeTo: .title2) private var minimumCellWidth: CGFloat = 70
+
     private var columns: [GridItem] {
-        let count = UIDevice.current.userInterfaceIdiom == .pad ? 8 : 4
-        return Array(repeating: GridItem(.flexible(minimum: 70)), count: count)
+        [GridItem(.adaptive(minimum: minimumCellWidth), spacing: 12)]
     }
 
     var body: some View {
@@ -93,7 +94,7 @@ struct SymbolPicker: View {
     @ViewBuilder
     private func symbolButton(_ symbol: SymbolDefinition) -> some View {
         Image(systemName: symbol.icon)
-            .font(.system(size: 24))
+            .font(.title2)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .aspectRatio(1, contentMode: .fit)
             .background(

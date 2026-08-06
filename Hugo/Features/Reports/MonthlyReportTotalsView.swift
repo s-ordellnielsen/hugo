@@ -1,9 +1,22 @@
 import SwiftUI
 
 struct MonthlyReportTotalsView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let summary: MonthlyReportSummary
 
     var body: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 12) { totals }
+            } else {
+                totals
+            }
+        }
+        .padding(8)
+    }
+
+    @ViewBuilder
+    private var totals: some View {
         HStack(alignment: .bottom) {
             total(
                 ServiceDurationFormatter.string(from: summary.mainDuration),
@@ -17,7 +30,6 @@ struct MonthlyReportTotalsView: View {
                 ServiceDurationFormatter.string(from: summary.separateDuration),
                 label: "monthlyReport.detail.largeTotal.separate.label", alignment: .trailing)
         }
-        .padding(8)
     }
 
     @ViewBuilder

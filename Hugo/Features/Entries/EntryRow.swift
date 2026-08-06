@@ -42,7 +42,7 @@ struct EntryRow: View {
                         .foregroundStyle(.secondary)
                     }
                     .foregroundStyle(.primary)
-                    .font(.system(size: 17))
+                    .font(.body)
                     .fontDesign(.rounded)
                     Text(
                         entry.date,

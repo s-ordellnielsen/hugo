@@ -14,6 +14,9 @@ struct CategoryDetailView: View {
 
     var tracker: Tracker
 
+    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 48
+    @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = 128
+
     @State private var showDeleteConfirmation = false
     @State private var iconPickerIsPresented: Bool = false
     @State private var errorMessage: String?
@@ -28,14 +31,14 @@ struct CategoryDetailView: View {
                     } label: {
                         VStack {
                             Image(systemName: tracker.iconName)
-                                .font(.system(size: 48))
+                                .font(.system(size: iconSize))
                                 .tint(.primary)
                         }
-                        .frame(width: 128, height: 128)
+                        .frame(width: tileSize, height: tileSize)
                         .background(Color(.secondarySystemGroupedBackground))
                         .cornerRadius(32)
                     }
-                    .frame(width: 128, height: 128)
+                    .frame(width: tileSize, height: tileSize)
                     Text("symbol.picker.select.label")
                         .font(.caption)
                         .foregroundStyle(.secondary)
