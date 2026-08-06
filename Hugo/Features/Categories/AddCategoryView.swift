@@ -7,6 +7,9 @@ struct AddCategoryView: View {
 
     @Query private var trackers: [Tracker]
 
+    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 48
+    @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = 128
+
     @State private var name = ""
     @State private var type: TrackerType = .main
     @State private var allowBibleStudies = true
@@ -24,9 +27,9 @@ struct AddCategoryView: View {
                     } label: {
                         VStack(spacing: 8) {
                             Image(systemName: iconName)
-                                .font(.system(size: 48))
+                                .font(.system(size: iconSize))
                                 .tint(.primary)
-                                .frame(width: 128, height: 128)
+                                .frame(width: tileSize, height: tileSize)
                                 .background(Color(.secondarySystemGroupedBackground))
                                 .cornerRadius(32)
                             Text("symbol.picker.select.label")

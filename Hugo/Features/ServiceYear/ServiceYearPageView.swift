@@ -37,7 +37,7 @@ struct ServiceYearPageView: View {
     private var emptyYearCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Image(systemName: "calendar")
-                .font(.system(size: 40))
+                .font(.largeTitle)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.secondary)
             Text("year.empty.title")
