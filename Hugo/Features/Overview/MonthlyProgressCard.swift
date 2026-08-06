@@ -26,6 +26,7 @@ struct MonthlyProgressCard: View {
                             .fontWeight(.heavy)
                             .fontDesign(.rounded)
                             .contentTransition(.numericText())
+                            .motion(Motion.value, value: value)
                         MonthlyProgressStatusView(expected: expectedProgress, current: value)
                     }
                 }

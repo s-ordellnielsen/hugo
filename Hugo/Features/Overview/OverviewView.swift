@@ -39,6 +39,7 @@ struct OverviewView: View {
                 VStack {
                     if let reminderMonth {
                         ReportReminderCard(month: reminderMonth)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
                         Spacer(minLength: 32)
                     }
                     MonthlyProgressCard(
@@ -47,7 +48,9 @@ struct OverviewView: View {
                         onShowDetails: { showingDetails = true })
                     Spacer(minLength: 32)
                     EntryListView(entries: entries)
-                }.padding()
+                }
+                .motion(Motion.presence, value: reminderMonth)
+                .padding()
             }
             .frame(maxWidth: .infinity)
             .background(Color(.systemGroupedBackground))

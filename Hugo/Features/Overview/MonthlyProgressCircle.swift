@@ -23,7 +23,7 @@ struct MonthlyProgressCircle: View {
                         width: side,
                         height: CGFloat(ceil(normalizedProgress * Double(side) + (normalizedProgress >= 1 ? 1 : 0)))
                     )
-                    .animation(.spring(response: 0.6, dampingFraction: 0.9), value: normalizedProgress)
+                    .motion(Motion.progress, value: normalizedProgress)
             }
             .frame(width: side, height: side)
             .clipShape(Circle())
