@@ -74,7 +74,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 019  | Symbol catalog performance — static catalog, precomputed search index | P2       | S      | 016             | DONE                                                         |
 | 020  | Accessibility foundation — labels, button semantics, spoken durations, selection traits | P1       | L      | 016, 017        | DONE                                                         |
 | 021  | Dynamic Type and adaptive layout — flexible circle, scaled type, adaptive grids | P2       | M      | 020             | DONE |
-| 022  | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2       | M      | 020             | TODO                                                         |
+| 022  | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2       | M      | 020             | DONE                                                         |
 | 023  | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2       | M      | 016, 022        | TODO                                                         |
 | 024  | Localization completeness — Danish gaps, stale keys, catalog audit | P2       | S      | 017, 020, 023   | TODO                                                         |
 | 025  | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3       | S      | 016, 023        | TODO                                                         |
