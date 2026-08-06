@@ -18,6 +18,7 @@ struct DefaultCategoryButton: View {
             Image(systemName: tracker.isDefault ? "star.fill" : "star")
                 .foregroundStyle(tracker.isDefault ? .yellow : .primary)
                 .contentTransition(.symbolEffect(.replace))
+                .motion(Motion.feedback, value: tracker.isDefault)
         }
         .errorAlert(message: $errorMessage)
     }

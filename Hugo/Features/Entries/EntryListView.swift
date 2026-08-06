@@ -16,8 +16,10 @@ struct EntryListView: View {
         LazyVStack(spacing: 12) {
             ForEach(entries) { entry in
                 EntryRow(entry: entry, selectedEntry: $selectedEntry)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
+        .motion(Motion.presence, value: entries.count)
         .sheet(item: $selectedEntry) { entry in
             EntryDetailView(entry: entry)
                 .presentationDetents([.medium])

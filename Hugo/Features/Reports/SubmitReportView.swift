@@ -91,6 +91,7 @@ struct SubmitReportView: View {
                     }
                 }
             }
+            .motion(Motion.value, value: model.selectedRule)
 
             Section {
                 if model.hasOverseer {
@@ -176,6 +177,7 @@ struct SubmitReportView: View {
             Label(category.name, systemImage: category.iconName)
             Spacer()
             Text("\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))")
+                .contentTransition(.numericText())
                 .fontDesign(.monospaced)
                 .foregroundStyle(.secondary)
         }
