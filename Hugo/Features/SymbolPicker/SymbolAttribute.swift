@@ -1,10 +1,3 @@
-//
-//  SymbolAttribute.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 21/11/2025.
-//
-
 import Foundation
 
 enum SymbolAttribute: String, Codable, CaseIterable, Identifiable, Equatable {

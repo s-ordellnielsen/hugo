@@ -1,10 +1,3 @@
-//
-//  SymbolPicker.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 20/11/2025.
-//
-
 import SwiftUI
 
 struct SymbolPicker: View {

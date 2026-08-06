@@ -1,10 +1,3 @@
-//
-//  SymbolSet.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 20/11/2025.
-//
-
 import Foundation
 import SwiftUI
 
