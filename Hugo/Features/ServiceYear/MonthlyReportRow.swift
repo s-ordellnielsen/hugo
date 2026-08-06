@@ -23,12 +23,16 @@ struct MonthlyReportRow: View {
                 Spacer()
                 Menu {
                     if !month.isFuture {
-                        Button("report.submit.button", systemImage: "doc.badge.arrow.up") {
-                            isPresentingSubmitSheet = true
+                        Section {
+                            Button("report.submit.button", systemImage: "doc.badge.arrow.up") {
+                                isPresentingSubmitSheet = true
+                            }
                         }
                     }
-                    Button("report.row.menu.details", systemImage: "doc.text.magnifyingglass") {
-                        isExpanded = true
+                    Section {
+                        Button("report.row.menu.details", systemImage: "doc.text.magnifyingglass") {
+                            isExpanded = true
+                        }
                     }
                 } label: {
                     Label("common.more", systemImage: "ellipsis")
