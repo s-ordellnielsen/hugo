@@ -32,11 +32,14 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Picker("settings.duration.minute-interval", selection: $durationMinuteInterval) {
-                        Text("1").tag(1)
-                        Text("5").tag(5)
-                        Text("15").tag(15)
+                    Picker(selection: $durationMinuteInterval) {
+                        Text("settings.duration.minute-interval.1").tag(1)
+                        Text("settings.duration.minute-interval.5").tag(5)
+                        Text("settings.duration.minute-interval.15").tag(15)
+                    } label: {
+                        Label("settings.duration.minute-interval", systemImage: "clock")
                     }
+                    .pickerStyle(.navigationLink)
                     Picker(selection: $defaultRoundingRule) {
                         ForEach(RoundingRule.allCases) { rule in
                             Text(rule.localizedName).tag(rule.rawValue)

@@ -1,70 +1,69 @@
 import SwiftUI
+import UIKit
 
 struct DurationWheelPicker: View {
     @Binding var duration: TimeInterval
     let minuteInterval: Int
     let maxDuration: TimeInterval
 
-    private var maximumMinutes: Int { max(0, Int(maxDuration / 60)) }
-    private var hourValues: [Int] { Array(0...max(0, maximumMinutes / 60)) }
-    private var minuteValues: [Int] { Array(stride(from: 0, through: 59, by: minuteInterval)) }
-
-    private var selectedHours: Binding<Int> {
-        Binding(
-            get: { clampedHours },
-            set: { update(hours: $0, minutes: clampedMinutes) }
-        )
-    }
-
-    private var selectedMinutes: Binding<Int> {
-        Binding(
-            get: { clampedMinutes },
-            set: { update(hours: clampedHours, minutes: $0) }
-        )
-    }
-
-    private var clampedHours: Int {
-        min(maximumMinutes / 60, max(0, Int(max(0, duration) / 3600)))
-    }
-
-    private var clampedMinutes: Int {
-        let raw = Int(max(0, duration).truncatingRemainder(dividingBy: 3600) / 60)
-        return min(59, max(0, (raw / minuteInterval) * minuteInterval))
-    }
-
     var body: some View {
-        HStack(spacing: 0) {
-            Picker("entry.duration.hours", selection: selectedHours) {
-                ForEach(hourValues, id: \.self) { hour in
-                    Text("\(hour)").tag(hour)
-                }
-            }
-            .pickerStyle(.wheel)
-            .frame(maxWidth: .infinity)
-            .clipped()
+        DurationDatePicker(
+            duration: $duration,
+            minuteInterval: minuteInterval,
+            maxDuration: maxDuration
+        )
+        .frame(maxWidth: 360)
+        .frame(maxWidth: .infinity)
+        .accessibilityLabel(Text("entry.duration.label"))
+    }
+}
 
-            Text(":")
-                .font(.title2.monospacedDigit())
+private struct DurationDatePicker: UIViewRepresentable {
+    @Binding var duration: TimeInterval
+    let minuteInterval: Int
+    let maxDuration: TimeInterval
 
-            Picker("entry.duration.minutes", selection: selectedMinutes) {
-                ForEach(minuteValues, id: \.self) { minute in
-                    Text(String(format: "%02d", minute)).tag(minute)
-                }
-            }
-            .pickerStyle(.wheel)
-            .frame(maxWidth: .infinity)
-            .clipped()
+    func makeCoordinator() -> Coordinator {
+        Coordinator(duration: $duration, maxDuration: maxDuration)
+    }
+
+    func makeUIView(context: Context) -> UIDatePicker {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .countDownTimer
+        picker.preferredDatePickerStyle = .wheels
+        picker.minuteInterval = normalizedMinuteInterval
+        picker.countDownDuration = normalizedDuration
+        picker.addTarget(context.coordinator, action: #selector(Coordinator.valueChanged(_:)), for: .valueChanged)
+        return picker
+    }
+
+    func updateUIView(_ picker: UIDatePicker, context: Context) {
+        picker.minuteInterval = normalizedMinuteInterval
+        picker.countDownDuration = normalizedDuration
+        context.coordinator.maxDuration = maxDuration
+    }
+
+    private var normalizedMinuteInterval: Int {
+        [1, 5, 15].contains(minuteInterval) ? minuteInterval : 1
+    }
+
+    private var normalizedDuration: TimeInterval {
+        let interval = TimeInterval(normalizedMinuteInterval * 60)
+        let clamped = min(max(0, duration), maxDuration)
+        return (clamped / interval).rounded() * interval
+    }
+
+    final class Coordinator: NSObject {
+        var duration: Binding<TimeInterval>
+        var maxDuration: TimeInterval
+
+        init(duration: Binding<TimeInterval>, maxDuration: TimeInterval) {
+            self.duration = duration
+            self.maxDuration = maxDuration
         }
-        .accessibilityElement(children: .contain)
-        .onAppear { normalize() }
-    }
 
-    private func update(hours: Int, minutes: Int) {
-        let candidate = TimeInterval(hours * 3600 + minutes * 60)
-        duration = min(maxDuration, max(0, candidate))
-    }
-
-    private func normalize() {
-        update(hours: clampedHours, minutes: clampedMinutes)
+        @objc func valueChanged(_ picker: UIDatePicker) {
+            duration.wrappedValue = min(picker.countDownDuration, maxDuration)
+        }
     }
 }
