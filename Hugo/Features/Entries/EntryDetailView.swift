@@ -9,18 +9,12 @@ struct EntryDetailView: View {
 
     @State private var deleteConfirmationShown: Bool = false
 
-    @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
-
     var body: some View {
         @Bindable var entry = entry
         NavigationStack {
             Form {
                 Section {
-                    EntryDurationPicker(
-                        duration: $entry.duration,
-                        minuteInterval: durationMinuteInterval,
-                        maxDuration: 24 * 60 * 60
-                    )
+                    EntryDurationPicker(duration: $entry.duration)
                     DatePicker(selection: $entry.date) {
                         Label("entry.date.label", systemImage: "calendar")
                     }

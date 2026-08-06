@@ -37,7 +37,7 @@ struct CategoryListView: View {
                 }
             }
         }
-        .navigationTitle("settings.trackers.title")
+        .navigationTitle("screen.category-list.title")
         .tint(.primary)
         .toolbar {
             ToolbarItem {

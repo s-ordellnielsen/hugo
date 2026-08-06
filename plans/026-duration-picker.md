@@ -51,7 +51,7 @@ that, no App Intent / widget work (explicitly deferred).
 `Hugo/Features/Entries/AddEntry/AddEntryFormModel.swift`:
 - `var durationDate: Date` (line 16) — the source of truth is a `Date`, set to
   `calendar.startOfDay(for: now)` (line 30).
-- `var durationInSeconds: TimeInterval { EntryDurationConversion.seconds(from: durationDate, calendar: calendar) }` (line 33-34).
+- `var durationInSeconds: TimeInterval { EntryDurationConversion.seconds(from: durationDate, calendar: ![](Screenshot%202026-08-06%20at%2012.20.28.png)calendar) }` (line 33-34).
 - Validation `durationInSeconds == 0` (line 38); `draft()` uses `durationInSeconds` (line 71-76).
 
 `EntryDurationConversion` (lines 80-93) — two functions converting
