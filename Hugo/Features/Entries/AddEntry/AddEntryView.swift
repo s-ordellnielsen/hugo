@@ -2,6 +2,7 @@ import SwiftData
 import SwiftUI
 
 struct AddEntryView: View {
+    @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
@@ -18,11 +19,11 @@ struct AddEntryView: View {
         NavigationStack {
             Form {
                 Section("entry.duration.label") {
-                    DatePicker(
-                        "entry.duration.label", selection: $form.durationDate, displayedComponents: .hourAndMinute
+                    DurationWheelPicker(
+                        duration: $form.durationInSeconds,
+                        minuteInterval: durationMinuteInterval,
+                        maxDuration: 24 * 60 * 60
                     )
-                    .datePickerStyle(.wheel)
-                    .labelsHidden()
                 }
                 Section {
                     Button {

@@ -5,6 +5,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
     @AppStorage(UserDefaultsKeys.defaultRoundingRule) private var defaultRoundingRule = ""
+    @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
     @AppStorage(UserDefaultsKeys.overseerGreetingTemplate) private var greetingTemplate = ""
 
@@ -31,6 +32,11 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Picker("settings.duration.minute-interval", selection: $durationMinuteInterval) {
+                        Text("1").tag(1)
+                        Text("5").tag(5)
+                        Text("15").tag(15)
+                    }
                     Picker(selection: $defaultRoundingRule) {
                         ForEach(RoundingRule.allCases) { rule in
                             Text(rule.localizedName).tag(rule.rawValue)

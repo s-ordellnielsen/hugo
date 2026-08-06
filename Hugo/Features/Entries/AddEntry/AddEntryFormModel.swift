@@ -31,7 +31,8 @@ final class AddEntryFormModel {
     }
 
     var durationInSeconds: TimeInterval {
-        EntryDurationConversion.seconds(from: durationDate, calendar: calendar)
+        get { EntryDurationConversion.seconds(from: durationDate, calendar: calendar) }
+        set { durationDate = EntryDurationConversion.date(from: newValue, calendar: calendar, reference: durationDate) }
     }
 
     var isSubmitDisabled: Bool {

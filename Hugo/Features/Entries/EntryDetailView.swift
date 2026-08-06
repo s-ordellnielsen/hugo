@@ -9,27 +9,7 @@ struct EntryDetailView: View {
 
     @State private var deleteConfirmationShown: Bool = false
 
-    var durationAsDate: Date {
-        let calendar = Calendar.current
-        var components = calendar.dateComponents(
-            [.year, .month, .day],
-            from: Date()
-        )
-
-        let seconds = entry.duration
-
-        let hours = Int(seconds / 3600)
-        let minutes = Int(
-            seconds.truncatingRemainder(dividingBy: 3600) / 60
-        )
-        let secs = Int(seconds.truncatingRemainder(dividingBy: 60))
-
-        components.hour = hours
-        components.minute = minutes
-        components.second = secs
-
-        return calendar.date(from: components) ?? Date()
-    }
+    @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
 
     var body: some View {
         @Bindable var entry = entry
@@ -38,7 +18,8 @@ struct EntryDetailView: View {
                 Section {
                     EntryDurationPicker(
                         duration: $entry.duration,
-                        durationAsDate: durationAsDate
+                        minuteInterval: durationMinuteInterval,
+                        maxDuration: 24 * 60 * 60
                     )
                     DatePicker(selection: $entry.date) {
                         Label("entry.date.label", systemImage: "calendar")
