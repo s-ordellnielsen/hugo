@@ -1559,23 +1559,6 @@
         }
       }
     },
-    "report.submit.resubmit" : {
-      "comment" : "Button that re-submits a month whose entries changed after the first submission.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indsend opdateret rapport"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Submit Updated Report"
-          }
-        }
-      }
-    },
     "report.submit.rounded-down" : {
       "comment" : "Line in the submission totals showing minutes dropped by rounding down.",
       "localizations" : {
@@ -1629,6 +1612,7 @@
     },
     "report.submit.subtitle" : {
       "comment" : "Subtitle of the report submission sheet.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {

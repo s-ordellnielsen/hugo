@@ -7,12 +7,6 @@ struct MonthlyReportEmptyRow: View {
     @State private var isPresented: Bool = false
     @State private var isPresentingSubmitSheet: Bool = false
 
-    private var submitButtonTitle: String {
-        month.isSubmitted
-            ? String(localized: "report.submit.resubmit")
-            : String(localized: "report.submit.button")
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -30,7 +24,7 @@ struct MonthlyReportEmptyRow: View {
                 }
                 Menu {
                     if !month.isFuture {
-                        Button(submitButtonTitle, systemImage: "paperplane") {
+                        Button("report.submit.button", systemImage: "paperplane") {
                             isPresentingSubmitSheet = true
                         }
                     }

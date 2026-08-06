@@ -15,6 +15,9 @@ struct SubmitReportView: View {
     @State private var saveErrorMessage: String?
     @State private var showingSettings = false
 
+    @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
+    @AppStorage(UserDefaultsKeys.overseerPhoneNumber) private var overseerPhoneNumber = ""
+
     init(month: YearMonth) {
         _model = State(initialValue: SubmitReportFormModel(month: month))
     }
@@ -122,12 +125,11 @@ struct SubmitReportView: View {
                 }
             }
         }
-        .navigationTitle(model.month.monthYearString())
-        .navigationSubtitle("report.submit.subtitle")
+		.navigationTitle(model.month.monthYearString().capitalized)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+                Button(role: .cancel) { dismiss() }
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -145,12 +147,22 @@ struct SubmitReportView: View {
             .padding(.vertical, 8)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsView()
-                .presentationDetents([.large])
+            NavigationStack {
+                ReportSettingsView()
+					.navigationBarTitleDisplayMode(.inline)
+					.toolbar {
+						ToolbarItem(placement: .topBarLeading) {
+							Button(role: .cancel) { dismiss() }
+						}
+					}
+            }
+			.presentationDetents([.large])
         }
         .onAppear { syncModel() }
         .onChange(of: entries) { syncModel() }
         .onChange(of: submissions) { syncModel() }
+        .onChange(of: overseerFullName) { syncModel() }
+        .onChange(of: overseerPhoneNumber) { syncModel() }
         .sheet(isPresented: $isComposingMessage) {
             if let content = model.preparedContent {
                 MessageComposeView(
