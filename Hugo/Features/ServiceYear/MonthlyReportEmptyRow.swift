@@ -15,6 +15,7 @@ struct MonthlyReportEmptyRow: View {
                     .textCase(.uppercase)
                     .tracking(1.5)
                     .fontWeight(.semibold)
+					.fontDesign(.rounded)
                     .foregroundStyle(month.isFuture ? .tertiary : .secondary)
                 Spacer()
                 if !month.isFuture && !month.isSubmitted {
@@ -22,26 +23,29 @@ struct MonthlyReportEmptyRow: View {
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
-                Menu {
-                    if !month.isFuture {
-                        Button("report.submit.button", systemImage: "paperplane") {
-                            isPresentingSubmitSheet = true
-                        }
-                    }
-                    Button("navigation.add", systemImage: "plus") {
-                        isPresented = true
-                    }
-                } label: {
-                    Label("common.more", systemImage: "ellipsis")
-                        .labelStyle(.iconOnly)
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .contentShape(Rectangle())
-                }
-                .padding(.trailing, -12)
-                .padding(.vertical, -8)
+				Menu {
+					if !month.isFuture {
+						Section {
+							Button("report.submit.button", systemImage: "doc.badge.arrow.up") {
+								isPresentingSubmitSheet = true
+							}
+						}
+					}
+					Section {
+						Button("report.row.menu.details", systemImage: "doc.text.magnifyingglass") {
+							isPresented = true
+						}
+					}
+				} label: {
+					Label("common.more", systemImage: "ellipsis")
+						.labelStyle(.iconOnly)
+						.font(.body)
+						.padding(.horizontal, 12)
+						.padding(.vertical, 8)
+						.contentShape(Rectangle())
+				}
+				.padding(.trailing, -12)
+				.padding(.vertical, -8)
             }
 
             MonthSubmissionStatusView(month: month)

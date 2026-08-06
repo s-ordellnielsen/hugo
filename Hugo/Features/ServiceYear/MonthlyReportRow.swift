@@ -19,6 +19,7 @@ struct MonthlyReportRow: View {
                     .textCase(.uppercase)
                     .tracking(1.5)
                     .fontWeight(.semibold)
+					.fontDesign(.rounded)
                     .foregroundStyle(.red)
                 Spacer()
                 Menu {
@@ -49,6 +50,7 @@ struct MonthlyReportRow: View {
                 Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
                     .font(.title)
                     .fontWeight(.heavy)
+					.fontDesign(.rounded)
                 Text("reportList.row.hours.label")
                     .foregroundStyle(.secondary)
                     .font(.title3)

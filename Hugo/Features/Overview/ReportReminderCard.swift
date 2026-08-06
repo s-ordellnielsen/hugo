@@ -13,27 +13,40 @@ struct ReportReminderCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(
-                "report.reminder.title.\(monthName)",
-                systemImage: "exclamationmark.paperplane.fill"
-            )
-            .font(.headline)
-            .foregroundStyle(.orange)
-
-            Text("report.reminder.description")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Button("report.reminder.action") {
-                isPresentingSubmitSheet.toggle()
-            }
-            .buttonStyle(.borderedProminent)
+        VStack(alignment: .trailing, spacing: 24) {
+			HStack(alignment: .top, spacing: 16) {
+				ZStack(alignment: .center) {
+					Circle()
+						.fill(.orange)
+						.frame(width: 64, height: 64)
+					Image(systemName: "doc.badge.clock.fill")
+						.foregroundStyle(.white)
+						.font(.title2)
+				}
+				
+				VStack(alignment: .leading, spacing: 12) {
+					Text("report.reminder.title.\(monthName)")
+						.font(.headline)
+						.foregroundStyle(.orange)
+					
+					Text("report.reminder.description")
+						.font(.subheadline)
+						.foregroundStyle(.secondary)
+					
+					Text("report.reminder.callToAction")
+						.font(.subheadline)
+						.foregroundStyle(.secondary)
+				}
+				.padding(.top, 8)
+			}
         }
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(.rect(cornerRadius: 32))
+		.onTapGesture {
+			isPresentingSubmitSheet.toggle()
+		}
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
                 SubmitReportView(month: month)
@@ -44,7 +57,11 @@ struct ReportReminderCard: View {
 }
 
 #Preview {
-    ReportReminderCard(month: Date().yearMonth())
-        .padding()
+    NavigationStack {
+        ScrollView {
+            ReportReminderCard(month: Date().yearMonth())
+                .padding()
+        }
         .background(Color(.systemGroupedBackground))
+    }
 }
