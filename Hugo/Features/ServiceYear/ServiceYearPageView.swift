@@ -3,35 +3,31 @@ import SwiftUI
 
 struct ServiceYearPageView: View {
     let report: TheocraticYearReport
-    let initialMonth: YearMonth?
-    @State private var didScrollToCurrentMonth = false
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(spacing: 24) {
-                    if report.hasEntries {
-                        TheocraticYearTotalsView(report: report)
-                    } else {
-                        emptyYearCard
-                    }
-
-                    ForEach(report.months) { month in
-                        Group {
-                            if month.summary != nil {
-                                MonthlyReportRow(month: month)
-                            } else {
-                                MonthlyReportEmptyRow(month: month)
-                            }
-                        }
-                        .id(month.id)
-                    }
+        ScrollView {
+            VStack(spacing: 24) {
+                if report.hasEntries {
+                    TheocraticYearTotalsView(report: report)
+                } else {
+                    emptyYearCard
                 }
-                .padding()
+
+                ForEach(report.months) { month in
+                    Group {
+                        if month.summary != nil {
+                            MonthlyReportRow(month: month)
+                        } else {
+                            MonthlyReportEmptyRow(month: month)
+                        }
+                    }
+                    .id(month.id)
+                }
             }
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGroupedBackground))
+            .padding()
         }
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemGroupedBackground))
     }
 
     private var emptyYearCard: some View {
@@ -51,13 +47,13 @@ struct ServiceYearPageView: View {
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .cornerRadius(32)
+        .clipShape(.rect(cornerRadius: 32))
     }
 }
 
 #Preview {
     NavigationStack {
-        ServiceYearPageView(report: ReportPreviewFixtures.yearReport, initialMonth: nil)
+        ServiceYearPageView(report: ReportPreviewFixtures.yearReport)
     }
     .modelContainer(.preview)
 }

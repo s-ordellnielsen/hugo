@@ -56,7 +56,7 @@ struct MonthlyReportEmptyRow: View {
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .cornerRadius(24)
+        .clipShape(.rect(cornerRadius: 24))
         .accessibilityElement(children: .contain)
         .onTapGesture {
             isPresented.toggle()

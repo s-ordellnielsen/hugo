@@ -33,7 +33,7 @@ struct ReportReminderCard: View {
         .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .cornerRadius(32)
+        .clipShape(.rect(cornerRadius: 32))
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
                 SubmitReportView(month: month)

@@ -12,8 +12,6 @@ struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(UserDefaultsKeys.publisherStatus) var currentStatus: String = ""
 
-    @State private var isLoading: Bool = false
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -63,7 +61,7 @@ struct OnboardingView: View {
                                 .background(
                                     Color(.secondarySystemGroupedBackground)
                                 )
-                                .cornerRadius(32)
+                                .clipShape(.rect(cornerRadius: 32))
                                 .tint(.primary)
                             }
 
@@ -77,31 +75,19 @@ struct OnboardingView: View {
             .navigationTitle("splash.title")
             .safeAreaInset(edge: .bottom) {
                 Button {
-                    Task {
-                        onComplete()
-                    }
+                    onComplete()
                 } label: {
-                    HStack {
-                        if isLoading {
-                            ProgressView()
-                                .tint(.white)
-                                .transition(.blurReplace)
-                        } else {
-                            Label(
-                                "splash.action.complete",
-                                systemImage: "arrow.right"
-                            )
-                            .transition(.blurReplace)
-                        }
-                    }
-                    .animation(.smooth, value: isLoading)
+                    Label(
+                        "splash.action.complete",
+                        systemImage: "arrow.right"
+                    )
                     .fontWeight(.semibold)
                     .fontDesign(.rounded)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(24)
+                    .foregroundStyle(.white)
+                    .clipShape(.rect(cornerRadius: 24))
                 }
                 .disabled(currentStatus == "")
                 .padding()

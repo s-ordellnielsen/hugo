@@ -233,3 +233,16 @@ struct ReportRoundingCalculatorTests {
         #expect(result.categoryHours.isEmpty)
     }
 }
+
+extension ReportRoundingCalculatorTests {
+    @Test
+    func distributeHoursWithNoCategoriesReturnsEmpty() {
+        let result = ReportRoundingCalculator.compute(
+            summary: summary(categories: []),
+            carriedIn: 0,
+            rule: .transfer
+        )
+
+        #expect(result.categoryHours.isEmpty)
+    }
+}

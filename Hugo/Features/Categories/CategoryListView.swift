@@ -38,7 +38,7 @@ struct CategoryListView: View {
                                     }
                                 }
                             }
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.primary)
                         }
                     }
                 }

@@ -73,7 +73,7 @@ struct EntryRow: View {
                     ? Color(.secondarySystemBackground)
                     : Color(.systemBackground)
             )
-            .cornerRadius(32)
+            .clipShape(.rect(cornerRadius: 32))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(entry.tracker?.name ?? String(localized: "entry.untracked")))

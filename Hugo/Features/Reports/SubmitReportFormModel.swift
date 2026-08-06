@@ -220,12 +220,11 @@ final class SubmitReportFormModel {
     }
 
     private var overseerFirstName: String {
-        // Stored by Task 6's overseer picker; falls back to the full name.
-        userDefaults.string(forKey: "overseerFirstName") ?? overseerFullName
+        userDefaults.string(forKey: UserDefaultsKeys.overseerFirstName) ?? overseerFullName
     }
 
     private var overseerLastName: String {
-        userDefaults.string(forKey: "overseerLastName") ?? ""
+        userDefaults.string(forKey: UserDefaultsKeys.overseerLastName) ?? ""
     }
 
     private func recompute() {

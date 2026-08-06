@@ -19,7 +19,7 @@ struct TheocraticYearTotalsView: View {
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
-        .cornerRadius(32)
+        .clipShape(.rect(cornerRadius: 32))
     }
 
     @ViewBuilder

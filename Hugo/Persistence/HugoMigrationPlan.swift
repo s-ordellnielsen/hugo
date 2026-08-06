@@ -10,7 +10,7 @@ import OSLog
 import SwiftData
 
 enum MigrationPlan: SchemaMigrationPlan {
-    private static let logger = Logger(subsystem: "Hugo.Persistence", category: "Migration")
+    private static let logger = Logger(subsystem: "com.ordellnielsen.Hugo", category: "Migration")
 
     static var schemas: [any VersionedSchema.Type] {
         [
@@ -59,26 +59,14 @@ enum MigrationPlan: SchemaMigrationPlan {
         toVersion: SchemaV2_1.self
     )
 
-    static let migrateV21ToV3 = MigrationStage.custom(
+    static let migrateV21ToV3: MigrationStage = .lightweight(
         fromVersion: SchemaV2_1.self,
-        toVersion: SchemaV3.self,
-        willMigrate: { context in
-            logger.debug("Migrating from V2.1 to V3")
-
-            try context.save()
-        },
-        didMigrate: nil
+        toVersion: SchemaV3.self
     )
 
-    static let migrateV3toV4 = MigrationStage.custom(
+    static let migrateV3toV4: MigrationStage = .lightweight(
         fromVersion: SchemaV3.self,
-        toVersion: SchemaV4.self,
-        willMigrate: { context in
-            logger.debug("Migrating from V3 to V4")
-
-            try context.save()
-        },
-        didMigrate: nil
+        toVersion: SchemaV4.self
     )
 
     static let migrateV4toV5: MigrationStage = .lightweight(

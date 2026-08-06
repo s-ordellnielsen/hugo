@@ -56,9 +56,7 @@ nonisolated enum ReportComposer {
         let fieldServiceHours = mainCategories.reduce(0) {
             $0 + (computation.categoryHours[$1.id] ?? 0)
         }
-        // NOTE: labels always resolve against the development locale (en) for
-        // now — see the Task 2 note in the PR. Task 6 decides the real
-        // language strategy for the message body.
+        // Labels currently resolve against the development locale (en).
         let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
         lines.append("\(fieldServiceLabel): \(fieldServiceHours) \(hoursUnit)")
 

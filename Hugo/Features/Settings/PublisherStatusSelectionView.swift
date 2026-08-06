@@ -42,15 +42,6 @@ struct PublisherStatusSelectionView: View {
             .listRowBackground(Color(.clear))
         }
         .navigationTitle("account.page.publisherstatus.title")
-        .toolbar {
-            ToolbarItem {
-                Button {
-
-                } label: {
-                    Label("navigation.help", systemImage: "questionmark")
-                }
-            }
-        }
     }
 }
 
