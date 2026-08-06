@@ -23,7 +23,7 @@ struct MonthlyReportRow: View {
                 Spacer()
                 Menu {
                     if !month.isFuture {
-                        Button("report.submit.button", systemImage: "paperplane") {
+                        Button("report.submit.button", systemImage: "doc.badge.arrow.up") {
                             isPresentingSubmitSheet = true
                         }
                     }
