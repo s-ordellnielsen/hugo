@@ -13,7 +13,7 @@ struct MonthlyProgressCard: View {
         ZStack(alignment: .bottomTrailing) {
             Button(action: onShowDetails) {
                 ZStack {
-                    MonthlyProgressCircle(progress: value, maxValue: monthlyGoal, marker: expectedProgress)
+                    MonthlyProgressCircle(progress: value, maxValue: monthlyGoal)
                     VStack {
                         Text(Date.now, format: .dateTime.month(.wide))
                             .font(.caption)

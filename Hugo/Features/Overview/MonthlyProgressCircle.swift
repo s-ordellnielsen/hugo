@@ -3,7 +3,6 @@ import SwiftUI
 struct MonthlyProgressCircle: View {
     let progress: Double
     let maxValue: Double
-    let marker: Double?
 
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .largeTitle) private var preferredSize: CGFloat = 360
