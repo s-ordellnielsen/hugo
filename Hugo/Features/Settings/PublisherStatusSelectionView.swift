@@ -1,10 +1,3 @@
-//
-//  PublisherStatusSelectionView.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 09/10/2025.
-//
-
 import SwiftUI
 
 struct PublisherStatusSelectionView: View {

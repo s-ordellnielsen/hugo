@@ -1,10 +1,3 @@
-//
-//  CategoryPicker.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 21/11/2025.
-//
-
 import SwiftData
 import SwiftUI
 

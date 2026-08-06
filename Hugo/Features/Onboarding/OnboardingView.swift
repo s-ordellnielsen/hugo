@@ -1,10 +1,3 @@
-//
-//  OnboardingView.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 17/11/2025.
-//
-
 import SwiftUI
 
 struct OnboardingView: View {
