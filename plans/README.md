@@ -76,7 +76,7 @@ stateful workflows such as add/edit forms and app bootstrap state.
 | 021  | Dynamic Type and adaptive layout — flexible circle, scaled type, adaptive grids | P2       | M      | 020             | DONE |
 | 022  | Motion vocabulary — reduce-motion-aware tokens, hero transition, presence animations | P2       | M      | 020             | DONE                                                         |
 | 023  | Dead code and API hygiene — inert controls, deprecated modifiers, logging, migration-stage simplification | P2       | M      | 016, 022        | DONE                                                         |
-| 024  | Localization completeness — Danish gaps, stale keys, catalog audit | P2       | S      | 017, 020, 023   | TODO                                                         |
+| 024  | Localization completeness — Danish gaps, stale keys, catalog audit | P2       | S      | 017, 020, 023   | DONE                                                         |
 | 025  | Organization and stale comments — flatten buckets, one-type-per-file, header strip | P3       | S      | 016, 023        | TODO                                                         |
 | 026  | Purpose-built scroll-wheel duration picker — configurable minute interval and max duration | P2       | M      | 016, 017        | TODO                                                         |
 | 027  | Local report-reminder notification (design + spike)          | P3       | M      | 017, 024 (rec.) | TODO                                                         |
