@@ -101,7 +101,7 @@ struct SymbolPicker: View {
                 selectedSymbol == symbol.id
                     ? Color.accent : Color(.secondarySystemGroupedBackground)
             )
-            .cornerRadius(24)
+            .clipShape(.rect(cornerRadius: 24))
             .accessibilityLabel(Text(symbol.name))
             .accessibilityAddTraits(selectedSymbol == symbol.id ? [.isButton, .isSelected] : .isButton)
             .foregroundStyle(selectedSymbol == symbol.id ? .white : .primary)

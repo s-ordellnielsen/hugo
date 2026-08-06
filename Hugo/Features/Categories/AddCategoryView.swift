@@ -31,7 +31,7 @@ struct AddCategoryView: View {
                                 .tint(.primary)
                                 .frame(width: tileSize, height: tileSize)
                                 .background(Color(.secondarySystemGroupedBackground))
-                                .cornerRadius(32)
+                                .clipShape(.rect(cornerRadius: 32))
                             Text("symbol.picker.select.label")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

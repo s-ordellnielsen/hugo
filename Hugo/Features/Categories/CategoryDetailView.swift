@@ -36,7 +36,7 @@ struct CategoryDetailView: View {
                         }
                         .frame(width: tileSize, height: tileSize)
                         .background(Color(.secondarySystemGroupedBackground))
-                        .cornerRadius(32)
+                        .clipShape(.rect(cornerRadius: 32))
                     }
                     .frame(width: tileSize, height: tileSize)
                     Text("symbol.picker.select.label")
