@@ -10,57 +10,28 @@ struct OnboardingView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("splash.subtitle")
+                        .padding(.horizontal, 4)
                     Text("splash.description.1")
+                        .padding(.horizontal, 4)
                     Text("splash.description.2")
-                    Text("splash.section.publisherStatus.title")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .fontDesign(.rounded)
-                        .padding(.top, 32)
-                    Text("splash.section.publisherStatus.description")
+                        .padding(.horizontal, 4)
 
-                    VStack(spacing: 8) {
-                        ForEach(PublisherStatus.all) { status in
-                            Button {
-                                currentStatus = status.id
-                            } label: {
-                                HStack(spacing: 16) {
-                                    Image(
-                                        systemName: currentStatus == status.id
-                                            ? "checkmark.circle.fill" : "circle"
-                                    )
-                                    .font(.title2)
-                                    .tint(.orange)
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text(status.nameKey)
-                                            .fontWeight(.medium)
-                                            .fontDesign(.rounded)
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text(
-                                                "publisher.status.goaltype.label.\(status.goalPeriod.label)"
-                                            )
-                                            Text(
-                                                "publisher.status.goal.label.\(status.goal)"
-                                            )
-                                        }
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                        .fontWeight(.regular)
-                                    }
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 16)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(
-                                    Color(.secondarySystemGroupedBackground)
-                                )
-                                .clipShape(.rect(cornerRadius: 32))
-                                .tint(.primary)
-                            }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("splash.section.publisherStatus.title")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .fontDesign(.rounded)
+                            .padding(.horizontal, 4)
+                        Text("splash.section.publisherStatus.description")
+                            .font(.caption)
+							.padding(.horizontal, 4)
 
+                        VStack(spacing: 8) {
+                            PublisherStatusOptionsView(selection: $currentStatus, rowStyle: .card)
                         }
+                        .padding(.top, 16)
                     }
-                    .padding(.vertical, 8)
+                    .padding(.top, 32)
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)

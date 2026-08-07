@@ -27,6 +27,23 @@ nonisolated struct PublisherStatus: Identifiable {
         goalPeriod == .monthly ? goal * 12 : goal
     }
 
+    var goalDescription: LocalizedStringResource {
+        guard goal > 0 else {
+            return "publisher.status.goal.description.none"
+        }
+
+        switch goalPeriod {
+        case .monthly:
+            return LocalizedStringResource(
+                "publisher.status.goal.description.monthly", defaultValue: "\(goal) hours per month",
+                comment: "A publisher status goal expressed as a number of hours per month.")
+		case .yearly:
+				return LocalizedStringResource(
+					"publisher.status.goal.description.yearly", defaultValue: "\(goal) hours per year",
+					comment: "A publisher status goal expressed as a number of hours per year.")
+        }
+    }
+
     static let all: [PublisherStatus] = [
         PublisherStatus(
             id: "regular-pioneer", nameKey: "publisher.status.regularpioneer.full",
