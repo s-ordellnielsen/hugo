@@ -12,9 +12,9 @@ struct Checkmark: View {
 	
     var body: some View {
 		Image(systemName: "checkmark")
+			.imageScale(.medium)
 			.foregroundStyle(.tint)
 			.fontWeight(.semibold)
-			.frame(width: 20, height: 20)
 			.opacity(checked ? 1 : 0)
 			.blur(radius: checked ? 0 : 4)
 			.scaleEffect(checked ? 1 : 0.8)
