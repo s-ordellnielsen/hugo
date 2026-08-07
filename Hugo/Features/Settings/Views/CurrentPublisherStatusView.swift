@@ -26,41 +26,12 @@ struct CurrentPublisherStatusView: View {
             .foregroundStyle(.tint)
 
             VStack(spacing: 8) {
-                ZStack {
-                    if let status = selectedStatus {
-                        Text(status.nameKey)
-                            .id(status.id)
-                            .transition(
-                                .asymmetric(
-                                    insertion:
-                                        .opacity
-                                        .combined(with: .push(from: .bottom))
-                                        .combined(with: .scale(scale: 0.9)),
-                                    removal:
-                                        .opacity
-                                        .combined(with: .push(from: .bottom))
-                                        .combined(with: .scale(scale: 0.9))
-                                ))
-                    } else {
-                        Text("publisher.status.empty")
-                            .transition(
-                                .asymmetric(
-                                    insertion:
-                                        .opacity
-                                        .combined(with: .push(from: .bottom))
-                                        .combined(with: .scale(scale: 0.9)),
-                                    removal:
-                                        .opacity
-                                        .combined(with: .push(from: .bottom))
-                                        .combined(with: .scale(scale: 0.9))
-                                ))
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .font(.title)
-                .fontDesign(.rounded)
-				.fontWeight(.bold)
-                .animation(.bouncy(duration: 0.4), value: currentStatus)
+				Text(selectedStatus?.nameKey ?? "publisher.status.empty")
+					.font(.title)
+					.fontDesign(.rounded)
+					.fontWeight(.bold)
+					.contentTransition(.opacity)
+					.animation(.easeInOut(duration: 0.2), value: currentStatus)
 
                 Text("account.page.publisherselect.current")
                     .font(.caption)
