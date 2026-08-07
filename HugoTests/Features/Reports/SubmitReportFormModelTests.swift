@@ -63,9 +63,9 @@ struct SubmitReportFormModelTests {
     @Test
     func seedsTheRuleFromTheUserDefault() {
         #expect(makeModel(defaultRule: "transfer").selectedRule == .transfer)
-        #expect(makeModel(defaultRule: "down").selectedRule == .down)
-        #expect(makeModel(defaultRule: nil).selectedRule == .up)
-        #expect(makeModel(defaultRule: "bogus").selectedRule == .up)
+        #expect(makeModel(defaultRule: "up").selectedRule == .up)
+        #expect(makeModel(defaultRule: nil).selectedRule == .down)
+        #expect(makeModel(defaultRule: "bogus").selectedRule == .down)
     }
 
     @Test
@@ -340,7 +340,7 @@ struct SubmitReportFormModelTests {
         #expect(content?.body.contains("{month}") == false)
 
         // Verifies the actual business logic independently of localized labels.
-        #expect(model.computation.submittedHours == 6)
+        #expect(model.computation.submittedHours == 5)
 
         // Changing the rule invalidates the prepared message.
         model.selectedRule = .transfer
