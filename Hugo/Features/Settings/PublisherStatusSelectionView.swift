@@ -8,31 +8,35 @@ struct PublisherStatusSelectionView: View {
             CurrentPublisherStatusView(currentStatus: currentStatus)
 
             Section {
-                ForEach(PublisherStatus.all) { status in
+				ForEach(PublisherStatus.all, id: \.id) { status in
                     Button {
-                        currentStatus = status.id
+						withAnimation(.easeOut(duration: 0.2)) {
+							currentStatus = status.id
+						}
                     } label: {
-                        HStack(spacing: 16) {
-                            Image(systemName: currentStatus == status.id ? "checkmark.circle.fill" : "circle")
-                                .contentTransition(.symbolEffect(.replace.downUp.byLayer, options: .nonRepeating))
-                                .font(.title2)
-                                .accessibilityAddTraits(currentStatus == status.id ? .isSelected : [])
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(status.nameKey)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("publisher.status.goaltype.label.\(status.goalPeriod.label)")
-                                    Text("publisher.status.goal.label.\(status.goal)")
-                                }
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .fontWeight(.regular)
-                            }
-                        }
+						HStack(alignment: .center, spacing: 12) {
+							VStack(alignment: .leading, spacing: 4) {
+								Text(status.nameKey)
+								
+								Text("This is a test")
+									.font(.caption)
+									.foregroundStyle(.secondary)
+							}
+							
+							Spacer(minLength: 12)
+							
+							if currentStatus == status.id {
+								Image(systemName: "checkmark")
+									.foregroundStyle(.tint)
+									.fontWeight(.semibold)
+									.transition(.blurReplace.combined(with: .opacity))
+							}
+						}
+						.contentShape(Rectangle())
                     }
+					.buttonStyle(.plain)
                 }
             }
-            .fontWeight(.semibold)
-            .listRowBackground(Color(.clear))
         }
         .navigationTitle("account.page.publisherstatus.title")
     }

@@ -18,7 +18,7 @@ struct SettingsView: View {
                                     ?? "account.group.main.item.publisher.status.empty"
                             )
                         } icon: {
-                            Image(systemName: "circle.badge.checkmark.fill")
+							Image(systemName: publisherStatus != "" ? "person.crop.circle.badge.checkmark" : "person.crop.circle")
                         }
                     }
                 }
