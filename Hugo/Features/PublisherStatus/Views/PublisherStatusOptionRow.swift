@@ -50,16 +50,7 @@ struct PublisherStatusOptionRow: View {
 			
 			Spacer(minLength: 12)
 			
-			Image(systemName: "checkmark")
-				.foregroundStyle(.tint)
-				.fontWeight(.semibold)
-				.frame(width: 20, height: 20)
-				.padding(.trailing, 4)
-				.opacity(isSelected ? 1 : 0)
-				.blur(radius: isSelected ? 0 : 4)
-				.scaleEffect(isSelected ? 1 : 0.8)
-				.accessibilityHidden(!isSelected)
-				.animation(.easeOut(duration: 0.2), value: isSelected)
+			Checkmark(checked: isSelected)
 		}
 		.contentShape(Rectangle())
 	}

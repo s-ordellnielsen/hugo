@@ -12,8 +12,10 @@ struct ReportSettingsView: View {
 	@AppStorage(UserDefaultsKeys.overseerGreetingTemplate) private var greetingTemplate = ""
 	@AppStorage(UserDefaultsKeys.defaultRoundingRule) private var defaultRoundingRule = ""
 	
+	@State private var showingHelp = false
+	
 	private var currentRoundingRule: RoundingRule {
-		RoundingRule(rawValue: defaultRoundingRule) ?? .up
+		RoundingRule(rawValue: defaultRoundingRule) ?? RoundingRule.defaultValue
 	}
 	
     var body: some View {
@@ -49,27 +51,30 @@ struct ReportSettingsView: View {
 			}
 			
 			Section {
-				Picker(selection: $defaultRoundingRule) {
-					ForEach(RoundingRule.allCases) { rule in
-						Text(rule.localizedName).tag(rule.rawValue)
-					}
-				} label: {
+				NavigationLink(destination: RoundingRuleSelectionView()) {
 					Label {
-						Text("settings.screen.report.section.calculation.rounding.label")
-						Text(currentRoundingRule.localizedName)
+						HStack {
+							Text("settings.screen.report.section.calculation.rounding.label")
+							Spacer()
+							Text(currentRoundingRule.localizedName)
+								.foregroundStyle(.secondary)
+						}
 					} icon: {
 						Image(systemName: "arrow.up.arrow.down")
 					}
 				}
-				.pickerStyle(.navigationLink)
 			} header: {
 				Text("settings.screen.report.section.calculation.label")
 			}
 		}
 		.navigationTitle("settings.group.settings.report")
     }
+	
 }
 
 #Preview {
-    ReportSettingsView()
+	NavigationStack {
+		ReportSettingsView()
+			.navigationBarTitleDisplayMode(.inline)
+	}
 }

@@ -42,7 +42,7 @@ final class SubmitReportFormModel {
         self.locale = locale
         self.userDefaults = userDefaults
         let rawDefault = userDefaults.string(forKey: UserDefaultsKeys.defaultRoundingRule)
-        self.selectedRule = RoundingRule(rawValue: rawDefault ?? "") ?? .up
+		self.selectedRule = RoundingRule(rawValue: rawDefault ?? "") ?? RoundingRule.defaultValue
     }
 
     // MARK: - Inputs

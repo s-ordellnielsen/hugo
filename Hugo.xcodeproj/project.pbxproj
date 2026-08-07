@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E02102A4302624F200108377 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = E02102A3302624F200108377 /* MarkdownUI */; };
 		E028BF5C2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E028BF5B2EB3A8DD0006B910 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E02102A4302624F200108377 /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +115,7 @@
 			);
 			name = Hugo;
 			packageProductDependencies = (
+				E02102A3302624F200108377 /* MarkdownUI */,
 			);
 			productName = Hugo;
 			productReference = E090544F2E91E99900254125 /* Hugo.app */;
@@ -171,6 +174,7 @@
 			mainGroup = E09054462E91E99900254125;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				E02102A2302624F200108377 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E09054502E91E99900254125 /* Products */;
@@ -664,6 +668,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E02102A2302624F200108377 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E02102A3302624F200108377 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E02102A2302624F200108377 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E09054472E91E99900254125 /* Project object */;
 }
