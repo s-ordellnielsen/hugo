@@ -56,6 +56,7 @@ struct HelpView: View {
 						description: Text("help.unavailable.description"))
 				}
 			}
+			.background(Color(.systemGroupedBackground))
 			.toolbar {
 				ToolbarItem(placement: .topBarTrailing) {
 					Button(role: .close) {
