@@ -33,6 +33,7 @@ struct RoundingRuleSelectionView: View {
             }
             .foregroundStyle(.primary)
         }
+		.navigationTitle("settings.screens.rounding-rule.title")
 		.toolbar {
 			ToolbarItem(placement: .topBarTrailing) {
 				Button("common.help", systemImage: "questionmark") {
