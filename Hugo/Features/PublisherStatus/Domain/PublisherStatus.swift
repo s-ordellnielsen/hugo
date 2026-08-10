@@ -37,10 +37,10 @@ nonisolated struct PublisherStatus: Identifiable {
             return LocalizedStringResource(
                 "publisher.status.goal.description.monthly", defaultValue: "\(goal) hours per month",
                 comment: "A publisher status goal expressed as a number of hours per month.")
-		case .yearly:
-				return LocalizedStringResource(
-					"publisher.status.goal.description.yearly", defaultValue: "\(goal) hours per year",
-					comment: "A publisher status goal expressed as a number of hours per year.")
+        case .yearly:
+            return LocalizedStringResource(
+                "publisher.status.goal.description.yearly", defaultValue: "\(goal) hours per year",
+                comment: "A publisher status goal expressed as a number of hours per year.")
         }
     }
 

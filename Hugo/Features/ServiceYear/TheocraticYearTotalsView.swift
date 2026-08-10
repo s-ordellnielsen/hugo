@@ -47,7 +47,7 @@ struct TheocraticYearTotalsView: View {
             Text(value)
                 .font(prominent ? .title : .callout)
                 .fontDesign(.rounded)
-				.fontWeight(prominent ? .bold : .medium)
+                .fontWeight(prominent ? .bold : .medium)
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)

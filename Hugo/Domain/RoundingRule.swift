@@ -4,8 +4,8 @@ nonisolated enum RoundingRule: String, Codable, CaseIterable, Identifiable, Send
     case up
     case down
     case transfer
-	
-	static let defaultValue: RoundingRule = .down
+
+    static let defaultValue: RoundingRule = .down
 
     var id: String { rawValue }
 

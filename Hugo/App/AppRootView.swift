@@ -31,7 +31,7 @@ struct AppRootView: View {
                 ServiceYearView(resetToken: yearResetToken)
             }
         }
-		.tabViewStyle(.sidebarAdaptable)
+        .tabViewStyle(.sidebarAdaptable)
         .task { await bootstrapper.start(context: context) }
         .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
         .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }

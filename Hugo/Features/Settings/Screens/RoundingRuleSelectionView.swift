@@ -9,8 +9,8 @@ import SwiftUI
 
 struct RoundingRuleSelectionView: View {
     @AppStorage(UserDefaultsKeys.defaultRoundingRule) private var defaultRoundingRule = ""
-	
-	@State private var showHelp = false
+
+    @State private var showHelp = false
 
     private var currentRoundingRule: RoundingRule {
         RoundingRule(rawValue: defaultRoundingRule) ?? RoundingRule.defaultValue
@@ -33,17 +33,17 @@ struct RoundingRuleSelectionView: View {
             }
             .foregroundStyle(.primary)
         }
-		.navigationTitle("settings.screens.rounding-rule.title")
-		.toolbar {
-			ToolbarItem(placement: .topBarTrailing) {
-				Button("common.help", systemImage: "questionmark") {
-					showHelp.toggle()
-				}
-			}
-		}
-		.sheet(isPresented: $showHelp) {
-			HelpView(for: "RoundingRule")
-		}
+        .navigationTitle("settings.screens.rounding-rule.title")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("common.help", systemImage: "questionmark") {
+                    showHelp.toggle()
+                }
+            }
+        }
+        .sheet(isPresented: $showHelp) {
+            HelpView(for: "RoundingRule")
+        }
     }
 }
 

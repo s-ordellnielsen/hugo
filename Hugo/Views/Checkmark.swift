@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct Checkmark: View {
-	let checked: Bool
-	
+    let checked: Bool
+
     var body: some View {
-		Image(systemName: "checkmark")
-			.imageScale(.medium)
-			.foregroundStyle(.tint)
-			.fontWeight(.semibold)
-			.opacity(checked ? 1 : 0)
-			.blur(radius: checked ? 0 : 4)
-			.scaleEffect(checked ? 1 : 0.8)
-			.accessibilityHidden(!checked)
-			.animation(.easeOut(duration: 0.2), value: checked)
+        Image(systemName: "checkmark")
+            .imageScale(.medium)
+            .foregroundStyle(checked ? .hugoAccent : .clear)
+            .fontWeight(.semibold)
+            .opacity(checked ? 1 : 0)
+            .blur(radius: checked ? 0 : 4)
+            .scaleEffect(checked ? 1 : 0.8)
+            .accessibilityHidden(!checked)
+            .animation(.easeOut(duration: 0.2), value: checked)
     }
 }
 

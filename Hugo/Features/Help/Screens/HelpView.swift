@@ -43,27 +43,27 @@ struct HelpView: View {
 
     var body: some View {
         NavigationStack {
-			Group {
-				if let content {
-					ScrollView {
-						Markdown(content)
-							.frame(maxWidth: .infinity, alignment: .leading)
-							.padding()
-					}
-				} else {
-					ContentUnavailableView(
-						"help.unavailable.title", systemImage: "questionmark.circle",
-						description: Text("help.unavailable.description"))
-				}
-			}
-			.background(Color(.systemGroupedBackground))
-			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
-					Button(role: .close) {
-						dismiss()
-					}
-				}
-			}
+            Group {
+                if let content {
+                    ScrollView {
+                        Markdown(content)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                    }
+                } else {
+                    ContentUnavailableView(
+                        "help.unavailable.title", systemImage: "questionmark.circle",
+                        description: Text("help.unavailable.description"))
+                }
+            }
+            .background(Color(.systemGroupedBackground))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(role: .close) {
+                        dismiss()
+                    }
+                }
+            }
         }
         .presentationDragIndicator(.visible)
     }

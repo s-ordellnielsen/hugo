@@ -9,12 +9,12 @@ import SwiftUI
 
 struct CategorySettingsView: View {
     var body: some View {
-		List {
-			NavigationLink(destination: CategoryListView()) {
-				Label("settings.screens.categories.items.list", systemImage: "list.bullet")
-			}
-		}
-		.navigationTitle("settings.group.settings.category")
+        List {
+            NavigationLink(destination: CategoryListView()) {
+                Label("settings.screens.categories.items.list", systemImage: "list.bullet")
+            }
+        }
+        .navigationTitle("settings.group.settings.category")
     }
 }
 
