@@ -20,7 +20,6 @@ struct OnboardingView: View {
                         Text("splash.section.publisherStatus.title")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .fontDesign(.rounded)
                             .padding(.horizontal, 4)
                         Text("splash.section.publisherStatus.description")
                             .font(.caption)
@@ -46,7 +45,6 @@ struct OnboardingView: View {
                         systemImage: "arrow.right"
                     )
                     .fontWeight(.semibold)
-                    .fontDesign(.rounded)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(.hugoAccent)

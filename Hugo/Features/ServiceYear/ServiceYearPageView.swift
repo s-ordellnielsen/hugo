@@ -39,7 +39,6 @@ struct ServiceYearPageView: View {
             Text("year.empty.title")
                 .font(.title3)
                 .fontWeight(.semibold)
-                .fontDesign(.rounded)
             Text("year.empty.description")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

@@ -19,7 +19,6 @@ struct MonthlyReportRow: View {
                     .textCase(.uppercase)
                     .tracking(1.5)
                     .fontWeight(.semibold)
-                    .fontDesign(.rounded)
                     .foregroundStyle(.secondary)
                 Spacer()
                 Menu {
@@ -48,9 +47,7 @@ struct MonthlyReportRow: View {
             }
             HStack(alignment: .firstTextBaseline) {
                 Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
-                    .font(.title)
-                    .fontWeight(.heavy)
-                    .fontDesign(.rounded)
+                    .font(.system(.title, design: .serif, weight: .bold))
                 Text("reportList.row.hours.label")
                     .foregroundStyle(.secondary)
                     .font(.title3)

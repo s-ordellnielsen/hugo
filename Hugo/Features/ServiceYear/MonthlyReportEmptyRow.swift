@@ -15,7 +15,6 @@ struct MonthlyReportEmptyRow: View {
                     .textCase(.uppercase)
                     .tracking(1.5)
                     .fontWeight(.semibold)
-                    .fontDesign(.rounded)
                     .foregroundStyle(month.isFuture ? .tertiary : .secondary)
                 Spacer()
                 if !month.isFuture && !month.isSubmitted {

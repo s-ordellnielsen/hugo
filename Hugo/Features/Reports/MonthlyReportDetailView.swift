@@ -29,6 +29,9 @@ struct MonthlyReportDetailView: View {
         .navigationSubtitle("report.title")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                EditorialNavigationTitle(title: summary.displayName)
+            }
             ToolbarItem(placement: .topBarLeading) {
                 Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
             }

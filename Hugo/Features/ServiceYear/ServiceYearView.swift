@@ -36,6 +36,11 @@ struct ServiceYearView: View {
             .navigationTitle(year.displayName)
             .navigationSubtitle("year.subtitle")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    EditorialNavigationTitle(title: year.displayName)
+                }
+            }
         }
         .tag(year)
     }

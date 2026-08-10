@@ -36,7 +36,6 @@ struct EntryRow: View {
                     }
                     .foregroundStyle(.primary)
                     .font(.body)
-                    .fontDesign(.rounded)
                     Text(
                         entry.date,
                         format: Date.FormatStyle(
@@ -52,7 +51,6 @@ struct EntryRow: View {
                     VStack(spacing: 4) {
                         Image(systemName: "book")
                         Text(String("\(entry.bibleStudies)"))
-                            .fontDesign(.rounded)
                     }
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)

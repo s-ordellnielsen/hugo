@@ -128,6 +128,9 @@ struct SubmitReportView: View {
         .navigationTitle(model.month.monthYearString().capitalized)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                EditorialNavigationTitle(title: model.month.monthYearString().capitalized)
+            }
             ToolbarItem(placement: .topBarLeading) {
                 Button(role: .cancel) { dismiss() }
             }

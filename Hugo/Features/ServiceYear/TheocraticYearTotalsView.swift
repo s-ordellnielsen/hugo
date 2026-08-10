@@ -45,9 +45,8 @@ struct TheocraticYearTotalsView: View {
     ) -> some View {
         VStack(alignment: alignment, spacing: 4) {
             Text(value)
-                .font(prominent ? .title : .callout)
-                .fontDesign(.rounded)
-                .fontWeight(prominent ? .bold : .medium)
+                .font(prominent ? .system(.title, design: .serif, weight: .bold) : .callout)
+                .fontWeight(.medium)
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)

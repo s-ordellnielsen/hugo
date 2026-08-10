@@ -8,6 +8,6 @@ struct MonthlyProgressStatusView: View {
         return HStack {
             Image(systemName: status.icon)
             Text(status.label)
-        }.fontWeight(.semibold).fontDesign(.rounded)
+        }.fontWeight(.semibold)
     }
 }
