@@ -24,7 +24,7 @@ struct OnboardingView: View {
                             .padding(.horizontal, 4)
                         Text("splash.section.publisherStatus.description")
                             .font(.caption)
-							.padding(.horizontal, 4)
+                            .padding(.horizontal, 4)
 
                         VStack(spacing: 8) {
                             PublisherStatusOptionsView(selection: $currentStatus, rowStyle: .card)
@@ -49,7 +49,7 @@ struct OnboardingView: View {
                     .fontDesign(.rounded)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.orange)
+                    .background(.hugoAccent)
                     .foregroundStyle(.white)
                     .clipShape(.rect(cornerRadius: 24))
                 }

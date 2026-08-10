@@ -19,14 +19,14 @@ struct MonthSubmissionStatusView: View {
                     "report.status.submitted.\(Self.dateFormatter.string(from: submittedAt))",
                     systemImage: "checkmark.circle.fill"
                 )
-                .foregroundStyle(.green)
+                .foregroundStyle(.hugoAccent)
 
                 if month.hasUnreportedEntries {
                     Label(
                         "report.status.unreported-entries",
                         systemImage: "exclamationmark.triangle.fill"
                     )
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.secondary)
                 }
             }
             .font(.caption)

@@ -21,7 +21,7 @@ struct MonthlyReportEntryListView: View {
                             Spacer()
                             if isUnreported(entry) {
                                 Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.orange)
+
                                     .font(.caption)
                             }
                             Text(ServiceDurationFormatter.string(from: entry.duration))

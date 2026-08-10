@@ -18,27 +18,29 @@ struct SettingsView: View {
                                     ?? "account.group.main.item.publisher.status.empty"
                             )
                         } icon: {
-							Image(systemName: publisherStatus != "" ? "person.crop.circle.badge.checkmark" : "person.crop.circle")
+                            Image(
+                                systemName: publisherStatus != ""
+                                    ? "person.crop.circle.badge.checkmark" : "person.crop.circle")
                         }
                     }
                 }
-				
-				Section {
-					NavigationLink(destination: ReportSettingsView()) {
-						Label("settings.group.settings.report", systemImage: "doc.text")
-					}
-					NavigationLink(destination: CategorySettingsView()) {
-						Label("settings.group.settings.category", systemImage: "square.grid.2x2")
-					}
-					NavigationLink(destination: GeneralSettingsView()) {
-						Label("settings.group.settings.general", systemImage: "gearshape")
-					}
-				}
+
+                Section {
+                    NavigationLink(destination: ReportSettingsView()) {
+                        Label("settings.group.settings.report", systemImage: "doc.text")
+                    }
+                    NavigationLink(destination: CategorySettingsView()) {
+                        Label("settings.group.settings.category", systemImage: "square.grid.2x2")
+                    }
+                    NavigationLink(destination: GeneralSettingsView()) {
+                        Label("settings.group.settings.general", systemImage: "gearshape")
+                    }
+                }
 
                 Section {
                     NavigationLink(destination: DebugSettingsView()) {
                         Label("debug.title", systemImage: "ant.fill")
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.primary)
                     }
                 } footer: {
                     Text("debug.disclaimer")
@@ -51,7 +53,6 @@ struct SettingsView: View {
                     }
                 }
             }
-            .tint(.primary)
         }
     }
 }

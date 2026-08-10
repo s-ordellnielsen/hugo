@@ -28,7 +28,7 @@ struct AddCategoryView: View {
                         VStack(spacing: 8) {
                             Image(systemName: iconName)
                                 .font(.system(size: iconSize))
-                                .tint(.primary)
+                                .foregroundStyle(.primary)
                                 .frame(width: tileSize, height: tileSize)
                                 .background(Color(.secondarySystemGroupedBackground))
                                 .clipShape(.rect(cornerRadius: 32))

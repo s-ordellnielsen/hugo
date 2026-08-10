@@ -27,7 +27,7 @@ struct CategoryListView: View {
                                     if tracker.isDefault {
                                         Image(systemName: "star.fill")
                                             .font(.callout)
-                                            .foregroundStyle(.yellow)
+                                            .foregroundStyle(.hugoAccent)
                                     }
                                 }
                             }
@@ -38,7 +38,6 @@ struct CategoryListView: View {
             }
         }
         .navigationTitle("screen.category-list.title")
-        .tint(.primary)
         .toolbar {
             ToolbarItem {
                 Button {

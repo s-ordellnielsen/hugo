@@ -23,15 +23,15 @@ struct CurrentPublisherStatusView: View {
             .font(.system(size: 64))
             .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
             .symbolRenderingMode(.hierarchical)
-            .foregroundStyle(.tint)
+            .foregroundStyle(selectedStatus == nil ? Color.secondary : Color.hugoAccent)
 
             VStack(spacing: 8) {
-				Text(selectedStatus?.nameKey ?? "publisher.status.empty")
-					.font(.title)
-					.fontDesign(.rounded)
-					.fontWeight(.bold)
-					.contentTransition(.opacity)
-					.animation(.easeInOut(duration: 0.2), value: currentStatus)
+                Text(selectedStatus?.nameKey ?? "publisher.status.empty")
+                    .font(.title)
+                    .fontDesign(.rounded)
+                    .fontWeight(.bold)
+                    .contentTransition(.opacity)
+                    .animation(.easeInOut(duration: 0.2), value: currentStatus)
 
                 Text("account.page.publisherselect.current")
                     .font(.caption)

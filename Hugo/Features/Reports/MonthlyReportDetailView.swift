@@ -17,7 +17,7 @@ struct MonthlyReportDetailView: View {
             if month.isSubmitted && month.hasUnreportedEntries {
                 Section {
                     Label("report.detail.unreported.banner", systemImage: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.orange)
+
                         .font(.subheadline)
                 }
             }

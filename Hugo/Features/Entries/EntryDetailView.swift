@@ -50,7 +50,6 @@ struct EntryDetailView: View {
                         Button("entry.delete.label", systemImage: "trash", role: .destructive) {
                             deleteConfirmationShown = true
                         }
-                        .tint(.red)
                     } label: {
                         Label("common.more", systemImage: "ellipsis")
                     }
@@ -74,7 +73,6 @@ struct EntryDetailView: View {
                 CategoryPicker(selection: $entry.tracker, dismissOnSelection: true)
                     .presentationDetents([.medium, .large])
             }
-            .tint(.primary)
         }
     }
 

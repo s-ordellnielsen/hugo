@@ -125,7 +125,7 @@ struct SubmitReportView: View {
                 }
             }
         }
-		.navigationTitle(model.month.monthYearString().capitalized)
+        .navigationTitle(model.month.monthYearString().capitalized)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -140,7 +140,7 @@ struct SubmitReportView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.orange)
+            .tint(.hugoAccent)
             .controlSize(.large)
             .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
             .padding(.horizontal)
@@ -149,14 +149,14 @@ struct SubmitReportView: View {
         .sheet(isPresented: $showingSettings) {
             NavigationStack {
                 ReportSettingsView()
-					.navigationBarTitleDisplayMode(.inline)
-					.toolbar {
-						ToolbarItem(placement: .topBarLeading) {
-							Button(role: .cancel) { dismiss() }
-						}
-					}
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button(role: .cancel) { dismiss() }
+                        }
+                    }
             }
-			.presentationDetents([.large])
+            .presentationDetents([.large])
         }
         .onAppear { syncModel() }
         .onChange(of: entries) { syncModel() }

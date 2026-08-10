@@ -25,7 +25,7 @@ struct CategoryDetailView: View {
                         VStack {
                             Image(systemName: tracker.iconName)
                                 .font(.system(size: iconSize))
-                                .tint(.primary)
+                                .foregroundStyle(.primary)
                         }
                         .frame(width: tileSize, height: tileSize)
                         .background(Color(.secondarySystemGroupedBackground))

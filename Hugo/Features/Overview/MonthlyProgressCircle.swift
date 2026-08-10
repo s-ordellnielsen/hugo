@@ -17,7 +17,7 @@ struct MonthlyProgressCircle: View {
                     .fill(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
                     .frame(width: side, height: side)
                 Rectangle()
-                    .fill(LinearGradient(colors: [.orange, .yellow], startPoint: .bottom, endPoint: .top))
+                    .fill(.hugoAccent)
                     .frame(
                         width: side,
                         height: CGFloat(ceil(normalizedProgress * Double(side) + (normalizedProgress >= 1 ? 1 : 0)))

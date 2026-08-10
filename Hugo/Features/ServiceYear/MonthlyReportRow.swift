@@ -19,8 +19,8 @@ struct MonthlyReportRow: View {
                     .textCase(.uppercase)
                     .tracking(1.5)
                     .fontWeight(.semibold)
-					.fontDesign(.rounded)
-                    .foregroundStyle(.red)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(.secondary)
                 Spacer()
                 Menu {
                     if !month.isFuture {
@@ -50,7 +50,7 @@ struct MonthlyReportRow: View {
                 Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
                     .font(.title)
                     .fontWeight(.heavy)
-					.fontDesign(.rounded)
+                    .fontDesign(.rounded)
                 Text("reportList.row.hours.label")
                     .foregroundStyle(.secondary)
                     .font(.title3)
@@ -96,7 +96,6 @@ struct MonthlyReportRow: View {
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(.rect(cornerRadius: 32))
-        .tint(.primary)
         .onTapGesture {
             isExpanded.toggle()
         }
