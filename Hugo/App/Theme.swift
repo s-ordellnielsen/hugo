@@ -5,7 +5,7 @@ import SwiftUI
 extension Color {
     /// Hugo's signature opt-in accent color (currently System Teal).
     /// Enables: `.tint(.hugoAccent)`, `Color.hugoAccent`.
-    static var hugoAccent: Color { .teal }
+    static var hugoAccent: Color { .mint }
 }
 
 extension ShapeStyle where Self == Color {
