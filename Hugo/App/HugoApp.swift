@@ -12,6 +12,10 @@ struct HugoApp: App {
     }
 
     var body: some Scene {
-        WindowGroup { AppRootView() }.modelContainer(modelContainer)
+        WindowGroup {
+            AppRootView()
+                .tint(.primary)
+                .modelContainer(modelContainer)
+        }
     }
 }
