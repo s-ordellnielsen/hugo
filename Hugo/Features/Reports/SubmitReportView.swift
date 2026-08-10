@@ -43,7 +43,7 @@ struct SubmitReportView: View {
                         Label("report.submit.carried-in", systemImage: "arrow.down.right")
                         Spacer()
                         Text("+\(ServiceDurationFormatter.string(from: model.carriedIn))")
-                            .fontDesign(.monospaced)
+                            .monospacedDigit()
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -52,7 +52,7 @@ struct SubmitReportView: View {
                     Label("report.bible-studies", systemImage: "book")
                     Spacer()
                     Text(String(summary?.totalBibleStudies ?? 0))
-                        .fontDesign(.monospaced)
+                        .monospacedDigit()
                         .foregroundStyle(.secondary)
                 }
             }
@@ -71,7 +71,7 @@ struct SubmitReportView: View {
                             .symbolRenderingMode(.hierarchical)
                         Spacer()
                         Text("+\(ServiceDurationFormatter.string(from: model.computation.carriedOutSeconds))")
-                            .fontDesign(.monospaced)
+                            .monospacedDigit()
                             .foregroundStyle(.secondary)
                     }
                 } else if model.computation.roundedUpSeconds > 0 {
@@ -80,7 +80,7 @@ struct SubmitReportView: View {
                             .symbolRenderingMode(.hierarchical)
                         Spacer()
                         Text("+\(ServiceDurationFormatter.string(from: model.computation.roundedUpSeconds))")
-                            .fontDesign(.monospaced)
+                            .monospacedDigit()
                             .foregroundStyle(.secondary)
                     }
                 } else if model.computation.roundedDownSeconds > 0 {
@@ -89,7 +89,7 @@ struct SubmitReportView: View {
                             .symbolRenderingMode(.hierarchical)
                         Spacer()
                         Text("−\(ServiceDurationFormatter.string(from: model.computation.roundedDownSeconds))")
-                            .fontDesign(.monospaced)
+                            .monospacedDigit()
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -193,7 +193,7 @@ struct SubmitReportView: View {
             Spacer()
             Text("\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))")
                 .contentTransition(.numericText())
-                .fontDesign(.monospaced)
+                .monospacedDigit()
                 .foregroundStyle(.secondary)
         }
     }

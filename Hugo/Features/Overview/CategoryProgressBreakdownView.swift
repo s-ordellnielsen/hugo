@@ -38,7 +38,7 @@ struct CategoryProgressBreakdownView: View {
                     Image(systemName: row.iconName)
                     Text(row.name)
                     Spacer()
-                    Text(ServiceDurationFormatter.string(from: row.duration)).fontDesign(.monospaced).foregroundStyle(
+                    Text(ServiceDurationFormatter.string(from: row.duration)).monospacedDigit().foregroundStyle(
                         .secondary)
                 }
             }

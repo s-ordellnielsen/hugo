@@ -25,7 +25,7 @@ struct MonthlyReportEntryListView: View {
                                     .font(.caption)
                             }
                             Text(ServiceDurationFormatter.string(from: entry.duration))
-                                .fontDesign(.monospaced)
+                                .monospacedDigit()
                                 .foregroundStyle(.secondary)
                         }
                     } icon: {

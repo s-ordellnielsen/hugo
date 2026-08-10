@@ -62,7 +62,7 @@ struct MonthlyReportRow: View {
                         Label(category.name, systemImage: category.iconName)
                         Spacer()
                         Text(ServiceDurationFormatter.string(from: category.duration))
-                            .fontDesign(.monospaced)
+                            .monospacedDigit()
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -71,7 +71,7 @@ struct MonthlyReportRow: View {
                     Label("report.bible-studies", systemImage: "book")
                     Spacer()
                     Text(String(summary.totalBibleStudies))
-                        .fontDesign(.monospaced)
+                        .monospacedDigit()
                         .foregroundStyle(.secondary)
                 }
             }

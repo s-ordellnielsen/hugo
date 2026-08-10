@@ -39,7 +39,7 @@ struct MonthlyReportTotalsView: View {
         VStack(alignment: alignment, spacing: 4) {
             Text(value)
                 .font(prominent ? .title : .callout)
-                .fontDesign(.monospaced)
+                .monospacedDigit()
                 .fontWeight(.medium)
             Text(label)
                 .font(.caption)

@@ -27,8 +27,7 @@ struct CurrentPublisherStatusView: View {
 
             VStack(spacing: 8) {
                 Text(selectedStatus?.nameKey ?? "publisher.status.empty")
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.system(.title, design: .serif, weight: .bold))
                     .contentTransition(.opacity)
                     .animation(.easeInOut(duration: 0.2), value: currentStatus)
 
