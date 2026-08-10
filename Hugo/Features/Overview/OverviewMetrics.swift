@@ -28,25 +28,66 @@ struct OverviewMetrics {
     }
 }
 
+nonisolated struct CategoryProgressColor: Equatable, Sendable {
+    let hue: Double
+    let saturation: Double
+    let brightness: Double
+
+    init?(hue: Double, saturation: Double, brightness: Double) {
+        guard (0...1).contains(hue), (0...1).contains(saturation), (0...1).contains(brightness),
+            brightness > 0
+        else { return nil }
+        self.hue = hue
+        self.saturation = saturation
+        self.brightness = brightness
+    }
+}
+
 struct CategoryProgressRow: Identifiable {
     let id: String
     let name: String
     let iconName: String
     let duration: TimeInterval
-    let colorIndex: Int
+    let color: CategoryProgressColor?
 }
 
 enum CategoryProgressAggregator {
-    static func rows(entries: [Entry], trackers: [Tracker]) -> [CategoryProgressRow] {
+    static func rows(
+        entries: [Entry], trackers: [Tracker], locale: Locale = .current
+    ) -> [CategoryProgressRow] {
         var totals: [UUID: TimeInterval] = [:]
+        var untrackedDuration: TimeInterval = 0
         for entry in entries {
-            if let tracker = entry.tracker { totals[tracker.id, default: 0] += entry.duration }
+            if let tracker = entry.tracker {
+                totals[tracker.id, default: 0] += entry.duration
+            } else {
+                untrackedDuration += entry.duration
+            }
         }
-        return trackers.enumerated().compactMap { index, tracker in
-            guard totals[tracker.id, default: 0] > 0 else { return nil }
+
+        var rows = trackers.compactMap { tracker -> CategoryProgressRow? in
+            let duration = totals[tracker.id, default: 0]
+            guard duration > 0 else { return nil }
             return CategoryProgressRow(
-                id: tracker.id.uuidString, name: tracker.name, iconName: tracker.iconName,
-                duration: totals[tracker.id, default: 0], colorIndex: index)
+                id: tracker.id.uuidString,
+                name: tracker.name,
+                iconName: tracker.iconName,
+                duration: duration,
+                color: CategoryProgressColor(hue: tracker.hue, saturation: tracker.sat, brightness: tracker.bri)
+            )
         }
+
+        if untrackedDuration > 0 {
+            rows.append(
+                CategoryProgressRow(
+                    id: "untracked",
+                    name: String(localized: "entry.untracked", locale: locale),
+                    iconName: "questionmark.circle",
+                    duration: untrackedDuration,
+                    color: nil
+                )
+            )
+        }
+        return rows
     }
 }

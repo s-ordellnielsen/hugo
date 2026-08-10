@@ -42,6 +42,51 @@ struct OverviewMetricsTests {
     }
 
     @Test
+    func validTrackerColorIsPreserved() {
+        let tracker = Tracker(name: "Colored", hue: 0.25, sat: 0.5, bri: 0.75)
+        let rows = CategoryProgressAggregator.rows(
+            entries: [Entry(date: date(2026, 1, 1), duration: 100, tracker: tracker)], trackers: [tracker])
+        #expect(rows.first?.color == CategoryProgressColor(hue: 0.25, saturation: 0.5, brightness: 0.75))
+    }
+
+    @Test
+    func defaultBrightnessUsesFallbackColor() {
+        let tracker = Tracker(name: "Unassigned")
+        let rows = CategoryProgressAggregator.rows(
+            entries: [Entry(date: date(2026, 1, 1), duration: 100, tracker: tracker)], trackers: [tracker])
+        #expect(rows.first?.color == nil)
+    }
+
+    @Test
+    func invalidTrackerColorUsesFallbackColor() {
+        let tracker = Tracker(name: "Invalid", hue: 1.5, sat: 0.5, bri: 0.5)
+        let rows = CategoryProgressAggregator.rows(
+            entries: [Entry(date: date(2026, 1, 1), duration: 100, tracker: tracker)], trackers: [tracker])
+        #expect(rows.first?.color == nil)
+    }
+
+    @Test
+    func untrackedEntriesBecomeFallbackRows() {
+        let rows = CategoryProgressAggregator.rows(
+            entries: [Entry(date: date(2026, 1, 1), duration: 150, tracker: nil)], trackers: [])
+        #expect(rows.count == 1)
+        #expect(rows.first?.id == "untracked")
+        #expect(rows.first?.duration == 150)
+        #expect(rows.first?.color == nil)
+    }
+
+    @Test
+    func categoryRowsConserveTrackedAndUntrackedDuration() {
+        let tracker = Tracker(name: "Tracked")
+        let entries = [
+            Entry(date: date(2026, 1, 1), duration: 100, tracker: tracker),
+            Entry(date: date(2026, 1, 2), duration: 200, tracker: nil),
+        ]
+        let rows = CategoryProgressAggregator.rows(entries: entries, trackers: [tracker])
+        #expect(rows.map(\.duration).reduce(0, +) == 300)
+    }
+
+    @Test
     func categoryRowsConserveDuration() {
         let first = Tracker(name: "First")
         let second = Tracker(name: "Second")

@@ -12,7 +12,14 @@ struct CategoryProgressBreakdownView: View {
         _entries = Query(filter: #Predicate<Entry> { $0.date >= start && $0.date < end })
     }
 
-    private var rows: [CategoryProgressRow] { CategoryProgressAggregator.rows(entries: entries, trackers: trackers) }
+    private var rows: [CategoryProgressRow] {
+        CategoryProgressAggregator.rows(entries: entries, trackers: trackers)
+    }
+
+    private func displayColor(for row: CategoryProgressRow) -> Color {
+        guard let color = row.color else { return .hugoAccent }
+        return Color(hue: color.hue, saturation: color.saturation, brightness: color.brightness)
+    }
 
     var body: some View {
         let total = max(
@@ -21,7 +28,7 @@ struct CategoryProgressBreakdownView: View {
             GeometryReader { geometry in
                 HStack(spacing: 0) {
                     ForEach(rows) { row in
-                        Rectangle().fill(Color(hue: Double(row.colorIndex) * 0.05, saturation: 0.75, brightness: 1))
+                        Rectangle().fill(displayColor(for: row))
                             .frame(width: total > 0 ? geometry.size.width * CGFloat(row.duration / 3600 / total) : 0)
                     }
                 }.background(Color(.secondarySystemGroupedBackground)).clipShape(RoundedRectangle(cornerRadius: 24))
