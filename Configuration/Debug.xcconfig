@@ -10,3 +10,6 @@
 
 BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo.dev
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev
+
+// TestFlight public invite link. Replace this value with the current invite URL.
+INFOPLIST_KEY_TestFlightURL = https://testflight.apple.com/join/AdmsjW16

@@ -12,10 +12,6 @@ struct TheocraticYearTotalsView: View {
             } else {
                 totals
             }
-            Divider().padding(.vertical, 8)
-            Text("monthlyReport.detail.largeTotal.disclaimer")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))

@@ -5,6 +5,17 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
 
+    private static var testFlightURL: URL? {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: "TestFlightURL") as? String,
+            let url = URL(string: value),
+            url.scheme == "https",
+            !value.contains("REPLACE_WITH_INVITE_CODE")
+        else {
+            return nil
+        }
+        return url
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -36,6 +47,16 @@ struct SettingsView: View {
                         Label("settings.group.settings.general", systemImage: "gearshape")
                     }
                 }
+				
+				if let testFlightURL = Self.testFlightURL {
+					Section {
+						ShareLink(item: testFlightURL) {
+							Label("settings.account.shareTestFlight", systemImage: "person.crop.circle.badge.plus")
+						}
+					} footer: {
+						Text("settings.account.shareTestFlight.description")
+					}
+				}
 
                 Section {
                     NavigationLink(destination: DebugSettingsView()) {
