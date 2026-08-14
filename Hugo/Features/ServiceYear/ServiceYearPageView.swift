@@ -3,6 +3,9 @@ import SwiftUI
 
 struct ServiceYearPageView: View {
     let report: TheocraticYearReport
+	
+	var isActive: Bool = true
+	var onScrolledFromTopChange: ((Bool) -> Void)? = nil
 
     var body: some View {
         ScrollView {
@@ -27,7 +30,12 @@ struct ServiceYearPageView: View {
             .padding()
         }
         .frame(maxWidth: .infinity)
-        .background(Color(.systemGroupedBackground))
+		.onScrollGeometryChange(for: Bool.self) { geometry in
+			geometry.contentOffset.y + geometry.contentInsets.top > 0
+		} action: { _, isScrolledFromTop in
+			guard isActive else { return }
+			onScrolledFromTopChange?(isScrolledFromTop)
+		}
     }
 
     private var emptyYearCard: some View {

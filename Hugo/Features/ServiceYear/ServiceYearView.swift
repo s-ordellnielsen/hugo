@@ -4,7 +4,10 @@ import SwiftUI
 struct ServiceYearView: View {
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @Query(sort: \SubmittedReport.year) private var submissions: [SubmittedReport]
-    @State private var selectedYear: TheocraticYear?
+
+    @State private var scrollPosition: TheocraticYear.ID?
+    @State private var displayedYear: TheocraticYear?
+    @State private var isScrolledFromTop = false
 
     var resetToken: UUID = UUID()
 
@@ -20,43 +23,71 @@ struct ServiceYearView: View {
     }
 
     private var activeYear: TheocraticYear {
-        selectedYear ?? currentYear
-    }
-
-    private var yearSelection: Binding<TheocraticYear> {
-        Binding(get: { activeYear }, set: { selectedYear = $0 })
-    }
-
-    @ViewBuilder
-    private func page(for year: TheocraticYear) -> some View {
-        NavigationStack {
-            ServiceYearPageView(
-                report: TheocraticYearReportBuilder.report(for: year, entries: entries, submissions: submissions)
-            )
-            .navigationTitle(year.displayName)
-            .navigationSubtitle("year.subtitle")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    EditorialNavigationTitle(title: year.displayName)
-                }
-            }
-        }
-        .tag(year)
+        displayedYear ?? currentYear
     }
 
     var body: some View {
-        TabView(selection: yearSelection) {
-            ForEach(years) { year in
-                page(for: year)
+        NavigationStack {
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) {
+                    ForEach(years) { year in
+                        ServiceYearPageView(
+                            report: TheocraticYearReportBuilder.report(
+                                for: year, entries: entries, submissions: submissions),
+                            isActive: year.id == scrollPosition,
+                            onScrolledFromTopChange: { newValue in
+                                isScrolledFromTop = newValue
+                            }
+                        )
+                        .containerRelativeFrame(.horizontal)
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(id: $scrollPosition)
+            .scrollIndicators(.hidden)
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle(activeYear.displayName)
+            .navigationSubtitle("year.subtitle")
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+					HStack(spacing: 0) {
+						Text(String(activeYear.startYear))
+							.contentTransition(.numericText(value: Double(activeYear.startYear)))
+						Text(String("/"))
+						Text(String(activeYear.startYear + 1))
+							.contentTransition(.numericText(value: Double(activeYear.startYear + 1)))
+							.animation(.snappy.delay(0.05), value: activeYear.startYear + 1)
+					}
+					.font(.system(.headline, design: .serif, weight: .bold))
+					.lineLimit(1)
+					.minimumScaleFactor(0.75)
+					.monospacedDigit()
+                }
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .background(Color(.systemGroupedBackground))
-        .ignoresSafeArea(edges: .vertical)
+        .onAppear {
+            if scrollPosition == nil {
+                scrollPosition = currentYear.id
+                displayedYear = currentYear
+            }
+        }
+        .onChange(
+            of: scrollPosition,
+            { _, newValue in
+                guard let newValue, let year = years.first(where: { $0.id == newValue }) else { return }
+				withAnimation(.snappy) {
+					displayedYear = year
+				}
+            }
+        )
         .onChange(of: resetToken) {
             withAnimation {
-                selectedYear = nil
+                scrollPosition = currentYear.id
+                displayedYear = currentYear
             }
         }
     }
