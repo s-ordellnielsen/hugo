@@ -24,20 +24,20 @@ struct AppRootView: View {
         }
         selectedTab = tab
     }
-	
-	private var tabSelection: Binding<AppTab> {
-		Binding(
-			get: { selectedTab },
-			set: { select($0) }
-		)
-	}
+
+    private var tabSelection: Binding<AppTab> {
+        Binding(
+            get: { selectedTab },
+            set: { select($0) }
+        )
+    }
 
     var body: some View {
         Group {
             if isCompact {
                 compactLayout
             } else {
-				regularLayout
+                regularLayout
             }
         }
         .task { await bootstrapper.start(context: context) }
@@ -60,7 +60,7 @@ struct AppRootView: View {
         NavigationSplitView {
             List(
                 visibleTabs,
-				id: \.self,
+                id: \.self,
                 selection: sidebarSelection
             ) { tab in
                 Label(tab.titleKey, systemImage: tab.systemImage)
@@ -69,17 +69,17 @@ struct AppRootView: View {
             tabDestination(for: selectedTab, yearResetToken: yearResetToken)
         }
     }
-	
-	private var sidebarSelection: Binding<AppTab?> {
-		Binding(
-			get: { selectedTab },
-			set: { newValue in
-				if let newValue {
-					select(newValue)
-				}
-			}
-		)
-	}
+
+    private var sidebarSelection: Binding<AppTab?> {
+        Binding(
+            get: { selectedTab },
+            set: { newValue in
+                if let newValue {
+                    select(newValue)
+                }
+            }
+        )
+    }
 }
 
 @ViewBuilder
@@ -87,12 +87,14 @@ func tabDestination(for tab: AppTab, yearResetToken: UUID) -> some View {
     switch tab {
     case .overview: OverviewView()
     case .year: ServiceYearView(resetToken: yearResetToken)
+    case .settings: SettingsView()
     }
 }
 
 enum AppTab: String, CaseIterable, Identifiable, Hashable {
     case overview
     case year
+    case settings
 
     var id: String { rawValue }
 
@@ -100,6 +102,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .overview: return "tab.overview"
         case .year: return "tab.year"
+        case .settings: return "tab.settings"
         }
     }
 
@@ -107,6 +110,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .overview: "house"
         case .year: "tray.full.fill"
+        case .settings: "switch.2"
         }
     }
 
@@ -114,6 +118,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .overview: .all
         case .year: .all
+        case .settings: .sidebarOnly
         }
     }
 }

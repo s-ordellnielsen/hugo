@@ -55,9 +55,17 @@ struct OverviewView: View {
             .frame(maxWidth: .infinity)
             .background(Color(.systemGroupedBackground))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { SettingsButton() }.sheet(isPresented: $showingAddEntry) { AddEntryView() }.sheet(
-                isPresented: $showingDetails
-            ) { MonthlyProgressDetailView(month: now.yearMonth()) }
+            .toolbar {
+				ToolbarItem {
+					SettingsButton(sizeClass: .compact)
+				}
+            }
+            .sheet(isPresented: $showingAddEntry) {
+                AddEntryView()
+            }
+            .sheet(isPresented: $showingDetails) {
+                MonthlyProgressDetailView(month: now.yearMonth())
+            }
         }
     }
 }

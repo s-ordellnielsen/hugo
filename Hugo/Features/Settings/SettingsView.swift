@@ -6,6 +6,8 @@ struct SettingsView: View {
     @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
 
     @Environment(\.openURL) private var openURL
+	
+	var showDismiss: Bool = false
 
     private static var supportEmailURL: URL? {
         guard let email = Bundle.main.object(forInfoDictionaryKey: "SupportEmail") as? String,
@@ -92,11 +94,13 @@ struct SettingsView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
-                    }
-                }
+				if showDismiss {
+					ToolbarItem(placement: .cancellationAction) {
+						Button(role: .cancel) {
+							dismiss()
+						}
+					}
+				}
             }
         }
     }

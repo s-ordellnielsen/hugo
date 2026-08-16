@@ -67,6 +67,9 @@ struct ServiceYearView: View {
 					.minimumScaleFactor(0.75)
 					.monospacedDigit()
                 }
+				ToolbarItem {
+					SettingsButton(sizeClass: .compact)
+				}
             }
         }
         .onAppear {
