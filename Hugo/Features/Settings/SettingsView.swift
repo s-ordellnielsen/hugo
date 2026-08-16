@@ -5,6 +5,20 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
 
+    @Environment(\.openURL) private var openURL
+
+    private static var supportEmailURL: URL? {
+        guard let email = Bundle.main.object(forInfoDictionaryKey: "SupportEmail") as? String,
+            !email.isEmpty
+        else {
+            return nil
+        }
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = email
+        return components.url
+    }
+
     private static var testFlightURL: URL? {
         guard let value = Bundle.main.object(forInfoDictionaryKey: "TestFlightURL") as? String,
             let url = URL(string: value),
@@ -57,6 +71,16 @@ struct SettingsView: View {
 						Text("settings.account.shareTestFlight.description")
 					}
 				}
+
+                if let supportEmailURL = Self.supportEmailURL {
+                    Section {
+                        Button {
+                            openURL(supportEmailURL)
+                        } label: {
+                            Label("settings.contact.email", systemImage: "envelope")
+                        }
+                    }
+                }
 
                 Section {
                     NavigationLink(destination: DebugSettingsView()) {

@@ -1759,6 +1759,23 @@
         }
       }
     },
+    "settings.contact.email" : {
+      "comment" : "A button that opens a new email draft addressed to the developer for feedback.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontakt os"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact Us"
+          }
+        }
+      }
+    },
     "settings.duration.minute-interval" : {
       "comment" : "Setting for the minute step used by the duration picker.",
       "localizations" : {
