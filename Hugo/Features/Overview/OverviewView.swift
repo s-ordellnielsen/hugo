@@ -7,8 +7,6 @@ struct OverviewView: View {
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @State private var showingAddEntry = false
     @State private var showingDetails = false
-    private let calendar = Calendar.current
-    private let now = Date.now
 
     init() {
         let interval = CurrentMonthInterval.current(now: .now, calendar: .current)
@@ -20,14 +18,14 @@ struct OverviewView: View {
 
     private var metrics: OverviewMetrics {
         OverviewMetrics.make(
-            entries: entries, status: PublisherStatus.status(for: statusID), now: now, calendar: calendar)
+            entries: entries, status: PublisherStatus.status(for: statusID), now: .now, calendar: .current)
     }
 
     /// The month whose report reminder should show, if any: a month is due
     /// (per `ReportReminderSchedule`) and has no real submission. Backfill
     /// sentinels (`submittedAt == .distantPast`) count as unsubmitted.
     private var reminderMonth: YearMonth? {
-        guard let due = ReportReminderSchedule.dueMonth(now: now, calendar: calendar) else { return nil }
+        guard let due = ReportReminderSchedule.dueMonth(now: .now, calendar: .current) else { return nil }
         guard let submission = submissions.first(where: { $0.year == due.year && $0.month == due.month }) else {
             return due
         }
@@ -64,7 +62,7 @@ struct OverviewView: View {
                 AddEntryView()
             }
             .sheet(isPresented: $showingDetails) {
-                MonthlyProgressDetailView(month: now.yearMonth())
+                MonthlyProgressDetailView(month: Date.now.yearMonth())
             }
         }
     }
