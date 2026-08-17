@@ -40,13 +40,13 @@ struct OverviewView: View {
                     if let reminderMonth {
                         ReportReminderCard(month: reminderMonth)
                             .transition(.opacity.combined(with: .move(edge: .top)))
-                        Spacer(minLength: 32)
+                        Spacer(minLength: HugoLayout.Spacing.section)
                     }
                     MonthlyProgressCard(
                         value: metrics.progress, monthlyGoal: metrics.monthlyGoal,
                         expectedProgress: metrics.expectedProgress, onAddEntry: { showingAddEntry = true },
                         onShowDetails: { showingDetails = true })
-                    Spacer(minLength: 32)
+                    Spacer(minLength: HugoLayout.Spacing.section)
                     EntryListView(entries: entries)
                 }
                 .motion(Motion.presence, value: reminderMonth)
@@ -56,9 +56,9 @@ struct OverviewView: View {
             .background(Color(.systemGroupedBackground))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-				ToolbarItem {
-					SettingsButton(sizeClass: .compact)
-				}
+                ToolbarItem {
+                    SettingsButton(sizeClass: .compact)
+                }
             }
             .sheet(isPresented: $showingAddEntry) {
                 AddEntryView()

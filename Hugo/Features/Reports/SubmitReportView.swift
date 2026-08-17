@@ -100,7 +100,7 @@ struct SubmitReportView: View {
                 if model.hasOverseer {
                     Label(model.overseerFullName, systemImage: "person.crop.circle")
                 } else {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
                         Text("report.overseer.empty")
                             .foregroundStyle(.secondary)
                         Button("report.submit.overseer.settings-link") {
@@ -147,7 +147,7 @@ struct SubmitReportView: View {
             .controlSize(.large)
             .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
             .padding(.horizontal)
-            .padding(.vertical, 8)
+            .padding(.vertical, HugoLayout.Spacing.compact)
         }
         .sheet(isPresented: $showingSettings) {
             NavigationStack {

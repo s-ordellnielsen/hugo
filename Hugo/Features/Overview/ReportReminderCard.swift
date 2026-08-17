@@ -13,18 +13,18 @@ struct ReportReminderCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: 24) {
-            HStack(alignment: .top, spacing: 16) {
+        VStack(alignment: .trailing, spacing: HugoLayout.Spacing.card) {
+            HStack(alignment: .top, spacing: HugoLayout.Spacing.spacious) {
                 ZStack(alignment: .center) {
                     Circle()
                         .fill(.hugoAccent)
-                        .frame(width: 64, height: 64)
+                        .frame(width: HugoLayout.Size.prominentSymbol, height: HugoLayout.Size.prominentSymbol)
                     Image(systemName: "doc.badge.clock.fill")
                         .foregroundStyle(.white)
                         .font(.title2)
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
                     Text("report.reminder.title.\(monthName)")
                         .font(.headline)
                         .foregroundStyle(.hugoAccent)
@@ -37,13 +37,13 @@ struct ReportReminderCard: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                .padding(.top, 8)
+                .padding(.top, HugoLayout.Spacing.compact)
             }
         }
-        .padding(24)
+        .padding(HugoLayout.Spacing.card)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: 32))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         .onTapGesture {
             isPresentingSubmitSheet.toggle()
         }

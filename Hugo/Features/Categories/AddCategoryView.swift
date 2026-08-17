@@ -7,8 +7,8 @@ struct AddCategoryView: View {
 
     @Query private var trackers: [Tracker]
 
-    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 48
-    @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = 128
+    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = HugoLayout.Size.categoryIcon
+    @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = HugoLayout.Size.categoryIconTile
 
     @State private var name = ""
     @State private var type: TrackerType = .main
@@ -25,13 +25,13 @@ struct AddCategoryView: View {
                     Button {
                         iconPickerIsPresented = true
                     } label: {
-                        VStack(spacing: 8) {
+                        VStack(spacing: HugoLayout.Spacing.compact) {
                             Image(systemName: iconName)
                                 .font(.system(size: iconSize))
                                 .foregroundStyle(.primary)
                                 .frame(width: tileSize, height: tileSize)
                                 .background(Color(.secondarySystemGroupedBackground))
-                                .clipShape(.rect(cornerRadius: 32))
+                                .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
                             Text("symbol.picker.select.label")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

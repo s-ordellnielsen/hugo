@@ -7,8 +7,8 @@ struct CategoryDetailView: View {
 
     var tracker: Tracker
 
-    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = 48
-    @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = 128
+    @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = HugoLayout.Size.categoryIcon
+    @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = HugoLayout.Size.categoryIconTile
 
     @State private var showDeleteConfirmation = false
     @State private var iconPickerIsPresented: Bool = false
@@ -18,7 +18,7 @@ struct CategoryDetailView: View {
         @Bindable var tracker = tracker
         Form {
             Section {
-                VStack(alignment: .center, spacing: 8) {
+                VStack(alignment: .center, spacing: HugoLayout.Spacing.compact) {
                     Button {
                         iconPickerIsPresented = true
                     } label: {
@@ -29,7 +29,7 @@ struct CategoryDetailView: View {
                         }
                         .frame(width: tileSize, height: tileSize)
                         .background(Color(.secondarySystemGroupedBackground))
-                        .clipShape(.rect(cornerRadius: 32))
+                        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
                     }
                     .frame(width: tileSize, height: tileSize)
                     Text("symbol.picker.select.label")

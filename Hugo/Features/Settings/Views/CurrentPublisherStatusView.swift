@@ -15,21 +15,21 @@ struct CurrentPublisherStatusView: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: HugoLayout.Spacing.spacious) {
             Image(
                 systemName: PublisherStatus.status(for: currentStatus) != nil
                     ? "person.crop.circle.badge.checkmark" : "person.crop.circle"
             )
-            .font(.system(size: 64))
+            .font(.system(size: HugoLayout.Size.prominentSymbol))
             .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
             .symbolRenderingMode(.hierarchical)
             .foregroundStyle(selectedStatus == nil ? Color.secondary : Color.hugoAccent)
 
-            VStack(spacing: 8) {
+            VStack(spacing: HugoLayout.Spacing.compact) {
                 Text(selectedStatus?.nameKey ?? "publisher.status.empty")
                     .font(.system(.title, design: .serif, weight: .bold))
                     .contentTransition(.opacity)
-                    .animation(.easeInOut(duration: 0.2), value: currentStatus)
+                    .motion(Motion.presence, value: currentStatus)
 
                 Text("account.page.publisherselect.current")
                     .font(.caption)

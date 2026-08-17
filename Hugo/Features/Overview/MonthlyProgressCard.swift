@@ -7,7 +7,7 @@ struct MonthlyProgressCard: View {
     let onAddEntry: () -> Void
     let onShowDetails: () -> Void
 
-    @ScaledMetric(relativeTo: .largeTitle) private var heroSize: CGFloat = 80
+    @ScaledMetric(relativeTo: .largeTitle) private var heroSize: CGFloat = HugoLayout.Typography.monthlyProgressHeroSize
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -35,14 +35,14 @@ struct MonthlyProgressCard: View {
             .accessibilityValue(Text("\(Int(value)) hours this month"))
             Button(action: onAddEntry) {
                 Label("entry.add.label", systemImage: "plus")
-                    .padding(12)
+                    .padding(HugoLayout.Spacing.regular)
             }
             .buttonBorderShape(.circle)
             .font(.largeTitle)
             .labelStyle(.iconOnly)
             .buttonStyle(.glass)
-            .padding(.trailing, 8)
-            .padding(.bottom, 8)
+            .padding(.trailing, HugoLayout.Spacing.compact)
+            .padding(.bottom, HugoLayout.Spacing.compact)
         }
     }
 }

@@ -8,29 +8,29 @@ struct OnboardingView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.spacious) {
                     Text("splash.subtitle")
-                        .padding(.horizontal, 4)
+                        .padding(.horizontal, HugoLayout.Spacing.tight)
                     Text("splash.description.1")
-                        .padding(.horizontal, 4)
+                        .padding(.horizontal, HugoLayout.Spacing.tight)
                     Text("splash.description.2")
-                        .padding(.horizontal, 4)
+                        .padding(.horizontal, HugoLayout.Spacing.tight)
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
                         Text("splash.section.publisherStatus.title")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .padding(.horizontal, 4)
+                            .padding(.horizontal, HugoLayout.Spacing.tight)
                         Text("splash.section.publisherStatus.description")
                             .font(.caption)
-                            .padding(.horizontal, 4)
+                            .padding(.horizontal, HugoLayout.Spacing.tight)
 
-                        VStack(spacing: 8) {
+                        VStack(spacing: HugoLayout.Spacing.compact) {
                             PublisherStatusOptionsView(selection: $currentStatus, rowStyle: .card)
                         }
-                        .padding(.top, 16)
+                        .padding(.top, HugoLayout.Spacing.spacious)
                     }
-                    .padding(.top, 32)
+                    .padding(.top, HugoLayout.Spacing.section)
                 }
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -49,7 +49,7 @@ struct OnboardingView: View {
                     .padding()
                     .background(.hugoAccent)
                     .foregroundStyle(.white)
-                    .clipShape(.rect(cornerRadius: 24))
+                    .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
                 }
                 .disabled(currentStatus == "")
                 .padding()

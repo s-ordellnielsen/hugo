@@ -19,7 +19,7 @@ struct ServiceYearPageView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: HugoLayout.Spacing.card) {
                 if report.hasEntries {
                     TheocraticYearTotalsView(report: report)
                 } else {
@@ -49,7 +49,7 @@ struct ServiceYearPageView: View {
     }
 
     private var emptyYearCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
             Image(systemName: "calendar")
                 .font(.largeTitle)
                 .symbolRenderingMode(.hierarchical)
@@ -61,10 +61,10 @@ struct ServiceYearPageView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
-        .padding(24)
+        .padding(HugoLayout.Spacing.card)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: 32))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
     }
 }
 

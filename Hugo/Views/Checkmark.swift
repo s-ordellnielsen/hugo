@@ -19,7 +19,7 @@ struct Checkmark: View {
             .blur(radius: checked ? 0 : 4)
             .scaleEffect(checked ? 1 : 0.8)
             .accessibilityHidden(!checked)
-            .animation(.easeOut(duration: 0.2), value: checked)
+            .motion(Motion.feedback, value: checked)
     }
 }
 

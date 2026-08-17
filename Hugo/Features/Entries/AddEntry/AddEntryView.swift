@@ -71,7 +71,7 @@ struct AddEntryView: View {
             }
             .sheet(isPresented: $form.isTimePickerPresented) {
                 EntryTimePickerView(date: $form.time)
-                    .presentationDetents([.height(300)])
+                    .presentationDetents([.height(HugoLayout.Size.addEntryCompactSheetHeight)])
             }
             .errorAlert(message: $form.validationMessage)
         }

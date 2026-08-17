@@ -27,11 +27,11 @@ struct PublisherStatusOptionRow: View {
 
             case .card:
                 rowContent
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 16)
+                    .padding(.horizontal, HugoLayout.Spacing.card)
+                    .padding(.vertical, HugoLayout.Spacing.spacious)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.secondarySystemGroupedBackground))
-                    .clipShape(.rect(cornerRadius: 32))
+                    .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
             }
         }
         .buttonStyle(.plain)
@@ -39,8 +39,8 @@ struct PublisherStatusOptionRow: View {
     }
 
     private var rowContent: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(alignment: .center, spacing: HugoLayout.Spacing.regular) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
                 Text(status.nameKey)
 
                 Text(status.goalDescription)
@@ -48,7 +48,7 @@ struct PublisherStatusOptionRow: View {
                     .foregroundStyle(.secondary)
             }
 
-            Spacer(minLength: 12)
+            Spacer(minLength: HugoLayout.Spacing.regular)
 
             Checkmark(checked: isSelected)
         }

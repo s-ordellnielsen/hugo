@@ -7,12 +7,12 @@ struct MonthlyReportTotalsView: View {
     var body: some View {
         Group {
             if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 12) { totals }
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) { totals }
             } else {
                 totals
             }
         }
-        .padding(8)
+        .padding(HugoLayout.Spacing.compact)
     }
 
     @ViewBuilder
@@ -36,7 +36,7 @@ struct MonthlyReportTotalsView: View {
     private func total(
         _ value: String, label: LocalizedStringKey, alignment: HorizontalAlignment, prominent: Bool = false
     ) -> some View {
-        VStack(alignment: alignment, spacing: 4) {
+        VStack(alignment: alignment, spacing: HugoLayout.Spacing.tight) {
             Text(value)
                 .font(prominent ? .title : .callout)
                 .monospacedDigit()

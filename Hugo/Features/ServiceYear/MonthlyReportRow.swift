@@ -17,7 +17,7 @@ struct MonthlyReportRow: View {
                 Text(summary.displayName)
                     .font(.caption)
                     .textCase(.uppercase)
-                    .tracking(1.5)
+                    .tracking(HugoLayout.Typography.eyebrowTracking)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -38,12 +38,12 @@ struct MonthlyReportRow: View {
                     Label("common.more", systemImage: "ellipsis")
                         .labelStyle(.iconOnly)
                         .font(.body)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, HugoLayout.Spacing.regular)
+                        .padding(.vertical, HugoLayout.Spacing.compact)
                         .contentShape(Rectangle())
                 }
-                .padding(.trailing, -12)
-                .padding(.vertical, -8)
+                .padding(.trailing, -HugoLayout.Spacing.regular)
+                .padding(.vertical, -HugoLayout.Spacing.compact)
             }
             HStack(alignment: .firstTextBaseline) {
                 Text(ServiceDurationFormatter.string(from: summary.totalSeconds))
@@ -56,7 +56,7 @@ struct MonthlyReportRow: View {
             MonthSubmissionStatusView(month: month)
 
             Divider()
-            VStack(spacing: 12) {
+            VStack(spacing: HugoLayout.Spacing.regular) {
                 ForEach(summary.categories) { category in
                     HStack {
                         Label(category.name, systemImage: category.iconName)
@@ -66,7 +66,7 @@ struct MonthlyReportRow: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                Divider().padding(.vertical, 8)
+                Divider().padding(.vertical, HugoLayout.Spacing.compact)
                 HStack {
                     Label("report.bible-studies", systemImage: "book")
                     Spacer()
@@ -75,8 +75,8 @@ struct MonthlyReportRow: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding(.top, 12)
-            .labelReservedIconWidth(24)
+            .padding(.top, HugoLayout.Spacing.regular)
+            .labelReservedIconWidth(HugoLayout.Size.labelReservedIconWidth)
 
         }
         .sheet(isPresented: $isExpanded) {
@@ -90,9 +90,9 @@ struct MonthlyReportRow: View {
                     .presentationDetents([.medium, .large])
             }
         }
-        .padding(24)
+        .padding(HugoLayout.Spacing.card)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: 32))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         .onTapGesture {
             isExpanded.toggle()
         }

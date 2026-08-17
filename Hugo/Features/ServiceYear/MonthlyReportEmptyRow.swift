@@ -8,12 +8,12 @@ struct MonthlyReportEmptyRow: View {
     @State private var isPresentingSubmitSheet: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
             HStack {
                 Text(month.displayName)
                     .font(.caption)
                     .textCase(.uppercase)
-                    .tracking(1.5)
+                    .tracking(HugoLayout.Typography.eyebrowTracking)
                     .fontWeight(.semibold)
                     .foregroundStyle(month.isFuture ? .tertiary : .secondary)
                 Spacer()
@@ -39,21 +39,21 @@ struct MonthlyReportEmptyRow: View {
                     Label("common.more", systemImage: "ellipsis")
                         .labelStyle(.iconOnly)
                         .font(.body)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, HugoLayout.Spacing.regular)
+                        .padding(.vertical, HugoLayout.Spacing.compact)
                         .contentShape(Rectangle())
                 }
-                .padding(.trailing, -12)
-                .padding(.vertical, -8)
+                .padding(.trailing, -HugoLayout.Spacing.regular)
+                .padding(.vertical, -HugoLayout.Spacing.compact)
             }
 
             MonthSubmissionStatusView(month: month)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 20)
+        .padding(.horizontal, HugoLayout.Spacing.card)
+        .padding(.vertical, HugoLayout.Spacing.roomy)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: 24))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
         .accessibilityElement(children: .contain)
         .onTapGesture {
             isPresented.toggle()

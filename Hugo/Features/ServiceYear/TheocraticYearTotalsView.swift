@@ -8,14 +8,14 @@ struct TheocraticYearTotalsView: View {
     var body: some View {
         VStack {
             if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 12) { totals }
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) { totals }
             } else {
                 totals
             }
         }
-        .padding(24)
+        .padding(HugoLayout.Spacing.card)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: 32))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
     }
 
     @ViewBuilder
@@ -39,7 +39,7 @@ struct TheocraticYearTotalsView: View {
     private func total(
         _ value: String, label: LocalizedStringKey, alignment: HorizontalAlignment, prominent: Bool = false
     ) -> some View {
-        VStack(alignment: alignment, spacing: 4) {
+        VStack(alignment: alignment, spacing: HugoLayout.Spacing.tight) {
             Text(value)
                 .font(prominent ? .system(.title, design: .serif, weight: .bold) : .callout)
                 .fontWeight(.medium)

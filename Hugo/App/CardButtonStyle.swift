@@ -6,7 +6,7 @@ struct CardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(reduceMotion || !configuration.isPressed ? 1 : 0.97)
-            .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
+            .motion(Motion.feedback, value: configuration.isPressed)
             .contentShape(Rectangle())
     }
 }

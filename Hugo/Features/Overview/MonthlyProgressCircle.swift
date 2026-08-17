@@ -5,7 +5,7 @@ struct MonthlyProgressCircle: View {
     let maxValue: Double
 
     @Environment(\.colorScheme) private var colorScheme
-    @ScaledMetric(relativeTo: .largeTitle) private var preferredSize: CGFloat = 360
+    @ScaledMetric(relativeTo: .largeTitle) private var preferredSize: CGFloat = HugoLayout.Size.monthlyProgressDiameter
 
     var normalizedProgress: Double { maxValue > 0 ? min(max(progress / maxValue, 0), 1) : 0 }
 
@@ -33,7 +33,8 @@ struct MonthlyProgressCircle: View {
                         Rectangle()
                             .frame(
                                 width: side,
-                                height: CGFloat(ceil(normalizedProgress * Double(side) + (normalizedProgress >= 1 ? 1 : 0)))
+                                height: CGFloat(
+                                    ceil(normalizedProgress * Double(side) + (normalizedProgress >= 1 ? 1 : 0)))
                             )
                     }
                     .motion(Motion.progress, value: normalizedProgress)
@@ -43,6 +44,6 @@ struct MonthlyProgressCircle: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .aspectRatio(1, contentMode: .fit)
-        .frame(maxWidth: 360)
+        .frame(maxWidth: HugoLayout.Size.monthlyProgressDiameter)
     }
 }

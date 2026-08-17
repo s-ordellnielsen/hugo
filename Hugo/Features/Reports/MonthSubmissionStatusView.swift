@@ -14,7 +14,7 @@ struct MonthSubmissionStatusView: View {
 
     var body: some View {
         if month.isSubmitted, let submittedAt = month.submittedReport?.submittedAt {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
                 Label(
                     "report.status.submitted.\(Self.dateFormatter.string(from: submittedAt))",
                     systemImage: "checkmark.circle.fill"
@@ -30,13 +30,13 @@ struct MonthSubmissionStatusView: View {
                 }
             }
             .font(.caption)
-            .padding(.top, 8)
+            .padding(.top, HugoLayout.Spacing.compact)
         }
     }
 }
 
 #Preview {
-    VStack(spacing: 16) {
+    VStack(spacing: HugoLayout.Spacing.spacious) {
         MonthSubmissionStatusView(month: ReportPreviewFixtures.submittedMonth)
         MonthSubmissionStatusView(month: ReportPreviewFixtures.submittedMonthWithUnreportedEntries)
         MonthSubmissionStatusView(month: ReportPreviewFixtures.emptyMonth)

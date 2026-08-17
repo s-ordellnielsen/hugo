@@ -25,15 +25,16 @@ struct CategoryProgressBreakdownView: View {
         let rows = self.rows
         let total = max(
             rows.reduce(0) { $0 + $1.duration } / 3600, Double(PublisherStatus.status(for: statusID)?.monthlyGoal ?? 0))
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
             GeometryReader { geometry in
                 HStack(spacing: 0) {
                     ForEach(rows) { row in
                         Rectangle().fill(displayColor(for: row))
                             .frame(width: total > 0 ? geometry.size.width * CGFloat(row.duration / 3600 / total) : 0)
                     }
-                }.background(Color(.secondarySystemGroupedBackground)).clipShape(RoundedRectangle(cornerRadius: 24))
-            }.frame(height: 56)
+                }.background(Color(.secondarySystemGroupedBackground)).clipShape(
+                    RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.compactCard))
+            }.frame(height: HugoLayout.Size.categoryProgressHeight)
             ForEach(rows) { row in
                 HStack {
                     Image(systemName: row.iconName)

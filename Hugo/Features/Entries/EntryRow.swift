@@ -22,13 +22,13 @@ struct EntryRow: View {
         Button {
             selectedEntry = entry
         } label: {
-            HStack(spacing: 16) {
+            HStack(spacing: HugoLayout.Spacing.spacious) {
                 Image(
                     systemName: entry.tracker?.iconName ?? "questionmark.circle"
                 )
                 .font(.title)
                 .fontWeight(.medium)
-                .frame(width: 32, height: 32)
+                .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
                 .alignmentGuide(
                     .leading,
                     computeValue: { dimension in
@@ -36,7 +36,7 @@ struct EntryRow: View {
                     }
                 )
                 VStack(alignment: .leading) {
-                    HStack(spacing: 6) {
+                    HStack(spacing: HugoLayout.Spacing.small) {
                         Text(ServiceDurationFormatter.string(from: entry.duration))
                             .fontWeight(.bold)
                         Text(
@@ -60,7 +60,7 @@ struct EntryRow: View {
                 }
                 Spacer()
                 if entry.bibleStudies != 0 {
-                    VStack(spacing: 4) {
+                    VStack(spacing: HugoLayout.Spacing.tight) {
                         Image(systemName: "book")
                         Text(String("\(entry.bibleStudies)"))
                     }
@@ -69,14 +69,14 @@ struct EntryRow: View {
 
                 }
             }
-            .padding(.vertical, 24)
-            .padding(.horizontal, 24)
+            .padding(.vertical, HugoLayout.Spacing.card)
+            .padding(.horizontal, HugoLayout.Spacing.card)
             .background(
                 colorScheme == .dark
                     ? Color(.secondarySystemBackground)
                     : Color(.systemBackground)
             )
-            .clipShape(.rect(cornerRadius: 32))
+            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(entry.tracker?.name ?? String(localized: "entry.untracked")))

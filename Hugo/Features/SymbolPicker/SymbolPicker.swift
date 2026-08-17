@@ -19,10 +19,11 @@ struct SymbolPicker: View {
         }
     }
 
-    @ScaledMetric(relativeTo: .title2) private var minimumCellWidth: CGFloat = 70
+    @ScaledMetric(relativeTo: .title2) private var minimumCellWidth: CGFloat = HugoLayout.Size
+        .symbolPickerMinimumCellWidth
 
     private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: minimumCellWidth), spacing: 12)]
+        [GridItem(.adaptive(minimum: minimumCellWidth), spacing: HugoLayout.Spacing.regular)]
     }
 
     var body: some View {
@@ -91,12 +92,13 @@ struct SymbolPicker: View {
             .aspectRatio(1, contentMode: .fit)
             .background(
                 selectedSymbol == symbol.id
-                    ? Color.primary.opacity(0.12) : Color(.secondarySystemGroupedBackground)
+                    ? Color.primary.opacity(HugoLayout.Opacity.selectedSymbol)
+                    : Color(.secondarySystemGroupedBackground)
             )
-            .clipShape(.rect(cornerRadius: 24))
+            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
             .overlay {
                 if selectedSymbol == symbol.id {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.compactCard, style: .continuous)
                         .stroke(.primary, lineWidth: 1)
                 }
             }

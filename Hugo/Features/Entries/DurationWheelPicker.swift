@@ -8,7 +8,6 @@ import UIKit
 /// Using it directly here gives a single, continuous selection highlight
 /// spanning both components, which two separate SwiftUI `Picker`s cannot
 /// produce (each draws its own highlight).
-private let durationPickerComponentWidth: CGFloat = 70
 
 struct DurationWheelPicker: View {
     @Binding var duration: TimeInterval
@@ -19,7 +18,9 @@ struct DurationWheelPicker: View {
         HStack {
             Spacer(minLength: 0)
             DurationPickerRepresentable(duration: $duration, minuteInterval: minuteInterval, maxDuration: maxDuration)
-                .frame(width: durationPickerComponentWidth * 2, height: 216)
+                .frame(
+                    width: HugoLayout.Size.durationPickerComponentWidth * 2,
+                    height: HugoLayout.Size.durationPickerHeight)
             Spacer(minLength: 0)
         }
         .accessibilityElement(children: .contain)
@@ -118,7 +119,7 @@ private struct DurationPickerRepresentable: UIViewRepresentable {
         }
 
         func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-            durationPickerComponentWidth
+            HugoLayout.Size.durationPickerComponentWidth
         }
 
         func pickerView(
