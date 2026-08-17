@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSContactsUsageDescription</key>
-	<string>Hugo bruger dine kontakter til at udfylde gruppetjenerens navn og telefonnummer på månedsrapporten. Hugo uses your contacts to fill in the group overseer's name and phone number for the monthly report.</string>
+	<string>Hugo uses your contacts to fill in the group overseer&apos;s name and phone number for the monthly report.</string>
 	<key>SupportEmail</key>
 	<string>$(SUPPORT_EMAIL)</string>
 	<key>TestFlightURL</key>
