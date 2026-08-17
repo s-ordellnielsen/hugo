@@ -125,11 +125,11 @@ struct SubmitReportView: View {
                 }
             }
         }
-        .navigationTitle(model.month.monthYearString().capitalized)
+        .navigationTitle(model.month.monthYearString())
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                EditorialNavigationTitle(title: model.month.monthYearString().capitalized)
+                EditorialNavigationTitle(title: model.month.monthYearString())
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button(role: .cancel) { dismiss() }
