@@ -6,6 +6,18 @@ struct EntryRow: View {
     var entry: Entry
     @Binding var selectedEntry: Entry?
 
+    private var accessibilityValue: Text {
+        let duration = ServiceDurationFormatter.accessibilityString(from: entry.duration)
+
+        guard entry.bibleStudies != 0 else {
+            return Text(verbatim: duration)
+        }
+
+        let bibleStudies = String(localized: "entry.bibelstudies.count.accessibility.\(entry.bibleStudies)")
+
+        return Text("\(duration), \(bibleStudies)")
+    }
+
     var body: some View {
         Button {
             selectedEntry = entry
@@ -68,7 +80,7 @@ struct EntryRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(entry.tracker?.name ?? String(localized: "entry.untracked")))
-        .accessibilityValue(Text(ServiceDurationFormatter.accessibilityString(from: entry.duration)))
+        .accessibilityValue(accessibilityValue)
         .buttonStyle(.plain)
     }
 }
