@@ -32,8 +32,9 @@ struct ServiceYearView: View {
                 LazyHStack(spacing: 0) {
                     ForEach(years) { year in
                         ServiceYearPageView(
-                            report: TheocraticYearReportBuilder.report(
-                                for: year, entries: entries, submissions: submissions),
+                            year: year,
+                            entries: entries,
+                            submissions: submissions,
                             isActive: year.id == scrollPosition,
                             onScrolledFromTopChange: { newValue in
                                 isScrolledFromTop = newValue
@@ -54,22 +55,22 @@ struct ServiceYearView: View {
             .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-					HStack(spacing: 0) {
-						Text(String(activeYear.startYear))
-							.contentTransition(.numericText(value: Double(activeYear.startYear)))
-						Text(String("/"))
-						Text(String(activeYear.startYear + 1))
-							.contentTransition(.numericText(value: Double(activeYear.startYear + 1)))
-							.animation(.snappy.delay(0.05), value: activeYear.startYear + 1)
-					}
-					.font(.system(.headline, design: .serif, weight: .bold))
-					.lineLimit(1)
-					.minimumScaleFactor(0.75)
-					.monospacedDigit()
+                    HStack(spacing: 0) {
+                        Text(String(activeYear.startYear))
+                            .contentTransition(.numericText(value: Double(activeYear.startYear)))
+                        Text(String("/"))
+                        Text(String(activeYear.startYear + 1))
+                            .contentTransition(.numericText(value: Double(activeYear.startYear + 1)))
+                            .animation(.snappy.delay(0.05), value: activeYear.startYear + 1)
+                    }
+                    .font(.system(.headline, design: .serif, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .monospacedDigit()
                 }
-				ToolbarItem {
-					SettingsButton(sizeClass: .compact)
-				}
+                ToolbarItem {
+                    SettingsButton(sizeClass: .compact)
+                }
             }
         }
         .onAppear {
@@ -82,9 +83,9 @@ struct ServiceYearView: View {
             of: scrollPosition,
             { _, newValue in
                 guard let newValue, let year = years.first(where: { $0.id == newValue }) else { return }
-				withAnimation(.snappy) {
-					displayedYear = year
-				}
+                withAnimation(.snappy) {
+                    displayedYear = year
+                }
             }
         )
         .onChange(of: resetToken) {

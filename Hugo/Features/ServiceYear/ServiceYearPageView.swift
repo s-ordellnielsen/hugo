@@ -2,10 +2,20 @@ import SwiftData
 import SwiftUI
 
 struct ServiceYearPageView: View {
-    let report: TheocraticYearReport
-	
-	var isActive: Bool = true
-	var onScrolledFromTopChange: ((Bool) -> Void)? = nil
+    let year: TheocraticYear
+    let entries: [Entry]
+    let submissions: [SubmittedReport]
+
+    var isActive: Bool = true
+    var onScrolledFromTopChange: ((Bool) -> Void)? = nil
+
+    private var report: TheocraticYearReport {
+        TheocraticYearReportBuilder.report(
+            for: year,
+            entries: entries,
+            submissions: submissions
+        )
+    }
 
     var body: some View {
         ScrollView {
@@ -30,12 +40,12 @@ struct ServiceYearPageView: View {
             .padding()
         }
         .frame(maxWidth: .infinity)
-		.onScrollGeometryChange(for: Bool.self) { geometry in
-			geometry.contentOffset.y + geometry.contentInsets.top > 0
-		} action: { _, isScrolledFromTop in
-			guard isActive else { return }
-			onScrolledFromTopChange?(isScrolledFromTop)
-		}
+        .onScrollGeometryChange(for: Bool.self) { geometry in
+            geometry.contentOffset.y + geometry.contentInsets.top > 0
+        } action: { _, isScrolledFromTop in
+            guard isActive else { return }
+            onScrolledFromTopChange?(isScrolledFromTop)
+        }
     }
 
     private var emptyYearCard: some View {
@@ -60,7 +70,11 @@ struct ServiceYearPageView: View {
 
 #Preview {
     NavigationStack {
-        ServiceYearPageView(report: ReportPreviewFixtures.yearReport)
+        ServiceYearPageView(
+            year: ReportPreviewFixtures.currentYear,
+            entries: ReportPreviewFixtures.entries,
+            submissions: []
+        )
     }
     .modelContainer(.preview)
 }
