@@ -6,8 +6,8 @@ struct SubmitReportView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
-    @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
-    @Query(sort: \SubmittedReport.year) private var submissions: [SubmittedReport]
+    @Query private var entries: [Entry]
+    @Query private var submissions: [SubmittedReport]
 
     @State private var model: SubmitReportFormModel
     @State private var isComposingMessage = false
@@ -20,6 +20,27 @@ struct SubmitReportView: View {
 
     init(month: YearMonth) {
         _model = State(initialValue: SubmitReportFormModel(month: month))
+
+        let start = month.date()
+        let end = month.nextMonth().date()
+        _entries = Query(
+            filter: #Predicate<Entry> { $0.date >= start && $0.date < end },
+            sort: \Entry.date,
+            order: .reverse
+        )
+
+        let targetYear = month.year
+        let targetMonth = month.month
+        let prev = YearMonth.previous(before: month)
+        let prevYear = prev.year
+        let prevMonth = prev.month
+        _submissions = Query(
+            filter: #Predicate<SubmittedReport> {
+                ($0.year == targetYear && $0.month == targetMonth) ||
+                ($0.year == prevYear && $0.month == prevMonth)
+            },
+            sort: \SubmittedReport.year
+        )
     }
 
     private var summary: MonthlyReportSummary? {
