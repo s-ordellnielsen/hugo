@@ -22,6 +22,7 @@ struct CategoryProgressBreakdownView: View {
     }
 
     var body: some View {
+        let rows = self.rows
         let total = max(
             rows.reduce(0) { $0 + $1.duration } / 3600, Double(PublisherStatus.status(for: statusID)?.monthlyGoal ?? 0))
         VStack(alignment: .leading, spacing: 12) {
