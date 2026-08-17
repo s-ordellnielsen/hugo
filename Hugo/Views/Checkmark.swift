@@ -16,7 +16,6 @@ struct Checkmark: View {
             .foregroundStyle(checked ? .hugoAccent : .clear)
             .fontWeight(.semibold)
             .opacity(checked ? 1 : 0)
-            .blur(radius: checked ? 0 : 4)
             .scaleEffect(checked ? 1 : 0.8)
             .accessibilityHidden(!checked)
             .motion(Motion.feedback, value: checked)
