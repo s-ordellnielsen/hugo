@@ -1,6 +1,8 @@
 import Foundation
 
 nonisolated enum ServiceDurationFormatter {
+    private static let defaultAccessibilityStyle = Duration.UnitsFormatStyle(allowedUnits: [.hours, .minutes], width: .wide)
+
     static func string(from duration: TimeInterval) -> String {
         let clamped = max(duration, 0)
         let hours = Int(clamped / 3600)
@@ -12,8 +14,14 @@ nonisolated enum ServiceDurationFormatter {
         let clamped = max(duration, 0)
         let hours = Int(clamped / 3600)
         let minutes = Int(clamped.truncatingRemainder(dividingBy: 3600) / 60)
-        var style = Duration.UnitsFormatStyle(allowedUnits: [.hours, .minutes], width: .wide)
-        style.locale = locale
-        return Duration.seconds(hours * 3600 + minutes * 60).formatted(style)
+        let seconds = hours * 3600 + minutes * 60
+
+        if locale == .current {
+            return Duration.seconds(seconds).formatted(defaultAccessibilityStyle)
+        } else {
+            var style = defaultAccessibilityStyle
+            style.locale = locale
+            return Duration.seconds(seconds).formatted(style)
+        }
     }
 }
