@@ -11,7 +11,7 @@ struct DefaultCategoryDefinition: Identifiable, Sendable {
 
     static let all: [DefaultCategoryDefinition] = [
         DefaultCategoryDefinition(
-            id: UUID(uuidString: "A5B8A6FE-0DA4-4F7F-A9F3-2E2ACB5AA001")!,
+            id: UUID(uuidString: "A5B8A6FE-0DA4-4F7F-A9F3-2E2ACB5AA001") ?? UUID(),
             nameKey: "tracker.fieldservice.name",
             iconName: "figure.walk",
             hue: 0.5,
