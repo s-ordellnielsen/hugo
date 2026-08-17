@@ -1,7 +1,6 @@
 import Foundation
 
-@MainActor
-enum TheocraticYearReportBuilder {
+nonisolated enum TheocraticYearReportBuilder {
     static func report(
         for year: TheocraticYear,
         entries: [Entry],

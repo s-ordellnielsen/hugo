@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-struct DailyPoint: Codable, Hashable, Identifiable {
+nonisolated struct DailyPoint: Codable, Hashable, Identifiable {
     var date: Date
     var total: TimeInterval
 

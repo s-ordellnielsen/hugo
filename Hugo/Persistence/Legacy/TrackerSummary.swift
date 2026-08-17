@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-struct TrackerSummary: Codable, Hashable {
+nonisolated struct TrackerSummary: Codable, Hashable {
     var name: String
     var duration: TimeInterval
     var type: TrackerType

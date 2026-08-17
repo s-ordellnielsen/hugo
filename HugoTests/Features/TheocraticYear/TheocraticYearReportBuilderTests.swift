@@ -3,7 +3,6 @@ import Testing
 
 @testable import Hugo
 
-@MainActor
 struct TheocraticYearReportBuilderTests {
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)

@@ -1,6 +1,6 @@
 import Foundation
 
-struct TheocraticYearMonth: Identifiable {
+nonisolated struct TheocraticYearMonth: Identifiable {
     let id: YearMonth
     let displayName: String
     let summary: MonthlyReportSummary?
@@ -16,7 +16,7 @@ struct TheocraticYearMonth: Identifiable {
     }
 }
 
-struct TheocraticYearReport {
+nonisolated struct TheocraticYearReport {
     let year: TheocraticYear
     let months: [TheocraticYearMonth]
     let totalSeconds: TimeInterval

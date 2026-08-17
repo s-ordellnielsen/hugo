@@ -4,7 +4,6 @@ import Testing
 
 @testable import Hugo
 
-@MainActor
 struct MonthlyReportBuilderTests {
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
@@ -51,6 +50,7 @@ struct MonthlyReportBuilderTests {
     }
 
     @Test
+    @MainActor
     func usesStoredTrackerWhenLiveTrackerWasDeleted() throws {
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
+nonisolated enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
     case main
     case separate
 

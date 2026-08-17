@@ -45,7 +45,7 @@ nonisolated struct TheocraticYear: Hashable, Comparable, Identifiable, Sendable 
 }
 
 extension Date {
-    func theocraticYear(using calendar: Calendar = .current) -> TheocraticYear {
+    nonisolated func theocraticYear(using calendar: Calendar = .current) -> TheocraticYear {
         TheocraticYear.containing(self, calendar: calendar)
     }
 }

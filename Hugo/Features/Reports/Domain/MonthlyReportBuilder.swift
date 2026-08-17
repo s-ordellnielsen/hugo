@@ -1,7 +1,6 @@
 import Foundation
 
-@MainActor
-enum MonthlyReportBuilder {
+nonisolated enum MonthlyReportBuilder {
     static func summaries(
         from entries: [Entry],
         calendar: Calendar = .current,
