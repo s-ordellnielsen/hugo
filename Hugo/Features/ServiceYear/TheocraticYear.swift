@@ -13,7 +13,8 @@ nonisolated struct TheocraticYear: Hashable, Comparable, Identifiable, Sendable 
     }
 
     func contains(_ month: YearMonth) -> Bool {
-        months.contains(month)
+        (month.year == startYear && month.month >= 9 && month.month <= 12)
+            || (month.year == startYear + 1 && month.month >= 1 && month.month <= 8)
     }
 
     static func containing(_ date: Date, calendar: Calendar = .current) -> TheocraticYear {
