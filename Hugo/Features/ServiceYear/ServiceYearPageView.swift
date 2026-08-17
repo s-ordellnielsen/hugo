@@ -6,7 +6,6 @@ struct ServiceYearPageView: View {
     let entries: [Entry]
     let submissions: [SubmittedReport]
 
-    var isActive: Bool = true
     var onScrolledFromTopChange: ((Bool) -> Void)? = nil
 
     private var report: TheocraticYearReport {
@@ -43,7 +42,6 @@ struct ServiceYearPageView: View {
         .onScrollGeometryChange(for: Bool.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top > 0
         } action: { _, isScrolledFromTop in
-            guard isActive else { return }
             onScrolledFromTopChange?(isScrolledFromTop)
         }
     }

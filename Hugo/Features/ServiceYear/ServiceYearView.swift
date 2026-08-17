@@ -7,7 +7,7 @@ struct ServiceYearView: View {
 
     @State private var scrollPosition: TheocraticYear.ID?
     @State private var displayedYear: TheocraticYear?
-    @State private var isScrolledFromTop = false
+    @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
 
     var resetToken: UUID = UUID()
 
@@ -26,6 +26,10 @@ struct ServiceYearView: View {
         displayedYear ?? currentYear
     }
 
+    private var isScrolledFromTop: Bool {
+        scrolledPages[activeYear.id] ?? false
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView(.horizontal) {
@@ -35,9 +39,8 @@ struct ServiceYearView: View {
                             year: year,
                             entries: entries,
                             submissions: submissions,
-                            isActive: year.id == scrollPosition,
                             onScrolledFromTopChange: { newValue in
-                                isScrolledFromTop = newValue
+                                scrolledPages[year.id] = newValue
                             }
                         )
                         .containerRelativeFrame(.horizontal)
