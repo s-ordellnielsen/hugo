@@ -10,13 +10,8 @@ import SwiftUI
 struct ReportSettingsView: View {
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
     @AppStorage(UserDefaultsKeys.overseerGreetingTemplate) private var greetingTemplate = ""
-    @AppStorage(UserDefaultsKeys.defaultRoundingRule) private var defaultRoundingRule = ""
 
     @State private var showingHelp = false
-
-    private var currentRoundingRule: RoundingRule {
-        RoundingRule(rawValue: defaultRoundingRule) ?? RoundingRule.defaultValue
-    }
 
     var body: some View {
         List {
@@ -48,23 +43,6 @@ struct ReportSettingsView: View {
                 }
             } header: {
                 Text("settings.screen.report.section.content.label")
-            }
-
-            Section {
-                NavigationLink(destination: RoundingRuleSelectionView()) {
-                    Label {
-                        HStack {
-                            Text("settings.screen.report.section.calculation.rounding.label")
-                            Spacer()
-                            Text(currentRoundingRule.localizedName)
-                                .foregroundStyle(.secondary)
-                        }
-                    } icon: {
-                        Image(systemName: "arrow.up.arrow.down")
-                    }
-                }
-            } header: {
-                Text("settings.screen.report.section.calculation.label")
             }
         }
         .navigationTitle("settings.group.settings.report")

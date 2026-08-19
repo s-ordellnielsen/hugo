@@ -33,12 +33,8 @@ struct SubmitReportFormModelTests {
 
     private func makeModel(
         userDefaults: UserDefaults? = nil,
-        defaultRule: String? = nil
     ) -> SubmitReportFormModel {
         let defaults = userDefaults ?? UserDefaults(suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)")!
-        if let defaultRule {
-            defaults.set(defaultRule, forKey: UserDefaultsKeys.defaultRoundingRule)
-        }
         return SubmitReportFormModel(month: month, calendar: calendar, now: now, userDefaults: defaults)
     }
 
@@ -59,14 +55,6 @@ struct SubmitReportFormModelTests {
     }
 
     // MARK: - Defaults & rule selection
-
-    @Test
-    func seedsTheRuleFromTheUserDefault() {
-        #expect(makeModel(defaultRule: "transfer").selectedRule == .transfer)
-        #expect(makeModel(defaultRule: "up").selectedRule == .up)
-        #expect(makeModel(defaultRule: nil).selectedRule == .down)
-        #expect(makeModel(defaultRule: "bogus").selectedRule == .down)
-    }
 
     @Test
     func computationRefreshesWhenTheRuleChanges() {
