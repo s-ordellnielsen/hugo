@@ -93,6 +93,8 @@ struct SettingsView: View {
                     Text("debug.disclaimer")
                 }
             }
+			.navigationTitle("settings.title")
+			.navigationBarTitleDisplayMode(.inline)
             .toolbar {
 				if showDismiss {
 					ToolbarItem(placement: .cancellationAction) {
