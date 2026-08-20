@@ -15,7 +15,7 @@ struct EntryRow: View {
 
         let bibleStudies = String(localized: "entry.bibelstudies.count.accessibility.\(entry.bibleStudies)")
 
-        return Text("\(duration), \(bibleStudies)")
+        return Text(String("\(duration), \(bibleStudies)"))
     }
 
     var body: some View {

@@ -19,7 +19,7 @@ struct MonthlyProgressCard: View {
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundStyle(.secondary)
-                        Text("\(Int(value))")
+                        Text(String("\(Int(value))"))
                             .font(.system(size: heroSize, weight: .bold, design: .serif))
                             .minimumScaleFactor(0.5)
                             .lineLimit(1)
@@ -31,8 +31,8 @@ struct MonthlyProgressCard: View {
             }
             .buttonStyle(.card)
             .accessibilityElement(children: .combine)
-            .accessibilityLabel(Text("a11y.card.month-progress"))
-            .accessibilityValue(Text("\(Int(value)) hours this month"))
+            .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
+			.accessibilityValue(Text("a11y.monthly_progress_card.value.\(Int(value))"))
             Button(action: onAddEntry) {
                 Label("entry.add.label", systemImage: "plus")
                     .padding(HugoLayout.Spacing.regular)

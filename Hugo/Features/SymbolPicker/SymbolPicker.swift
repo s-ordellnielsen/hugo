@@ -66,7 +66,7 @@ struct SymbolPicker: View {
                             systemImage: "line.3.horizontal.decrease"
                         )
                     }
-                    .badge(attributes == nil ? nil : " ")
+                    .badge(attributes == nil ? nil : String(" "))
                 }
                 ToolbarSpacer(.fixed, placement: .bottomBar)
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
