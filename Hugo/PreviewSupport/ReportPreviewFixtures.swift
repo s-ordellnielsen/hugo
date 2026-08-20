@@ -26,6 +26,10 @@ enum ReportPreviewFixtures {
     }
 
     static var currentMonth: YearMonth { Date().yearMonth() }
+	
+	static var monthWithActivity: TheocraticYearMonth {
+		yearReport.months.first { $0.summary != nil }!
+	}
 
     /// A real submission for the current month, closed after the fixture
     /// entries were created — renders the plain "submitted" state.

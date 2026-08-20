@@ -26,13 +26,7 @@ struct ServiceYearPageView: View {
                 }
 
                 ForEach(report.months) { month in
-                    Group {
-                        if month.summary != nil {
-                            MonthlyReportRow(month: month)
-                        } else {
-                            MonthlyReportEmptyRow(month: month)
-                        }
-                    }
+                    ServiceYearMonthRow(month: month)
                     .id(month.id)
                 }
             }
