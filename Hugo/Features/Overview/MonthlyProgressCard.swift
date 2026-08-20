@@ -33,6 +33,7 @@ struct MonthlyProgressCard: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
 			.accessibilityValue(Text("a11y.monthly_progress_card.value.\(Int(value))"))
+			
             Button(action: onAddEntry) {
                 Label("entry.add.label", systemImage: "plus")
                     .padding(HugoLayout.Spacing.regular)
@@ -41,6 +42,7 @@ struct MonthlyProgressCard: View {
             .font(.largeTitle)
             .labelStyle(.iconOnly)
             .buttonStyle(.glass)
+			.hoverEffect(.lift)
             .padding(.trailing, HugoLayout.Spacing.compact)
             .padding(.bottom, HugoLayout.Spacing.compact)
         }
