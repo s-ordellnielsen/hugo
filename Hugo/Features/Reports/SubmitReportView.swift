@@ -36,8 +36,7 @@ struct SubmitReportView: View {
         let prevMonth = prev.month
         _submissions = Query(
             filter: #Predicate<SubmittedReport> {
-                ($0.year == targetYear && $0.month == targetMonth) ||
-                ($0.year == prevYear && $0.month == prevMonth)
+                ($0.year == targetYear && $0.month == targetMonth) || ($0.year == prevYear && $0.month == prevMonth)
             },
             sort: \SubmittedReport.year
         )
@@ -48,8 +47,15 @@ struct SubmitReportView: View {
     }
 
     var body: some View {
-        List {
-            Section {
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text(String(model.month.monthYearString()))
+                    .font(.title)
+                    .fontDesign(.serif)
+                    .fontWeight(.bold)
+
+                Spacer(minLength: HugoLayout.Spacing.roomy)
+
                 if let summary {
                     ForEach(summary.categories.filter { $0.type == .main }) { category in
                         computedRow(category)
@@ -59,15 +65,7 @@ struct SubmitReportView: View {
                     }
                 }
 
-                if model.carriedIn > 0 {
-                    HStack {
-                        Label("report.submit.carried-in", systemImage: "arrow.down.right")
-                        Spacer()
-                        Text("+\(ServiceDurationFormatter.string(from: model.carriedIn))")
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                Spacer(minLength: HugoLayout.Spacing.section)
 
                 HStack {
                     Label("report.bible-studies", systemImage: "book")
@@ -76,84 +74,56 @@ struct SubmitReportView: View {
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
                 }
-            }
+                .padding()
+                .background(Color(.secondarySystemGroupedBackground))
+                .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
+				
+				Spacer(minLength: HugoLayout.Spacing.section)
 
-            Section {
-                Picker("settings.report.rounding-rule", selection: $model.selectedRule) {
-                    ForEach(RoundingRule.allCases) { rule in
-                        Text(rule.localizedName).tag(rule)
-                    }
-                }
-                .pickerStyle(.navigationLink)
-
-                if model.computation.carriedOutSeconds > 0 {
-                    HStack {
-                        Label("report.submit.carried-out", systemImage: "arrow.up.right.circle.fill")
-                            .symbolRenderingMode(.hierarchical)
-                        Spacer()
-                        Text("+\(ServiceDurationFormatter.string(from: model.computation.carriedOutSeconds))")
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
-                } else if model.computation.roundedUpSeconds > 0 {
-                    HStack {
-                        Label("report.submit.rounded-up", systemImage: "arrow.up.circle.fill")
-                            .symbolRenderingMode(.hierarchical)
-                        Spacer()
-                        Text("+\(ServiceDurationFormatter.string(from: model.computation.roundedUpSeconds))")
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
-                } else if model.computation.roundedDownSeconds > 0 {
-                    HStack {
-                        Label("report.submit.rounded-down", systemImage: "arrow.down.circle.fill")
-                            .symbolRenderingMode(.hierarchical)
-                        Spacer()
-                        Text("−\(ServiceDurationFormatter.string(from: model.computation.roundedDownSeconds))")
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
+                Section {
+					HStack {
+						if model.hasOverseer {
+							Label(model.overseerFullName, systemImage: "person.crop.circle")
+						} else {
+							VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+								Text("report.overseer.empty")
+									.foregroundStyle(.secondary)
+								Button("report.submit.overseer.settings-link") {
+									showingSettings = true
+								}
+							}
+						}
+						Spacer()
+					}
+					.padding()
+					.background(Color(.secondarySystemGroupedBackground))
+					.clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
+                } header: {
+                    Text("settings.report.overseer")
+						.font(.headline)
+						.padding(.leading)
+						.foregroundStyle(.secondary)
                 }
             }
-            .motion(Motion.value, value: model.selectedRule)
-
-            Section {
-                if model.hasOverseer {
-                    Label(model.overseerFullName, systemImage: "person.crop.circle")
-                } else {
-                    VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-                        Text("report.overseer.empty")
-                            .foregroundStyle(.secondary)
-                        Button("report.submit.overseer.settings-link") {
-                            showingSettings = true
-                        }
-                    }
-                }
-            } header: {
-                Text("settings.report.overseer")
-            }
-
-            Section {
-                Button("report.submit.copy") {
-                    copyReport()
-                }
-                .disabled(!model.isSubmittable)
-            } footer: {
-                if !MessageComposeView.canSendText {
-                    Text("report.submit.unavailable")
-                } else if !model.hasOverseer {
-                    Text("report.submit.no-recipient-hint")
-                }
-            }
+            .padding()
         }
-        .navigationTitle(model.month.monthYearString())
-        .navigationBarTitleDisplayMode(.inline)
+        .background(Color(.systemGroupedBackground))
+        .labelReservedIconWidth(32)
         .toolbar {
-            ToolbarItem(placement: .principal) {
-                EditorialNavigationTitle(title: model.month.monthYearString())
-            }
             ToolbarItem(placement: .topBarLeading) {
                 Button(role: .cancel) { dismiss() }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("", systemImage: "arrow.up.message.fill") { isComposingMessage.toggle() }
+                    .buttonStyle(.glassProminent)
+                    .tint(.hugoAccent)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu("", systemImage: "ellipsis") {
+                    Button("Send as Message", systemImage: "arrow.up.message") {}
+                        .disabled(!MessageComposeView.canSendText)
+                    Button("Copy to Clipboard", systemImage: "document.on.document") {}
+                }
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -163,7 +133,7 @@ struct SubmitReportView: View {
                 Text("report.submit.send")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.glassProminent)
             .tint(.hugoAccent)
             .controlSize(.large)
             .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
@@ -209,13 +179,30 @@ struct SubmitReportView: View {
     }
 
     private func computedRow(_ category: MonthlyCategorySummary) -> some View {
-        HStack {
-            Label(category.name, systemImage: category.iconName)
-            Spacer()
-            Text(String("\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"))
+        Button {
+        } label: {
+            HStack {
+				ZStack {
+					Image(systemName: category.iconName)
+				}
+				.frame(width: HugoLayout.Size.categoryIcon, height: HugoLayout.Size.categoryIcon)
+				.background(.mint)
+				.foregroundStyle(.white)
+				.clipShape(.circle)
+                Text(String(category.name))
+                Spacer()
+                Text(
+                    String(
+                        "\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
+                    )
+                )
                 .contentTransition(.numericText())
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
     }
 
