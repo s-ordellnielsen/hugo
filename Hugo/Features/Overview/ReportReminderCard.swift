@@ -13,7 +13,9 @@ struct ReportReminderCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: HugoLayout.Spacing.card) {
+        Button {
+            isPresentingSubmitSheet.toggle()
+        } label: {
             HStack(alignment: .top, spacing: HugoLayout.Spacing.spacious) {
                 ZStack(alignment: .center) {
                     Circle()
@@ -36,23 +38,23 @@ struct ReportReminderCard: View {
                     Text("report.reminder.callToAction")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.hugoAccent)
                 }
                 .padding(.top, HugoLayout.Spacing.compact)
             }
+            .padding(HugoLayout.Spacing.card)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
-        .padding(HugoLayout.Spacing.card)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
-        .onTapGesture {
-            isPresentingSubmitSheet.toggle()
-        }
-        .sheet(isPresented: $isPresentingSubmitSheet) {
-            NavigationStack {
-                SubmitReportView(month: month)
-                    .presentationDetents([.medium, .large])
-            }
-        }
+		.buttonStyle(.plain)
+		.sheet(isPresented: $isPresentingSubmitSheet) {
+			NavigationStack {
+				SubmitReportView(month: month)
+					.presentationDetents([.medium, .large])
+			}
+		}
     }
 }
 

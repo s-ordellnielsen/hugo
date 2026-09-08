@@ -4,7 +4,9 @@ import SwiftUI
 struct OverviewView: View {
     @Query private var entries: [Entry]
     @Query private var submissions: [SubmittedReport]
+	
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
+	
     @State private var showingAddEntry = false
     @State private var showingDetails = false
 
@@ -45,7 +47,8 @@ struct OverviewView: View {
                         expectedProgress: metrics.expectedProgress, onAddEntry: { showingAddEntry = true },
                         onShowDetails: { showingDetails = true })
                     Spacer(minLength: HugoLayout.Spacing.section)
-                    EntryListView(entries: entries)
+					
+                    OverviewListView(entries: entries)
                 }
                 .motion(Motion.presence, value: reminderMonth)
                 .padding()
@@ -66,4 +69,8 @@ struct OverviewView: View {
             }
         }
     }
+}
+
+#Preview {
+	OverviewView()
 }

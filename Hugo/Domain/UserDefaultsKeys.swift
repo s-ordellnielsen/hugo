@@ -10,4 +10,6 @@ enum UserDefaultsKeys {
     static let overseerGreetingTemplate = "overseerGreetingTemplate"
     static let overseerFirstName = "overseerFirstName"
     static let overseerLastName = "overseerLastName"
+	
+	static let overviewListStyle = "overviewListStyle"
 }

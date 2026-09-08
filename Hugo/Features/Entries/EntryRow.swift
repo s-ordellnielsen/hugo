@@ -23,18 +23,22 @@ struct EntryRow: View {
             selectedEntry = entry
         } label: {
             HStack(spacing: HugoLayout.Spacing.spacious) {
-                Image(
-                    systemName: entry.tracker?.iconName ?? "questionmark.circle"
-                )
-                .font(.title)
-                .fontWeight(.medium)
-                .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
-                .alignmentGuide(
-                    .leading,
-                    computeValue: { dimension in
-                        dimension[.leading]
-                    }
-                )
+				ZStack {
+					Image(
+						systemName: entry.tracker?.iconName ?? "questionmark.circle"
+					)
+					.font(.title2)
+					.fontWeight(.medium)
+					.frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
+					.alignmentGuide(
+						.leading,
+						computeValue: { dimension in
+							dimension[.leading]
+						}
+					)
+				}
+				.frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
+				// .background(Color(.red))
                 VStack(alignment: .leading) {
                     HStack(spacing: HugoLayout.Spacing.small) {
                         Text(ServiceDurationFormatter.string(from: entry.duration))
