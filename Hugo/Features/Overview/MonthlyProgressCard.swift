@@ -25,7 +25,9 @@ struct MonthlyProgressCard: View {
                             .lineLimit(1)
                             .contentTransition(.numericText())
                             .motion(Motion.value, value: value)
-                        MonthlyProgressStatusView(expected: expectedProgress, current: value)
+                        // Keep this status view for future planning features. It is hidden for now because
+                        // schedule labels can discourage users who are behind their expected progress.
+                        // MonthlyProgressStatusView(expected: expectedProgress, current: value)
                     }
                 }
             }

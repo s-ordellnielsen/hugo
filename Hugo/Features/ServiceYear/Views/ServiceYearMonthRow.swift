@@ -24,7 +24,7 @@ struct ServiceYearMonthRow: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             header
 
             if month.isSubmitted, let submittedAt = month.submittedReport?.submittedAt {
