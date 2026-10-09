@@ -78,6 +78,111 @@ struct TheocraticYearReportBuilderTests {
     }
 
     @Test
+    func submittedTransferAndReceivingMonthCountTransferredTimeOnce() {
+        let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            submittedAt: date(2026, 10, 1),
+            totalBibleStudies: 2,
+            reportingLines: [
+                .init(
+                    typeRaw: TrackerType.main.rawValue,
+                    submittedHours: 12,
+                    roundingRaw: RoundingRule.transfer.rawValue
+                )
+            ]
+        )
+        let report = makeReport(
+            entries: [
+                Entry(date: date(2026, 9, 1), duration: 12 * 3_600 + 40 * 60, tracker: main),
+                Entry(date: date(2026, 10, 1), duration: 5 * 3_600 - 40 * 60, tracker: main),
+                Entry(date: date(2026, 10, 2), duration: 40 * 60, tracker: main),
+            ],
+            submissions: [submission]
+        )
+
+        #expect(report.totalSeconds == 17 * 3_600)
+        #expect(report.totalBibleStudies == 2)
+    }
+
+    @Test
+    func submittedRoundedUpLineContributesSubmittedHours() {
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            submittedAt: date(2026, 10, 1),
+            totalBibleStudies: 1,
+            reportingLines: [
+                .init(
+                    typeRaw: TrackerType.main.rawValue,
+                    submittedHours: 13,
+                    roundingRaw: RoundingRule.up.rawValue
+                )
+            ]
+        )
+        let report = makeReport(
+            entries: [Entry(date: date(2026, 9, 1), duration: 12 * 3_600 + 40 * 60, tracker: nil)],
+            submissions: [submission]
+        )
+
+        #expect(report.totalSeconds == 13 * 3_600)
+    }
+
+    @Test
+    func sentinelSubmissionFallsBackToEntryTotals() {
+        let sentinel = SubmittedReport(year: 2026, month: 9, submittedHours: 99)
+        let report = makeReport(
+            entries: [Entry(date: date(2026, 9, 1), duration: 3_600, tracker: nil)],
+            submissions: [sentinel]
+        )
+
+        #expect(report.totalSeconds == 3_600)
+    }
+
+    @Test
+    func legacyRealSubmissionWithoutReportingLinesUsesSubmittedHoursAsMain() {
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            submittedAt: date(2026, 10, 1),
+            submittedHours: 7,
+            totalBibleStudies: 3
+        )
+        let report = makeReport(
+            entries: [Entry(date: date(2026, 9, 1), duration: 8 * 3_600, tracker: nil)],
+            submissions: [submission]
+        )
+
+        #expect(report.totalSeconds == 7 * 3_600)
+        #expect(report.mainDuration == 7 * 3_600)
+        #expect(report.separateDuration == 0)
+        #expect(report.totalBibleStudies == 3)
+    }
+
+    @Test
+    func submittedHoursSplitByReportingLineType() {
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            submittedAt: date(2026, 10, 1),
+            totalBibleStudies: 4,
+            reportingLines: [
+                .init(typeRaw: TrackerType.main.rawValue, submittedHours: 4),
+                .init(typeRaw: TrackerType.separate.rawValue, typeName: "Bethel", submittedHours: 2),
+            ]
+        )
+        let report = makeReport(
+            entries: [Entry(date: date(2026, 9, 1), duration: 7 * 3_600, tracker: nil)],
+            submissions: [submission]
+        )
+
+        #expect(report.totalSeconds == 6 * 3_600)
+        #expect(report.mainDuration == 4 * 3_600)
+        #expect(report.separateDuration == 2 * 3_600)
+    }
+
+    @Test
     func sentinelSubmissionsAreNotTreatedAsSubmitted() throws {
         let sentinel = SubmittedReport(
             year: 2026,
