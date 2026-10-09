@@ -44,19 +44,19 @@ enum MigrationPlan: SchemaMigrationPlan {
                 FetchDescriptor<SchemaV1.Entry>()
             )
             legacyV1Entries = entries.map { LegacyV1Entry(timestamp: $0.timestamp, duration: $0.duration) }
-			
-			entries.forEach(context.delete)
-			try context.save()
+
+            entries.forEach(context.delete)
+            try context.save()
         },
-		didMigrate: { context in
-			for legacy in legacyV1Entries {
-				context.insert(SchemaV2.Entry(date: legacy.timestamp, duration: legacy.duration, tracker: nil))
-			}
-			
-			legacyV1Entries = []
-			
-			try context.save()
-		}
+        didMigrate: { context in
+            for legacy in legacyV1Entries {
+                context.insert(SchemaV2.Entry(date: legacy.timestamp, duration: legacy.duration, tracker: nil))
+            }
+
+            legacyV1Entries = []
+
+            try context.save()
+        }
     )
 
     static let migrateV2ToV21 = MigrationStage.lightweight(

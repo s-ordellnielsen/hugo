@@ -6,8 +6,8 @@ struct SettingsView: View {
     @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
 
     @Environment(\.openURL) private var openURL
-	
-	var showDismiss: Bool = false
+
+    var showDismiss: Bool = false
 
     private static var supportEmailURL: URL? {
         guard let email = Bundle.main.object(forInfoDictionaryKey: "SupportEmail") as? String,
@@ -63,16 +63,16 @@ struct SettingsView: View {
                         Label("settings.group.settings.general", systemImage: "gearshape")
                     }
                 }
-				
-				if let testFlightURL = Self.testFlightURL {
-					Section {
-						ShareLink(item: testFlightURL) {
-							Label("settings.account.shareTestFlight", systemImage: "person.crop.circle.badge.plus")
-						}
-					} footer: {
-						Text("settings.account.shareTestFlight.description")
-					}
-				}
+
+                if let testFlightURL = Self.testFlightURL {
+                    Section {
+                        ShareLink(item: testFlightURL) {
+                            Label("settings.account.shareTestFlight", systemImage: "person.crop.circle.badge.plus")
+                        }
+                    } footer: {
+                        Text("settings.account.shareTestFlight.description")
+                    }
+                }
 
                 if let supportEmailURL = Self.supportEmailURL {
                     Section {
@@ -93,16 +93,16 @@ struct SettingsView: View {
                     Text("debug.disclaimer")
                 }
             }
-			.navigationTitle("settings.title")
-			.navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("settings.title")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-				if showDismiss {
-					ToolbarItem(placement: .cancellationAction) {
-						Button(role: .cancel) {
-							dismiss()
-						}
-					}
-				}
+                if showDismiss {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(role: .cancel) {
+                            dismiss()
+                        }
+                    }
+                }
             }
         }
     }

@@ -105,13 +105,13 @@ enum SchemaV10: VersionedSchema {
 }
 
 enum SchemaV11: VersionedSchema {
-	static let versionIdentifier = Schema.Version(8, 0, 0)
-	
-	typealias Report = SchemaV10.Report
-	
-	static var models: [any PersistentModel.Type] {
-		[Entry.self, Tracker.self, Report.self, SubmittedReport.self]
-	}
+    static let versionIdentifier = Schema.Version(8, 0, 0)
+
+    typealias Report = SchemaV10.Report
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self, Report.self, SubmittedReport.self]
+    }
 }
 
 typealias CurrentSchema = SchemaV11

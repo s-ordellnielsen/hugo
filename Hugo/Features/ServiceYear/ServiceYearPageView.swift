@@ -27,7 +27,7 @@ struct ServiceYearPageView: View {
 
                 ForEach(report.months) { month in
                     ServiceYearMonthRow(month: month)
-                    .id(month.id)
+                        .id(month.id)
                 }
             }
             .padding()

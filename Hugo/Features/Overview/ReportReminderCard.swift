@@ -48,13 +48,13 @@ struct ReportReminderCard: View {
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
-		.buttonStyle(.plain)
-		.sheet(isPresented: $isPresentingSubmitSheet) {
-			NavigationStack {
-				SubmitReportView(month: month)
-					.presentationDetents([.medium, .large])
-			}
-		}
+        .buttonStyle(.plain)
+        .sheet(isPresented: $isPresentingSubmitSheet) {
+            NavigationStack {
+                SubmitReportView(month: month)
+                    .presentationDetents([.medium, .large])
+            }
+        }
     }
 }
 

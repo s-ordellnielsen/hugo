@@ -86,19 +86,19 @@ struct OverviewDateList: View {
                 .transition(.move(edge: .top).combined(with: .opacity))
         }
     }
-	
-	private var dates: [DateSection] {
-		let groupedByDate = Dictionary(grouping: entries) { entry in
-			Calendar.current.startOfDay(for: entry.date)
-		}
-		
-		let sections: [DateSection] = groupedByDate.map { date, entries in
-			DateSection(date: date, entries: entries.reversed())
-		}
-			.sorted { $0.date > $1.date }
-		
-		return sections
-	}
+
+    private var dates: [DateSection] {
+        let groupedByDate = Dictionary(grouping: entries) { entry in
+            Calendar.current.startOfDay(for: entry.date)
+        }
+
+        let sections: [DateSection] = groupedByDate.map { date, entries in
+            DateSection(date: date, entries: entries.reversed())
+        }
+        .sorted { $0.date > $1.date }
+
+        return sections
+    }
 
     private struct DateSection: Identifiable, Equatable {
         var date: Date
@@ -132,7 +132,7 @@ struct OverviewDateList: View {
                         Text("Total")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-						Text(duration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+                        Text(duration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
                             .font(.subheadline)
                             .fontWeight(.medium)
                     }
@@ -150,10 +150,10 @@ struct OverviewDateList: View {
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
-		
-		private var duration: Duration {
-			section.entries.reduce(into: .zero) { $0 += Duration.seconds($1.duration) }
-		}
+
+        private var duration: Duration {
+            section.entries.reduce(into: .zero) { $0 += Duration.seconds($1.duration) }
+        }
     }
 
     private struct DateEntryRow: View, Equatable {

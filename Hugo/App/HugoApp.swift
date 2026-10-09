@@ -7,7 +7,8 @@ struct HugoApp: App {
 
     init() {
         do {
-            modelContainer = try Self.isRunningTests
+            modelContainer =
+                try Self.isRunningTests
                 ? ModelContainerFactory.makeInMemoryContainer()
                 : ModelContainerFactory.makeProductionContainer()
         } catch {

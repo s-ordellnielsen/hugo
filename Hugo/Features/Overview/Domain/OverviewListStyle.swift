@@ -8,20 +8,20 @@
 import SwiftUI
 
 enum OverviewListStyle: String, CaseIterable {
-	case byDate
-	case byEntry
-	
-	var iconName: String {
-		switch self {
-			case .byDate: "calendar"
-			case .byEntry: "list.bullet"
-		}
-	}
-	
-	var accessibilityLabel: LocalizedStringKey {
-		switch self {
-			case .byDate: "a11y.overview.list-style.by-date"
-			case .byEntry: "a11y.overview.list-style.by-entry"
-		}
-	}
+    case byDate
+    case byEntry
+
+    var iconName: String {
+        switch self {
+        case .byDate: "calendar"
+        case .byEntry: "list.bullet"
+        }
+    }
+
+    var accessibilityLabel: LocalizedStringKey {
+        switch self {
+        case .byDate: "a11y.overview.list-style.by-date"
+        case .byEntry: "a11y.overview.list-style.by-entry"
+        }
+    }
 }

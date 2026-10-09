@@ -22,10 +22,10 @@ final class AddEntryFormModel {
 
     private let calendar: Calendar
     private let now: Date
-	
-	// If no time is provided, snap to nearest minute matching
-	// this interval
-	private let minuteInterval: Int = 15
+
+    // If no time is provided, snap to nearest minute matching
+    // this interval
+    private let minuteInterval: Int = 15
 
     init(calendar: Calendar = .current, now: Date = .now, seededDate: Date? = nil) {
         self.calendar = calendar
@@ -52,9 +52,9 @@ final class AddEntryFormModel {
             components.minute = calendar.component(.minute, from: time)
             components.second = 0
         } else {
-			let inferred = inferredTime()
-			components.hour = calendar.component(.hour, from: inferred)
-			components.minute = calendar.component(.minute, from: inferred)
+            let inferred = inferredTime()
+            components.hour = calendar.component(.hour, from: inferred)
+            components.minute = calendar.component(.minute, from: inferred)
             components.second = 0
         }
         return calendar.date(from: components)
@@ -84,30 +84,30 @@ final class AddEntryFormModel {
         return EntryDraft(
             date: combinedDate, duration: durationInSeconds, tracker: selectedTracker, bibleStudies: bibleStudies)
     }
-	
-	private func inferredTime() -> Date {
-		guard calendar.isDate(date, inSameDayAs: now) else {
-			return calendar.startOfDay(for: date)
-		}
-		let approximate = now.addingTimeInterval(-durationInSeconds)
-		return snapped(approximate)
-	}
-	
-	private func snapped(_ date: Date) -> Date {
-		guard minuteInterval > 1 else { return date }
-		
-		let totalMinutes = calendar.component(.hour, from: date) * 60 + calendar.component(.minute, from: date)
-		let snappedMinutes = min(
-			23 * 60 + 59,
-			(Int((Double(totalMinutes) / Double(minuteInterval)).rounded()) * minuteInterval)
-		)
-		
-		var components = calendar.dateComponents([.year, .month, .day], from: date)
-		components.hour = snappedMinutes / 60
-		components.minute = snappedMinutes % 60
-		components.second = 0
-		return calendar.date(from: components) ?? date
-	}
+
+    private func inferredTime() -> Date {
+        guard calendar.isDate(date, inSameDayAs: now) else {
+            return calendar.startOfDay(for: date)
+        }
+        let approximate = now.addingTimeInterval(-durationInSeconds)
+        return snapped(approximate)
+    }
+
+    private func snapped(_ date: Date) -> Date {
+        guard minuteInterval > 1 else { return date }
+
+        let totalMinutes = calendar.component(.hour, from: date) * 60 + calendar.component(.minute, from: date)
+        let snappedMinutes = min(
+            23 * 60 + 59,
+            (Int((Double(totalMinutes) / Double(minuteInterval)).rounded()) * minuteInterval)
+        )
+
+        var components = calendar.dateComponents([.year, .month, .day], from: date)
+        components.hour = snappedMinutes / 60
+        components.minute = snappedMinutes % 60
+        components.second = 0
+        return calendar.date(from: components) ?? date
+    }
 }
 
 enum EntryDurationConversion {

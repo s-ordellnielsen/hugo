@@ -22,10 +22,10 @@ struct HelpView: View {
     private let bundle: Bundle
 
     @State private var state: ContentState = .loading
-	
-	private var loadID: String {
-		"\(bundle.bundleURL.path)|\(resourceName)"
-	}
+
+    private var loadID: String {
+        "\(bundle.bundleURL.path)|\(resourceName)"
+    }
 
     init(
         for resourceName: String,
@@ -66,9 +66,9 @@ struct HelpView: View {
                 }
             }
         }
-		.task(id: loadID) {
-			await loadContent()
-		}
+        .task(id: loadID) {
+            await loadContent()
+        }
     }
 
     private static let logger = Logger(
@@ -99,11 +99,11 @@ struct HelpView: View {
                     encoding: .utf8
                 )
             }.value
-			
-			try Task.checkCancellation()
-			state = .loaded(content: content)
+
+            try Task.checkCancellation()
+            state = .loaded(content: content)
         } catch is CancellationError {
-			// The sheet was dismissed or its identity changed. Do nothing
+            // The sheet was dismissed or its identity changed. Do nothing
         } catch {
             Self.logger.error(
                 "Unable to parse help resource \(resourceName, privacy: .public): \(error.localizedDescription, privacy: .public)"

@@ -47,9 +47,9 @@ extension SchemaV11 {
         /// later, so categories must be self-contained (same reasoning as
         /// `Entry.EntryTracker`).
         var categories: [SubmittedCategory]?
-		
-		var reportingLines: [SubmittedReportingLine] = []
-		@Relationship(deleteRule: .nullify, inverse: \Entry.sourceSubmission) var generatedEntries: [Entry]? = []
+
+        var reportingLines: [SubmittedReportingLine] = []
+        @Relationship(deleteRule: .nullify, inverse: \Entry.sourceSubmission) var generatedEntries: [Entry]? = []
 
         init(
             year: Int = 0,
@@ -67,7 +67,7 @@ extension SchemaV11 {
             roundedDownSeconds: TimeInterval = 0,
             totalBibleStudies: Int = 0,
             categories: [SubmittedCategory] = [],
-			reportingLines: [SubmittedReportingLine] = []
+            reportingLines: [SubmittedReportingLine] = []
         ) {
             self.year = year
             self.month = month
@@ -84,7 +84,7 @@ extension SchemaV11 {
             self.roundedDownSeconds = roundedDownSeconds
             self.totalBibleStudies = totalBibleStudies
             self.categories = categories
-			self.reportingLines = reportingLines
+            self.reportingLines = reportingLines
         }
 
         var yearMonth: YearMonth {
@@ -123,8 +123,8 @@ extension SchemaV11 {
 
         struct SubmittedReportingLine: Codable, Hashable, Identifiable {
             var typeRaw: String = ""
-			
-			/// Unused for aggregate `.main` line; always "" there.
+
+            /// Unused for aggregate `.main` line; always "" there.
             var typeName: String = ""
             var durationInSeconds: TimeInterval = 0
             var submittedHours: Int = 0
@@ -155,22 +155,22 @@ extension SchemaV11 {
             }
 
             var rounding: RoundingRule? {
-				RoundingRule(rawValue: roundingRaw)
+                RoundingRule(rawValue: roundingRaw)
             }
-			
-			var duration: Duration {
-				get { .seconds(durationInSeconds) }
-				set {
-					let components = newValue.components
-					durationInSeconds = Double(components.seconds) + (Double(components.attoseconds) * 1e-18)
-				}
-			}
-			
-			var remainder: Duration {
-				let remainder = duration - .seconds(submittedHours * 3600)
-				
-				return remainder < .zero ? remainder * -1 : remainder
-			}
+
+            var duration: Duration {
+                get { .seconds(durationInSeconds) }
+                set {
+                    let components = newValue.components
+                    durationInSeconds = Double(components.seconds) + (Double(components.attoseconds) * 1e-18)
+                }
+            }
+
+            var remainder: Duration {
+                let remainder = duration - .seconds(submittedHours * 3600)
+
+                return remainder < .zero ? remainder * -1 : remainder
+            }
         }
     }
 }

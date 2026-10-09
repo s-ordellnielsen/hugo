@@ -8,7 +8,7 @@ struct EntryDetailView: View {
     @State var selectTrackerIsPresented: Bool = false
 
     @State private var deleteConfirmationShown: Bool = false
-	@State private var deletionError: String?
+    @State private var deletionError: String?
 
     var body: some View {
         @Bindable var entry = entry
@@ -62,14 +62,14 @@ struct EntryDetailView: View {
                             "entry.delete.confirmation.action",
                             role: .destructive
                         ) {
-							do {
-								context.delete(entry)
-								try context.save()
-								dismiss()
-							} catch {
-								context.rollback()
-								deletionError = error.localizedDescription
-							}
+                            do {
+                                context.delete(entry)
+                                try context.save()
+                                dismiss()
+                            } catch {
+                                context.rollback()
+                                deletionError = error.localizedDescription
+                            }
                         }
                     } message: {
                         Text("entry.delete.confirmation.message")
@@ -80,7 +80,7 @@ struct EntryDetailView: View {
                 CategoryPicker(selection: $entry.tracker, dismissOnSelection: true)
                     .presentationDetents([.medium, .large])
             }
-			.errorAlert(message: $deletionError)
+            .errorAlert(message: $deletionError)
         }
     }
 

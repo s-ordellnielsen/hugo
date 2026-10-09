@@ -1,7 +1,10 @@
 import Foundation
 
 nonisolated enum ServiceDurationFormatter {
-    private static let defaultAccessibilityStyle = Duration.UnitsFormatStyle(allowedUnits: [.hours, .minutes], width: .wide)
+    private static let defaultAccessibilityStyle = Duration.UnitsFormatStyle(
+        allowedUnits: [.hours, .minutes],
+        width: .wide
+    )
 
     static func string(from duration: TimeInterval) -> String {
         let clamped = max(duration, 0)

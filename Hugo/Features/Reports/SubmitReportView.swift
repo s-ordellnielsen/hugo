@@ -199,28 +199,28 @@ struct SubmitReportView: View {
                 .foregroundStyle(.white)
                 .clipShape(.circle)
 
-				HStack {
-					Text(String(category.name))
-						.fontWeight(.medium)
-						.font(.system(size: categoryFontSize))
-					
-					Spacer()
-				}
+                HStack {
+                    Text(String(category.name))
+                        .fontWeight(.medium)
+                        .font(.system(size: categoryFontSize))
+
+                    Spacer()
+                }
             }
-			
+
             GridRow {
                 Spacer()
-				
-				VStack(alignment: .leading) {
-					Text("Actual Time")
-						.foregroundStyle(.secondary)
-						.font(.caption)
-					Text(
-						String(
-							"\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
-						)
-					)
-				}
+
+                VStack(alignment: .leading) {
+                    Text("Actual Time")
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                    Text(
+                        String(
+                            "\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
+                        )
+                    )
+                }
             }
             .contentTransition(.numericText())
             .monospacedDigit()
