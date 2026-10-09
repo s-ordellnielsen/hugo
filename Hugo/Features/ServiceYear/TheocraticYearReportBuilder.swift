@@ -32,14 +32,43 @@ nonisolated enum TheocraticYearReportBuilder {
             )
         }
 
+        let contributions = months.map(contribution(for:))
+
         return TheocraticYearReport(
             year: year,
             months: months,
-            totalSeconds: summaries.reduce(0) { $0 + $1.totalSeconds },
-            totalBibleStudies: summaries.reduce(0) { $0 + $1.totalBibleStudies },
-            mainDuration: summaries.reduce(0) { $0 + $1.mainDuration },
-            separateDuration: summaries.reduce(0) { $0 + $1.separateDuration }
+            totalSeconds: contributions.reduce(0) { $0 + $1.total },
+            totalBibleStudies: contributions.reduce(0) { $0 + $1.bibleStudies },
+            mainDuration: contributions.reduce(0) { $0 + $1.main },
+            separateDuration: contributions.reduce(0) { $0 + $1.separate }
         )
+    }
+
+    private static func contribution(
+        for month: TheocraticYearMonth
+    ) -> (total: TimeInterval, main: TimeInterval, separate: TimeInterval, bibleStudies: Int) {
+        if let submission = month.submittedReport, isRealSubmission(submission) {
+            let studies = submission.totalBibleStudies ?? 0
+
+            guard !submission.reportingLines.isEmpty else {
+                let main = TimeInterval(submission.submittedHours ?? 0) * 3_600
+                return (main, main, 0, studies)
+            }
+
+            let main = submission.reportingLines
+                .filter { $0.type == .main }
+                .reduce(0) { $0 + TimeInterval($1.submittedHours) * 3_600 }
+            let separate = submission.reportingLines
+                .filter { $0.type == .separate }
+                .reduce(0) { $0 + TimeInterval($1.submittedHours) * 3_600 }
+            return (main + separate, main, separate, studies)
+        }
+
+        guard let summary = month.summary else {
+            return (0, 0, 0, 0)
+        }
+
+        return (summary.totalSeconds, summary.mainDuration, summary.separateDuration, summary.totalBibleStudies)
     }
 
     static func canonicalSubmission(
