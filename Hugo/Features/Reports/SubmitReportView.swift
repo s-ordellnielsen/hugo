@@ -46,6 +46,18 @@ struct SubmitReportView: View {
         model.summary
     }
 
+    private var orderedResults: [ReportingLineResult] {
+        let mainLines = model.results.filter { $0.line.type == .main }
+        let separateLines = model.results.filter { $0.line.type == .separate }
+        let pendingLines = separateLines.filter { $0.line.needsRule && $0.rule == nil }
+        let resolvedLines = separateLines.filter { !$0.line.needsRule || $0.rule != nil }
+        return mainLines + pendingLines + resolvedLines
+    }
+
+    private var bottomButtonTitle: LocalizedStringKey {
+        MessageComposeView.canSendText ? "report.submit.send" : "report.submit.copy"
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -56,13 +68,15 @@ struct SubmitReportView: View {
 
                 Spacer(minLength: HugoLayout.Spacing.roomy)
 
-                if let summary {
-                    ForEach(summary.categories.filter { $0.type == .main }) { category in
-                        computedRow(category)
-                    }
-                    ForEach(summary.categories.filter { $0.type != .main }) { category in
-                        computedRow(category)
-                    }
+                ForEach(orderedResults) { result in
+                    ReportingLineCard(
+                        result: result,
+                        rule: Binding(
+                            get: { model.rule(for: result.id) },
+                            set: { model.setRule($0, for: result.id) }
+                        ),
+                        monthName: { $0.monthName() }
+                    )
                 }
 
                 Spacer(minLength: HugoLayout.Spacing.section)
@@ -114,29 +128,43 @@ struct SubmitReportView: View {
                 Button(role: .cancel) { dismiss() }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button("", systemImage: "arrow.up.message.fill") { isComposingMessage.toggle() }
-                    .buttonStyle(.glassProminent)
-                    .tint(.hugoAccent)
+                Button("report.submit.send-message", systemImage: "arrow.up.message.fill") {
+                    sendViaMessages()
+                }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.glassProminent)
+                .tint(.hugoAccent)
+                .disabled(!model.canSend || !MessageComposeView.canSendText)
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("", systemImage: "ellipsis") {
-                    Button("Send as Message", systemImage: "arrow.up.message") {}
-                        .disabled(!MessageComposeView.canSendText)
-                    Button("Copy to Clipboard", systemImage: "document.on.document") {}
+                Menu("common.more", systemImage: "ellipsis") {
+                    Button("report.submit.send-message", systemImage: "arrow.up.message") {
+                        sendViaMessages()
+                    }
+                    .disabled(!model.canSend || !MessageComposeView.canSendText)
+
+                    Button("report.submit.copy", systemImage: "document.on.document") {
+                        copyReport()
+                    }
+                    .disabled(!model.canSend)
                 }
             }
         }
         .safeAreaInset(edge: .bottom) {
             Button {
-                sendViaMessages()
+                if MessageComposeView.canSendText {
+                    sendViaMessages()
+                } else {
+                    copyReport()
+                }
             } label: {
-                Text("report.submit.send")
+                Text(bottomButtonTitle)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.glassProminent)
             .tint(.hugoAccent)
             .controlSize(.large)
-            .disabled(!model.canSend || !MessageComposeView.canSendText)
+            .disabled(!model.canSend)
             .padding(.horizontal)
             .padding(.vertical, HugoLayout.Spacing.compact)
         }
@@ -146,7 +174,7 @@ struct SubmitReportView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
-                            Button(role: .cancel) { dismiss() }
+                            Button(role: .cancel) { showingSettings = false }
                         }
                     }
             }
@@ -176,58 +204,6 @@ struct SubmitReportView: View {
             }
         }
         .errorAlert(message: $saveErrorMessage)
-    }
-
-    private var rowColumns = [
-        GridItem(.fixed(HugoLayout.Size.entryIcon)),
-        GridItem(.flexible()),
-    ]
-
-    @ScaledMetric(relativeTo: .body) private var categoryFontSize = 18
-
-    private func computedRow(_ category: MonthlyCategorySummary) -> some View {
-        Grid(
-            alignment: .leading, horizontalSpacing: HugoLayout.Spacing.regular,
-            verticalSpacing: HugoLayout.Spacing.compact
-        ) {
-            GridRow {
-                ZStack {
-                    Image(systemName: category.iconName)
-                }
-                .frame(width: HugoLayout.Size.categoryIcon, height: HugoLayout.Size.categoryIcon)
-                .background(.mint)
-                .foregroundStyle(.white)
-                .clipShape(.circle)
-
-                HStack {
-                    Text(String(category.name))
-                        .fontWeight(.medium)
-                        .font(.system(size: categoryFontSize))
-
-                    Spacer()
-                }
-            }
-
-            GridRow {
-                Spacer()
-
-                VStack(alignment: .leading) {
-                    Text("Actual Time")
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                    Text(
-                        String(
-                            "\(ReportingLineCalculator.categoryHours(results: model.results, categories: summary?.categories ?? [])[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
-                        )
-                    )
-                }
-            }
-            .contentTransition(.numericText())
-            .monospacedDigit()
-        }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
     }
 
     private func persist() {
