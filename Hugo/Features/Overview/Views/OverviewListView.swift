@@ -129,7 +129,7 @@ struct OverviewDateList: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing) {
-                        Text("Total")
+                        Text("overview.day.total")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Text(duration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
