@@ -62,6 +62,7 @@ struct AddEntryView: View {
                 ToolbarItem {
                     Button("entry.add.label", systemImage: "plus", action: submit)
                         .buttonStyle(.glassProminent)
+                        .tint(.hugoAccent)
                         .disabled(form.isSubmitDisabled)
                 }
             }
