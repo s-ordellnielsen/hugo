@@ -77,32 +77,32 @@ struct SubmitReportView: View {
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
                 .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
-				
-				Spacer(minLength: HugoLayout.Spacing.section)
+
+                Spacer(minLength: HugoLayout.Spacing.section)
 
                 Section {
-					HStack {
-						if model.hasOverseer {
-							Label(model.overseerFullName, systemImage: "person.crop.circle")
-						} else {
-							VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-								Text("report.overseer.empty")
-									.foregroundStyle(.secondary)
-								Button("report.submit.overseer.settings-link") {
-									showingSettings = true
-								}
-							}
-						}
-						Spacer()
-					}
-					.padding()
-					.background(Color(.secondarySystemGroupedBackground))
-					.clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
+                    HStack {
+                        if model.hasOverseer {
+                            Label(model.overseerFullName, systemImage: "person.crop.circle")
+                        } else {
+                            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                                Text("report.overseer.empty")
+                                    .foregroundStyle(.secondary)
+                                Button("report.submit.overseer.settings-link") {
+                                    showingSettings = true
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
                 } header: {
                     Text("settings.report.overseer")
-						.font(.headline)
-						.padding(.leading)
-						.foregroundStyle(.secondary)
+                        .font(.headline)
+                        .padding(.leading)
+                        .foregroundStyle(.secondary)
                 }
             }
             .padding()
@@ -178,32 +178,56 @@ struct SubmitReportView: View {
         .errorAlert(message: $saveErrorMessage)
     }
 
+    private var rowColumns = [
+        GridItem(.fixed(HugoLayout.Size.entryIcon)),
+        GridItem(.flexible()),
+    ]
+
+    @ScaledMetric(relativeTo: .body) private var categoryFontSize = 18
+
     private func computedRow(_ category: MonthlyCategorySummary) -> some View {
-        Button {
-        } label: {
-            HStack {
-				ZStack {
-					Image(systemName: category.iconName)
+        Grid(
+            alignment: .leading, horizontalSpacing: HugoLayout.Spacing.regular,
+            verticalSpacing: HugoLayout.Spacing.compact
+        ) {
+            GridRow {
+                ZStack {
+                    Image(systemName: category.iconName)
+                }
+                .frame(width: HugoLayout.Size.categoryIcon, height: HugoLayout.Size.categoryIcon)
+                .background(.mint)
+                .foregroundStyle(.white)
+                .clipShape(.circle)
+
+				HStack {
+					Text(String(category.name))
+						.fontWeight(.medium)
+						.font(.system(size: categoryFontSize))
+					
+					Spacer()
 				}
-				.frame(width: HugoLayout.Size.categoryIcon, height: HugoLayout.Size.categoryIcon)
-				.background(.mint)
-				.foregroundStyle(.white)
-				.clipShape(.circle)
-                Text(String(category.name))
-                Spacer()
-                Text(
-                    String(
-                        "\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
-                    )
-                )
-                .contentTransition(.numericText())
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
             }
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+			
+            GridRow {
+                Spacer()
+				
+				VStack(alignment: .leading) {
+					Text("Actual Time")
+						.foregroundStyle(.secondary)
+						.font(.caption)
+					Text(
+						String(
+							"\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
+						)
+					)
+				}
+            }
+            .contentTransition(.numericText())
+            .monospacedDigit()
         }
+        .padding()
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
     }
 
     private func persist() {
