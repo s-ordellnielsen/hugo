@@ -122,6 +122,80 @@ nonisolated enum ReportingLineCalculator {
             return true
         }
     }
+
+    static func categoryHours(
+        results: [ReportingLineResult],
+        categories: [MonthlyCategorySummary]
+    ) -> [String: Int] {
+        var hoursByCategory: [String: Int] = [:]
+
+        for result in results {
+            let lineCategories = categories.filter { category in
+                switch result.line.type {
+                case .main:
+                    category.type == .main || category.type == nil
+                case .separate:
+                    category.type == .separate && category.name == result.line.id
+                }
+            }
+            hoursByCategory.merge(
+                distributeHours(submittedHours: result.submittedHours, categories: lineCategories),
+                uniquingKeysWith: { _, new in new }
+            )
+        }
+
+        return hoursByCategory
+    }
+
+    private static func distributeHours(
+        submittedHours: Int,
+        categories: [MonthlyCategorySummary]
+    ) -> [String: Int] {
+        guard !categories.isEmpty else { return [:] }
+
+        var assignedHours: [String: Int] = [:]
+        var assigned = 0
+        for category in categories {
+            let floor = Int(category.duration / 3_600)
+            assignedHours[category.id] = floor
+            assigned += floor
+        }
+
+        var remaining = submittedHours - assigned
+
+        if remaining > 0 {
+            let byLargestRemainder = categories.enumerated().sorted {
+                let lhsRemainder = $0.element.duration.truncatingRemainder(dividingBy: 3_600)
+                let rhsRemainder = $1.element.duration.truncatingRemainder(dividingBy: 3_600)
+                if lhsRemainder != rhsRemainder { return lhsRemainder > rhsRemainder }
+                return $0.offset < $1.offset
+            }
+
+            for (_, category) in byLargestRemainder where remaining > 0 {
+                let remainder = category.duration.truncatingRemainder(dividingBy: 3_600)
+                guard remainder > 0 else { continue }
+                assignedHours[category.id, default: 0] += 1
+                remaining -= 1
+            }
+        }
+
+        if remaining < 0 {
+            let bySmallestRemainder = categories.enumerated().sorted {
+                let lhsRemainder = $0.element.duration.truncatingRemainder(dividingBy: 3_600)
+                let rhsRemainder = $1.element.duration.truncatingRemainder(dividingBy: 3_600)
+                if lhsRemainder != rhsRemainder { return lhsRemainder < rhsRemainder }
+                return $0.offset > $1.offset
+            }
+
+            for (_, category) in bySmallestRemainder where remaining < 0 {
+                guard let current = assignedHours[category.id], current > 0 else { continue }
+                assignedHours[category.id] = current - 1
+                remaining += 1
+            }
+        }
+
+        return assignedHours
+    }
 }
 
 private struct Category {

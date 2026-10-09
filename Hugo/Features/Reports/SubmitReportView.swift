@@ -136,7 +136,7 @@ struct SubmitReportView: View {
             .buttonStyle(.glassProminent)
             .tint(.hugoAccent)
             .controlSize(.large)
-            .disabled(!model.isSubmittable || !MessageComposeView.canSendText)
+            .disabled(!model.canSend || !MessageComposeView.canSendText)
             .padding(.horizontal)
             .padding(.vertical, HugoLayout.Spacing.compact)
         }
@@ -217,7 +217,7 @@ struct SubmitReportView: View {
                         .font(.caption)
                     Text(
                         String(
-                            "\(model.computation.categoryHours[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
+                            "\(ReportingLineCalculator.categoryHours(results: model.results, categories: summary?.categories ?? [])[category.id] ?? 0) \(String(localized: "report.hours.unit"))"
                         )
                     )
                 }

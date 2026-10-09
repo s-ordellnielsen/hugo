@@ -31,8 +31,9 @@ nonisolated enum ReportComposer {
     }
 
     static func message(
-        summary: MonthlyReportSummary,
-        computation: RoundingComputation,
+        month: YearMonth,
+        results: [ReportingLineResult],
+        bibleStudies: Int,
         template: String,
         firstName: String,
         lastName: String,
@@ -44,28 +45,23 @@ nonisolated enum ReportComposer {
             template: template,
             firstName: firstName,
             lastName: lastName,
-            month: summary.id.monthName(locale: locale, calendar: calendar),
-            year: String(summary.id.year)
+            month: month.monthName(locale: locale, calendar: calendar),
+            year: String(month.year)
         )
-
         var lines: [String] = [greeting, ""]
 
-        let mainCategories = summary.categories.filter { $0.type == .main }
-        let otherCategories = summary.categories.filter { $0.type != .main }
-
-        let fieldServiceHours = mainCategories.reduce(0) {
-            $0 + (computation.categoryHours[$1.id] ?? 0)
-        }
-        // Labels currently resolve against the development locale (en).
-        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
-        lines.append("\(fieldServiceLabel): \(fieldServiceHours) \(hoursUnit)")
-
-        for category in otherCategories {
-            lines.append("\(category.name): \(computation.categoryHours[category.id] ?? 0) \(hoursUnit)")
+        for result in results {
+            let label =
+                if result.line.type == .main {
+                    String(localized: "report.compose.field-service", locale: locale)
+                } else {
+                    result.line.name
+                }
+            lines.append("\(label): \(result.submittedHours) \(hoursUnit)")
         }
 
         let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
-        lines.append("\(studiesLabel): \(summary.totalBibleStudies)")
+        lines.append("\(studiesLabel): \(bibleStudies)")
 
         return ReportMessageContent(recipient: nil, body: lines.joined(separator: "\n"))
     }

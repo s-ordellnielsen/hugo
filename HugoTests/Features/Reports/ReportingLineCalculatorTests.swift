@@ -180,6 +180,53 @@ struct ReportingLineCalculatorTests {
     }
 
     @Test
+    func categoryHoursAreDistributedIndependentlyForEachReportingLine() {
+        let mainLine = ReportingLine(
+            id: "",
+            type: .main,
+            name: "",
+            iconName: "figure.walk",
+            actualSeconds: 14_400,
+            carriedInSeconds: 0,
+            carriedInFrom: []
+        )
+        let separateLine = ReportingLine(
+            id: "LDC",
+            type: .separate,
+            name: "LDC",
+            iconName: "building",
+            actualSeconds: 5_400,
+            carriedInSeconds: 0,
+            carriedInFrom: []
+        )
+        let results = [
+            ReportingLineCalculator.compute(mainLine, rule: .down),
+            ReportingLineCalculator.compute(separateLine, rule: .up),
+        ]
+        let categories = [
+            MonthlyCategorySummary(id: "a", name: "A", iconName: "tag", type: .main, duration: 5_400),
+            MonthlyCategorySummary(id: "b", name: "B", iconName: "tag", type: .main, duration: 9_000),
+            MonthlyCategorySummary(id: "LDC", name: "LDC", iconName: "building", type: .separate, duration: 5_400),
+            MonthlyCategorySummary(id: "legacy", name: "Legacy", iconName: "figure.walk", type: nil, duration: 3_600),
+        ]
+
+        let hours = ReportingLineCalculator.categoryHours(results: results, categories: categories)
+
+        #expect(hours["a"] == 1)
+        #expect(hours["b"] == 2)
+        #expect(hours["legacy"] == 1)
+        #expect(hours["LDC"] == 2)
+        #expect(hours.values.reduce(0, +) == results.reduce(0) { $0 + $1.submittedHours })
+    }
+
+    @Test
+    func categoryHoursReturnsEmptyWhenThereAreNoCategories() {
+        let results = [ReportingLineCalculator.compute(line(seconds: 5_400), rule: .transfer)]
+
+        #expect(ReportingLineCalculator.categoryHours(results: results, categories: []).isEmpty)
+    }
+
+    @Test
     func persistedLineUsesSchemaShapeAndEmptyRoundingForWholeHours() {
         let mainResult = ReportingLineCalculator.compute(line(seconds: 7_200), rule: .up)
         let persistedMain = mainResult.persisted

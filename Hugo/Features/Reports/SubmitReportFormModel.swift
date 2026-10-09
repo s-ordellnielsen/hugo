@@ -10,9 +10,10 @@ import SwiftData
 final class SubmitReportFormModel {
     let month: YearMonth
 
-    var selectedRule: RoundingRule {
-        didSet { recompute() }
-    }
+    private(set) var lines: [ReportingLine] = []
+    private(set) var results: [ReportingLineResult] = []
+    private var rules: [String: RoundingRule] = [:]
+    private var didSeedRules = false
 
     /// The composed message ready to hand to Messages (or the pasteboard).
     /// Set by `prepareSubmission()`; cleared when the rule changes.
@@ -41,7 +42,6 @@ final class SubmitReportFormModel {
         self.now = now
         self.locale = locale
         self.userDefaults = userDefaults
-        self.selectedRule = RoundingRule.defaultValue
     }
 
     // MARK: - Inputs
@@ -54,37 +54,37 @@ final class SubmitReportFormModel {
         self.submissionsByMonth = TheocraticYearReportBuilder.canonicalSubmissionsByMonth(submissions)
         self.monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
         self.summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
+        self.lines = ReportingLineCalculator.lines(from: monthEntries, calendar: calendar)
+
+        if !didSeedRules {
+            for storedLine in existingSubmission?.reportingLines ?? [] {
+                guard let rule = storedLine.rounding else { continue }
+                rules[storedLine.id] = rule
+            }
+            didSeedRules = true
+        }
+
         recompute()
     }
 
     // MARK: - Derived values
 
-    /// The previous month's real submission, if any. Backfill sentinels and
-    /// missing submissions both yield zero carry-in.
-    var previousSubmission: SubmittedReport? {
-        let previousMonth = YearMonth.previous(before: month, calendar: calendar)
-
-        guard
-            let submission = submissionsByMonth[previousMonth],
-            (submission.submittedAt ?? .distantPast) != .distantPast
-        else {
-            return nil
-        }
-
-        return submission
+    func rule(for lineID: String) -> RoundingRule? {
+        rules[lineID]
     }
 
-    var carriedIn: TimeInterval {
-        previousSubmission?.carriedOutSeconds ?? 0
+    func setRule(_ rule: RoundingRule?, for lineID: String) {
+        rules[lineID] = rule
+        recompute()
     }
 
-    private(set) var computation: RoundingComputation = RoundingComputation(
-        submittedHours: 0,
-        categoryHours: [:],
-        carriedOutSeconds: 0,
-        roundedUpSeconds: 0,
-        roundedDownSeconds: 0
-    )
+    var isComplete: Bool {
+        ReportingLineCalculator.isComplete(results)
+    }
+
+    var canSend: Bool {
+        isSubmittable && isComplete
+    }
 
     /// An existing report for this exact month (re-submission replaces it).
     var existingSubmission: SubmittedReport? {
@@ -112,29 +112,17 @@ final class SubmitReportFormModel {
 
     // MARK: - Workflow
 
-    /// Builds the message for the current rule. The view presents Messages
+    /// Builds the message for the current line rules. The view presents Messages
     /// (or copies to the pasteboard) from the returned content, then calls
     /// `persistSubmission(in:)` once the user confirms.
     @discardableResult
     func prepareSubmission() -> ReportMessageContent? {
-        guard isSubmittable else { return nil }
-
-        let summary =
-            self.summary
-            ?? MonthlyReportSummary(
-                id: month,
-                displayName: month.monthYearString(calendar: calendar),
-                totalSeconds: 0,
-                totalBibleStudies: 0,
-                mainDuration: 0,
-                separateDuration: 0,
-                categories: [],
-                entries: []
-            )
+        guard canSend else { return nil }
 
         let content = ReportComposer.message(
-            summary: summary,
-            computation: computation,
+            month: month,
+            results: results,
+            bibleStudies: summary?.totalBibleStudies ?? 0,
             template: greetingTemplate,
             firstName: overseerFirstName,
             lastName: overseerLastName,
@@ -150,60 +138,73 @@ final class SubmitReportFormModel {
     /// preserving `firstSubmittedAt` and the CloudKit record identity; the
     /// theocratic-year rollup keys submissions by month and would double-count
     /// a delete-and-insert duplicate.
-    /// Returns the stored report (nil when not submittable).
+    /// Returns the stored report (nil when not submittable or rounding is undecided).
     @discardableResult
     func persistSubmission(in context: ModelContext) throws -> SubmittedReport? {
-        guard isSubmittable else { return nil }
+        guard canSend else { return nil }
 
-        let summary = self.summary
+        let mainResult = results.first { $0.line.type == .main }
+        let categoryHours = ReportingLineCalculator.categoryHours(
+            results: results,
+            categories: summary?.categories ?? []
+        )
         let snapshots = (summary?.categories ?? []).map { category in
             SubmittedReport.SubmittedCategory(
                 name: category.name,
                 iconName: category.iconName,
                 typeRaw: category.type?.rawValue,
                 actualSeconds: category.duration,
-                submittedHours: computation.categoryHours[category.id] ?? 0
+                submittedHours: categoryHours[category.id] ?? 0
             )
         }
+        let carriedInSeconds = results.reduce(0) { $0 + $1.line.carriedInSeconds }
+        let carriedOutSeconds = results.reduce(0) { total, result in
+            guard case .transferred(let seconds) = result.disposition else { return total }
+            return total + seconds
+        }
+        let roundedUpSeconds = results.reduce(0) { total, result in
+            guard case .roundedUp(let seconds) = result.disposition else { return total }
+            return total + seconds
+        }
+        let roundedDownSeconds = results.reduce(0) { total, result in
+            guard case .roundedDown(let seconds) = result.disposition else { return total }
+            return total + seconds
+        }
+        let submittedHours = results.reduce(0) { $0 + $1.submittedHours }
+        let closedAt = monthEntries.map(\.createdAt).max() ?? now
 
+        let report: SubmittedReport
         if let existing = existingSubmission {
             if existing.firstSubmittedAt == nil || existing.firstSubmittedAt == .distantPast {
                 existing.firstSubmittedAt = now
             }
             existing.submittedAt = now
-            existing.entriesClosedAt = monthEntries.map(\.createdAt).max() ?? now
-            existing.roundingRuleRaw = selectedRule.rawValue
-            existing.fieldServiceSeconds = summary?.mainDuration ?? 0
-            existing.actualTotalSeconds = (summary?.totalSeconds ?? 0) + carriedIn
-            existing.submittedHours = computation.submittedHours
-            existing.carriedInSeconds = carriedIn
-            existing.carriedOutSeconds = computation.carriedOutSeconds
-            existing.roundedUpSeconds = computation.roundedUpSeconds
-            existing.roundedDownSeconds = computation.roundedDownSeconds
-            existing.totalBibleStudies = summary?.totalBibleStudies ?? 0
-            existing.categories = snapshots
-            try context.save()
-            return existing
+            existing.entriesClosedAt = closedAt
+            report = existing
+        } else {
+            report = SubmittedReport(
+                year: month.year,
+                month: month.month,
+                firstSubmittedAt: now,
+                submittedAt: now,
+                entriesClosedAt: closedAt
+            )
+            context.insert(report)
         }
 
-        let report = SubmittedReport(
-            year: month.year,
-            month: month.month,
-            firstSubmittedAt: now,
-            submittedAt: now,
-            entriesClosedAt: monthEntries.map(\.createdAt).max() ?? now,
-            roundingRuleRaw: selectedRule.rawValue,
-            fieldServiceSeconds: summary?.mainDuration ?? 0,
-            actualTotalSeconds: (summary?.totalSeconds ?? 0) + carriedIn,
-            submittedHours: computation.submittedHours,
-            carriedInSeconds: carriedIn,
-            carriedOutSeconds: computation.carriedOutSeconds,
-            roundedUpSeconds: computation.roundedUpSeconds,
-            roundedDownSeconds: computation.roundedDownSeconds,
-            totalBibleStudies: summary?.totalBibleStudies ?? 0,
-            categories: snapshots
-        )
-        context.insert(report)
+        report.roundingRuleRaw = mainResult?.rule?.rawValue ?? ""
+        report.fieldServiceSeconds = mainResult?.line.actualSeconds ?? 0
+        report.actualTotalSeconds = summary?.totalSeconds ?? 0
+        report.submittedHours = submittedHours
+        report.carriedInSeconds = carriedInSeconds
+        report.carriedOutSeconds = carriedOutSeconds
+        report.roundedUpSeconds = roundedUpSeconds
+        report.roundedDownSeconds = roundedDownSeconds
+        report.totalBibleStudies = summary?.totalBibleStudies ?? 0
+        report.categories = snapshots
+        report.reportingLines = results.map(\.persisted)
+
+        reconcileGeneratedEntries(for: report, in: context)
         try context.save()
         return report
     }
@@ -228,20 +229,42 @@ final class SubmitReportFormModel {
 
     private func recompute() {
         preparedContent = nil
-        computation = ReportRoundingCalculator.compute(
-            summary: summary
-                ?? MonthlyReportSummary(
-                    id: month,
-                    displayName: month.monthYearString(calendar: calendar),
-                    totalSeconds: 0,
-                    totalBibleStudies: 0,
-                    mainDuration: 0,
-                    separateDuration: 0,
-                    categories: [],
-                    entries: []
-                ),
-            carriedIn: carriedIn,
-            rule: selectedRule
-        )
+        results = ReportingLineCalculator.compute(lines, rules: rules)
+    }
+
+    private func reconcileGeneratedEntries(for report: SubmittedReport, in context: ModelContext) {
+        let nextMonthStart = month.nextMonth(calendar: calendar).date(calendar: calendar)
+        var existingByLine = Dictionary(grouping: report.generatedEntries ?? [], by: { $0.sourceReportingLineID ?? "" })
+
+        for result in results {
+            guard case .transferred(let seconds) = result.disposition else { continue }
+
+            if let entry = existingByLine[result.id]?.first {
+                if entry.duration != seconds {
+                    entry.duration = seconds
+                    entry.createdAt = now
+                }
+                existingByLine[result.id]?.removeFirst()
+            } else {
+                let entry = Entry(
+                    date: nextMonthStart,
+                    duration: seconds,
+                    tracker: nil,
+                    source: (submission: report, lineID: result.id)
+                )
+                entry.storedTracker =
+                    if result.line.type == .main {
+                        .init(name: String(localized: "category.default.label"), icon: "figure.walk", type: .main)
+                    } else {
+                        .init(name: result.line.name, icon: result.line.iconName, type: .separate)
+                    }
+                entry.createdAt = now
+                context.insert(entry)
+            }
+        }
+
+        for leftover in existingByLine.values.flatMap({ $0 }) {
+            context.delete(leftover)
+        }
     }
 }
