@@ -158,13 +158,15 @@ struct OverviewDateList: View {
 
     private struct DateEntryRow: View, Equatable {
         var entry: Entry
+		
+		var trackerPlaceholderKey = LocalizedStringResource("default.tracker")
 
         var body: some View {
             HStack {
                 Text(entry.date, format: .dateTime.hour().minute())
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
-                Text(entry.tracker?.name ?? "default.tracker")
+				Text(entry.tracker?.name ?? String(localized: trackerPlaceholderKey))
                 Spacer()
                 Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
                     .monospacedDigit()
