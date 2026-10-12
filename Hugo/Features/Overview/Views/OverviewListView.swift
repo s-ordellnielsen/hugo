@@ -17,6 +17,8 @@ struct OverviewListView: View {
     @State var showAddEntrySheet: Bool = false
 
     var body: some View {
+        let groups = OverviewEntryGroups(entries)
+
         VStack(spacing: HugoLayout.Spacing.regular) {
             if entries.isEmpty {
                 ContentUnavailableView {
@@ -43,10 +45,11 @@ struct OverviewListView: View {
                     OverviewListStyleControl(selection: $listStyle)
                 }
                 if listStyle == .byEntry {
-                    OverviewEntryList(entries: entries, selectedEntry: $selectedEntry)
+                    OverviewEntryList(entries: groups.regular, selectedEntry: $selectedEntry)
                 } else if listStyle == .byDate {
-                    OverviewDateList(entries: entries, selectedEntry: $selectedEntry)
+                    OverviewDateList(entries: groups.regular, selectedEntry: $selectedEntry)
                 }
+                OverviewCarriedEntriesView(entries: groups.carried)
             }
         }
         .padding(.top)
@@ -58,6 +61,27 @@ struct OverviewListView: View {
         .sheet(isPresented: $showAddEntrySheet) {
             AddEntryView()
         }
+    }
+}
+
+struct OverviewEntryGroups {
+    let regular: [Entry]
+    let carried: [Entry]
+
+    init(_ entries: [Entry]) {
+        var regularEntries: [Entry] = []
+        var carriedEntries: [Entry] = []
+
+        for entry in entries {
+            if entry.isCarriedIn {
+                carriedEntries.append(entry)
+            } else {
+                regularEntries.append(entry)
+            }
+        }
+
+        self.regular = regularEntries
+        self.carried = carriedEntries
     }
 }
 
@@ -158,15 +182,15 @@ struct OverviewDateList: View {
 
     private struct DateEntryRow: View, Equatable {
         var entry: Entry
-		
-		var trackerPlaceholderKey = LocalizedStringResource("default.tracker")
+
+        var trackerPlaceholderKey = LocalizedStringResource("default.tracker")
 
         var body: some View {
             HStack {
                 Text(entry.date, format: .dateTime.hour().minute())
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
-				Text(entry.tracker?.name ?? String(localized: trackerPlaceholderKey))
+                Text(entry.tracker?.name ?? String(localized: trackerPlaceholderKey))
                 Spacer()
                 Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
                     .monospacedDigit()
@@ -175,6 +199,35 @@ struct OverviewDateList: View {
 
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.entry.id == rhs.entry.id && lhs.entry.date == rhs.entry.date && lhs.entry.duration == rhs.entry.duration
+        }
+    }
+}
+
+struct OverviewCarriedEntriesView: View {
+    var entries: [Entry]
+
+    private var totalDuration: Duration {
+        entries.reduce(into: .zero) { total, entry in
+            total += .seconds(entry.duration)
+        }
+    }
+
+    var body: some View {
+        Button {
+        } label: {
+			HStack(spacing: HugoLayout.Spacing.tight) {
+                Text(
+                    "overview.carried.summary.label"
+                )
+				Text(totalDuration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+					.fontWeight(.semibold)
+            }
+			.font(.caption)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.systemGray5))
+			.foregroundStyle(.secondary)
+            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
     }
 }
