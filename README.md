@@ -27,6 +27,14 @@ Scripts/verify.sh
 
 It runs strict Swift-format lint, Debug tests, and static analysis. `DESTINATION` and `DERIVED_DATA` can be overridden.
 
+### Pre-commit format hook
+
+Run once per clone:
+
+    Scripts/install-hooks.sh
+
+After that, every commit formats the staged Swift files with `swift-format`, adds the fixes to the commit, and rejects the commit only if something cannot be fixed automatically. Files with unstaged changes are not reformatted, only checked. It covers formatting only; run `Scripts/verify.sh` for tests and static analysis. Skip it in an emergency with `git commit --no-verify`.
+
 ## Architecture
 
 * `Hugo/App` — app composition, bootstrap, and CloudKit boundaries.

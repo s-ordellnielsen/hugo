@@ -1,0 +1,47 @@
+#!/bin/sh
+# Formats the staged Swift files under Hugo/ and HugoTests/ with swift-format,
+# adds the result to the commit, then lints exactly what is staged. Formatting
+# and linting only: tests and analysis stay in Scripts/verify.sh. Bypass in an
+# emergency with `git commit --no-verify`.
+set -eu
+
+# Xcode and GUI git clients start hooks with a minimal PATH, so do not rely on it.
+DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
+export DEVELOPER_DIR
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+
+# Added, copied, modified or renamed files only; deleted files cannot be formatted.
+files=$(git diff --cached --name-only --diff-filter=ACMR -- 'Hugo/*.swift' 'HugoTests/*.swift')
+
+if [ -z "$files" ]; then
+    exit 0
+fi
+
+printf '%s\n' "$files" | while IFS= read -r file; do
+    # A file with unstaged changes is skipped: `git add` would stage those changes too.
+    if ! git diff --quiet -- "$file"; then
+        continue
+    fi
+    # A file the formatter cannot handle (for example one that does not parse) is
+    # left for the lint below, which reports it and blocks the commit.
+    xcrun swift-format format --in-place "$file" || continue
+    if ! git diff --quiet -- "$file"; then
+        git add -- "$file"
+        echo "swift-format fixed and re-staged: $file" >&2
+    fi
+done
+
+# Final check on the staged content, which is what the commit will contain. It can
+# differ from the working tree for a partly staged file.
+staged=$(mktemp -d)
+trap 'rm -rf "$staged"' EXIT
+printf '%s\n' "$files" | tr '\n' '\0' | xargs -0 git checkout-index --prefix="$staged/" --
+
+if ! (cd "$staged" && printf '%s\n' "$files" | tr '\n' '\0' | xargs -0 xcrun swift-format lint --strict --configuration "$root/.swift-format"); then
+    echo >&2
+    echo "Commit blocked: swift-format could not fix the problems listed above." >&2
+    echo "Fix them by hand, or for a partly staged file run: xcrun swift-format format --in-place <file>" >&2
+    exit 1
+fi
