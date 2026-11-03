@@ -6,6 +6,7 @@ export DEVELOPER_DIR
 DESTINATION="${DESTINATION:-platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5}"
 DERIVED_DATA="${DERIVED_DATA:-/tmp/HugoVerifyDerivedData}"
 
+Scripts/check-layout.sh
 xcrun swift-format lint --strict --recursive Hugo HugoTests
 xcodebuild test -project Hugo.xcodeproj -scheme Hugo -configuration Debug \
     -destination "$DESTINATION" -derivedDataPath "$DERIVED_DATA" -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO
