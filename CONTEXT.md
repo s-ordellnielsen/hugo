@@ -49,6 +49,9 @@ What the publisher sends the overseer for one month: whole hours for each report
 Hugo's saved copy of a report that was sent, including when it was sent and which entries it covered.
 _Avoid_: Monthly report
 
+**Service month**:
+One month together with its entries and its canonical report. It tells whether the month is submitted, whether it has an unreported change and what it adds to the year total.
+
 **Placeholder report**:
 A saved report for a month that was never actually sent, left behind when older data was upgraded. It counts as not submitted.
 _Avoid_: Sentinel, backfill
