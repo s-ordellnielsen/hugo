@@ -81,6 +81,8 @@ struct FeatureView: View {
 
 ## 5. Domain Vocabulary & Business Logic
 
+Domain terms are defined in `CONTEXT.md` at the repo root. Use those words in type names, comments and plans, and add a term there in the same change when you introduce a new domain concept.
+
 ### Theocratic Year Definition
 In this application, we use a custom calendar system called the **Theocratic Year**. You must respect this definition across all date calculations, database schemas, and UI layouts.
 
