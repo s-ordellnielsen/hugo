@@ -29,9 +29,11 @@ struct AddEntryView: View {
                     Button {
                         form.isCategoryPickerPresented = true
                     } label: {
-                        Label(
-                            form.selectedTracker?.name ?? "entry.add.tracker.none",
-                            systemImage: form.selectedTracker?.iconName ?? "circle")
+                        if let tracker = form.selectedTracker {
+                            Label(tracker.name, systemImage: tracker.iconName)
+                        } else {
+                            Label("entry.add.tracker.none", systemImage: "circle")
+                        }
                     }
                 }
                 Section {

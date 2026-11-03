@@ -11,7 +11,8 @@ struct SettingsButton: View {
             Button {
                 showAccount = true
             } label: {
-                Image(systemName: "person.fill")
+                Label("settings.title", systemImage: "person.fill")
+                    .labelStyle(.iconOnly)
             }
             .sheet(isPresented: $showAccount) {
                 SettingsView(showDismiss: true)

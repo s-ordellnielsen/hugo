@@ -68,7 +68,7 @@ struct ReportingLineCard: View {
             let label = Text("report.line.carried-in.\(duration).\(months)")
 
             HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
-                Text("↘")
+                Text(verbatim: "↘")
                     .accessibilityHidden(true)
                 label
                     .font(.footnote)

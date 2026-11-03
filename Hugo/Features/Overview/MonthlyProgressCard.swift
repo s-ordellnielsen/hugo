@@ -34,7 +34,11 @@ struct MonthlyProgressCard: View {
             .buttonStyle(.card)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
-            .accessibilityValue(Text("a11y.monthly_progress_card.value.\(Int(value))"))
+            .accessibilityValue(
+                monthlyGoal > 0
+                    ? Text("a11y.monthly_progress_card.value.\(Int(value)).\(Int(monthlyGoal))")
+                    : Text("a11y.monthly_progress_card.value.\(Int(value))")
+            )
 
             Button(action: onAddEntry) {
                 Label("entry.add.label", systemImage: "plus")

@@ -35,6 +35,7 @@ struct CategoryProgressBreakdownView: View {
                 }.background(Color(.secondarySystemGroupedBackground)).clipShape(
                     RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.compactCard))
             }.frame(height: HugoLayout.Size.categoryProgressHeight)
+                .accessibilityHidden(true)
             ForEach(rows) { row in
                 HStack {
                     Image(systemName: row.iconName)

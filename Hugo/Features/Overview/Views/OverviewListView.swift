@@ -49,7 +49,9 @@ struct OverviewListView: View {
                 } else if listStyle == .byDate {
                     OverviewDateList(entries: groups.regular, selectedEntry: $selectedEntry)
                 }
-                OverviewCarriedEntriesView(entries: groups.carried)
+                if !groups.carried.isEmpty {
+                    OverviewCarriedEntriesView(entries: groups.carried)
+                }
             }
         }
         .padding(.top)
@@ -211,22 +213,20 @@ struct OverviewCarriedEntriesView: View {
     }
 
     var body: some View {
-        Button {
-        } label: {
-            HStack(spacing: HugoLayout.Spacing.tight) {
-                Text(
-                    "overview.carried.summary.label"
-                )
-                Text(totalDuration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
-                    .fontWeight(.semibold)
-            }
-            .font(.caption)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color(.systemGray5))
-            .foregroundStyle(.secondary)
-            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+        HStack(spacing: HugoLayout.Spacing.tight) {
+            Text(
+                "overview.carried.summary.label"
+            )
+            Text(totalDuration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+                .fontWeight(.semibold)
         }
+        .font(.caption)
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(.systemGray5))
+        .foregroundStyle(.secondary)
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+        .accessibilityElement(children: .combine)
     }
 }
 

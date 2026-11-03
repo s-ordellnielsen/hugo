@@ -14,11 +14,12 @@ struct OverviewListStyleControl: View {
     @Namespace private var glassNamespace
 
     var body: some View {
-        Picker("", selection: $selection) {
-            Image(systemName: OverviewListStyle.byEntry.iconName)
-                .tag(OverviewListStyle.byEntry)
-            Image(systemName: OverviewListStyle.byDate.iconName)
-                .tag(OverviewListStyle.byDate)
+        Picker("overview.list-style.label", selection: $selection) {
+            ForEach([OverviewListStyle.byEntry, .byDate], id: \.self) { style in
+                Image(systemName: style.iconName)
+                    .accessibilityLabel(Text(style.accessibilityLabel))
+                    .tag(style)
+            }
         }
         .pickerStyle(.segmented)
         .labelsHidden()

@@ -15,11 +15,13 @@ struct DefaultCategoryButton: View {
                 errorMessage = error.localizedDescription
             }
         } label: {
-            Image(systemName: tracker.isDefault ? "star.fill" : "star")
+            Label("tracker.options.use-as-default", systemImage: tracker.isDefault ? "star.fill" : "star")
+                .labelStyle(.iconOnly)
                 .foregroundStyle(tracker.isDefault ? .hugoAccent : .primary)
                 .contentTransition(.symbolEffect(.replace))
                 .motion(Motion.feedback, value: tracker.isDefault)
         }
+        .accessibilityAddTraits(tracker.isDefault ? .isSelected : [])
         .errorAlert(message: $errorMessage)
     }
 }
