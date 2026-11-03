@@ -33,6 +33,16 @@ nonisolated enum ReportReminderSchedule {
         return day <= previousMonthGraceDays ? previous : nil
     }
 
+    /// The month whose report reminder should show: the due month, unless it
+    /// already has a real submission. A placeholder report counts as not sent.
+    static func reminderMonth(
+        now: Date, submissions: [SubmittedReport], calendar: Calendar = .current
+    ) -> YearMonth? {
+        guard let due = dueMonth(now: now, calendar: calendar) else { return nil }
+        guard let submission = SubmittedReportSelection.canonical(for: due, in: submissions) else { return due }
+        return SubmittedReportSelection.isReal(submission) ? nil : due
+    }
+
     /// 7 days into the following month during which the previous month's
     /// report is still prompted; after that the reminder goes quiet until the
     /// current month itself becomes due.

@@ -95,4 +95,40 @@ struct ReportReminderScheduleTests {
                 == YearMonth(year: 2026, month: 2)
         )
     }
+
+    @Test
+    func reminderShowsForADueMonthWithoutAReport() {
+        #expect(
+            ReportReminderSchedule.reminderMonth(
+                now: date(2026, 6, 30), submissions: [], calendar: calendar)
+                == YearMonth(year: 2026, month: 6)
+        )
+    }
+
+    @Test
+    func reminderHidesOnceTheMonthIsSubmitted() {
+        let report = SubmittedReport(year: 2026, month: 6, submittedAt: date(2026, 6, 30))
+        #expect(
+            ReportReminderSchedule.reminderMonth(
+                now: date(2026, 6, 30), submissions: [report], calendar: calendar) == nil
+        )
+    }
+
+    @Test
+    func reminderShowsWhenOnlyAPlaceholderExists() {
+        let placeholder = SubmittedReport(year: 2026, month: 6, entriesClosedAt: date(2026, 6, 1))
+        #expect(
+            ReportReminderSchedule.reminderMonth(
+                now: date(2026, 6, 30), submissions: [placeholder], calendar: calendar)
+                == YearMonth(year: 2026, month: 6)
+        )
+    }
+
+    @Test
+    func noReminderWhenNothingIsDue() {
+        #expect(
+            ReportReminderSchedule.reminderMonth(
+                now: date(2026, 6, 15), submissions: [], calendar: calendar) == nil
+        )
+    }
 }

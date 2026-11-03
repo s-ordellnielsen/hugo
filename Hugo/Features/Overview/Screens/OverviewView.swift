@@ -53,13 +53,10 @@ private struct OverviewDayView: View {
             entries: entries, status: PublisherStatus.status(for: statusID), now: .now, calendar: .current)
     }
 
-    /// The month whose report reminder should show, if any: a month is due
-    /// (per `ReportReminderSchedule`) and has no real submission. Backfill
-    /// sentinels (`submittedAt == .distantPast`) count as unsubmitted.
+    /// The month whose report reminder should show, if any. See
+    /// `ReportReminderSchedule.reminderMonth(now:submissions:calendar:)`.
     private var reminderMonth: YearMonth? {
-        guard let due = ReportReminderSchedule.dueMonth(now: .now, calendar: .current) else { return nil }
-        guard let submission = SubmittedReportSelection.canonical(for: due, in: submissions) else { return due }
-        return SubmittedReportSelection.isReal(submission) ? nil : due
+        ReportReminderSchedule.reminderMonth(now: .now, submissions: submissions, calendar: .current)
     }
     var body: some View {
         NavigationStack {
