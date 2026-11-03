@@ -3,6 +3,7 @@ enum UserDefaultsKeys {
     static let hasRunInitialSetup = "hasRunInitialSetup"
 
     static let publisherStatus = "publisherStatus"
+    static let yearlyGoalPacing = "yearlyGoalPacing"
 
     static let durationMinuteInterval = "durationMinuteInterval"
 

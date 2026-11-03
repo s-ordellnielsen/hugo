@@ -44,7 +44,7 @@ nonisolated enum TheocraticYearReportBuilder {
         )
     }
 
-    private static func contribution(
+    static func contribution(
         for month: TheocraticYearMonth
     ) -> (total: TimeInterval, main: TimeInterval, separate: TimeInterval, bibleStudies: Int) {
         if let submission = month.submittedReport, isRealSubmission(submission) {

@@ -18,6 +18,8 @@ nonisolated struct PublisherStatus: Identifiable {
     let shortName: LocalizedStringResource
     let goalPeriod: PublisherGoalPeriod
     let goal: Int
+    /// Hours of separate-category time that may count on top of the monthly goal.
+    var separateAllowanceHours: Int = 0
 
     var monthlyGoal: Int {
         goalPeriod == .yearly ? goal / 12 : goal
@@ -25,6 +27,14 @@ nonisolated struct PublisherStatus: Identifiable {
 
     var yearlyGoal: Int {
         goalPeriod == .monthly ? goal * 12 : goal
+    }
+
+    /// The credit rule for statuses that count hours toward a yearly goal; nil otherwise.
+    var yearlyGoalRule: YearlyGoalRule? {
+        guard goalPeriod == .yearly, goal > 0 else { return nil }
+        return YearlyGoalRule(
+            monthlyGoalSeconds: TimeInterval(monthlyGoal) * 3_600,
+            separateAllowanceSeconds: TimeInterval(separateAllowanceHours) * 3_600)
     }
 
     var goalDescription: LocalizedStringResource {
@@ -47,7 +57,8 @@ nonisolated struct PublisherStatus: Identifiable {
     static let all: [PublisherStatus] = [
         PublisherStatus(
             id: "regular-pioneer", nameKey: "publisher.status.regularpioneer.full",
-            shortName: "publisher.status.regularpioneer.short", goalPeriod: .yearly, goal: 600),
+            shortName: "publisher.status.regularpioneer.short", goalPeriod: .yearly, goal: 600,
+            separateAllowanceHours: 5),
         PublisherStatus(
             id: "auxiliary-pioneer", nameKey: "publisher.status.auxiliary.full",
             shortName: "publisher.status.auxiliary.short", goalPeriod: .monthly, goal: 30),
