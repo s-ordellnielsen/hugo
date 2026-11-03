@@ -56,7 +56,7 @@ struct OverviewListView: View {
         .motion(Motion.presence, value: entries.count)
         .sheet(item: $selectedEntry) { entry in
             EntryDetailView(entry: entry)
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showAddEntrySheet) {
             AddEntryView()

@@ -4,6 +4,7 @@ import SwiftUI
 struct EntryDetailView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
+    @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
     var entry: Entry
     @State var selectTrackerIsPresented: Bool = false
 
@@ -14,8 +15,15 @@ struct EntryDetailView: View {
         @Bindable var entry = entry
         NavigationStack {
             Form {
+                Section("entry.duration.label") {
+                    DurationWheelPicker(
+                        duration: $entry.duration,
+                        minuteInterval: durationMinuteInterval,
+                        maxDuration: max(24 * 60 * 60, entry.duration)
+                    )
+                }
+
                 Section {
-                    EntryDurationPicker(duration: $entry.duration)
                     DatePicker(selection: $entry.date) {
                         Label("entry.date.label", systemImage: "calendar")
                     }

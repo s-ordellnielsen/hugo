@@ -11,11 +11,20 @@ struct AddEntryFormModelTests {
         return calendar
     }()
 
-    @Test
-    func convertsDurationToSeconds() {
-        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
-        model.durationDate = date(2026, 1, 1, hour: 1, minute: 30)
-        #expect(model.durationInSeconds == 5_400)
+    @Test(arguments: [9_000.0, 86_400.0])
+    func durationIsStoredWithoutClockConversion(seconds: TimeInterval) throws {
+        var copenhagen = Calendar(identifier: .gregorian)
+        copenhagen.timeZone = try #require(TimeZone(identifier: "Europe/Copenhagen"))
+        // 2027-03-28 is the EU spring-forward Sunday; 02:00-02:59 does not exist.
+        let springForward = try #require(
+            copenhagen.date(from: DateComponents(year: 2027, month: 3, day: 28, hour: 12)))
+        let model = AddEntryFormModel(calendar: copenhagen, now: springForward)
+        model.selectedTracker = Tracker(name: "Field Service")
+
+        model.durationInSeconds = seconds
+
+        #expect(model.durationInSeconds == seconds)
+        #expect(model.isSubmitDisabled == false)
     }
 
     @Test
@@ -56,7 +65,7 @@ struct AddEntryFormModelTests {
     @Test
     func emptyCategoryPreventsDraftCreation() {
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
-        model.durationDate = date(2026, 1, 1, hour: 1)
+        model.durationInSeconds = 3_600
         #expect(model.draft() == nil)
         #expect(model.validationMessage != nil)
     }
@@ -64,7 +73,7 @@ struct AddEntryFormModelTests {
     @Test
     func draftWithoutTrackerProducesLocalizedValidationMessage() {
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
-        model.durationDate = date(2026, 1, 1, hour: 1)
+        model.durationInSeconds = 3_600
         #expect(model.draft() == nil)
         #expect(model.validationMessage != "entry.add.validation.invalid")
         #expect(model.validationMessage?.isEmpty == false)
@@ -84,13 +93,6 @@ struct AddEntryFormModelTests {
         #expect(model.selectedTracker?.id == selected.id)
         model.reconcileSelection(with: [first, defaultTracker])
         #expect(model.selectedTracker?.id == defaultTracker.id)
-    }
-
-    @Test(arguments: [0.0, 60.0, 5_400.0, 86_340.0])
-    func durationRoundTrips(seconds: TimeInterval) {
-        let reference = date(2026, 1, 1)
-        let pickerDate = EntryDurationConversion.date(from: seconds, calendar: calendar, reference: reference)
-        #expect(EntryDurationConversion.seconds(from: pickerDate, calendar: calendar) == seconds)
     }
 
     private func date(_ year: Int, _ month: Int, _ day: Int, hour: Int = 0, minute: Int = 0) -> Date {

@@ -13,7 +13,7 @@ struct EntryDraft {
 final class AddEntryFormModel {
     var date: Date
     var time: Date?
-    var durationDate: Date
+    var durationInSeconds: TimeInterval = 0
     var bibleStudies = 0
     var selectedTracker: Tracker?
     var isTimePickerPresented = false
@@ -31,12 +31,6 @@ final class AddEntryFormModel {
         self.calendar = calendar
         self.now = now
         self.date = calendar.startOfDay(for: seededDate ?? now)
-        self.durationDate = calendar.startOfDay(for: now)
-    }
-
-    var durationInSeconds: TimeInterval {
-        get { EntryDurationConversion.seconds(from: durationDate, calendar: calendar) }
-        set { durationDate = EntryDurationConversion.date(from: newValue, calendar: calendar, reference: durationDate) }
     }
 
     var isSubmitDisabled: Bool {
@@ -107,21 +101,5 @@ final class AddEntryFormModel {
         components.minute = snappedMinutes % 60
         components.second = 0
         return calendar.date(from: components) ?? date
-    }
-}
-
-enum EntryDurationConversion {
-    static func seconds(from date: Date, calendar: Calendar) -> TimeInterval {
-        let components = calendar.dateComponents([.hour, .minute, .second], from: date)
-        return TimeInterval((components.hour ?? 0) * 3600 + (components.minute ?? 0) * 60 + (components.second ?? 0))
-    }
-
-    static func date(from seconds: TimeInterval, calendar: Calendar, reference: Date) -> Date {
-        var components = calendar.dateComponents([.year, .month, .day], from: reference)
-        let wholeSeconds = max(0, Int(seconds))
-        components.hour = wholeSeconds / 3600
-        components.minute = (wholeSeconds % 3600) / 60
-        components.second = wholeSeconds % 60
-        return calendar.date(from: components) ?? reference
     }
 }
