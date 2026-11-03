@@ -5,6 +5,7 @@ import Testing
 @testable import Hugo
 
 @MainActor
+@Suite(.serialized)
 struct SchemaMigrationTests {
     @Test
     func migratesReportTrackersIntoEntries() throws {
