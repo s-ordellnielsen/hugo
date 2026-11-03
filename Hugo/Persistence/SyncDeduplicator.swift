@@ -98,16 +98,16 @@ struct SyncDeduplicator {
 
         var removed = 0
         for (month, group) in groups where group.count > 1 {
-            guard let winner = TheocraticYearReportBuilder.canonicalSubmission(for: month, in: group)
+            guard let winner = SubmittedReportSelection.canonical(for: month, in: group)
             else { continue }
 
             // Real rows that tie cannot be ordered safely: two devices could
             // each keep a different one and together delete both.
-            let winnerIsReal = TheocraticYearReportBuilder.isRealSubmission(winner)
+            let winnerIsReal = SubmittedReportSelection.isReal(winner)
             if winnerIsReal {
                 let tied = group.contains { other in
                     other !== winner
-                        && TheocraticYearReportBuilder.isRealSubmission(other)
+                        && SubmittedReportSelection.isReal(other)
                         && other.submittedAt == winner.submittedAt
                         && other.entriesClosedAt == winner.entriesClosedAt
                 }
@@ -118,7 +118,7 @@ struct SyncDeduplicator {
             // lines to a placeholder.
             if winnerIsReal, winner.reportingLines.isEmpty,
                 let donor = group.first(where: {
-                    !TheocraticYearReportBuilder.isRealSubmission($0) && !$0.reportingLines.isEmpty
+                    !SubmittedReportSelection.isReal($0) && !$0.reportingLines.isEmpty
                 })
             {
                 winner.reportingLines = donor.reportingLines
@@ -158,7 +158,7 @@ struct SyncDeduplicator {
         let duplicated = groups.filter { $0.value.count > 1 }
         guard !duplicated.isEmpty else { return 0 }
 
-        let canonical = TheocraticYearReportBuilder.canonicalSubmissionsByMonth(
+        let canonical = SubmittedReportSelection.canonicalByMonth(
             try context.fetch(FetchDescriptor<SubmittedReport>())
         )
 

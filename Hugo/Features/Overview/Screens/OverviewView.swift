@@ -58,10 +58,8 @@ private struct OverviewDayView: View {
     /// sentinels (`submittedAt == .distantPast`) count as unsubmitted.
     private var reminderMonth: YearMonth? {
         guard let due = ReportReminderSchedule.dueMonth(now: .now, calendar: .current) else { return nil }
-        guard let submission = TheocraticYearReportBuilder.canonicalSubmission(for: due, in: submissions) else {
-            return due
-        }
-        return (submission.submittedAt ?? .distantPast) == .distantPast ? due : nil
+        guard let submission = SubmittedReportSelection.canonical(for: due, in: submissions) else { return due }
+        return SubmittedReportSelection.isReal(submission) ? nil : due
     }
     var body: some View {
         NavigationStack {

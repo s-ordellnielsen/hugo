@@ -58,7 +58,7 @@ final class SubmitReportFormModel {
         }
         self.entries = entries
         self.submissions = submissions
-        self.submissionsByMonth = TheocraticYearReportBuilder.canonicalSubmissionsByMonth(submissions)
+        self.submissionsByMonth = SubmittedReportSelection.canonicalByMonth(submissions)
         self.monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
         self.summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
         self.lines = ReportingLineCalculator.lines(from: monthEntries, calendar: calendar)
@@ -111,8 +111,7 @@ final class SubmitReportFormModel {
     /// into the next month, and the next month already has a real submission.
     var changesSubmittedNextMonth: Bool {
         let next = month.nextMonth(calendar: calendar)
-        guard let nextReport = submissionsByMonth[next],
-            (nextReport.submittedAt ?? .distantPast) != .distantPast
+        guard let nextReport = submissionsByMonth[next], SubmittedReportSelection.isReal(nextReport)
         else { return false }
 
         var existing: [String: TimeInterval] = [:]
