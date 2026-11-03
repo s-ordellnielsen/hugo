@@ -25,8 +25,6 @@ final class SubmitReportFormModel {
     private let locale: Locale
     private let userDefaults: UserDefaults
 
-    private var entries: [Entry] = []
-    private var submissions: [SubmittedReport] = []
     private var submissionsByMonth: [YearMonth: SubmittedReport] = [:]
     private var monthEntries: [Entry] = []
     private(set) var summary: MonthlyReportSummary?
@@ -56,8 +54,6 @@ final class SubmitReportFormModel {
             pendingLoad = (entries, submissions)
             return
         }
-        self.entries = entries
-        self.submissions = submissions
         self.submissionsByMonth = SubmittedReportSelection.canonicalByMonth(submissions)
         self.monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
         self.summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
