@@ -215,18 +215,18 @@ struct OverviewCarriedEntriesView: View {
     var body: some View {
         Button {
         } label: {
-			HStack(spacing: HugoLayout.Spacing.tight) {
+            HStack(spacing: HugoLayout.Spacing.tight) {
                 Text(
                     "overview.carried.summary.label"
                 )
-				Text(totalDuration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
-					.fontWeight(.semibold)
+                Text(totalDuration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
+                    .fontWeight(.semibold)
             }
-			.font(.caption)
+            .font(.caption)
             .frame(maxWidth: .infinity)
             .padding()
             .background(Color(.systemGray5))
-			.foregroundStyle(.secondary)
+            .foregroundStyle(.secondary)
             .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
     }
