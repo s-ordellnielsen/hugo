@@ -42,11 +42,4 @@ struct DurationFormattingTests {
     @Test func hoursStringClampsNegativeToZero() {
         #expect(ServiceDurationFormatter.hoursString(from: -5, locale: Locale(identifier: "en_US")) == "0 hours")
     }
-
-    @Test func hoursStringDanishProbe() {
-        let danish = Locale(identifier: "da")
-        print("HOURS_DA 0:", ServiceDurationFormatter.hoursString(from: 0, locale: danish))
-        print("HOURS_DA 1h:", ServiceDurationFormatter.hoursString(from: 3_600, locale: danish))
-        print("HOURS_DA 152h30:", ServiceDurationFormatter.hoursString(from: 152 * 3_600 + 1_800, locale: danish))
-    }
 }
