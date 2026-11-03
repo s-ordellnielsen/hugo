@@ -1,16 +1,12 @@
-Hugo er tilbage med en ny opdatering, og denne gang er der en del ændringer. Lad os dykke ned i det:
+Vi er tilbage med en ny opdatering til Hugo og i denne opdatering kommer der en funktion, mange pionerer har ventet på. Lad os dykke ned i det.
 
-- Ny overskrift på Tjenesteår-siden for almindelige pionerer: den viser nu de timer, der tæller med mod dit årsmål, og en bjælke viser, om du ligger foran eller bagud i forhold til tempoet. Tryk på overskriften for at se detaljerne, blandt andet hvordan hver måned tæller med. Hvis du også har tid i andre kategorier, vises din faktiske total under de timer, der tæller med
-- Ny indstilling under Generelt: vælg, hvor meget af den aktuelle måned du skal have nået i dag, når du sammenligner med dit årsmål
-- Varigheder på Tjenesteår-siden og i månedens totaler vises nu som timer (for eksempel "152 timer") i stedet for 152:00
-- Opdateret indsendelsesflow, hvor du selv kan vælge, om du vil runde op eller overføre ekstra minutter for hver kategori, når du indsender din rapport
-- Ny skærm til indsendelse
-- Overførte poster har nu deres egen sektion
-- Hugo advarer dig nu, når en måned, du allerede har indsendt, er blevet ændret, og inden du indsender en måned igen
-- Ny standardvisning i Overblik: Grupperet efter dato. Denne visning samler poster i grupper og giver et enklere overblik. Den er perfekt, hvis du tilføjer flere poster på de samme dage. Prøv den og se, hvordan den føles (hvis den nye visning ikke passer til dig, kan du skifte tilbage til den gamle)
-- Fjernet statuslinjen under månedens totaler i Overblik. Den vender tilbage i en senere opdatering, når jeg har fundet den rigtige løsning
-- Varigheden på en post redigeres nu med en hjulvælger
-- Rettelser til dobbelte kategorier og rapporter, der kunne opstå efter synkronisering mellem enheder
-- Mindre designændringer, der (forhåbentlig) gør oplevelsen mere behagelig
+ÅRSMÅL
+Tidligere har Hugo vist, hvor mange timer du har rapporteret totalt set, men har ikke taget højde for at andre former for tjeneste (som BEC og LDC) kunne påvirke dit årsmål.
 
-Denne opdatering er ret stor og gør det nemmere for mig at tilføje nye funktioner fremover. Jeg har været omhyggelig, men der er en højere risiko for fejl i denne opdatering. Kontakt mig eller send feedback, hvis du oplever problemer :)
+Nu tager Hugo højde for dette, med en helt ny og opdateret Tjenesteår-side. I den nye version viser Hugo det totale antal timer for det nuværende tjenesteår, som tæller mod dit årsmål. Du vil nedenunder kunne se dit totale antal rapporterede timer (hvis du ikke ser denne, betyder det at alle dine rapporterede timer tæller mod dit årsmål)
+
+Du vil også kunne se en ny grafik, der hjælper dig til at få et overblik over, hvordan det går med dit tjenesteår. Er grafikken til at forstå? Eller har du nogle ideer til, hvordan jeg kan forbedre funktionen?
+
+ÆNDRINGER
+- Mindre fejlrettelser efter seneste kategori-baserede opdeling på oversigtsiden
+- Generelle fejlrettelser og forbedringer, der gør appen mere stabil
