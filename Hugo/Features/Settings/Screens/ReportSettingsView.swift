@@ -44,7 +44,14 @@ struct ReportSettingsView: View {
             } header: {
                 Text("settings.screen.report.section.content.label")
             }
+
+            Section {
+                Button("report.rounding.help.link", systemImage: "questionmark.circle") {
+                    showingHelp = true
+                }
+            }
         }
+        .sheet(isPresented: $showingHelp) { HelpView(for: "RoundingRule") }
         .navigationTitle("settings.group.settings.report")
     }
 

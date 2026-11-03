@@ -1172,7 +1172,6 @@
     },
     "publisher.status.goal.description.monthly" : {
       "comment" : "A publisher status goal expressed as a number of hours per month.",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -1208,7 +1207,6 @@
     },
     "publisher.status.goal.description.yearly" : {
       "comment" : "A publisher status goal expressed as a number of hours per year.",
-      "extractionState" : "extracted_with_value",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -1753,6 +1751,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Time to submit your %@ report"
+          }
+        }
+      }
+    },
+    "report.rounding.help.link" : {
+      "comment" : "Button that opens the help page explaining the rounding rules for leftover minutes.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvordan fungerer afrunding?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How does rounding work?"
           }
         }
       }

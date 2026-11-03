@@ -14,6 +14,7 @@ struct SubmitReportView: View {
     @State private var showingCopiedNotice = false
     @State private var saveErrorMessage: String?
     @State private var showingSettings = false
+    @State private var showingRoundingHelp = false
 
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
     @AppStorage(UserDefaultsKeys.overseerPhoneNumber) private var overseerPhoneNumber = ""
@@ -77,6 +78,14 @@ struct SubmitReportView: View {
                         ),
                         monthName: { $0.monthName() }
                     )
+                }
+
+                if model.results.contains(where: { $0.line.needsRule }) {
+                    Button("report.rounding.help.link", systemImage: "questionmark.circle") {
+                        showingRoundingHelp = true
+                    }
+                    .font(.subheadline)
+                    .padding(.top, HugoLayout.Spacing.compact)
                 }
 
                 Spacer(minLength: HugoLayout.Spacing.section)
@@ -180,6 +189,7 @@ struct SubmitReportView: View {
             }
             .presentationDetents([.large])
         }
+        .sheet(isPresented: $showingRoundingHelp) { HelpView(for: "RoundingRule") }
         .onAppear { syncModel() }
         .onChange(of: entries) { syncModel() }
         .onChange(of: submissions) { syncModel() }

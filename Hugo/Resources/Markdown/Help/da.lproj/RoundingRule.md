@@ -41,4 +41,6 @@ For eksempel indsendes **1 time og 30 minutter** som **1 time**, mens de restere
 
 Vælg den regel, der passer bedst til den måde, du rapporterer din tid på.
 
-Du kan vælge din standardregel i Indstillinger. Du
+Du vælger en regel for hver linje, når du indsender en rapport. Hvis du indsender den samme måned igen, starter Hugo med de regler, du valgte sidst.
+
+Når du overfører minutter, lægger Hugo dem til den næste måned med datoen den 1. Du kan se dem på Overblik som tid overført fra forrige måned.

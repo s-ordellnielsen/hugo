@@ -41,5 +41,6 @@ For example, **1 hour and 30 minutes** is submitted as **1 hour**, but the remai
 
 Choose the rule that fits your needs the best, only you know how you report your time.
 
-You can select your default rule in settings and can be customized on a per report basis when submitting a report.
+You choose a rule for each line when you submit a report. If you submit the same month again, Hugo starts with the rules you chose last time.
 
+When you transfer minutes, Hugo adds them to the next month as an entry dated the 1st. You will see it on the Overview as time carried in from the previous month.
