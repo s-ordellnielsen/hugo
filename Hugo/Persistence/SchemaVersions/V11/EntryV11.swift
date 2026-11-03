@@ -51,10 +51,10 @@ extension SchemaV11 {
                 self.sourceReportMonth = source.submission.month
             }
         }
-		
-		var isCarriedIn: Bool {
-			sourceReportYear != nil && sourceReportMonth != nil
-		}
+
+        var isCarriedIn: Bool {
+            sourceReportYear != nil && sourceReportMonth != nil
+        }
 
         struct EntryTracker: Codable, Hashable, Identifiable {
             var name: String = ""
