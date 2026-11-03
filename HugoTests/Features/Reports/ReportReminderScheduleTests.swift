@@ -181,4 +181,87 @@ struct ReportReminderScheduleTests {
             ) == false
         )
     }
+
+    // MARK: - Changed totals after submission
+
+    private let june = YearMonth(year: 2026, month: 6)
+
+    private func comparableReport(mainSeconds: TimeInterval, bibleStudies: Int = 0) -> SubmittedReport {
+        SubmittedReport(
+            year: 2026, month: 6,
+            firstSubmittedAt: date(2026, 7, 1), submittedAt: date(2026, 7, 1),
+            entriesClosedAt: date(2026, 6, 30, hour: 10),
+            actualTotalSeconds: mainSeconds,
+            totalBibleStudies: bibleStudies,
+            reportingLines: [
+                .init(
+                    typeRaw: TrackerType.main.rawValue, typeName: "", durationInSeconds: mainSeconds,
+                    submittedHours: Int(mainSeconds / 3_600))
+            ]
+        )
+    }
+
+    private func oldEntry(seconds: TimeInterval, bibleStudies: Int? = nil, tracker: Tracker? = nil) -> Entry {
+        let entry = Entry(date: date(2026, 6, 10), duration: seconds, tracker: tracker, bibleStudies: bibleStudies)
+        entry.createdAt = date(2026, 6, 10, hour: 9)
+        return entry
+    }
+
+    private func flagged(_ report: SubmittedReport, _ entries: [Entry]) -> Bool {
+        ReportReminderSchedule.hasUnreportedEntries(
+            report: report, entries: entries, month: june, calendar: calendar)
+    }
+
+    @Test
+    func unchangedComparableMonthIsNotFlagged() {
+        #expect(flagged(comparableReport(mainSeconds: 3_600), [oldEntry(seconds: 3_600)]) == false)
+    }
+
+    @Test
+    func editedDurationIsFlagged() {
+        #expect(flagged(comparableReport(mainSeconds: 3_600), [oldEntry(seconds: 5_400)]) == true)
+    }
+
+    @Test
+    func deletedEntryIsFlagged() {
+        #expect(flagged(comparableReport(mainSeconds: 3_600), []) == true)
+    }
+
+    @Test
+    func newSeparateLineIsFlagged() {
+        let bethel = Tracker(name: "Bethel", type: .separate)
+        let entries = [oldEntry(seconds: 3_600), oldEntry(seconds: 1_800, tracker: bethel)]
+        #expect(flagged(comparableReport(mainSeconds: 3_600), entries) == true)
+    }
+
+    @Test
+    func changedBibleStudiesIsFlagged() {
+        let report = comparableReport(mainSeconds: 3_600, bibleStudies: 1)
+        #expect(flagged(report, [oldEntry(seconds: 3_600, bibleStudies: 2)]) == true)
+    }
+
+    @Test
+    func lateSyncedEntryIsFlagged() {
+        let entries = [oldEntry(seconds: 3_600), oldEntry(seconds: 1_800)]
+        #expect(flagged(comparableReport(mainSeconds: 3_600), entries) == true)
+    }
+
+    @Test
+    func nonComparableReportKeepsTheCreatedAtRule() {
+        let report = SubmittedReport(
+            year: 2026, month: 6,
+            firstSubmittedAt: date(2026, 7, 1), submittedAt: date(2026, 7, 1),
+            entriesClosedAt: date(2026, 6, 30, hour: 10),
+            actualTotalSeconds: 5_400,
+            reportingLines: [
+                .init(typeRaw: TrackerType.main.rawValue, typeName: "", durationInSeconds: 3_600, submittedHours: 1)
+            ]
+        )
+        let edited = oldEntry(seconds: 5_400)
+        #expect(flagged(report, [edited]) == false)
+
+        let newer = Entry(date: date(2026, 6, 25), duration: 600, tracker: nil)
+        newer.createdAt = date(2026, 7, 2, hour: 9)
+        #expect(flagged(report, [edited, newer]) == true)
+    }
 }

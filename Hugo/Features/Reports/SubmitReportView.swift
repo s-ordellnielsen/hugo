@@ -15,6 +15,7 @@ struct SubmitReportView: View {
     @State private var saveErrorMessage: String?
     @State private var showingSettings = false
     @State private var showingRoundingHelp = false
+    @State private var pendingSend: (() -> Void)?
 
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
     @AppStorage(UserDefaultsKeys.overseerPhoneNumber) private var overseerPhoneNumber = ""
@@ -35,9 +36,14 @@ struct SubmitReportView: View {
         let prev = YearMonth.previous(before: month)
         let prevYear = prev.year
         let prevMonth = prev.month
+        let next = month.nextMonth()
+        let nextYear = next.year
+        let nextMonth = next.month
         _submissions = Query(
             filter: #Predicate<SubmittedReport> {
-                ($0.year == targetYear && $0.month == targetMonth) || ($0.year == prevYear && $0.month == prevMonth)
+                ($0.year == targetYear && $0.month == targetMonth)
+                    || ($0.year == prevYear && $0.month == prevMonth)
+                    || ($0.year == nextYear && $0.month == nextMonth)
             },
             sort: \SubmittedReport.year
         )
@@ -138,7 +144,7 @@ struct SubmitReportView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button("report.submit.send-message", systemImage: "arrow.up.message.fill") {
-                    sendViaMessages()
+                    confirmIfNeeded(sendViaMessages)
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.glassProminent)
@@ -148,12 +154,12 @@ struct SubmitReportView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("common.more", systemImage: "ellipsis") {
                     Button("report.submit.send-message", systemImage: "arrow.up.message") {
-                        sendViaMessages()
+                        confirmIfNeeded(sendViaMessages)
                     }
                     .disabled(!model.canSend || !MessageComposeView.canSendText)
 
                     Button("report.submit.copy", systemImage: "document.on.document") {
-                        copyReport()
+                        confirmIfNeeded(copyReport)
                     }
                     .disabled(!model.canSend)
                 }
@@ -162,9 +168,9 @@ struct SubmitReportView: View {
         .safeAreaInset(edge: .bottom) {
             Button {
                 if MessageComposeView.canSendText {
-                    sendViaMessages()
+                    confirmIfNeeded(sendViaMessages)
                 } else {
-                    copyReport()
+                    confirmIfNeeded(copyReport)
                 }
             } label: {
                 Text(bottomButtonTitle)
@@ -214,6 +220,26 @@ struct SubmitReportView: View {
             }
         }
         .errorAlert(message: $saveErrorMessage)
+        .confirmationDialog(
+            "report.submit.next-month-warning.message",
+            isPresented: Binding(get: { pendingSend != nil }, set: { if !$0 { pendingSend = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("report.submit.next-month-warning.continue") {
+                let action = pendingSend
+                pendingSend = nil
+                action?()
+            }
+            Button(role: .cancel) { pendingSend = nil }
+        }
+    }
+
+    private func confirmIfNeeded(_ action: @escaping () -> Void) {
+        if model.changesSubmittedNextMonth {
+            pendingSend = action
+        } else {
+            action()
+        }
     }
 
     private func persist() {

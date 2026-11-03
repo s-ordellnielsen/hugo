@@ -1386,13 +1386,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Registreringer tilføjet efter indsendelsen er markeret nedenfor. Indsend en opdateret rapport for at medtage dem."
+            "value" : "Denne måned er ændret, siden du indsendte den. Nye registreringer er markeret nedenfor. Indsend en opdateret rapport for at medtage ændringerne."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entries added after submission are marked below. Submit an updated report to include them."
+            "value" : "This month has changed since you submitted it. New entries are marked below. Submit an updated report to include the changes."
           }
         }
       }
@@ -1812,13 +1812,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nye registreringer er ikke med i den indsendte rapport"
+            "value" : "Ændret siden rapporten blev indsendt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New entries are not included in the submitted report"
+            "value" : "Changed since the report was submitted"
           }
         }
       }
@@ -1870,6 +1870,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copy to Clipboard"
+          }
+        }
+      }
+    },
+    "report.submit.next-month-warning.continue" : {
+      "comment" : "Button in the re-submission confirmation that continues sending the report.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsæt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        }
+      }
+    },
+    "report.submit.next-month-warning.message" : {
+      "comment" : "Confirmation shown before re-submitting a month when this changes minutes carried into the next month, which was already submitted.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det ændrer de minutter, der er overført til næste måned, som du allerede har rapporteret. Hugo markerer næste måned som ændret, så du kan indsende den igen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This changes the minutes carried into next month, which you have already reported. Hugo will mark next month as changed so you can submit it again."
           }
         }
       }

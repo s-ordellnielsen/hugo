@@ -172,6 +172,80 @@ struct SubmitReportFormModelTests {
         #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
     }
 
+    private func persistJuneWithTransfer(
+        in context: ModelContext,
+        julySubmitted: Bool
+    ) throws -> (june: SubmittedReport, july: SubmittedReport?) {
+        let firstModel = makeModel()
+        firstModel.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [])
+        firstModel.setRule(.transfer, for: mainLineID(in: firstModel))
+        let june = try #require(try firstModel.persistSubmission(in: context))
+
+        guard julySubmitted else { return (june, nil) }
+        let july = SubmittedReport(
+            year: 2026, month: 7,
+            firstSubmittedAt: now, submittedAt: now,
+            entriesClosedAt: now.addingTimeInterval(3_600),
+            actualTotalSeconds: 1_800,
+            reportingLines: [
+                .init(typeRaw: TrackerType.main.rawValue, typeName: "", durationInSeconds: 1_800, submittedHours: 0)
+            ]
+        )
+        context.insert(july)
+        try context.save()
+        return (june, july)
+    }
+
+    @Test
+    func resubmissionThatRemovesCarryIntoSubmittedMonthWarns() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let (june, july) = try persistJuneWithTransfer(in: context, julySubmitted: true)
+        let julyReport = try #require(july)
+
+        let model = makeModel(now: now.addingTimeInterval(86_400))
+        model.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [june, julyReport])
+        model.setRule(.up, for: mainLineID(in: model))
+        #expect(model.changesSubmittedNextMonth == true)
+
+        model.setRule(.transfer, for: mainLineID(in: model))
+        #expect(model.changesSubmittedNextMonth == false)
+    }
+
+    @Test
+    func resubmissionWithoutSubmittedNextMonthDoesNotWarn() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let (june, _) = try persistJuneWithTransfer(in: context, julySubmitted: false)
+
+        let model = makeModel(now: now.addingTimeInterval(86_400))
+        model.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [june])
+        model.setRule(.up, for: mainLineID(in: model))
+        #expect(model.changesSubmittedNextMonth == false)
+    }
+
+    @Test
+    func nextMonthIsFlaggedAfterCarryChanges() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let (june, july) = try persistJuneWithTransfer(in: context, julySubmitted: true)
+        let julyReport = try #require(july)
+
+        let model = makeModel(now: now.addingTimeInterval(86_400))
+        model.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [june, julyReport])
+        model.setRule(.up, for: mainLineID(in: model))
+        _ = try #require(try model.persistSubmission(in: context))
+
+        let julyEntries = try context.fetch(FetchDescriptor<Entry>()).filter {
+            $0.date.yearMonth(using: calendar) == YearMonth(year: 2026, month: 7)
+        }
+        #expect(
+            ReportReminderSchedule.hasUnreportedEntries(
+                report: julyReport, entries: julyEntries, month: YearMonth(year: 2026, month: 7), calendar: calendar)
+                == true
+        )
+    }
+
     @Test
     func unchangedTransferKeepsExistingGeneratedEntryAndCreationDate() throws {
         let container = try InMemoryModelContainer.make()

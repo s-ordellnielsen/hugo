@@ -91,6 +91,25 @@ final class SubmitReportFormModel {
         submissionsByMonth[month]
     }
 
+    /// True when submitting now would change, add or remove minutes carried
+    /// into the next month, and the next month already has a real submission.
+    var changesSubmittedNextMonth: Bool {
+        let next = month.nextMonth(calendar: calendar)
+        guard let nextReport = submissionsByMonth[next],
+            (nextReport.submittedAt ?? .distantPast) != .distantPast
+        else { return false }
+
+        var existing: [String: TimeInterval] = [:]
+        for entry in existingSubmission?.generatedEntries ?? [] {
+            existing[entry.sourceReportingLineID ?? "", default: 0] += entry.duration
+        }
+        var planned: [String: TimeInterval] = [:]
+        for result in results {
+            if case .transferred(let seconds) = result.disposition { planned[result.id] = seconds }
+        }
+        return existing != planned
+    }
+
     /// A report can be submitted for every past or current month, including
     /// a zero-activity month. Persisting that zero-valued snapshot records an
     /// intentional report submission and prevents the reminder from recurring.
