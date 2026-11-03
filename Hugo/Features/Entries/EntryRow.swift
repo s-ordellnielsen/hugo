@@ -38,7 +38,6 @@ struct EntryRow: View {
                         )
                 }
                 .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
-                // .background(Color(.red))
                 VStack(alignment: .leading) {
                     HStack(spacing: HugoLayout.Spacing.small) {
                         Text(ServiceDurationFormatter.string(from: entry.duration))

@@ -1,4 +1,5 @@
 enum UserDefaultsKeys {
+    static let isOnboarding = "isOnboarding"
     static let hasRunInitialSetup = "hasRunInitialSetup"
 
     static let publisherStatus = "publisherStatus"

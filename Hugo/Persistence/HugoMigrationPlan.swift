@@ -1,5 +1,5 @@
 //
-//  Migration.swift
+//  HugoMigrationPlan.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 07/11/2025.
@@ -359,13 +359,9 @@ enum MigrationPlan: SchemaMigrationPlan {
                 )
                 report.reportingLines = submittedReportingLines
 
-                // Preserve the V10 report-level values while adding the V11
-                // reporting-line and carry-entry projections.
-                //report.roundingRuleRaw = legacyReport.roundingRuleRaw
-                //report.carriedInSeconds = legacyReport.carriedInSeconds
-                //report.carriedOutSeconds = legacyReport.carriedOutSeconds
-                //report.roundedUpSeconds = legacyReport.roundedUpSeconds
-                //report.roundedDownSeconds = legacyReport.roundedDownSeconds
+                // The V10 report-level fields (rounding rule, carried and rounded
+                // seconds) carry over unchanged through this stage's inferred mapping.
+                // This stage only adds reporting lines and carried-in entries.
             }
 
             legacyReports = []

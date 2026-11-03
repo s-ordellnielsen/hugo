@@ -8,7 +8,7 @@ struct AppRootView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
 
-    @AppStorage("isOnboarding") private var needsOnboarding = true
+    @AppStorage(UserDefaultsKeys.isOnboarding) private var needsOnboarding = true
 
     @State private var bootstrapper = AppBootstrapper()
     @State private var selectedTab: AppTab = .overview

@@ -1,5 +1,5 @@
 //
-//  AppSettingsView.swift
+//  GeneralSettingsView.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 06/08/2026.

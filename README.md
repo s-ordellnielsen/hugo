@@ -37,12 +37,16 @@ After that, every commit formats the staged Swift files with `swift-format`, add
 
 ## Architecture
 
-* `Hugo/App` — app composition, bootstrap, and CloudKit boundaries.
-* `Hugo/Domain` — pure publisher-status and user-default domain values.
-* `Hugo/Persistence` — SwiftData schema versions, migration plan, and container factory.
-* `Hugo/Features` — feature-first SwiftUI UI and feature-local domain logic.
+* `Hugo/App` — app composition only (entry point, root view, bootstrap), and CloudKit boundaries.
+* `Hugo/Domain` — small value types shared across features: `YearMonth`, `RoundingRule`, and `UserDefaultsKeys`.
+* `Hugo/DesignSystem` — generic UI that knows nothing about any feature: theme tokens, styles, modifiers, reusable components.
+* `Hugo/Resources` — the string catalog, localized help pages (Markdown), and app icons.
+* `Hugo/Persistence` — SwiftData schema versions, migration plan, container factory, and the sync-duplicate merge.
+* `Hugo/Features` — feature-first SwiftUI UI and feature-local domain logic, organized into Screens, Views, State, Domain and Services folders (see AGENTS.md).
 * `Hugo/PreviewSupport` — isolated, synchronous in-memory preview containers and fixtures.
 * `HugoTests` — domain, feature, persistence, and migration tests.
 * `Configuration` — project-only xcconfig and entitlement inputs; these are not app resources.
+
+The only Swift package dependency is MarkdownUI, used by the help screen.
 
 The UI uses **Category** terminology, while SwiftData persistence deliberately retains **Tracker** names and identities. Historical schema shapes are compatibility APIs and must not be edited casually; add a tested migration stage for future changes.

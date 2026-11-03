@@ -1,5 +1,5 @@
 //
-//  Schema.swift
+//  AppSchema.swift
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 07/11/2025.
