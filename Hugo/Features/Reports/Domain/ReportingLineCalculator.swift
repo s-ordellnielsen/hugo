@@ -15,14 +15,13 @@ nonisolated enum ReportingLineCalculator {
         var separateLines: [String: SeparateLine] = [:]
 
         for (_, entry) in orderedEntries {
-            let category: Category
-            if let tracker = entry.tracker {
-                category = Category(name: tracker.name, iconName: tracker.iconName, type: tracker.type)
-            } else if let storedTracker = entry.storedTracker {
-                category = Category(name: storedTracker.name, iconName: storedTracker.icon, type: storedTracker.type)
-            } else {
-                category = Category(name: "", iconName: "figure.walk", type: .main)
-            }
+            let resolved = entry.resolvedCategory()
+            let category: Category =
+                if let type = resolved.type {
+                    Category(name: resolved.name, iconName: resolved.iconName, type: type)
+                } else {
+                    Category(name: "", iconName: "figure.walk", type: .main)
+                }
 
             let sourceMonth: YearMonth?
             if let year = entry.sourceReportYear, let month = entry.sourceReportMonth {

@@ -29,7 +29,7 @@ struct MonthlyReportEntryListView: View {
                                 .foregroundStyle(.secondary)
                         }
                     } icon: {
-                        Image(systemName: entry.tracker?.iconName ?? entry.storedTracker?.icon ?? "questionmark")
+                        Image(systemName: entry.resolvedCategory().iconName)
                     }
                 }
             }

@@ -22,17 +22,10 @@ nonisolated enum MonthlyReportBuilder {
                 totalSeconds += entry.duration
                 bibleStudies += entry.bibleStudies
 
-                let metadata: (key: String, name: String, iconName: String, type: TrackerType?)
-                if let tracker = entry.tracker {
-                    metadata = (tracker.id.uuidString, tracker.name, tracker.iconName, tracker.type)
-                } else if let snapshot = entry.storedTracker {
-                    let key = "stored:\(snapshot.name)|\(snapshot.icon)|\(snapshot.type.rawValue)"
-                    metadata = (key, snapshot.name, snapshot.icon, snapshot.type)
-                } else {
-                    metadata = (
-                        "untracked", String(localized: "entry.untracked", locale: locale), "questionmark.circle", nil
-                    )
-                }
+                let category = entry.resolvedCategory(locale: locale)
+                let metadata = (
+                    key: category.key, name: category.name, iconName: category.iconName, type: category.type
+                )
 
                 if metadata.type == .main { mainDuration += entry.duration }
                 if metadata.type == .separate { separateDuration += entry.duration }

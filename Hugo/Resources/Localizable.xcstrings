@@ -419,6 +419,7 @@
     },
     "default.tracker" : {
       "comment" : "Fallback label for generated entries that have no tracker assigned.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {

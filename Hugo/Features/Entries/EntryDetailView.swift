@@ -11,6 +11,8 @@ struct EntryDetailView: View {
     @State private var deleteConfirmationShown: Bool = false
     @State private var deletionError: String?
 
+    private var category: EntryCategory { entry.resolvedCategory() }
+
     var body: some View {
         @Bindable var entry = entry
         NavigationStack {
@@ -44,11 +46,8 @@ struct EntryDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     HStack {
-                        Image(systemName: entry.tracker?.iconName ?? "questionmark.circle.fill")
-                        Text(
-                            entry.tracker != nil
-                                ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked")
-                        ).font(.headline)
+                        Image(systemName: category.iconName)
+                        Text(category.name).font(.headline)
                     }
                 }
                 ToolbarItem {
@@ -85,8 +84,17 @@ struct EntryDetailView: View {
                 }
             }
             .sheet(isPresented: $selectTrackerIsPresented) {
-                CategoryPicker(selection: $entry.tracker, dismissOnSelection: true)
-                    .presentationDetents([.medium, .large])
+                CategoryPicker(
+                    selection: Binding(
+                        get: { entry.tracker },
+                        set: { newValue in
+                            entry.tracker = newValue
+                            entry.refreshStoredTracker()
+                        }
+                    ),
+                    dismissOnSelection: true
+                )
+                .presentationDetents([.medium, .large])
             }
             .errorAlert(message: $deletionError)
         }

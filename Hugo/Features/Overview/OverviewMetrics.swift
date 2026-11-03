@@ -56,10 +56,19 @@ enum CategoryProgressAggregator {
         entries: [Entry], trackers: [Tracker], locale: Locale = .current
     ) -> [CategoryProgressRow] {
         var totals: [UUID: TimeInterval] = [:]
+        var snapshotRows: [String: (name: String, iconName: String, duration: TimeInterval)] = [:]
         var untrackedDuration: TimeInterval = 0
         for entry in entries {
-            if let tracker = entry.tracker {
-                totals[tracker.id, default: 0] += entry.duration
+            let category = entry.resolvedCategory(locale: locale)
+            if let trackerID = category.trackerID {
+                totals[trackerID, default: 0] += entry.duration
+            } else if let type = category.type {
+                if let match = trackers.first(where: { $0.name == category.name && $0.type == type }) {
+                    totals[match.id, default: 0] += entry.duration
+                } else {
+                    snapshotRows[category.key, default: (category.name, category.iconName, 0)].duration +=
+                        entry.duration
+                }
             } else {
                 untrackedDuration += entry.duration
             }
@@ -75,6 +84,15 @@ enum CategoryProgressAggregator {
                 duration: duration,
                 color: CategoryProgressColor(hue: tracker.hue, saturation: tracker.sat, brightness: tracker.bri)
             )
+        }
+
+        let sortedSnapshots = snapshotRows.sorted {
+            $0.value.name.localizedStandardCompare($1.value.name) == .orderedAscending
+        }
+        for (key, value) in sortedSnapshots where value.duration > 0 {
+            rows.append(
+                CategoryProgressRow(
+                    id: key, name: value.name, iconName: value.iconName, duration: value.duration, color: nil))
         }
 
         if untrackedDuration > 0 {

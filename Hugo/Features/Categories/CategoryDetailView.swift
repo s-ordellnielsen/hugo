@@ -87,9 +87,8 @@ struct CategoryDetailView: View {
                 }
                 .confirmationDialog("tracker.action.delete.\(tracker.name)?", isPresented: $showDeleteConfirmation) {
                     Button("common.delete", role: .destructive) {
-                        context.delete(tracker)
                         do {
-                            try context.save()
+                            try CategoryDeletionService(context: context).delete(tracker)
                             dismiss()
                         } catch {
                             context.rollback()

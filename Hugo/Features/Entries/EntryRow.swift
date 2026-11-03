@@ -18,24 +18,24 @@ struct EntryRow: View {
         return Text(String("\(duration), \(bibleStudies)"))
     }
 
+    private var category: EntryCategory { entry.resolvedCategory() }
+
     var body: some View {
         Button {
             selectedEntry = entry
         } label: {
             HStack(spacing: HugoLayout.Spacing.spacious) {
                 ZStack {
-                    Image(
-                        systemName: entry.tracker?.iconName ?? "questionmark.circle"
-                    )
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
-                    .alignmentGuide(
-                        .leading,
-                        computeValue: { dimension in
-                            dimension[.leading]
-                        }
-                    )
+                    Image(systemName: category.iconName)
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
+                        .alignmentGuide(
+                            .leading,
+                            computeValue: { dimension in
+                                dimension[.leading]
+                            }
+                        )
                 }
                 .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
                 // .background(Color(.red))
@@ -43,12 +43,9 @@ struct EntryRow: View {
                     HStack(spacing: HugoLayout.Spacing.small) {
                         Text(ServiceDurationFormatter.string(from: entry.duration))
                             .fontWeight(.bold)
-                        Text(
-                            entry.tracker != nil
-                                ? String(entry.tracker?.name ?? "") : String(localized: "entry.untracked")
-                        )
-                        .fontWeight(.medium)
-                        .foregroundStyle(.secondary)
+                        Text(category.name)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.secondary)
                     }
                     .foregroundStyle(.primary)
                     .font(.body)
@@ -83,7 +80,7 @@ struct EntryRow: View {
             .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text(entry.tracker?.name ?? String(localized: "entry.untracked")))
+        .accessibilityLabel(Text(category.name))
         .accessibilityValue(accessibilityValue)
         .buttonStyle(.plain)
     }

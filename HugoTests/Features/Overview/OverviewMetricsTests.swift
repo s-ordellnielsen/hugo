@@ -98,6 +98,44 @@ struct OverviewMetricsTests {
         #expect(rows.map(\.duration).reduce(0, +) == 300)
     }
 
+    @Test
+    func carriedEntryMergesIntoLiveCategoryWithSameNameAndType() {
+        let tracker = Tracker(name: "Field Service", type: .main)
+        let carried = Entry(date: date(2026, 1, 2), duration: 1_800, tracker: nil)
+        carried.storedTracker = Entry.EntryTracker(name: "Field Service", icon: "figure.walk", type: .main)
+        let entries = [Entry(date: date(2026, 1, 1), duration: 3_600, tracker: tracker), carried]
+        let rows = CategoryProgressAggregator.rows(entries: entries, trackers: [tracker])
+        #expect(rows.count == 1)
+        #expect(rows.first?.id == tracker.id.uuidString)
+        #expect(rows.first?.duration == 5_400)
+    }
+
+    @Test
+    func orphanedSnapshotGetsItsOwnNamedRow() {
+        let entry = Entry(date: date(2026, 1, 1), duration: 600, tracker: nil)
+        entry.storedTracker = Entry.EntryTracker(name: "Bethel", icon: "building", type: .separate)
+        let rows = CategoryProgressAggregator.rows(entries: [entry], trackers: [])
+        #expect(rows.count == 1)
+        #expect(rows.first?.id == "stored:Bethel|building|separate")
+        #expect(rows.first?.name == "Bethel")
+        #expect(rows.first?.iconName == "building")
+        #expect(rows.first?.color == nil)
+    }
+
+    @Test
+    func snapshotWithDifferentTypeDoesNotMerge() {
+        let tracker = Tracker(name: "Bethel", type: .main)
+        let orphan = Entry(date: date(2026, 1, 2), duration: 600, tracker: nil)
+        orphan.storedTracker = Entry.EntryTracker(name: "Bethel", icon: "building", type: .separate)
+        let entries = [Entry(date: date(2026, 1, 1), duration: 300, tracker: tracker), orphan]
+        let rows = CategoryProgressAggregator.rows(entries: entries, trackers: [tracker])
+        #expect(rows.count == 2)
+        #expect(rows.first?.id == tracker.id.uuidString)
+        #expect(rows.first?.duration == 300)
+        #expect(rows.last?.id == "stored:Bethel|building|separate")
+        #expect(rows.last?.duration == 600)
+    }
+
     private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day))!
     }
