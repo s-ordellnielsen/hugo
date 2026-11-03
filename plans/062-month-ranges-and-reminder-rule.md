@@ -237,7 +237,12 @@ In `OverviewView.swift`, replace the `reminderMonth` property body with:
 ReportReminderSchedule.reminderMonth(now: .now, submissions: submissions, calendar: .current)
 ```
 
-Keep the property, since `body` uses it twice.
+Keep the property, since `body` uses it twice. Replace its three-line doc comment (which still mentions `submittedAt == .distantPast`) with:
+
+```swift
+/// The month whose report reminder should show, if any. See
+/// `ReportReminderSchedule.reminderMonth(now:submissions:calendar:)`.
+```
 
 Add to `ReportReminderScheduleTests` (use dates where `dueMonth` returns June 2026, for example `now = date(2026, 6, 30)`):
 
