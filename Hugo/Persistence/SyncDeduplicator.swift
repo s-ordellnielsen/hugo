@@ -32,6 +32,10 @@ struct SyncDeduplicator {
             if removedCarries > 0 {
                 Self.logger.info("Merged \(removedCarries) duplicate carried-in entries")
             }
+            let repairedCarries = try repairCarryEntryDates()
+            if repairedCarries > 0 {
+                Self.logger.info("Moved \(repairedCarries) carried-in entries back into their month")
+            }
         } catch {
             Self.logger.error("Deduplication failed: \(error.localizedDescription, privacy: .public)")
         }
@@ -189,6 +193,29 @@ struct SyncDeduplicator {
 
         try context.save()
         return removed
+    }
+
+    /// Moves carried-in entries back into the month after their source report
+    /// when a time-zone change pushed them out of it. Entries already in the
+    /// right month are left alone, so devices in different time zones (within
+    /// 12 hours of each other) never rewrite each other's dates.
+    @discardableResult
+    func repairCarryEntryDates(calendar: Calendar = .current) throws -> Int {
+        let entries = try context.fetch(
+            FetchDescriptor<Entry>(
+                predicate: #Predicate { $0.sourceReportYear != nil && $0.sourceReportMonth != nil }
+            )
+        )
+        var repaired = 0
+        for entry in entries {
+            guard let year = entry.sourceReportYear, let month = entry.sourceReportMonth else { continue }
+            let intended = YearMonth(year: year, month: month).nextMonth(calendar: calendar)
+            guard entry.date.yearMonth(using: calendar) != intended else { continue }
+            entry.date = intended.middayOnFirst(calendar: calendar)
+            repaired += 1
+        }
+        if repaired > 0 { try context.save() }
+        return repaired
     }
 
     private struct CarryKey: Hashable {

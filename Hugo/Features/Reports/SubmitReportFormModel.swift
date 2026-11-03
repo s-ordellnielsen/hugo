@@ -270,7 +270,7 @@ final class SubmitReportFormModel {
     }
 
     private func reconcileGeneratedEntries(for report: SubmittedReport, in context: ModelContext) {
-        let nextMonthStart = month.nextMonth(calendar: calendar).date(calendar: calendar)
+        let carryDate = month.nextMonth(calendar: calendar).middayOnFirst(calendar: calendar)
         var existingByLine = Dictionary(grouping: report.generatedEntries ?? [], by: { $0.sourceReportingLineID ?? "" })
 
         for result in results {
@@ -284,7 +284,7 @@ final class SubmitReportFormModel {
                 existingByLine[result.id]?.removeFirst()
             } else {
                 let entry = Entry(
-                    date: nextMonthStart,
+                    date: carryDate,
                     duration: seconds,
                     tracker: nil,
                     source: (submission: report, lineID: result.id)

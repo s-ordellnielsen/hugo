@@ -316,4 +316,57 @@ struct SyncDeduplicatorTests {
         #expect(try context.fetch(FetchDescriptor<SubmittedReport>()).count == 1)
         #expect(try context.fetch(FetchDescriptor<Entry>()).count == 1)
     }
+
+    // MARK: - Carry entry date repair
+
+    private var utc: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        return calendar
+    }
+
+    private func utcDate(_ month: Int, _ day: Int, hour: Int) -> Date {
+        utc.date(from: DateComponents(year: 2026, month: month, day: day, hour: hour))!
+    }
+
+    @Test
+    func carryEntryOutsideItsMonthIsMoved() throws {
+        let context = try makeContext()
+        let report = makeReport(submittedAt: early, in: context)
+        let entry = makeCarry(from: report, in: context)
+        entry.date = utcDate(6, 30, hour: 22)
+        try context.save()
+
+        let repaired = try SyncDeduplicator(context: context).repairCarryEntryDates(calendar: utc)
+
+        #expect(repaired == 1)
+        #expect(entry.date == utcDate(7, 1, hour: 12))
+    }
+
+    @Test
+    func carryEntryInsideItsMonthIsUntouched() throws {
+        let context = try makeContext()
+        let report = makeReport(submittedAt: early, in: context)
+        let entry = makeCarry(from: report, in: context)
+        entry.date = utcDate(7, 1, hour: 0)
+        try context.save()
+
+        let repaired = try SyncDeduplicator(context: context).repairCarryEntryDates(calendar: utc)
+
+        #expect(repaired == 0)
+        #expect(entry.date == utcDate(7, 1, hour: 0))
+    }
+
+    @Test
+    func ordinaryEntriesAreNotRepaired() throws {
+        let context = try makeContext()
+        let entry = Entry(date: utcDate(6, 30, hour: 22), duration: 3_600, tracker: nil)
+        context.insert(entry)
+        try context.save()
+
+        let repaired = try SyncDeduplicator(context: context).repairCarryEntryDates(calendar: utc)
+
+        #expect(repaired == 0)
+        #expect(entry.date == utcDate(6, 30, hour: 22))
+    }
 }

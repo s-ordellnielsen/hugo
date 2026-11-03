@@ -81,7 +81,8 @@ final class AddEntryFormModel {
 
     private func inferredTime() -> Date {
         guard calendar.isDate(date, inSameDayAs: now) else {
-            return calendar.startOfDay(for: date)
+            let start = calendar.startOfDay(for: date)
+            return calendar.date(byAdding: .hour, value: 12, to: start) ?? start
         }
         let approximate = now.addingTimeInterval(-durationInSeconds)
         return snapped(approximate)

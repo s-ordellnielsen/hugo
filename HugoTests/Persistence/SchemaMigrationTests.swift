@@ -545,7 +545,8 @@ struct SchemaMigrationTests {
         )
         let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
         let entry = try #require(entries.first)
-        let expectedDate = YearMonth(year: 2026, month: 8).nextMonth().date()
+        let expectedDate = YearMonth(year: 2026, month: 8).nextMonth().middayOnFirst()
+        let expectedCreatedAt = YearMonth(year: 2026, month: 9).date()
         let dateComponents = Calendar.current.dateComponents(
             [.year, .month, .day],
             from: entry.date
@@ -560,7 +561,7 @@ struct SchemaMigrationTests {
         #expect(entries.count == 1)
         #expect(entry.duration == 1_200)
         #expect(entry.date == expectedDate)
-        #expect(entry.createdAt == expectedDate)
+        #expect(entry.createdAt == expectedCreatedAt)
         #expect(dateComponents.year == 2026)
         #expect(dateComponents.month == 9)
         #expect(dateComponents.day == 1)

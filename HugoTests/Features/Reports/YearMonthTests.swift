@@ -46,6 +46,19 @@ extension YearMonthTests {
     }
 
     @Test
+    func middayOnFirstStaysInMonthAcrossTimeZones() {
+        var copenhagen = Calendar(identifier: .gregorian)
+        copenhagen.timeZone = TimeZone(identifier: "Europe/Copenhagen")!
+        let midday = YearMonth(year: 2026, month: 7).middayOnFirst(calendar: copenhagen)
+
+        var west = Calendar(identifier: .gregorian)
+        west.timeZone = TimeZone(secondsFromGMT: -10 * 3600)!
+
+        #expect(midday.yearMonth(using: gregorianGMT()) == YearMonth(year: 2026, month: 7))
+        #expect(midday.yearMonth(using: west) == YearMonth(year: 2026, month: 7))
+    }
+
+    @Test
     func nextMonthCrossesTheYearBoundary() {
         let calendar = gregorianGMT()
 

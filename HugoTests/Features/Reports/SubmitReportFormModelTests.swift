@@ -135,7 +135,7 @@ struct SubmitReportFormModelTests {
         #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
 
         let generated = try #require(context.fetch(FetchDescriptor<Entry>()).first)
-        #expect(generated.date == date(2026, 7, 1, hour: 0))
+        #expect(generated.date == date(2026, 7, 1, hour: 12))
         #expect(generated.duration == 1_800)
         #expect(generated.sourceSubmission === report)
         #expect(generated.sourceReportingLineID == "")

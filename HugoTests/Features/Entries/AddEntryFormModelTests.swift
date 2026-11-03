@@ -42,12 +42,12 @@ struct AddEntryFormModelTests {
     }
 
     @Test
-    func optionalTimeDefaultsToMidnight() throws {
+    func optionalTimeDefaultsToMidday() throws {
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
         model.date = date(2026, 1, 5)
         let combined = try #require(model.combinedDate)
         let components = calendar.dateComponents([.hour, .minute, .second], from: combined)
-        #expect(components.hour == 0)
+        #expect(components.hour == 12)
         #expect(components.minute == 0)
         #expect(components.second == 0)
     }

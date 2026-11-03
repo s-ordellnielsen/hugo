@@ -108,4 +108,12 @@ extension YearMonth {
 
         return calendar.date(from: components) ?? .now
     }
+
+    /// 12:00 on the first day of the month. Entries that represent "the month"
+    /// rather than a moment use this, so a time-zone change of up to 12 hours
+    /// cannot move them into a neighboring month.
+    nonisolated func middayOnFirst(calendar: Calendar = .current) -> Date {
+        let start = date(calendar: calendar)
+        return calendar.date(byAdding: .hour, value: 12, to: start) ?? start
+    }
 }

@@ -334,7 +334,7 @@ enum MigrationPlan: SchemaMigrationPlan {
                     ).nextMonth()
                     let nextMonthStart = nextMonth.date()
                     let entry = SchemaV11.Entry(
-                        date: nextMonthStart,
+                        date: nextMonth.middayOnFirst(),
                         duration: legacyReport.carriedOutSeconds,
                         tracker: nil,
                         source: (submission: report, lineID: "")
