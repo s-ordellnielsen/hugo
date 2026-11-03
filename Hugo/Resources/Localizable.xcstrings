@@ -3575,23 +3575,6 @@
         }
       }
     },
-    "year.detail.credit.footer" : {
-      "comment" : "Explains which hours count toward the yearly goal. The argument is the number of extra hours of other categories that may count on top of the monthly goal.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Almindelig forkyndelse tæller altid med mod årsmålet. Tid i andre kategorier tæller kun, indtil du når dit månedlige mål plus %lld timer."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Main field service always counts toward your yearly goal. Time in other categories counts only until you reach your monthly goal plus %lld hours."
-          }
-        }
-      }
-    },
     "year.detail.credited" : {
       "comment" : "Row label on the year details screen: time that counts toward the yearly goal.",
       "localizations" : {
@@ -3864,59 +3847,8 @@
         }
       }
     },
-    "year.header.end.ahead" : {
-      "comment" : "Right end of the yearly goal bar: one monthly goal ahead. The argument is a number of hours.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+%lld t"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+%lld h"
-          }
-        }
-      }
-    },
-    "year.header.end.behind" : {
-      "comment" : "Left end of the yearly goal bar: one monthly goal behind. The argument is a number of hours.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-%lld t"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-%lld h"
-          }
-        }
-      }
-    },
     "year.header.onTrack" : {
       "comment" : "Shown when the counted time matches the time expected so far.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På skinner"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On pace"
-          }
-        }
-      }
-    },
-    "year.header.pace" : {
-      "comment" : "Caption under the center of the yearly goal bar.",
       "localizations" : {
         "da" : {
           "stringUnit" : {

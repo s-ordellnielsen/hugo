@@ -5,7 +5,6 @@ struct ServiceYearDetailView: View {
     let report: TheocraticYearReport
     /// Nil when the publisher status has no yearly goal.
     let progress: YearlyGoalProgress?
-    let status: PublisherStatus?
 
     var body: some View {
         List {
@@ -13,8 +12,8 @@ struct ServiceYearDetailView: View {
                 goalSection(progress)
             }
             totalsSection
-            if let progress, let status {
-                monthsSection(progress, status)
+            if let progress {
+                monthsSection(progress)
             }
         }
         .navigationTitle(report.year.displayName)
@@ -67,7 +66,7 @@ struct ServiceYearDetailView: View {
         }
     }
 
-    private func monthsSection(_ progress: YearlyGoalProgress, _ status: PublisherStatus) -> some View {
+    private func monthsSection(_ progress: YearlyGoalProgress) -> some View {
         Section {
             ForEach(report.months.filter { !$0.isFuture }) { month in
                 let credited = progress.creditedByMonth[month.id] ?? 0
@@ -76,7 +75,7 @@ struct ServiceYearDetailView: View {
                     VStack(alignment: .trailing) {
                         duration(credited)
                         if abs(actual - credited) >= 60 {
-                            Text(ServiceDurationFormatter.string(from: actual))
+                            Text(ServiceDurationFormatter.hoursString(from: actual))
                                 .font(.caption)
                                 .monospacedDigit()
                                 .foregroundStyle(.tertiary)
@@ -88,20 +87,11 @@ struct ServiceYearDetailView: View {
             }
         } header: {
             Text("year.detail.section.months")
-        } footer: {
-            Text(
-                String(
-                    localized: "year.detail.credit.footer",
-                    defaultValue:
-                        "Main field service always counts toward your yearly goal. Time in other categories counts only until you reach your monthly goal plus \(status.separateAllowanceHours) hours.",
-                    comment:
-                        "Explains which hours count toward the yearly goal. The argument is the number of extra hours of other categories that may count on top of the monthly goal."
-                ))
         }
     }
 
     private func duration(_ seconds: TimeInterval) -> some View {
-        Text(ServiceDurationFormatter.string(from: seconds))
+        Text(ServiceDurationFormatter.hoursString(from: seconds))
             .monospacedDigit()
             .foregroundStyle(.secondary)
     }
@@ -115,7 +105,7 @@ struct ServiceYearDetailView: View {
             report: report, rule: $0, yearlyGoalSeconds: 600 * 3_600, pacing: .proRated)
     }
     NavigationStack {
-        ServiceYearDetailView(report: report, progress: progress, status: status)
+        ServiceYearDetailView(report: report, progress: progress)
     }
     .modelContainer(.preview)
 }

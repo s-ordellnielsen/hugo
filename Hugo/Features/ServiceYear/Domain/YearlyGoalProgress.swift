@@ -71,7 +71,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
 }
 
 extension YearlyGoalProgress {
-    /// "On pace", "1:30 ahead" or "1:30 behind". Nil when there is no expectation.
+    /// "On pace", "1 hour, 30 minutes ahead" or "3 hours behind". Nil when there is no expectation.
     var paceSentence: String? {
         guard let differenceSeconds else { return nil }
         if isOnTrack {
@@ -79,14 +79,14 @@ extension YearlyGoalProgress {
                 localized: "year.header.onTrack", defaultValue: "On pace",
                 comment: "Shown when the counted time matches the time expected so far.")
         }
-        let amount = ServiceDurationFormatter.string(from: abs(differenceSeconds))
+        let amount = ServiceDurationFormatter.hoursString(from: abs(differenceSeconds))
         if differenceSeconds > 0 {
             return String(
                 localized: "year.header.ahead", defaultValue: "\(amount) ahead",
-                comment: "Counted time is ahead of the expected time. The argument is a duration such as 3:30.")
+                comment: "Counted time is ahead of the expected time. The argument is a duration such as 3 hours.")
         }
         return String(
             localized: "year.header.behind", defaultValue: "\(amount) behind",
-            comment: "Counted time is behind the expected time. The argument is a duration such as 3:30.")
+            comment: "Counted time is behind the expected time. The argument is a duration such as 3 hours.")
     }
 }

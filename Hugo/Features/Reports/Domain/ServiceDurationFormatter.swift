@@ -27,4 +27,19 @@ nonisolated enum ServiceDurationFormatter {
             return Duration.seconds(seconds).formatted(style)
         }
     }
+
+    /// "152 hours" or "152 hours, 30 minutes". Seconds are dropped and zero minutes are omitted.
+    static func hoursString(from duration: TimeInterval, locale: Locale = .current) -> String {
+        let clamped = max(duration, 0)
+        let wholeMinutes = Int(clamped / 60)
+        let allowedUnits: Set<Duration.UnitsFormatStyle.Unit> =
+            wholeMinutes == 0 ? [.hours] : [.hours, .minutes]
+        var style = Duration.UnitsFormatStyle(
+            allowedUnits: allowedUnits,
+            width: .wide,
+            zeroValueUnits: wholeMinutes == 0 ? .show(length: 1) : .hide
+        )
+        style.locale = locale
+        return Duration.seconds(wholeMinutes * 60).formatted(style)
+    }
 }

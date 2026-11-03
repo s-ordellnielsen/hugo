@@ -52,9 +52,9 @@ struct ServiceYearPageView: View {
             VStack(spacing: HugoLayout.Spacing.card) {
                 if report.hasEntries {
                     NavigationLink {
-                        ServiceYearDetailView(report: report, progress: progress, status: status)
+                        ServiceYearDetailView(report: report, progress: progress)
                     } label: {
-                        TheocraticYearTotalsView(report: report, progress: progress, status: status)
+                        TheocraticYearTotalsView(report: report, progress: progress)
                     }
                     .buttonStyle(.card)
                 } else {

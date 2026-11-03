@@ -2,18 +2,12 @@ import SwiftData
 import SwiftUI
 
 struct TheocraticYearTotalsView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let report: TheocraticYearReport
     /// Nil when the publisher status has no yearly goal.
     let progress: YearlyGoalProgress?
-    let status: PublisherStatus?
 
     private var primarySeconds: TimeInterval {
         progress?.creditedSeconds ?? report.totalSeconds
-    }
-
-    private var monthlyGoalHours: Int {
-        status?.monthlyGoal ?? 0
     }
 
     var body: some View {
@@ -26,9 +20,11 @@ struct TheocraticYearTotalsView: View {
                     .accessibilityHidden(true)
             }
 
-            Text(ServiceDurationFormatter.string(from: primarySeconds))
+            Text(ServiceDurationFormatter.hoursString(from: primarySeconds))
                 .font(.system(.largeTitle, design: .serif, weight: .bold))
                 .monospacedDigit()
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
                 .contentTransition(.numericText())
                 .motion(Motion.value, value: primarySeconds)
 
@@ -36,7 +32,8 @@ struct TheocraticYearTotalsView: View {
                 Text(
                     String(
                         localized: "year.header.actual",
-                        defaultValue: "Actual total \(ServiceDurationFormatter.string(from: progress.actualSeconds))",
+                        defaultValue:
+                            "Actual total \(ServiceDurationFormatter.hoursString(from: progress.actualSeconds))",
                         comment:
                             "Real total of the year, shown when it differs from the counted time. The argument is a duration."
                     )
@@ -56,8 +53,6 @@ struct TheocraticYearTotalsView: View {
                     accessibilityLabel: "year.header.counted.eyebrow",
                     accessibilityValue: paceSentence
                 )
-
-                endLabels
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -78,45 +73,8 @@ struct TheocraticYearTotalsView: View {
             .foregroundStyle(.secondary)
     }
 
-    @ViewBuilder
-    private var endLabels: some View {
-        let behind = Text(
-            String(
-                localized: "year.header.end.behind",
-                defaultValue: "-\(monthlyGoalHours) h",
-                comment: "Left end of the yearly goal bar: one monthly goal behind. The argument is a number of hours."
-            ))
-        let ahead = Text(
-            String(
-                localized: "year.header.end.ahead",
-                defaultValue: "+\(monthlyGoalHours) h",
-                comment: "Right end of the yearly goal bar: one monthly goal ahead. The argument is a number of hours."
-            ))
-        let pace = Text("year.header.pace")
-
-        Group {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
-                    behind
-                    pace
-                    ahead
-                }
-            } else {
-                HStack {
-                    behind
-                    Spacer()
-                    pace
-                    Spacer()
-                    ahead
-                }
-            }
-        }
-        .font(.caption)
-        .foregroundStyle(.secondary)
-    }
-
     private var accessibilityLabelText: String {
-        let spoken = ServiceDurationFormatter.accessibilityString(from: primarySeconds)
+        let spoken = ServiceDurationFormatter.hoursString(from: primarySeconds)
         guard let progress else { return spoken }
         return String(
             localized: "year.header.a11y.label",
@@ -134,13 +92,13 @@ struct TheocraticYearTotalsView: View {
         YearlyGoalProgress.make(
             report: report, rule: $0, yearlyGoalSeconds: 600 * 3_600, pacing: .proRated)
     }
-    TheocraticYearTotalsView(report: report, progress: progress, status: status)
+    TheocraticYearTotalsView(report: report, progress: progress)
         .padding()
         .modelContainer(.preview)
 }
 
 #Preview("No yearly goal") {
-    TheocraticYearTotalsView(report: ReportPreviewFixtures.yearReport, progress: nil, status: nil)
+    TheocraticYearTotalsView(report: ReportPreviewFixtures.yearReport, progress: nil)
         .padding()
         .modelContainer(.preview)
 }

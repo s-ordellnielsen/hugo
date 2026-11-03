@@ -19,15 +19,15 @@ struct MonthlyReportTotalsView: View {
     private var totals: some View {
         HStack(alignment: .bottom) {
             total(
-                ServiceDurationFormatter.string(from: summary.mainDuration),
+                ServiceDurationFormatter.hoursString(from: summary.mainDuration),
                 label: "monthlyReport.detail.largeTotal.main.label", alignment: .leading)
             Spacer()
             total(
-                ServiceDurationFormatter.string(from: summary.totalSeconds),
+                ServiceDurationFormatter.hoursString(from: summary.totalSeconds),
                 label: "monthlyReport.detail.largeTotal.total.label", alignment: .center, prominent: true)
             Spacer()
             total(
-                ServiceDurationFormatter.string(from: summary.separateDuration),
+                ServiceDurationFormatter.hoursString(from: summary.separateDuration),
                 label: "monthlyReport.detail.largeTotal.separate.label", alignment: .trailing)
         }
     }
@@ -41,6 +41,8 @@ struct MonthlyReportTotalsView: View {
                 .font(prominent ? .title : .callout)
                 .monospacedDigit()
                 .fontWeight(.medium)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)

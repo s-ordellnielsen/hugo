@@ -22,4 +22,31 @@ struct DurationFormattingTests {
                 || zeroDuration.contains("0"))
         #expect(oneHourDuration.contains("1") && oneHourDuration.contains("1"))
     }
+
+    @Test func hoursStringFormatsWholeHours() {
+        let us = Locale(identifier: "en_US")
+        #expect(ServiceDurationFormatter.hoursString(from: 0, locale: us) == "0 hours")
+        #expect(ServiceDurationFormatter.hoursString(from: 3_600, locale: us) == "1 hour")
+        #expect(ServiceDurationFormatter.hoursString(from: 7_200, locale: us) == "2 hours")
+        #expect(ServiceDurationFormatter.hoursString(from: 90_000, locale: us) == "25 hours")
+    }
+
+    @Test func hoursStringAddsMinutesOnlyWhenPresent() {
+        let us = Locale(identifier: "en_US")
+        let withMinutes = ServiceDurationFormatter.hoursString(from: 5_400, locale: us)
+        #expect(withMinutes.contains("1 hour"))
+        #expect(withMinutes.contains("30 minutes"))
+        #expect(ServiceDurationFormatter.hoursString(from: 3_659, locale: us) == "1 hour")
+    }
+
+    @Test func hoursStringClampsNegativeToZero() {
+        #expect(ServiceDurationFormatter.hoursString(from: -5, locale: Locale(identifier: "en_US")) == "0 hours")
+    }
+
+    @Test func hoursStringDanishProbe() {
+        let danish = Locale(identifier: "da")
+        print("HOURS_DA 0:", ServiceDurationFormatter.hoursString(from: 0, locale: danish))
+        print("HOURS_DA 1h:", ServiceDurationFormatter.hoursString(from: 3_600, locale: danish))
+        print("HOURS_DA 152h30:", ServiceDurationFormatter.hoursString(from: 152 * 3_600 + 1_800, locale: danish))
+    }
 }

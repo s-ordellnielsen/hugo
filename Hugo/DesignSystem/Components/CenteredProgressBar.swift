@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A bar whose center means "exactly on target". The knob moves left or right of the
-/// center and a trail connects the center to the knob.
+/// center and a trail runs from the center point to the knob.
 struct CenteredProgressBar: View {
     /// -1 (left end) ... 0 (center) ... 1 (right end).
     let fraction: Double
@@ -17,22 +17,21 @@ struct CenteredProgressBar: View {
             let width = proxy.size.width
             let centerX = width / 2
             let knobX = centerX + clampedFraction * (centerX - HugoLayout.Size.goalKnobDiameter / 2)
-            let trailWidth = abs(knobX - centerX)
+            let trackHeight = HugoLayout.Size.goalTrackHeight
+            let trailWidth = abs(knobX - centerX) + trackHeight / 2
+            let trailStart = knobX >= centerX ? centerX - trackHeight / 2 : knobX
 
             ZStack(alignment: .leading) {
                 Capsule()
                     .fill(Color(.tertiarySystemFill))
                     .frame(height: HugoLayout.Size.goalTrackHeight)
 
-                Capsule()
-                    .fill(.hugoAccent)
-                    .frame(width: trailWidth, height: HugoLayout.Size.goalTrackHeight)
-                    .offset(x: min(knobX, centerX))
-
-                Rectangle()
-                    .fill(.secondary)
-                    .frame(width: 2, height: HugoLayout.Size.goalTrackHeight + 8)
-                    .offset(x: centerX - 1)
+                if clampedFraction != 0 {
+                    Capsule()
+                        .fill(.hugoAccent)
+                        .frame(width: trailWidth, height: trackHeight)
+                        .offset(x: trailStart)
+                }
 
                 Circle()
                     .fill(Color(.systemBackground))

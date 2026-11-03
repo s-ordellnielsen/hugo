@@ -210,7 +210,7 @@ extension ServiceYearMonthRow {
 
             Spacer()
 
-            Text(ServiceDurationFormatter.string(from: category.duration))
+            Text(ServiceDurationFormatter.hoursString(from: category.duration))
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
         }
