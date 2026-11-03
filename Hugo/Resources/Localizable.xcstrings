@@ -3797,7 +3797,7 @@
       }
     },
     "year.header.ahead" : {
-      "comment" : "Counted time is ahead of the expected time. The argument is a duration such as 3:30.",
+      "comment" : "Counted time is ahead of the expected time. The argument is a duration such as 3 hours.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3814,7 +3814,7 @@
       }
     },
     "year.header.behind" : {
-      "comment" : "Counted time is behind the expected time. The argument is a duration such as 3:30.",
+      "comment" : "Counted time is behind the expected time. The argument is a duration such as 3 hours.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
