@@ -564,6 +564,6 @@ Stop and report back if:
 ## Maintenance notes
 
 - `ServiceMonth.make` filters the entries and picks the canonical report itself, so callers may pass a whole year of entries and all submissions. The year builder calls it twelve times. That is fine for one year of data. If profiling shows a cost, build the canonical map once and add an internal initializer, but keep `make` as the one public entry point.
-- Plan 062 adds `ServiceMonth` readers for screens. Plan 063 reads `month.contribution` to build per-month goal rows. Plan 064 changes how `summary.categories` groups entries; `ServiceMonth` does not depend on that grouping.
+- Plan 062 moves the reminder rule into `ReportReminderSchedule` using `SubmittedReportSelection`. Plan 063 reads `month.contribution` to build per-month goal rows. Plan 064 changes how `summary.categories` groups entries; `ServiceMonth` does not depend on that grouping.
 - Reviewer focus: the `shouldPrefer` move must be byte-for-byte the same logic, because every device must choose the same survivor during sync repair.
 - `ServiceYearMonthRow` now shows `contribution.total` in whole hours. For a submitted month this is the sum of its reporting lines' hours, which equals the stored `submittedHours` for every report this app writes. Only a damaged legacy row could differ, and then the card now agrees with the year total.
