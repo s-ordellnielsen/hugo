@@ -1,9 +1,12 @@
+import Combine
+import CoreData
 import SwiftData
 import SwiftUI
 
 struct AppRootView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("isOnboarding") private var needsOnboarding = true
 
@@ -40,7 +43,25 @@ struct AppRootView: View {
                 regularLayout
             }
         }
-        .task { await bootstrapper.start(context: context) }
+        .task {
+            await bootstrapper.start(context: context)
+            SyncDeduplicator(context: context).run()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { SyncDeduplicator(context: context).run() }
+        }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
+                .receive(on: RunLoop.main)
+        ) { notification in
+            guard
+                let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
+                    as? NSPersistentCloudKitContainer.Event,
+                event.type == .import, event.endDate != nil
+            else { return }
+            SyncDeduplicator(context: context).run()
+        }
         .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
         .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
         .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })

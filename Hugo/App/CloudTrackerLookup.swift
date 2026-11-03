@@ -6,6 +6,9 @@ protocol CloudTrackerLookup: Sendable {
 }
 
 struct CloudKitTrackerLookup: CloudTrackerLookup, Sendable {
+    /// True when the user's private database already holds the zone that
+    /// SwiftData's CloudKit sync creates, meaning another device or an earlier
+    /// install has synced Hugo data that will arrive shortly.
     func hasAnyTracker() async throws -> Bool {
         // `CKContainer.default()` throws an *Objective-C* exception (not a
         // Swift error) when no iCloud account is present — e.g. an unsigned
@@ -16,16 +19,14 @@ struct CloudKitTrackerLookup: CloudTrackerLookup, Sendable {
         if Self.isRunningTests { return false }
 
         let database = CKContainer.default().privateCloudDatabase
-        let query = CKQuery(recordType: "CD_Tracker", predicate: NSPredicate(value: true))
+        let zoneID = CKRecordZone.ID(
+            zoneName: "com.apple.coredata.cloudkit.zone", ownerName: CKCurrentUserDefaultName)
         do {
-            let (results, _) = try await database.records(matching: query)
-            return results.contains { (_, result) in
-                if case .success = result { return true }
-                return false
-            }
+            _ = try await database.recordZone(for: zoneID)
+            return true
         } catch {
-            // A signed-out or offline device must not break first-run seeding;
-            // fall back to local defaults instead of failing the bootstrap.
+            // No zone (a new iCloud user), no account, or offline: seed locally.
+            // SyncDeduplicator merges any copy that sync brings in later.
             return false
         }
     }

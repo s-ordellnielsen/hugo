@@ -16,10 +16,15 @@ final class AppBootstrapper {
     private(set) var state: State = .idle
     private(set) var errorMessage: String?
     private let lookup: any CloudTrackerLookup
+    private let userDefaults: UserDefaults
     private let logger = Logger(subsystem: "com.ordellnielsen.Hugo", category: "Bootstrap")
 
-    init(lookup: any CloudTrackerLookup = CloudKitTrackerLookup()) {
+    init(
+        lookup: any CloudTrackerLookup = CloudKitTrackerLookup(),
+        userDefaults: UserDefaults = .standard
+    ) {
         self.lookup = lookup
+        self.userDefaults = userDefaults
     }
 
     func start(context: ModelContext) async {
@@ -28,13 +33,14 @@ final class AppBootstrapper {
         errorMessage = nil
 
         do {
-            let descriptor = FetchDescriptor<Tracker>()
-            if try context.fetch(descriptor).isEmpty {
-                if try await lookup.hasAnyTracker() == false {
+            if !userDefaults.bool(forKey: UserDefaultsKeys.hasRunInitialSetup) {
+                if try context.fetch(FetchDescriptor<Tracker>()).isEmpty,
+                    try await lookup.hasAnyTracker() == false
+                {
                     try seedDefaults(in: context)
                 }
+                userDefaults.set(true, forKey: UserDefaultsKeys.hasRunInitialSetup)
             }
-            UserDefaults.standard.set(true, forKey: UserDefaultsKeys.hasRunInitialSetup)
             state = .ready
         } catch is CancellationError {
             state = .idle
