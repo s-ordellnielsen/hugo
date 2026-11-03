@@ -20,7 +20,7 @@
 - **Risk**: LOW
 - **Depends on**: 037 (the repo must lint clean first, otherwise the hook rewrites unrelated files)
 - **Category**: dx
-- **Planned at**: commit `3f8d48b`, 2026-11-03
+- **Planned at**: commit `3f8d48b`, 2026-11-03; revised 2026-11-03 at `455a3e4` after the first execution attempt found two defects (see Step 1 and Step 3)
 
 ## Why this matters
 
@@ -52,13 +52,13 @@ The hook lives in a tracked directory and is activated with `git config core.hoo
   It runs strict Swift-format lint, Debug tests, and static analysis. `DESTINATION` and `DERIVED_DATA` can be overridden.
   ```
 
-- Commit messages are short imperative sentences without prefixes (from `git log`).
+- Commit messages use semantic prefixes such as `fix:`, `feat:`, `refactor:`, `docs:`, `chore:` (the owner asked for this on 2026-11-03).
 
 ## Design decisions
 
 - **Format only what the commit contains.** The hook formats staged Swift files, never the whole tree, so a commit cannot pick up unrelated reformatting (plan 037 forbids that for the same reason: blame noise).
 - **Never sweep in unstaged work.** Re-staging a file with `git add` also stages any unstaged hunks in it. So a file that has unstaged changes (a `git add -p` commit) is **not** auto-formatted; it only goes through the final lint. The hook must not change what the author chose to commit beyond formatting.
-- **Lint stays as the final check.** After formatting, `swift-format lint --strict` runs on the same files. This catches what formatting cannot fix, and the partially staged files above.
+- **Lint checks what will be committed.** After formatting, `swift-format lint --strict` runs on the *staged* content of each file (exported with `git checkout-index`), not on the working-tree file. For a fully staged file the two are identical. For a partly staged file the unstaged hunks are not part of the commit, so a problem in them must not block it. A formatter failure (for example a file that does not parse) never aborts the hook early; the lint step reports it and blocks with a clear message.
 - **Lint rules and format rules are the same configuration**, so a file the formatter has just rewritten passes the lint. If it does not, that is a real problem and the commit is blocked.
 
 ## Commands you will need
@@ -91,8 +91,8 @@ The hook lives in a tracked directory and is activated with `git config core.hoo
 
 ## Git workflow
 
-- Branch: `advisor/051-pre-commit-format-hook`
-- Commit message: `Add pre-commit hook that formats staged Swift files`
+- Branch: only if the operator tells you to. In this repo the operator has been working directly on `main`.
+- Commit message: `chore: add pre-commit hook that formats staged Swift files`. Do not commit unless told to.
 - Do not push or open a PR unless the operator instructed it.
 
 ## Steps
@@ -104,8 +104,8 @@ Create `Scripts/hooks/pre-commit`:
 ```sh
 #!/bin/sh
 # Formats the staged Swift files under Hugo/ and HugoTests/ with swift-format,
-# adds the result to the commit, then lints as a final check. Formatting and
-# linting only: tests and analysis stay in Scripts/verify.sh. Bypass in an
+# adds the result to the commit, then lints exactly what is staged. Formatting
+# and linting only: tests and analysis stay in Scripts/verify.sh. Bypass in an
 # emergency with `git commit --no-verify`.
 set -eu
 
@@ -113,7 +113,8 @@ set -eu
 DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
 export DEVELOPER_DIR
 
-cd "$(git rev-parse --show-toplevel)"
+root=$(git rev-parse --show-toplevel)
+cd "$root"
 
 # Added, copied, modified or renamed files only; deleted files cannot be formatted.
 files=$(git diff --cached --name-only --diff-filter=ACMR -- 'Hugo/*.swift' 'HugoTests/*.swift')
@@ -127,21 +128,30 @@ printf '%s\n' "$files" | while IFS= read -r file; do
     if ! git diff --quiet -- "$file"; then
         continue
     fi
-    xcrun swift-format format --in-place "$file"
+    # A file the formatter cannot handle (for example one that does not parse) is
+    # left for the lint below, which reports it and blocks the commit.
+    xcrun swift-format format --in-place "$file" || continue
     if ! git diff --quiet -- "$file"; then
         git add -- "$file"
         echo "swift-format fixed and re-staged: $file" >&2
     fi
 done
 
-# Final check on exactly the staged paths. NUL-separated so names with spaces survive.
-if ! printf '%s\n' "$files" | tr '\n' '\0' | xargs -0 xcrun swift-format lint --strict; then
+# Final check on the staged content, which is what the commit will contain. It can
+# differ from the working tree for a partly staged file.
+staged=$(mktemp -d)
+trap 'rm -rf "$staged"' EXIT
+printf '%s\n' "$files" | tr '\n' '\0' | xargs -0 git checkout-index --prefix="$staged/" --
+
+if ! (cd "$staged" && printf '%s\n' "$files" | tr '\n' '\0' | xargs -0 xcrun swift-format lint --strict --configuration "$root/.swift-format"); then
     echo >&2
     echo "Commit blocked: swift-format could not fix the problems listed above." >&2
     echo "Fix them by hand, or for a partly staged file run: xcrun swift-format format --in-place <file>" >&2
     exit 1
 fi
 ```
+
+(The first execution attempt used a simpler version that linted the working-tree file and let a formatter failure abort the hook under `set -e`. That blocked a commit whose staged content was clean, and it skipped the "Commit blocked" message for files that do not parse. The version above fixes both. It was checked against all the probes in Step 3, plus a file name containing a space.)
 
 Then `chmod +x Scripts/hooks/pre-commit`.
 
@@ -170,64 +180,86 @@ Then `chmod +x Scripts/install-hooks.sh` and run it.
 
 ### Step 3: Prove the hook fixes, protects, and blocks
 
-Use throwaway files so nothing real is touched. Do this on the plan's branch. The probes are committed temporarily; Step 3.5 removes them from history by resetting.
+Run every probe in a throwaway clone, never in the real repository. Probes make commits, and the real branch must stay untouched.
 
-1. **A fixable problem is fixed and committed.** Stage a file with tab indentation and commit:
+```sh
+T=$(mktemp -d)
+git clone -q . "$T/probe"
+cp Scripts/hooks/pre-commit "$T/probe/Scripts/hooks/pre-commit"   # create the folder first if needed
+cd "$T/probe"
+git config user.name probe && git config user.email probe@example.com
+git config core.hooksPath Scripts/hooks
+git add Scripts && git commit -q -m "chore: add hook"
+```
+
+(The clone has its own copy of the repo's committed files, so `Scripts/hooks/` may not exist there yet: `mkdir -p Scripts/hooks` before the `cp`.) Then run the probes below from inside `$T/probe`. When finished, `cd` back to the real repository and `rm -rf "$T"`.
+
+1. **A fixable problem is fixed and committed.**
 
    ```sh
    printf 'struct HookProbe {\n\tlet value = 1\n}\n' > Hugo/App/HookProbe.swift
    git add Hugo/App/HookProbe.swift
-   git commit -m "Hook probe fixable"
+   git commit -m "probe fixable"
    ```
 
    **Verify**:
    - The commit succeeds, and the output contains `swift-format fixed and re-staged: Hugo/App/HookProbe.swift`.
-   - `git show HEAD:Hugo/App/HookProbe.swift | grep -c "$(printf '\t')"` → `0` (committed content has no tabs).
-   - `git status --porcelain -- Hugo/App/HookProbe.swift` prints nothing (working tree matches the commit).
+   - `git show HEAD:Hugo/App/HookProbe.swift | grep -c "$(printf '\t')"` → `0`.
+   - `git status --porcelain -- Hugo/App/HookProbe.swift` prints nothing.
 
-2. **A partly staged file is left alone.** Create the file, commit it, then stage one change while leaving a second change unstaged:
+2. **A partly staged file with a clean staged part commits, and the unstaged part is left alone.** The committed file (value 1, from probe 1) is the base:
 
    ```sh
-   printf 'struct HookProbe {\n    let value = 1\n}\n' > Hugo/App/HookProbe.swift
-   git add Hugo/App/HookProbe.swift && git commit -q -m "Hook probe base"
    printf 'struct HookProbe {\n    let value = 2\n}\n' > Hugo/App/HookProbe.swift
    git add Hugo/App/HookProbe.swift
    printf 'struct HookProbe {\n    let value = 2\n\tlet extra = 3\n}\n' > Hugo/App/HookProbe.swift
-   git commit -m "Hook probe partial"
+   git commit -m "probe partial"
    ```
 
    **Verify**:
    - The commit succeeds. The output does **not** contain `fixed and re-staged`.
    - `git show HEAD:Hugo/App/HookProbe.swift` contains `value = 2` and does **not** contain `extra`.
-   - `git diff -- Hugo/App/HookProbe.swift` still shows the unstaged `extra` line, so the author's unstaged work was not swept in.
+   - `git diff -- Hugo/App/HookProbe.swift` still shows the unstaged `extra` line.
 
-3. **An unfixable problem blocks the commit.** A file that does not parse cannot be formatted:
+3. **A partly staged file whose staged part has a problem is blocked.**
 
    ```sh
    git checkout -- Hugo/App/HookProbe.swift
-   printf 'struct HookBroken {\n' > Hugo/App/HookBroken.swift
-   git add Hugo/App/HookBroken.swift
-   git commit -m "Hook probe broken"
+   printf 'struct HookProbe {\n\tlet value = 3\n}\n' > Hugo/App/HookProbe.swift
+   git add Hugo/App/HookProbe.swift
+   printf 'struct HookProbe {\n\tlet value = 3\n\tlet more = 4\n}\n' > Hugo/App/HookProbe.swift
+   git commit -m "probe staged problem"
    ```
 
-   **Verify**: the commit is rejected, the output contains `Commit blocked`, and `git log -1 --format=%s` is still `Hook probe partial`.
+   **Verify**: the commit is rejected, the output contains `Indentation` and `Commit blocked`, and `git log -1 --format=%s` is still `probe partial`.
 
-4. **A commit with no Swift files is ignored.** Unstage the broken file (`git rm -f --cached Hugo/App/HookBroken.swift && rm Hugo/App/HookBroken.swift`), stage only `plans/README.md`, and run `Scripts/hooks/pre-commit`.
+4. **An unparseable file is blocked with the guidance message.**
+
+   ```sh
+   git checkout -- Hugo/App/HookProbe.swift && git reset -q --hard HEAD
+   printf 'struct HookBroken {\n' > Hugo/App/HookBroken.swift
+   git add Hugo/App/HookBroken.swift
+   git commit -m "probe broken"
+   ```
+
+   **Verify**: the commit is rejected, the output contains `expected '}' to end struct` and `Commit blocked`, and `git log -1 --format=%s` is still `probe partial`. Then `git rm -q -f --cached Hugo/App/HookBroken.swift && rm Hugo/App/HookBroken.swift`.
+
+5. **A commit with no Swift files is ignored.** Stage only `plans/README.md` (append a line first) and run `Scripts/hooks/pre-commit`.
 
    **Verify**: exit 0, no output.
 
-5. **Remove every probe.** Reset the three probe commits and delete the file:
+6. **A file name with a space survives.**
 
    ```sh
-   git reset --hard HEAD~3
-   rm -f Hugo/App/HookProbe.swift Hugo/App/HookBroken.swift
+   git reset -q --hard HEAD
+   printf 'struct Spaced {\n\tlet v = 1\n}\n' > "Hugo/App/Has Space.swift"
+   git add "Hugo/App/Has Space.swift"
+   git commit -m "probe space"
    ```
 
-   Use `git reset --hard` only here, only to drop the commits made in this step list, and only if `git log --format=%s -3` shows exactly `Hook probe partial`, `Hook probe base`, `Hook probe fixable`. Any other output is a STOP condition.
+   **Verify**: the commit succeeds and `git show "HEAD:Hugo/App/Has Space.swift" | grep -c "$(printf '\t')"` → `0`.
 
-   **Verify**: `git ls-files Hugo | grep Hook` prints nothing, and `git log -1 --format=%s` is the commit that was `HEAD` before Step 3. Re-create your Step 1, 2 and 4 files first if the reset removed them, or commit them before running Step 3 so the reset cannot touch them.
-
-   Commit the two scripts (Steps 1 and 2) **before** starting Step 3 so the reset cannot remove them. Do so with `git add Scripts && git commit -m "Add pre-commit hook that formats staged Swift files"`.
+7. **Clean up.** `cd` back to the real repository and run `rm -rf "$T"`. In the real repository, `git status --porcelain` must show only the new script files and the README edit (no probe files), and `git log -1 --format=%s` must be unchanged.
 
 ### Step 4: Document it
 
@@ -249,7 +281,7 @@ After that, every commit formats the staged Swift files with `swift-format`, add
 
 **Verify**: `Scripts/verify.sh` → exit 0 (no Swift file changed).
 
-Commit `README.md` with the message `Document the pre-commit format hook`. The hook runs on this commit and must pass silently, since it contains no Swift files.
+If the operator asked you to commit, commit `README.md` with `docs: document the pre-commit format hook`. The hook runs on this commit and must pass silently, since it contains no Swift files. Otherwise leave it uncommitted.
 
 ## Test plan
 
@@ -259,8 +291,8 @@ No XCTest or Swift Testing tests, because the hook is a shell script. Step 3 is 
 
 - [ ] `Scripts/hooks/pre-commit` and `Scripts/install-hooks.sh` exist and are executable (`test -x` on both)
 - [ ] `git config --get core.hooksPath` prints `Scripts/hooks`
-- [ ] Step 3 results all matched (fixed, left alone, blocked, ignored)
-- [ ] `git ls-files Hugo | grep Hook` prints nothing
+- [ ] Step 3 results all matched (fixed, left alone, staged problem blocked, unparseable file blocked with guidance, non-Swift ignored, space in name fine)
+- [ ] `git ls-files Hugo | grep Hook` prints nothing, and the real repository's `git log -1` is unchanged by Step 3
 - [ ] `Scripts/verify.sh` exits 0
 - [ ] `git status --porcelain` lists no files outside the Scope list
 - [ ] `plans/README.md` row for 051 says DONE
@@ -271,12 +303,14 @@ Stop and report back if:
 
 - `xcrun swift-format lint --strict --recursive Hugo HugoTests` does not exit 0 before you start. Plan 037 has not landed or has regressed. Do not install the hook until the repo is clean, or the first commit that touches an old file will also reformat it.
 - `git config --get core.hooksPath` already prints a different value, or `.git/hooks` contains a non-sample hook. Someone has their own setup. Report it. Do not overwrite it.
-- Step 3.1 is rejected, or the committed file still contains tabs. The hook is not running or the formatter did not apply.
-- Step 3.2 stages the unstaged `extra` line. The partial-staging protection is broken and the hook must not be installed as is.
-- `git log --format=%s -3` does not show exactly the three probe commits before the reset in Step 3.5.
+- Probe 1 is rejected, or the committed file still contains tabs. The hook is not running or the formatter did not apply.
+- Probe 2 stages the unstaged `extra` line, or is rejected. The partial-staging protection is broken and the hook must not be installed as is.
+- Probe 3 or 4 is accepted. The hook is not linting the staged content.
+- Any probe commit appears in the real repository's history. Probes belong in the throwaway clone only.
 
 ## Maintenance notes
 
+- The final lint checks the staged blob of every staged Swift file, exported to a temporary directory, so a problem in unstaged work never blocks a commit. Diagnostics show repository-relative paths.
 - Hooks are per clone. A new clone, a new machine, or a fresh checkout in a git worktree needs `Scripts/install-hooks.sh` once. Plan 050 should mention it in `AGENTS.md` so agents run it too.
 - The hook rewrites files in the working tree while Xcode may have them open. Xcode reloads files changed on disk, but an unsaved edit in the editor at commit time could be lost or conflict. Save before committing.
 - Because the hook re-stages fixed files, `git commit` can produce a commit whose content differs from what `git diff --cached` showed beforehand. The output line `swift-format fixed and re-staged: <file>` is the only signal, by design.
