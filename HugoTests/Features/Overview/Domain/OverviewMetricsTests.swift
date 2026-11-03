@@ -12,15 +12,6 @@ struct OverviewMetricsTests {
     }()
 
     @Test
-    func currentMonthUsesHalfOpenIntervalAcrossDecember() {
-        let now = date(2026, 12, 15)
-        let interval = CurrentMonthInterval.current(now: now, calendar: calendar)
-        #expect(calendar.component(.month, from: interval.start) == 12)
-        #expect(calendar.component(.year, from: interval.end) == 2027)
-        #expect(calendar.component(.month, from: interval.end) == 1)
-    }
-
-    @Test
     func metricsCalculateGoalAndExpectedProgress() {
         let status = PublisherStatus.status(for: "auxiliary-pioneer")
         let metrics = OverviewMetrics.make(

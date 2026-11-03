@@ -38,9 +38,10 @@ extension YearMonth {
         return range.count
     }
 
-    nonisolated func endDate(calendar: Calendar = .current) -> Date {
-        let startOfNextMonth = nextMonth(calendar: calendar).date(calendar: calendar)
-        return calendar.date(byAdding: .second, value: -1, to: startOfNextMonth) ?? startOfNextMonth
+    /// The half-open range from the first instant of this month to the first
+    /// instant of the next month. Use it for "entries in this month" queries.
+    nonisolated func dateRange(calendar: Calendar = .current) -> Range<Date> {
+        date(calendar: calendar)..<nextMonth(calendar: calendar).date(calendar: calendar)
     }
 }
 

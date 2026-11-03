@@ -97,19 +97,17 @@ extension YearMonthTests {
     }
 
     @Test
-    func endDateIsTheLastInstantOfTheMonth() {
+    func dateRangeCoversTheWholeMonthHalfOpen() {
         let calendar = gregorianGMT()
-        let end = YearMonth(year: 2026, month: 6).endDate(calendar: calendar)
-        let components = calendar.dateComponents(
-            [.year, .month, .day, .hour, .minute, .second],
-            from: end
-        )
+        let range = YearMonth(year: 2026, month: 12).dateRange(calendar: calendar)
+        let start = calendar.date(from: DateComponents(year: 2026, month: 12, day: 1))!
+        let end = calendar.date(from: DateComponents(year: 2027, month: 1, day: 1))!
+        let lastSecond = calendar.date(
+            from: DateComponents(year: 2026, month: 12, day: 31, hour: 23, minute: 59, second: 59))!
 
-        #expect(components.year == 2026)
-        #expect(components.month == 6)
-        #expect(components.day == 30)
-        #expect(components.hour == 23)
-        #expect(components.minute == 59)
-        #expect(components.second == 59)
+        #expect(range.lowerBound == start)
+        #expect(range.upperBound == end)
+        #expect(range.contains(lastSecond))
+        #expect(!range.contains(range.upperBound))
     }
 }

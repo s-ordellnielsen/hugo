@@ -7,8 +7,9 @@ struct CategoryProgressBreakdownView: View {
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
 
     init(month: YearMonth = Date().yearMonth()) {
-        let start = month.date()
-        let end = month.nextMonth().date()
+        let range = month.dateRange()
+        let start = range.lowerBound
+        let end = range.upperBound
         _entries = Query(filter: #Predicate<Entry> { $0.date >= start && $0.date < end })
     }
 

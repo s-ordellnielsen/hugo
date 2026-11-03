@@ -1,16 +1,5 @@
 import Foundation
 
-struct CurrentMonthInterval: Equatable {
-    let start: Date
-    let end: Date
-
-    static func current(now: Date, calendar: Calendar) -> CurrentMonthInterval {
-        let start = calendar.dateInterval(of: .month, for: now)?.start ?? now
-        let end = calendar.date(byAdding: .month, value: 1, to: start) ?? start
-        return CurrentMonthInterval(start: start, end: end)
-    }
-}
-
 struct OverviewMetrics {
     let totalHours: Double
     let monthlyGoal: Double

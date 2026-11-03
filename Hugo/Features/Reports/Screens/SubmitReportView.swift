@@ -23,8 +23,9 @@ struct SubmitReportView: View {
     init(month: YearMonth) {
         _model = State(initialValue: SubmitReportFormModel(month: month))
 
-        let start = month.date()
-        let end = month.nextMonth().date()
+        let range = month.dateRange()
+        let start = range.lowerBound
+        let end = range.upperBound
         _entries = Query(
             filter: #Predicate<Entry> { $0.date >= start && $0.date < end },
             sort: \Entry.date,
@@ -33,16 +34,12 @@ struct SubmitReportView: View {
 
         let targetYear = month.year
         let targetMonth = month.month
-        let prev = YearMonth.previous(before: month)
-        let prevYear = prev.year
-        let prevMonth = prev.month
         let next = month.nextMonth()
         let nextYear = next.year
         let nextMonth = next.month
         _submissions = Query(
             filter: #Predicate<SubmittedReport> {
                 ($0.year == targetYear && $0.month == targetMonth)
-                    || ($0.year == prevYear && $0.month == prevMonth)
                     || ($0.year == nextYear && $0.month == nextMonth)
             },
             sort: \SubmittedReport.year

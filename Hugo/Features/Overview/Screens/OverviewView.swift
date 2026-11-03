@@ -41,9 +41,9 @@ private struct OverviewDayView: View {
 
     init(today: Date) {
         self.today = today
-        let interval = CurrentMonthInterval.current(now: today, calendar: .current)
-        let start = interval.start
-        let end = interval.end
+        let range = today.yearMonth(using: .current).dateRange(calendar: .current)
+        let start = range.lowerBound
+        let end = range.upperBound
         _entries = Query(
             filter: #Predicate<Entry> { $0.date >= start && $0.date < end }, sort: \Entry.date, order: .reverse)
     }
