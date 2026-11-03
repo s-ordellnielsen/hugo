@@ -1,7 +1,36 @@
+import Combine
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct OverviewView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var today = Calendar.current.startOfDay(for: .now)
+
+    var body: some View {
+        OverviewDayView(today: today)
+            .id(today)
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { refreshToday() }
+            }
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: UIApplication.significantTimeChangeNotification)
+                    .receive(on: RunLoop.main)
+            ) { _ in
+                refreshToday()
+            }
+    }
+
+    private func refreshToday() {
+        let start = Calendar.current.startOfDay(for: .now)
+        if start != today { today = start }
+    }
+}
+
+private struct OverviewDayView: View {
+    let today: Date
+
     @Query private var entries: [Entry]
     @Query private var submissions: [SubmittedReport]
 
@@ -10,8 +39,9 @@ struct OverviewView: View {
     @State private var showingAddEntry = false
     @State private var showingDetails = false
 
-    init() {
-        let interval = CurrentMonthInterval.current(now: .now, calendar: .current)
+    init(today: Date) {
+        self.today = today
+        let interval = CurrentMonthInterval.current(now: today, calendar: .current)
         let start = interval.start
         let end = interval.end
         _entries = Query(
