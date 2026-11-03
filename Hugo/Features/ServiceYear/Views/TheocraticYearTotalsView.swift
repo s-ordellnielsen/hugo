@@ -16,6 +16,8 @@ struct TheocraticYearTotalsView: View {
                 eyebrow
                 Spacer(minLength: HugoLayout.Spacing.regular)
                 Image(systemName: "chevron.right")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }
@@ -46,7 +48,7 @@ struct TheocraticYearTotalsView: View {
                 Text(paceSentence)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .padding(.top, HugoLayout.Spacing.compact)
+                    .padding(.top, HugoLayout.Spacing.spacious)
 
                 CenteredProgressBar(
                     fraction: fraction,
