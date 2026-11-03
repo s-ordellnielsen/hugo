@@ -283,10 +283,12 @@ enum MigrationPlan: SchemaMigrationPlan {
             for legacyReport in legacyReports {
                 guard legacyReport.submittedAt != .distantPast else { continue }
 
+                let sameMonth = reports.filter {
+                    $0.year == legacyReport.year && $0.month == legacyReport.month
+                }
                 guard
-                    let report = reports.first(where: {
-                        $0.year == legacyReport.year && $0.month == legacyReport.month
-                    })
+                    let report = sameMonth.first(where: { $0.submittedAt == legacyReport.submittedAt })
+                        ?? sameMonth.first
                 else { continue }
 
                 let mainCategories = legacyReport.categories.filter { $0.type == .main }

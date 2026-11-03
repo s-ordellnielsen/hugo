@@ -574,6 +574,53 @@ struct SchemaMigrationTests {
     }
 
     @Test
+    func migratingV10StoreAttachesLinesToRealSubmissionNotSentinel() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+
+        let placeholder = SchemaV10.SubmittedReport(
+            year: 2026,
+            month: 8,
+            submittedAt: .distantPast
+        )
+        let real = SchemaV10.SubmittedReport(
+            year: 2026,
+            month: 8,
+            submittedAt: Date(timeIntervalSince1970: 20_000),
+            fieldServiceSeconds: 7_200,
+            actualTotalSeconds: 7_200,
+            submittedHours: 2,
+            carriedOutSeconds: 1_200,
+            categories: [
+                SchemaV10.SubmittedReport.SubmittedCategory(
+                    name: "Field Service",
+                    iconName: "figure.walk",
+                    typeRaw: TrackerType.main.rawValue,
+                    actualSeconds: 7_200,
+                    submittedHours: 2
+                )
+            ]
+        )
+        try makeV10Store(at: store.storeURL, submissions: [placeholder, real])
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let context = container.mainContext
+        let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
+        let migratedReal = try #require(
+            reports.first { $0.submittedAt == Date(timeIntervalSince1970: 20_000) }
+        )
+        let migratedPlaceholder = try #require(
+            reports.first { $0.submittedAt == .distantPast }
+        )
+        let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
+
+        #expect(!migratedReal.reportingLines.isEmpty)
+        #expect(migratedPlaceholder.reportingLines.isEmpty)
+        #expect(entries.count == 1)
+        #expect(entries.first?.sourceSubmission === migratedReal)
+    }
+
+    @Test
     func migratingV10StoreWithoutCarryOutCreatesNoGeneratedEntries() throws {
         let store = try TemporaryStore()
         defer { store.remove() }

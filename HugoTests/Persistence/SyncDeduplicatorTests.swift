@@ -134,4 +134,186 @@ struct SyncDeduplicatorTests {
 
         #expect(second == 0)
     }
+
+    // MARK: - Monthly reports and carried-in entries
+
+    private func makeReport(
+        month: Int = 6, submittedAt: Date, entriesClosedAt: Date = .distantPast,
+        lines: [SubmittedReport.SubmittedReportingLine] = [], in context: ModelContext
+    ) -> SubmittedReport {
+        let report = SubmittedReport(
+            year: 2026, month: month, submittedAt: submittedAt, entriesClosedAt: entriesClosedAt,
+            reportingLines: lines)
+        context.insert(report)
+        return report
+    }
+
+    private func makeCarry(
+        from report: SubmittedReport, duration: TimeInterval = 1_800, lineID: String = "",
+        createdAt: Date = Date(timeIntervalSince1970: 3_000), in context: ModelContext
+    ) -> Entry {
+        let entry = Entry(
+            date: Date(timeIntervalSince1970: 1_782_864_000), duration: duration, tracker: nil,
+            source: (submission: report, lineID: lineID))
+        entry.createdAt = createdAt
+        context.insert(entry)
+        return entry
+    }
+
+    @Test
+    func realSubmissionReplacesPlaceholder() throws {
+        let context = try makeContext()
+        _ = makeReport(submittedAt: .distantPast, in: context)
+        _ = makeReport(submittedAt: early, in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateMonthlyReports()
+
+        let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
+        #expect(removed == 1)
+        #expect(reports.count == 1)
+        #expect(reports.first?.submittedAt == early)
+    }
+
+    @Test
+    func latestRealSubmissionWinsAndKeepsCarryEntries() throws {
+        let context = try makeContext()
+        let older = makeReport(submittedAt: early, in: context)
+        _ = makeReport(submittedAt: late, in: context)
+        let carry = makeCarry(from: older, in: context)
+        try context.save()
+
+        try SyncDeduplicator(context: context).mergeDuplicateMonthlyReports()
+
+        let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
+        #expect(reports.count == 1)
+        #expect(reports.first?.submittedAt == late)
+        #expect(carry.sourceSubmission === reports.first)
+    }
+
+    @Test
+    func linesMoveFromPlaceholderToRealReport() throws {
+        let context = try makeContext()
+        let real = makeReport(submittedAt: early, in: context)
+        let line = SubmittedReport.SubmittedReportingLine(
+            typeRaw: TrackerType.main.rawValue, submittedHours: 2)
+        _ = makeReport(submittedAt: .distantPast, lines: [line], in: context)
+        try context.save()
+
+        try SyncDeduplicator(context: context).mergeDuplicateMonthlyReports()
+
+        #expect(real.reportingLines.count == 1)
+        #expect(real.reportingLines.first?.submittedHours == 2)
+    }
+
+    @Test
+    func identicalRealReportsAreKept() throws {
+        let context = try makeContext()
+        _ = makeReport(submittedAt: early, entriesClosedAt: early, in: context)
+        _ = makeReport(submittedAt: early, entriesClosedAt: early, in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateMonthlyReports()
+
+        #expect(removed == 0)
+        #expect(try context.fetch(FetchDescriptor<SubmittedReport>()).count == 2)
+    }
+
+    @Test
+    func differentMonthsAreUntouched() throws {
+        let context = try makeContext()
+        _ = makeReport(month: 5, submittedAt: early, in: context)
+        _ = makeReport(month: 6, submittedAt: early, in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateMonthlyReports()
+
+        #expect(removed == 0)
+        #expect(try context.fetch(FetchDescriptor<SubmittedReport>()).count == 2)
+    }
+
+    @Test
+    func identicalCarryEntriesCollapseToOne() throws {
+        let context = try makeContext()
+        let report = makeReport(submittedAt: early, in: context)
+        _ = makeCarry(from: report, in: context)
+        _ = makeCarry(from: report, in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateCarryEntries()
+
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+        #expect(removed == 1)
+        #expect(entries.count == 1)
+        #expect(entries.first?.duration == 1_800)
+        #expect(entries.first?.sourceReportingLineID == "")
+        #expect(entries.first?.sourceSubmission === report)
+        let lines = ReportingLineCalculator.lines(from: entries)
+        #expect(lines.first { $0.type == .main }?.carriedInSeconds == 1_800)
+    }
+
+    @Test
+    func differentLinesAreKept() throws {
+        let context = try makeContext()
+        let report = makeReport(submittedAt: early, in: context)
+        _ = makeCarry(from: report, lineID: "", in: context)
+        _ = makeCarry(from: report, lineID: "Bethel", in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateCarryEntries()
+
+        #expect(removed == 0)
+        #expect(try context.fetch(FetchDescriptor<Entry>()).count == 2)
+    }
+
+    @Test
+    func entryLinkedToCanonicalReportIsTheTemplate() throws {
+        let context = try makeContext()
+        let older = makeReport(submittedAt: early, in: context)
+        let newer = makeReport(submittedAt: late, in: context)
+        _ = makeCarry(from: older, duration: 1_200, in: context)
+        _ = makeCarry(from: newer, duration: 1_800, in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateCarryEntries()
+
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+        #expect(removed == 1)
+        #expect(entries.count == 1)
+        #expect(entries.first?.duration == 1_800)
+    }
+
+    @Test
+    func ordinaryEntriesAreUntouched() throws {
+        let context = try makeContext()
+        let tracker = makeTracker(createdAt: early)
+        context.insert(tracker)
+        _ = makeEntry(for: tracker, in: context)
+        _ = makeEntry(for: tracker, in: context)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateCarryEntries()
+
+        #expect(removed == 0)
+        #expect(try context.fetch(FetchDescriptor<Entry>()).count == 2)
+    }
+
+    @Test
+    func runIsIdempotent() throws {
+        let context = try makeContext()
+        _ = makeReport(submittedAt: .distantPast, in: context)
+        let report = makeReport(submittedAt: early, in: context)
+        _ = makeCarry(from: report, in: context)
+        _ = makeCarry(from: report, in: context)
+        try context.save()
+        let deduplicator = SyncDeduplicator(context: context)
+
+        deduplicator.run()
+        deduplicator.run()
+
+        #expect(try deduplicator.mergeDuplicateMonthlyReports() == 0)
+        #expect(try deduplicator.mergeDuplicateCarryEntries() == 0)
+        #expect(try context.fetch(FetchDescriptor<SubmittedReport>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<Entry>()).count == 1)
+    }
 }

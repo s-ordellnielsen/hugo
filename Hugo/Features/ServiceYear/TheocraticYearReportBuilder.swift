@@ -149,7 +149,7 @@ nonisolated enum TheocraticYearReportBuilder {
         return false
     }
 
-    private static func isRealSubmission(
+    static func isRealSubmission(
         _ submission: SubmittedReport
     ) -> Bool {
         (submission.submittedAt ?? .distantPast) != .distantPast
