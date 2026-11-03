@@ -1,16 +1,12 @@
-Hugo is back with another update and this time there's quite a bit of changes. Let's dive in:
+We're back with a new update for Hugo, and this update brings a feature many pioneers have been waiting for. Let's dive in.
 
-- New header on the Year page for regular pioneers: it now shows the hours that count toward your yearly goal, with a bar showing whether you are ahead of or behind pace. Tap the header to see the details, including how each month counts. If you also have time in other categories, your actual total is shown below the counted hours
-- New setting under General: choose how much of the current month you should have done by today when comparing with your yearly goal
-- Durations on the Year page and in the monthly totals now read as hours (for example "152 hours") instead of 152:00
-- Updated submission flow lets you manually select whether you want to round or transfer extra minutes for each category when submitting your report
-- New submit screen
-- Carried-in entries now have their own section
-- Hugo now warns you when a month you already submitted has changed, and before you submit a month again
-- New default list type in Overview: Grouped by date, this list style groups entries together for a simpler view. This style is perfect if you add multiple entries on the same days. Try it out and see how it feels (if the new style doesn't fit you, it is possible to change it back to the old view)
-- Removed the status line below month totals in Overview, this will return in a later update when I figure out the correct implementation of the feature
-- Entry durations are now edited with a wheel picker
-- Fixes for duplicate categories and reports that could appear after syncing between devices
-- Smaller UI updates that (might) make the experience more pleasant
+YEARLY GOAL
+Until now, Hugo has shown how many hours you have reported in total, but it has not taken into account that other kinds of service (like BEC and LDC) can affect your yearly goal.
 
-This update is quite huge and allows me to add new features easier in the future. While I've been careful, this update might have a higher risk of glitches and bugs, please reach out or submit feedback if you experience any issues :)
+Now Hugo takes this into account, with a completely new and updated Service Year page. In the new version, Hugo shows the total number of hours for the current service year that count toward your yearly goal. Below it you can see your total number of reported hours (if you don't see this, it means that all your reported hours count toward your yearly goal)
+
+You will also see a new graphic that helps you get an overview of how your service year is going. Is the graphic easy to understand? Or do you have any ideas for how I can improve the feature?
+
+CHANGES
+- Minor bug fixes after the latest category-based split on the Overview page
+- General bug fixes and improvements that make the app more stable
