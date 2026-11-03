@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct ServiceYearMonthRow: View {
-    let month: TheocraticYearMonth
+    let month: ServiceMonth
 
     @State private var isPresentingDetails = false
     @State private var isPresentingAddEntry = false
@@ -90,11 +90,7 @@ extension ServiceYearMonthRow {
     }
 
     private var displayedHours: Int {
-        if month.isSubmitted {
-            return month.submittedReport?.submittedHours ?? 0
-        }
-
-        return Int((summary?.totalSeconds ?? 0) / 3_600)
+        Int(month.contribution.total / 3_600)
     }
 
     private var hourLabel: LocalizedStringKey {
@@ -172,7 +168,7 @@ extension ServiceYearMonthRow {
             )
             .foregroundStyle(.hugoAccent)
 
-            if month.hasUnreportedEntries {
+            if month.unreportedChange != nil {
                 Label(
                     "report.status.unreported-entries",
                     systemImage: "exclamationmark.triangle.fill"

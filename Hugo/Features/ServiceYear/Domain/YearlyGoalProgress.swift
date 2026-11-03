@@ -32,7 +32,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     ) -> YearlyGoalProgress {
         var creditedByMonth: [YearMonth: TimeInterval] = [:]
         for month in report.months {
-            let contribution = TheocraticYearReportBuilder.contribution(for: month)
+            let contribution = month.contribution
             creditedByMonth[month.id] = rule.creditedSeconds(
                 main: contribution.main, separate: contribution.separate)
         }

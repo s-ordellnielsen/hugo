@@ -1380,6 +1380,23 @@
         }
       }
     },
+    "report.detail.changed.banner" : {
+      "comment" : "Banner at the top of a submitted month's detail view when entries were edited or deleted after the report was sent.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne måned er ændret, siden du indsendte den. Indsend en opdateret rapport for at medtage ændringerne."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This month has changed since you submitted it. Submit an updated report to include the changes."
+          }
+        }
+      }
+    },
     "report.detail.unreported.banner" : {
       "comment" : "Banner at the top of a submitted month's detail view when newer entries exist.",
       "localizations" : {

@@ -73,8 +73,8 @@ struct TheocraticYearReportBuilderTests {
 
         #expect(september.submittedReport == nil)
         #expect(!september.isSubmitted)
-        // No report exists, so the month is per definition unreported.
-        #expect(september.hasUnreportedEntries)
+        // Never submitted, so there is nothing to compare against.
+        #expect(september.unreportedChange == nil)
     }
 
     @Test
@@ -199,7 +199,7 @@ struct TheocraticYearReportBuilderTests {
         #expect(!september.isSubmitted)
         // The backfill sentinel must never surface "added after submission"
         // warnings for pre-existing entries.
-        #expect(september.hasUnreportedEntries)
+        #expect(september.unreportedChange == nil)
     }
 
     @Test
@@ -217,7 +217,7 @@ struct TheocraticYearReportBuilderTests {
         let september = try #require(report.months.first)
 
         #expect(september.isSubmitted)
-        #expect(!september.hasUnreportedEntries)
+        #expect(september.unreportedChange == nil)
     }
 
     @Test
@@ -235,7 +235,7 @@ struct TheocraticYearReportBuilderTests {
         let september = try #require(report.months.first)
 
         #expect(september.isSubmitted)
-        #expect(september.hasUnreportedEntries)
+        #expect(september.unreportedChange == .newEntries)
     }
 
     @Test

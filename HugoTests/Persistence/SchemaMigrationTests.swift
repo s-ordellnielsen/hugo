@@ -821,13 +821,9 @@ struct SchemaMigrationTests {
 
         #expect(entries.count == 1)
         #expect(generatedEntry.createdAt == receivingMonthStart)
-        #expect(
-            !ReportReminderSchedule.hasUnreportedEntries(
-                report: migratedReceivingReport,
-                entries: entries,
-                month: receivingMonth
-            )
-        )
+        let receiving = ServiceMonth.make(receivingMonth, entries: entries, submissions: [migratedReceivingReport])
+        #expect(receiving.isSubmitted)
+        #expect(receiving.unreportedChange == nil)
     }
 
     @Test

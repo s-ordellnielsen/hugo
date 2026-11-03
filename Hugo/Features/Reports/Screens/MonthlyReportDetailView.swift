@@ -4,7 +4,7 @@ import SwiftUI
 struct MonthlyReportDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
-    let month: TheocraticYearMonth
+    let month: ServiceMonth
 
     @State private var showingAddEntry = false
 
@@ -12,16 +12,15 @@ struct MonthlyReportDetailView: View {
         Group {
             if let summary = month.summary {
                 List {
-                    if month.isSubmitted && month.hasUnreportedEntries {
+                    if let change = month.unreportedChange {
                         Section {
-                            Label("report.detail.unreported.banner", systemImage: "exclamationmark.triangle.fill")
-
+                            Label(bannerKey(for: change), systemImage: "exclamationmark.triangle.fill")
                                 .font(.subheadline)
                         }
                     }
 
                     MonthlyReportTotalsView(summary: summary)
-                    MonthlyReportEntryListView(summary: summary, report: month.submittedReport)
+                    MonthlyReportEntryListView(month: month)
                 }
             } else {
                 ContentUnavailableView {
@@ -51,6 +50,13 @@ struct MonthlyReportDetailView: View {
         }
         .sheet(isPresented: $showingAddEntry) {
             AddEntryView(seededDate: month.id.date())
+        }
+    }
+
+    private func bannerKey(for change: ServiceMonth.UnreportedChange) -> LocalizedStringKey {
+        switch change {
+        case .newEntries: "report.detail.unreported.banner"
+        case .changedTotals: "report.detail.changed.banner"
         }
     }
 }

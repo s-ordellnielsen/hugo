@@ -1,25 +1,17 @@
 import SwiftUI
 
 struct MonthlyReportEntryListView: View {
-    let summary: MonthlyReportSummary
-    /// The month's submission, if any. Entries created after the submission's
-    /// `entriesClosedAt` cutoff are marked as not included in the report.
-    var report: SubmittedReport? = nil
-
-    private func isUnreported(_ entry: Entry) -> Bool {
-        guard let report, (report.submittedAt ?? .distantPast) != .distantPast else { return false }
-        return entry.createdAt > (report.entriesClosedAt ?? .distantPast)
-    }
+    let month: ServiceMonth
 
     var body: some View {
         Section {
-            ForEach(summary.entries) { entry in
+            ForEach(month.summary?.entries ?? []) { entry in
                 NavigationLink(destination: EntryDetailView(entry: entry)) {
                     Label {
                         HStack {
                             Text(entry.date, format: Date.FormatStyle(date: .abbreviated, time: .none))
                             Spacer()
-                            if isUnreported(entry) {
+                            if month.isUnreported(entry) {
                                 Image(systemName: "exclamationmark.triangle.fill")
 
                                     .font(.caption)

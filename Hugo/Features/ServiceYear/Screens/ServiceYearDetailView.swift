@@ -70,7 +70,7 @@ struct ServiceYearDetailView: View {
         Section {
             ForEach(report.months.filter { !$0.isFuture }) { month in
                 let credited = progress.creditedByMonth[month.id] ?? 0
-                let actual = TheocraticYearReportBuilder.contribution(for: month).total
+                let actual = month.contribution.total
                 LabeledContent {
                     VStack(alignment: .trailing) {
                         duration(credited)

@@ -239,11 +239,10 @@ struct SubmitReportFormModelTests {
         let julyEntries = try context.fetch(FetchDescriptor<Entry>()).filter {
             $0.date.yearMonth(using: calendar) == YearMonth(year: 2026, month: 7)
         }
-        #expect(
-            ReportReminderSchedule.hasUnreportedEntries(
-                report: julyReport, entries: julyEntries, month: YearMonth(year: 2026, month: 7), calendar: calendar)
-                == true
-        )
+        let julyMonth = ServiceMonth.make(
+            YearMonth(year: 2026, month: 7), entries: julyEntries, submissions: [julyReport],
+            now: now.addingTimeInterval(86_400), calendar: calendar)
+        #expect(julyMonth.unreportedChange != nil)
     }
 
     @Test
