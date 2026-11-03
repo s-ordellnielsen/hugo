@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct MonthlyReportDetailView: View {
@@ -7,30 +8,37 @@ struct MonthlyReportDetailView: View {
 
     @State private var showingAddEntry = false
 
-    private var summary: MonthlyReportSummary {
-        // Presented only from months that have a summary.
-        month.summary!
-    }
-
     var body: some View {
-        List {
-            if month.isSubmitted && month.hasUnreportedEntries {
-                Section {
-                    Label("report.detail.unreported.banner", systemImage: "exclamationmark.triangle.fill")
+        Group {
+            if let summary = month.summary {
+                List {
+                    if month.isSubmitted && month.hasUnreportedEntries {
+                        Section {
+                            Label("report.detail.unreported.banner", systemImage: "exclamationmark.triangle.fill")
 
-                        .font(.subheadline)
+                                .font(.subheadline)
+                        }
+                    }
+
+                    MonthlyReportTotalsView(summary: summary)
+                    MonthlyReportEntryListView(summary: summary, report: month.submittedReport)
+                }
+            } else {
+                ContentUnavailableView {
+                    Label("overview.entries.empty", systemImage: "text.page.badge.magnifyingglass")
+                } actions: {
+                    Button("entry.add.label") {
+                        showingAddEntry = true
+                    }
                 }
             }
-
-            MonthlyReportTotalsView(summary: summary)
-            MonthlyReportEntryListView(summary: summary, report: month.submittedReport)
         }
-        .navigationTitle(summary.displayName)
+        .navigationTitle(month.displayName)
         .navigationSubtitle("report.title")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                EditorialNavigationTitle(title: summary.displayName)
+                EditorialNavigationTitle(title: month.displayName)
             }
             ToolbarItem(placement: .topBarLeading) {
                 Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
@@ -42,7 +50,21 @@ struct MonthlyReportDetailView: View {
             }
         }
         .sheet(isPresented: $showingAddEntry) {
-            AddEntryView(seededDate: summary.id.date())
+            AddEntryView(seededDate: month.id.date())
         }
     }
+}
+
+#Preview("With entries") {
+    NavigationStack {
+        MonthlyReportDetailView(month: ReportPreviewFixtures.monthWithActivity)
+    }
+    .modelContainer(.preview)
+}
+
+#Preview("Empty month") {
+    NavigationStack {
+        MonthlyReportDetailView(month: ReportPreviewFixtures.emptyMonth)
+    }
+    .modelContainer(.preview)
 }
