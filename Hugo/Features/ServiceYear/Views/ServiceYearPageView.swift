@@ -7,6 +7,8 @@ struct ServiceYearPageView: View {
 
     @Query private var entries: [Entry]
     @Query private var submissions: [SubmittedReport]
+    @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
+    @AppStorage(UserDefaultsKeys.yearlyGoalPacing) private var pacing: YearlyGoalPacing = .proRated
 
     init(year: TheocraticYear, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.year = year
@@ -29,12 +31,32 @@ struct ServiceYearPageView: View {
         )
     }
 
+    private var status: PublisherStatus? {
+        PublisherStatus.status(for: statusID)
+    }
+
+    private func progress(for report: TheocraticYearReport) -> YearlyGoalProgress? {
+        guard let status, let rule = status.yearlyGoalRule else { return nil }
+        return YearlyGoalProgress.make(
+            report: report,
+            rule: rule,
+            yearlyGoalSeconds: TimeInterval(status.yearlyGoal) * 3_600,
+            pacing: pacing
+        )
+    }
+
     var body: some View {
         let report = self.report
+        let progress = progress(for: report)
         return ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
                 if report.hasEntries {
-                    TheocraticYearTotalsView(report: report)
+                    NavigationLink {
+                        ServiceYearDetailView(report: report, progress: progress, status: status)
+                    } label: {
+                        TheocraticYearTotalsView(report: report, progress: progress, status: status)
+                    }
+                    .buttonStyle(.card)
                 } else {
                     emptyYearCard
                 }

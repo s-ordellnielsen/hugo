@@ -9,6 +9,8 @@ import SwiftUI
 
 struct GeneralSettingsView: View {
     @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
+    @AppStorage(UserDefaultsKeys.yearlyGoalPacing) private var pacing: YearlyGoalPacing = .proRated
+    @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
 
     var body: some View {
         List {
@@ -21,6 +23,21 @@ struct GeneralSettingsView: View {
                     Label("settings.duration.minute-interval", systemImage: "clock")
                 }
                 .pickerStyle(.navigationLink)
+            }
+
+            if PublisherStatus.status(for: statusID)?.yearlyGoalRule != nil {
+                Section {
+                    Picker(selection: $pacing) {
+                        ForEach(YearlyGoalPacing.allCases, id: \.self) { option in
+                            Text(option.label).tag(option)
+                        }
+                    } label: {
+                        Label("settings.yearlyGoal.pacing", systemImage: "chart.line.uptrend.xyaxis")
+                    }
+                    .pickerStyle(.navigationLink)
+                } footer: {
+                    Text("settings.yearlyGoal.pacing.footer")
+                }
             }
         }
         .navigationTitle("settings.group.settings.general")

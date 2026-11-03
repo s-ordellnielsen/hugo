@@ -32,6 +32,8 @@ enum HugoLayout {
         static let durationPickerComponentWidth: CGFloat = 70
         static let durationPickerHeight: CGFloat = 216
         static let addEntryCompactSheetHeight: CGFloat = 300
+        static let goalTrackHeight: CGFloat = 12
+        static let goalKnobDiameter: CGFloat = 36
 
         static let minimumHitTarget: CGFloat = 44
     }
