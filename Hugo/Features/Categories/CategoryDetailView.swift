@@ -13,6 +13,7 @@ struct CategoryDetailView: View {
     @State private var showDeleteConfirmation = false
     @State private var iconPickerIsPresented: Bool = false
     @State private var errorMessage: String?
+    @State private var originalName: String?
 
     var body: some View {
         @Bindable var tracker = tracker
@@ -42,6 +43,7 @@ struct CategoryDetailView: View {
 
             Section("tracker.settings.name.label") {
                 TextField("tracker.settings.name.placeholder", text: $tracker.name)
+                    .onSubmit { commitName() }
             }
 
             Section {
@@ -62,6 +64,10 @@ struct CategoryDetailView: View {
                 }
             }
         }
+        .onAppear {
+            if originalName == nil { originalName = tracker.name }
+        }
+        .onDisappear { commitName() }
         .sheet(
             isPresented: $iconPickerIsPresented,
             content: {
@@ -88,10 +94,11 @@ struct CategoryDetailView: View {
                 .confirmationDialog("tracker.action.delete.\(tracker.name)?", isPresented: $showDeleteConfirmation) {
                     Button("common.delete", role: .destructive) {
                         do {
-                            try CategoryDeletionService(context: context).delete(tracker)
+                            try context.performIsolatedChange {
+                                try CategoryDeletionService(context: context).delete(tracker)
+                            }
                             dismiss()
                         } catch {
-                            context.rollback()
                             errorMessage = error.localizedDescription
                         }
                     }
@@ -105,6 +112,10 @@ struct CategoryDetailView: View {
             }
         }
         .errorAlert(message: $errorMessage)
+    }
+
+    private func commitName() {
+        tracker.name = CategoryName.committed(edited: tracker.name, original: originalName ?? tracker.name)
     }
 }
 

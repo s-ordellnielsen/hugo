@@ -210,6 +210,8 @@ struct SubmitReportView: View {
                     isComposingMessage = false
                     if sent {
                         persist()
+                    } else {
+                        model.cancelPreparedSubmission()
                     }
                 }
             }
@@ -244,10 +246,16 @@ struct SubmitReportView: View {
 
     private func persist() {
         do {
-            try model.persistSubmission(in: context)
+            var stored: SubmittedReport?
+            try context.performIsolatedChange {
+                stored = try model.persistSubmission(in: context)
+            }
+            guard stored != nil else {
+                saveErrorMessage = String(localized: "report.submit.not-saved")
+                return
+            }
             dismiss()
         } catch {
-            context.rollback()
             saveErrorMessage = error.localizedDescription
         }
     }

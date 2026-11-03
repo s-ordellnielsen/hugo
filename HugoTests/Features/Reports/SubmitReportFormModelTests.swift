@@ -373,4 +373,39 @@ struct SubmitReportFormModelTests {
         #expect(content?.body.contains("{month}") == false)
         #expect(model.results.first?.submittedHours == 5)
     }
+
+    @Test
+    func loadWhilePreparedKeepsTheSentNumbers() throws {
+        let model = makeModel()
+        let first = entry(2026, 6, 5, seconds: 5_400)
+        model.load(entries: [first], submissions: [])
+        model.setRule(.transfer, for: mainLineID(in: model))
+        #expect(model.prepareSubmission() != nil)
+
+        model.load(entries: [first, entry(2026, 6, 6, seconds: 1_800)], submissions: [])
+
+        #expect(model.preparedContent != nil)
+        #expect(model.results.first { $0.line.type == .main }?.line.actualSeconds == 5_400)
+
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let report = try #require(try model.persistSubmission(in: context))
+        let stored = report.reportingLines.first { $0.typeName == mainLineID(in: model) }
+        #expect(stored?.durationInSeconds == 5_400)
+    }
+
+    @Test
+    func cancelAppliesDataThatArrivedMeanwhile() {
+        let model = makeModel()
+        let first = entry(2026, 6, 5, seconds: 5_400)
+        model.load(entries: [first], submissions: [])
+        model.setRule(.transfer, for: mainLineID(in: model))
+        #expect(model.prepareSubmission() != nil)
+        model.load(entries: [first, entry(2026, 6, 6, seconds: 1_800)], submissions: [])
+
+        model.cancelPreparedSubmission()
+
+        #expect(model.preparedContent == nil)
+        #expect(model.results.first { $0.line.type == .main }?.line.actualSeconds == 7_200)
+    }
 }

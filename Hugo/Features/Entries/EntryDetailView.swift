@@ -70,11 +70,9 @@ struct EntryDetailView: View {
                             role: .destructive
                         ) {
                             do {
-                                context.delete(entry)
-                                try context.save()
+                                try context.performIsolatedChange { context.delete(entry) }
                                 dismiss()
                             } catch {
-                                context.rollback()
                                 deletionError = error.localizedDescription
                             }
                         }

@@ -14,6 +14,7 @@ final class SubmitReportFormModel {
     private(set) var results: [ReportingLineResult] = []
     private var rules: [String: RoundingRule] = [:]
     private var didSeedRules = false
+    private var pendingLoad: (entries: [Entry], submissions: [SubmittedReport])?
 
     /// The composed message ready to hand to Messages (or the pasteboard).
     /// Set by `prepareSubmission()`; cleared when the rule changes.
@@ -49,6 +50,12 @@ final class SubmitReportFormModel {
     /// Feeds the model its data. The view calls this on appear and whenever
     /// its queries change, keeping the model free of query concerns.
     func load(entries: [Entry], submissions: [SubmittedReport]) {
+        // A prepared message is what the user is about to send. Keep the numbers
+        // it was built from until the user sends or cancels it.
+        guard preparedContent == nil else {
+            pendingLoad = (entries, submissions)
+            return
+        }
         self.entries = entries
         self.submissions = submissions
         self.submissionsByMonth = TheocraticYearReportBuilder.canonicalSubmissionsByMonth(submissions)
@@ -65,6 +72,15 @@ final class SubmitReportFormModel {
         }
 
         recompute()
+    }
+
+    /// Discards the prepared message and applies data that arrived meanwhile.
+    func cancelPreparedSubmission() {
+        preparedContent = nil
+        if let pending = pendingLoad {
+            pendingLoad = nil
+            load(entries: pending.entries, submissions: pending.submissions)
+        }
     }
 
     // MARK: - Derived values
@@ -225,6 +241,8 @@ final class SubmitReportFormModel {
 
         reconcileGeneratedEntries(for: report, in: context)
         try context.save()
+        preparedContent = nil
+        pendingLoad = nil
         return report
     }
 

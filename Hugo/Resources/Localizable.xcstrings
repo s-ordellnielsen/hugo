@@ -1908,6 +1908,23 @@
         }
       }
     },
+    "report.submit.not-saved" : {
+      "comment" : "Error shown when a submitted report could not be stored.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rapporten kunne ikke gemmes. Tjek hver linje, og prøv igen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The report could not be saved. Check each line and try again."
+          }
+        }
+      }
+    },
     "report.submit.overseer.settings-link" : {
       "comment" : "Button in the submission sheet opening Settings when no group overseer is selected.",
       "localizations" : {
