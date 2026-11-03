@@ -167,7 +167,6 @@ struct OverviewDateList: View {
                 VStack(spacing: HugoLayout.Spacing.small) {
                     ForEach(section.entries) { entry in
                         DateEntryRow(entry: entry)
-                            .equatable()
                     }
                 }
                 .padding(.top, HugoLayout.Spacing.small)
@@ -182,7 +181,7 @@ struct OverviewDateList: View {
         }
     }
 
-    private struct DateEntryRow: View, Equatable {
+    private struct DateEntryRow: View {
         var entry: Entry
 
         var body: some View {
@@ -195,10 +194,6 @@ struct OverviewDateList: View {
                 Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
                     .monospacedDigit()
             }
-        }
-
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.entry.id == rhs.entry.id && lhs.entry.date == rhs.entry.date && lhs.entry.duration == rhs.entry.duration
         }
     }
 }

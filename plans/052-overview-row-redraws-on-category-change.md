@@ -8,9 +8,10 @@
 > maintain the index.
 >
 > **Drift check (run first)**: `git diff --stat 6613507..HEAD -- Hugo/Features/Overview/Views/OverviewListView.swift`
-> If this file changed since this plan was written, compare the "Current
-> state" excerpt against the live code before proceeding. On a mismatch,
-> treat it as a STOP condition.
+> Plan 042 changed `OverviewCarriedEntriesView` and the line that renders it
+> in this file. That is expected. Compare the `DateEntryRow` excerpt below with
+> the live code by content, not by line number. On a mismatch, treat it as a
+> STOP condition.
 
 ## Status
 
@@ -19,7 +20,7 @@
 - **Risk**: LOW
 - **Depends on**: plans/040-resolve-entry-category-in-one-place.md (DONE)
 - **Category**: bug
-- **Planned at**: commit `6613507`, 2026-11-03
+- **Planned at**: commit `6613507`, 2026-11-03; revised 2026-11-03 at `e96ff45` (plan 042 touched this file; see the note on `DateListItem` below)
 
 ## Why this matters
 
@@ -60,6 +61,7 @@ On the Overview tab each entry in a day card is drawn by `DateEntryRow`, which s
   }
   ```
 
+- The same file has a second, separate `.equatable()` that this plan does **not** touch. `OverviewDateList` wraps each day card as `DateListItem(section: date).equatable()`, and `DateSection.==` compares only the entries' ids, durations and dates. It can only skip updates that the parent pushes down. A category change on an entry does not change the parent's inputs, so it never reaches that comparison. Leave `DateListItem`, `DateSection` and their `==` exactly as they are.
 - `Entry.resolvedCategory()` (in `Hugo/Features/Entries/EntryCategory.swift`, added by plan 040) reads `entry.tracker` and `entry.storedTracker`. `EntryDetailView` changes the category by setting `entry.tracker` and calling `entry.refreshStoredTracker()`.
 - Conventions: AGENTS.md requires `@Observable`-based state and no legacy wrappers. `Entry` is an observable SwiftData model, so reading its properties inside `body` is enough for SwiftUI to track them. Other row views in the repo (for example `EntryRow` in `Hugo/Features/Entries/EntryRow.swift`) are plain `View` structs with no `Equatable` conformance. Match that.
 
@@ -108,8 +110,9 @@ ForEach(section.entries) { entry in
 
 **Verify**:
 
-- `grep -n 'equatable()' Hugo/Features/Overview/Views/OverviewListView.swift` prints nothing.
-- `grep -n 'static func ==' Hugo/Features/Overview/Views/OverviewListView.swift` prints nothing.
+- `grep -n 'DateEntryRow' Hugo/Features/Overview/Views/OverviewListView.swift` → exactly two matches: the call site and `private struct DateEntryRow: View {` (no `Equatable`).
+- `grep -n 'equatable()' Hugo/Features/Overview/Views/OverviewListView.swift` → exactly one match, the `DateListItem(section: date)` one.
+- `grep -c 'static func ==' Hugo/Features/Overview/Views/OverviewListView.swift` → `1` (only `DateSection.==` remains).
 - `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0.
 
 ### Step 2: Run the gate
@@ -121,7 +124,7 @@ ForEach(section.entries) { entry in
 1. Run the app with at least two categories and one entry in the first.
 2. Overview tab, tap the entry, change its category in the detail sheet, close the sheet.
 3. Expected: the row in the day card shows the new category name immediately.
-4. Edit only the entry's category, not its time or duration, so that the check isolates this bug.
+4. Edit only the entry's category, not its time or duration, so that the check isolates this bug. If you can, run the same check once on the build before this change; if the old row already updated, this plan is cleanup only (see STOP conditions).
 
 ## Test plan
 
@@ -129,7 +132,7 @@ No new tests. The bug is about SwiftUI redraw behavior, which unit tests do not 
 
 ## Done criteria
 
-- [ ] `grep -n 'equatable()\|static func ==' Hugo/Features/Overview/Views/OverviewListView.swift` prints nothing
+- [ ] `grep -n 'equatable()' Hugo/Features/Overview/Views/OverviewListView.swift` prints one line (`DateListItem`), and `grep -c 'static func ==' Hugo/Features/Overview/Views/OverviewListView.swift` prints `1` (`DateSection`)
 - [ ] `Scripts/verify.sh` exits 0
 - [ ] `git status --porcelain` lists only `Hugo/Features/Overview/Views/OverviewListView.swift` and `plans/README.md`
 - [ ] `plans/README.md` row for 052 updated (DONE, or DONE with owner repro pending)
@@ -146,3 +149,4 @@ Stop and report back if:
 
 - Removing `.equatable()` means each row's body re-runs whenever its parent re-runs. Rows are three `Text` views, so the cost is negligible. If the Overview list grows heavy later, measure first and restore equality by comparing the values the row actually shows (the resolved category name, time and duration as plain values), never by comparing fields on the shared `Entry` reference.
 - Reviewers should check that the diff touches only `DateEntryRow` and its call site.
+- `DateSection.==` ignores categories on purpose of its origin (it was written for ids, durations and dates). If a future change makes the card depend on category data that the parent reads, add the resolved category name to that comparison.
