@@ -71,6 +71,16 @@ struct TheocraticYearTests {
         #expect(TheocraticYear(startYear: 2024) < TheocraticYear(startYear: 2025))
     }
 
+    @Test
+    func rangeRunsFromSeptemberFirstToNextSeptemberFirst() {
+        let range = TheocraticYear(startYear: 2026).dateRange(calendar: calendar)
+
+        #expect(range.lowerBound == date(2026, 9, 1))
+        #expect(range.upperBound == date(2027, 9, 1))
+        #expect(range.contains(date(2027, 8, 31)))
+        #expect(!range.contains(date(2027, 9, 1)))
+    }
+
     private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day))!
     }

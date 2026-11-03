@@ -17,6 +17,14 @@ nonisolated struct TheocraticYear: Hashable, Comparable, Identifiable, Sendable 
             || (month.year == startYear + 1 && month.month >= 1 && month.month <= 8)
     }
 
+    /// The half-open range from September 1 of `startYear` to September 1 of
+    /// the following year.
+    func dateRange(calendar: Calendar = .current) -> Range<Date> {
+        let start = YearMonth(year: startYear, month: 9).date(calendar: calendar)
+        let end = YearMonth(year: startYear + 1, month: 9).date(calendar: calendar)
+        return start..<end
+    }
+
     static func containing(_ date: Date, calendar: Calendar = .current) -> TheocraticYear {
         let components = calendar.dateComponents([.year, .month], from: date)
         let year = components.year ?? 0

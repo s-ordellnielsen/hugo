@@ -3,10 +3,23 @@ import SwiftUI
 
 struct ServiceYearPageView: View {
     let year: TheocraticYear
-    let entries: [Entry]
-    let submissions: [SubmittedReport]
-
     var onScrolledFromTopChange: ((Bool) -> Void)? = nil
+
+    @Query private var entries: [Entry]
+    @Query private var submissions: [SubmittedReport]
+
+    init(year: TheocraticYear, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
+        self.year = year
+        self.onScrolledFromTopChange = onScrolledFromTopChange
+        let range = year.dateRange()
+        let start = range.lowerBound
+        let end = range.upperBound
+        _entries = Query(
+            filter: #Predicate<Entry> { $0.date >= start && $0.date < end },
+            sort: \Entry.date
+        )
+        _submissions = Query(sort: \SubmittedReport.year)
+    }
 
     private var report: TheocraticYearReport {
         TheocraticYearReportBuilder.report(
@@ -17,7 +30,8 @@ struct ServiceYearPageView: View {
     }
 
     var body: some View {
-        ScrollView {
+        let report = self.report
+        return ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
                 if report.hasEntries {
                     TheocraticYearTotalsView(report: report)
@@ -62,11 +76,7 @@ struct ServiceYearPageView: View {
 
 #Preview {
     NavigationStack {
-        ServiceYearPageView(
-            year: ReportPreviewFixtures.currentYear,
-            entries: ReportPreviewFixtures.entries,
-            submissions: []
-        )
+        ServiceYearPageView(year: ReportPreviewFixtures.currentYear)
     }
     .modelContainer(.preview)
 }

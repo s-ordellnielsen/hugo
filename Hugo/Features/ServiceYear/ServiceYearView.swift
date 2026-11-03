@@ -2,18 +2,28 @@ import SwiftData
 import SwiftUI
 
 struct ServiceYearView: View {
-    @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
-    @Query(sort: \SubmittedReport.year) private var submissions: [SubmittedReport]
+    @Query private var earliestEntry: [Entry]
+    @Query private var latestEntry: [Entry]
 
     @State private var scrollPosition: TheocraticYear.ID?
     @State private var displayedYear: TheocraticYear?
     @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
 
-    var resetToken: UUID = UUID()
+    var resetToken: UUID
+
+    init(resetToken: UUID = UUID()) {
+        self.resetToken = resetToken
+        var earliest = FetchDescriptor<Entry>(sortBy: [SortDescriptor(\.date, order: .forward)])
+        earliest.fetchLimit = 1
+        _earliestEntry = Query(earliest)
+        var latest = FetchDescriptor<Entry>(sortBy: [SortDescriptor(\.date, order: .reverse)])
+        latest.fetchLimit = 1
+        _latestEntry = Query(latest)
+    }
 
     private var years: [TheocraticYear] {
         TheocraticYear.availableYears(
-            entryDates: entries.map(\.date),
+            entryDates: (earliestEntry + latestEntry).map(\.date),
             now: .now
         )
     }
@@ -37,8 +47,6 @@ struct ServiceYearView: View {
                     ForEach(years) { year in
                         ServiceYearPageView(
                             year: year,
-                            entries: entries,
-                            submissions: submissions,
                             onScrolledFromTopChange: { newValue in
                                 scrolledPages[year.id] = newValue
                             }
