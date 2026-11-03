@@ -23,7 +23,7 @@ struct CenteredProgressBar: View {
 
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color(.tertiarySystemFill))
+                    .fill(Color(.secondarySystemFill))
                     .frame(height: HugoLayout.Size.goalTrackHeight)
 
                 if clampedFraction != 0 {

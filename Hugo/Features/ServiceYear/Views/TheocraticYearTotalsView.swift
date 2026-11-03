@@ -58,9 +58,8 @@ struct TheocraticYearTotalsView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(HugoLayout.Spacing.card)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+        .padding(.horizontal, HugoLayout.Spacing.card)
+        .padding(.vertical, HugoLayout.Spacing.regular)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabelText)
         .accessibilityHint("year.header.a11y.hint")
