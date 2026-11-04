@@ -126,6 +126,29 @@ The tab where the user plans each month on a calendar and compares the plan with
 Time the user intends to spend in service on one day: a duration, a category and optionally a start time. A plan never counts as logged time; logging stays a separate step.
 _Avoid_: Planned entry, schedule, appointment
 
+**Still planned**:
+Planned time on today and later days that logged time has not yet covered. For each day and each kind of time, the planned time minus the logged time, never below zero.
+
+**Projected time**:
+A month's logged time plus its still-planned time. The Planner shows it as "With your plan".
+_Avoid_: Expected time (that is yearly-goal pacing)
+
+**Monthly target**:
+The hours the Planner aims at for one month: the monthly goal, or an even share of what is left of the yearly goal, plus extra hours.
+_Avoid_: Goal (the goal comes from the publisher status)
+
+**Extra hours**:
+Hours the user adds to the monthly target each month, as a buffer, or as a personal target when the publisher status has no goal.
+
+**Plan pace**:
+How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.
+
+**Covered time**:
+The part of a plan that logged time on the same day accounts for: first time in the plan's category, then other time of the same kind (main or separate). The Planner draws it as the filled part of the plan's bar.
+
+**Unplanned time**:
+Logged time on a day that no plan covers, including time beyond a plan.
+
 ## Sync
 
 **Sync duplicate**:
