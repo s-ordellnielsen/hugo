@@ -4,7 +4,7 @@ struct PlannerCalendarGrid: View {
     let month: PlannerMonth
 
     private let columns = Array(
-        repeating: GridItem(.flexible(), spacing: HugoLayout.Spacing.tight), count: 7)
+        repeating: GridItem(.flexible(), spacing: HugoLayout.Spacing.tight, alignment: .top), count: 7)
 
     var body: some View {
         VStack(spacing: HugoLayout.Spacing.regular) {
