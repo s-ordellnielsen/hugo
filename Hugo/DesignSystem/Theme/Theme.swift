@@ -37,7 +37,7 @@ enum HugoLayout {
         static let goalKnobDiameter: CGFloat = 36
         static let calendarDayNumber: CGFloat = 32
         static let calendarDayMinHeight: CGFloat = 64
-        static let calendarBarHeight: CGFloat = 16
+        static let calendarBarHeight: CGFloat = 6
 
         static let minimumHitTarget: CGFloat = 44
     }

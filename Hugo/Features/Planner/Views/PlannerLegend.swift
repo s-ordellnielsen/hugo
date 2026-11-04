@@ -15,7 +15,7 @@ struct PlannerLegend: View {
     private func legendItem(fraction: Double, title: LocalizedStringKey) -> some View {
         HStack(spacing: HugoLayout.Spacing.small) {
             PlannerBarShape(fraction: fraction, color: .hugoAccent)
-                .frame(width: 24, height: 12)
+                .frame(width: 24, height: 6)
                 .accessibilityHidden(true)
             Text(title)
         }

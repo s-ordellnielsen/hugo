@@ -21,7 +21,8 @@ struct PlannerBarShape: View {
     }
 }
 
-/// One plan, or unplanned logged time, in a calendar day.
+/// One plan, or unplanned logged time, in a calendar day: a thin bar that
+/// fills from the left. The day sheet shows the category and hours.
 struct PlannerBarView: View {
     let bar: PlannerBar
 
@@ -33,22 +34,8 @@ struct PlannerBarView: View {
     }
 
     var body: some View {
-        let hours = Text(PlannerHoursText.short(bar.seconds)).monospacedDigit()
-        let icon = Image(systemName: bar.categoryIconName)
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 2) {
-                icon
-                hours
-            }
-            hours
-            icon
-        }
-        .font(.caption2)
-        .fontWeight(.semibold)
-        .lineLimit(1)
-        .foregroundStyle(.primary)
-        .padding(.horizontal, 3)
-        .frame(maxWidth: .infinity, minHeight: height)
-        .background { PlannerBarShape(fraction: bar.fraction, color: color) }
+        PlannerBarShape(fraction: bar.fraction, color: color)
+            .frame(maxWidth: .infinity)
+            .frame(height: height)
     }
 }
