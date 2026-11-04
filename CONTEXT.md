@@ -117,6 +117,15 @@ The credited time the user should have by now to reach the yearly goal at an eve
 **Pacing**:
 How expected time is worked out for the current month: in proportion to the days passed, counting only completed months, or counting the whole current month.
 
+## Planning
+
+**Planner**:
+The tab where the user plans each month on a calendar and compares the plan with the time they log.
+
+**Plan**:
+Time the user intends to spend in service on one day: a duration, a category and optionally a start time. A plan never counts as logged time; logging stays a separate step.
+_Avoid_: Planned entry, schedule, appointment
+
 ## Sync
 
 **Sync duplicate**:

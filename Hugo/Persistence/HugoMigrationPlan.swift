@@ -16,7 +16,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         [
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
             SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self,
-            SchemaV8.self, SchemaV9.self, SchemaV10.self, SchemaV11.self,
+            SchemaV8.self, SchemaV9.self, SchemaV10.self, SchemaV11.self, SchemaV12.self,
         ]
     }
 
@@ -24,7 +24,7 @@ enum MigrationPlan: SchemaMigrationPlan {
         [
             migrateV1toV2, migrateV2ToV21, migrateV21ToV3, migrateV3toV4,
             migrateV4toV5, migrateV5toV6, migrateV6toV7, migrateV7toV8,
-            migrateV8toV9, migrateV9toV10, migrateV10toV11,
+            migrateV8toV9, migrateV9toV10, migrateV10toV11, migrateV11toV12,
         ]
     }
 
@@ -367,6 +367,12 @@ enum MigrationPlan: SchemaMigrationPlan {
             legacyReports = []
             try context.save()
         }
+    )
+
+    /// Adds the `Plan` model. No existing data changes.
+    static let migrateV11toV12: MigrationStage = .lightweight(
+        fromVersion: SchemaV11.self,
+        toVersion: SchemaV12.self
     )
 
     private static func inferredRoundingRaw(

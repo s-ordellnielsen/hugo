@@ -30,6 +30,27 @@ struct CategoryDeletionServiceTests {
     }
 
     @Test
+    func deletingCategoryKeepsItsLatestNameOnPlans() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = ModelContext(container)
+        let tracker = Tracker(name: "LDC", type: .separate, iconName: "hammer")
+        let plan = Plan(date: .now, duration: 1_800, tracker: tracker)
+        context.insert(tracker)
+        context.insert(plan)
+        try context.save()
+        let trackerID = tracker.id
+
+        tracker.name = "Building"
+        tracker.type = .main
+        try CategoryDeletionService(context: context).delete(tracker)
+
+        let fetched = try #require(try context.fetch(FetchDescriptor<Plan>()).first)
+        #expect(fetched.categoryName == "Building")
+        #expect(fetched.categoryType == .main)
+        #expect(fetched.categoryID == trackerID)
+    }
+
+    @Test
     func recategorizedEntryFollowsNewCategoryAfterDeletion() throws {
         let container = try InMemoryModelContainer.make()
         let context = ModelContext(container)

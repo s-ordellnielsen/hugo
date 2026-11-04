@@ -290,6 +290,30 @@ struct SchemaMigrationTests {
         #expect(fetched.categories?.map(\.id) == ["Field Service", "Bethel"])
     }
 
+    @Test
+    func currentStoreRoundTripsPlanWithCategorySnapshot() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let tracker = Tracker(name: "LDC", type: .separate, iconName: "hammer")
+        let plan = Plan(
+            date: Date(timeIntervalSince1970: 1_800_000_000),
+            duration: 5_400,
+            startMinute: 600,
+            tracker: tracker
+        )
+        context.insert(tracker)
+        context.insert(plan)
+        try context.save()
+
+        let fetched = try #require(try context.fetch(FetchDescriptor<Plan>()).first)
+        #expect(fetched.categoryID == tracker.id)
+        #expect(fetched.categoryName == "LDC")
+        #expect(fetched.categoryIconName == "hammer")
+        #expect(fetched.categoryType == .separate)
+        #expect(fetched.startMinute == 600)
+        #expect(fetched.duration == 5_400)
+    }
+
     @Test func migratingV10StorePreservesCategorySnapshotUnchanged() async throws {
         let store = try TemporaryStore()
         defer { store.remove() }
@@ -984,6 +1008,25 @@ struct SchemaMigrationTests {
     }
 
     @Test
+    func migratingV11StoreKeepsEntriesAndStartsWithoutPlans() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+        let tracker = SchemaV11.Tracker(
+            name: "Field Service", type: .main, isDefault: true, iconName: "figure.walk"
+        )
+        let entry = SchemaV11.Entry(date: Date(), duration: 3_600, tracker: tracker)
+        try makeV11Store(at: store.storeURL, trackers: [tracker], entries: [entry])
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let entries = try container.mainContext.fetch(FetchDescriptor<Entry>())
+
+        let fetched = try #require(entries.first)
+        #expect(entries.count == 1)
+        #expect(fetched.tracker?.name == "Field Service")
+        #expect(try container.mainContext.fetch(FetchDescriptor<Plan>()).isEmpty)
+    }
+
+    @Test
     func migratesFullChainFromV1ToCurrentSchemaWithoutThrowing() throws {
         let store = try TemporaryStore()
         defer { store.remove() }
@@ -1109,6 +1152,20 @@ struct SchemaMigrationTests {
 
         submissions.forEach(context.insert)
 
+        try context.save()
+    }
+
+    private func makeV11Store(
+        at url: URL,
+        trackers: [SchemaV11.Tracker] = [],
+        entries: [SchemaV11.Entry] = []
+    ) throws {
+        let schema = Schema(versionedSchema: SchemaV11.self)
+        let configuration = ModelConfiguration(schema: schema, url: url, cloudKitDatabase: .none)
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        let context = container.mainContext
+        trackers.forEach(context.insert)
+        entries.forEach(context.insert)
         try context.save()
     }
 
