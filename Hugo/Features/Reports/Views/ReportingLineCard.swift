@@ -166,10 +166,11 @@ struct ReportingLineCard: View {
     }
 
     private var actualDurationComponents: (hours: Int, minutes: Int) {
-        let seconds = max(result.line.actualSeconds, 0)
-        let hours = Int(seconds / 3_600)
-        let minutes = Int(seconds.truncatingRemainder(dividingBy: 3_600) / 60)
-        return (hours, minutes)
+        let seconds = result.line.actualSeconds
+        return (
+            ServiceDurationFormatter.wholeHours(from: seconds),
+            ServiceDurationFormatter.remainderMinutes(from: seconds)
+        )
     }
 
     private var actualHoursText: String {

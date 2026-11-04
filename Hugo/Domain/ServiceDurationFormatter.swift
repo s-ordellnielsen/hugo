@@ -6,17 +6,25 @@ nonisolated enum ServiceDurationFormatter {
         width: .wide
     )
 
+    /// Whole hours in `duration`, ignoring minutes and seconds. Negative values count as zero.
+    static func wholeHours(from duration: TimeInterval) -> Int {
+        Int(max(duration, 0) / 3_600)
+    }
+
+    /// Whole minutes left over after `wholeHours(from:)`. Negative values count as zero.
+    static func remainderMinutes(from duration: TimeInterval) -> Int {
+        Int(max(duration, 0).truncatingRemainder(dividingBy: 3_600) / 60)
+    }
+
     static func string(from duration: TimeInterval) -> String {
-        let clamped = max(duration, 0)
-        let hours = Int(clamped / 3600)
-        let minutes = Int(clamped.truncatingRemainder(dividingBy: 3600) / 60)
+        let hours = wholeHours(from: duration)
+        let minutes = remainderMinutes(from: duration)
         return String(format: "%02d:%02d", hours, minutes)
     }
 
     static func accessibilityString(from duration: TimeInterval, locale: Locale = .current) -> String {
-        let clamped = max(duration, 0)
-        let hours = Int(clamped / 3600)
-        let minutes = Int(clamped.truncatingRemainder(dividingBy: 3600) / 60)
+        let hours = wholeHours(from: duration)
+        let minutes = remainderMinutes(from: duration)
         let seconds = hours * 3600 + minutes * 60
 
         if locale == .current {

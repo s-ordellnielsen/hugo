@@ -42,4 +42,14 @@ struct DurationFormattingTests {
     @Test func hoursStringClampsNegativeToZero() {
         #expect(ServiceDurationFormatter.hoursString(from: -5, locale: Locale(identifier: "en_US")) == "0 hours")
     }
+
+    @Test func wholeHoursDropsMinutesAndClampsNegatives() {
+        #expect(ServiceDurationFormatter.wholeHours(from: 5_400) == 1)
+        #expect(ServiceDurationFormatter.wholeHours(from: -10) == 0)
+    }
+
+    @Test func remainderMinutesDropsSeconds() {
+        #expect(ServiceDurationFormatter.remainderMinutes(from: 5_459) == 30)
+        #expect(ServiceDurationFormatter.remainderMinutes(from: -10) == 0)
+    }
 }

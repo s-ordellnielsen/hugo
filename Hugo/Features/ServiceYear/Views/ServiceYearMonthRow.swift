@@ -90,7 +90,7 @@ extension ServiceYearMonthRow {
     }
 
     private var displayedHours: Int {
-        Int(month.contribution.total / 3_600)
+        ServiceDurationFormatter.wholeHours(from: month.contribution.total)
     }
 
     private var hourLabel: LocalizedStringKey {
