@@ -4,14 +4,16 @@ import SwiftUI
 struct PlannerMonthPage: View {
     let month: YearMonth
     let today: Date
+    var onScrolledFromTopChange: ((Bool) -> Void)? = nil
 
     @Query private var entries: [Entry]
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
 
-    init(month: YearMonth, today: Date) {
+    init(month: YearMonth, today: Date, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.month = month
         self.today = today
+        self.onScrolledFromTopChange = onScrolledFromTopChange
         let range = month.dateRange()
         let start = range.lowerBound
         let end = range.upperBound
@@ -37,5 +39,10 @@ struct PlannerMonthPage: View {
             .padding()
         }
         .frame(maxWidth: .infinity)
+        .onScrollGeometryChange(for: Bool.self) { geometry in
+            geometry.contentOffset.y + geometry.contentInsets.top > 0
+        } action: { _, isScrolledFromTop in
+            onScrolledFromTopChange?(isScrolledFromTop)
+        }
     }
 }

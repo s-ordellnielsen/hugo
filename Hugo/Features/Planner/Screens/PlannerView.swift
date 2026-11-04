@@ -40,18 +40,23 @@ private struct PlannerPager: View {
 
     @State private var scrollPosition: YearMonth?
     @State private var displayedMonth: YearMonth?
+    @State private var scrolledPages: [YearMonth: Bool] = [:]
 
     private var months: [YearMonth] { PlannerMonth.reachableMonths(from: today) }
     private var currentMonth: YearMonth { today.yearMonth() }
     private var activeMonth: YearMonth { displayedMonth ?? currentMonth }
+    private var isScrolledFromTop: Bool { scrolledPages[activeMonth] ?? false }
 
     var body: some View {
         NavigationStack {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
                     ForEach(months, id: \.self) { month in
-                        PlannerMonthPage(month: month, today: today)
-                            .containerRelativeFrame(.horizontal)
+                        PlannerMonthPage(
+                            month: month, today: today,
+                            onScrolledFromTopChange: { scrolledPages[month] = $0 }
+                        )
+                        .containerRelativeFrame(.horizontal)
                     }
                 }
                 .scrollTargetLayout()
@@ -63,6 +68,7 @@ private struct PlannerPager: View {
             .navigationTitle(activeMonth.monthYearString())
             .navigationSubtitle("tab.planner")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(activeMonth.monthYearString())
