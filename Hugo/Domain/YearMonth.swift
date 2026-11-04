@@ -117,4 +117,10 @@ extension YearMonth {
         let start = date(calendar: calendar)
         return calendar.date(byAdding: .hour, value: 12, to: start) ?? start
     }
+
+    /// The date for time transferred out of this month: midday on the 1st of
+    /// the next month, so a time-zone change cannot move it into another month.
+    nonisolated func carriedInDate(calendar: Calendar = .current) -> Date {
+        nextMonth(calendar: calendar).middayOnFirst(calendar: calendar)
+    }
 }

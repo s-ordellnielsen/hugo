@@ -59,6 +59,18 @@ extension YearMonthTests {
     }
 
     @Test
+    func carriedInDateIsMiddayOnTheFirstOfTheNextMonth() {
+        let calendar = gregorianGMT()
+        let date = YearMonth(year: 2026, month: 12).carriedInDate(calendar: calendar)
+        let components = calendar.dateComponents([.year, .month, .day, .hour], from: date)
+
+        #expect(components.year == 2027)
+        #expect(components.month == 1)
+        #expect(components.day == 1)
+        #expect(components.hour == 12)
+    }
+
+    @Test
     func nextMonthCrossesTheYearBoundary() {
         let calendar = gregorianGMT()
 

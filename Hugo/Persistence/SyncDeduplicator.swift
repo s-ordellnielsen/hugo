@@ -209,9 +209,9 @@ struct SyncDeduplicator {
         var repaired = 0
         for entry in entries {
             guard let year = entry.sourceReportYear, let month = entry.sourceReportMonth else { continue }
-            let intended = YearMonth(year: year, month: month).nextMonth(calendar: calendar)
-            guard entry.date.yearMonth(using: calendar) != intended else { continue }
-            entry.date = intended.middayOnFirst(calendar: calendar)
+            let target = YearMonth(year: year, month: month).carriedInDate(calendar: calendar)
+            guard entry.date.yearMonth(using: calendar) != target.yearMonth(using: calendar) else { continue }
+            entry.date = target
             repaired += 1
         }
         if repaired > 0 { try context.save() }
