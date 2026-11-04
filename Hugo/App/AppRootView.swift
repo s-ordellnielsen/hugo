@@ -13,6 +13,7 @@ struct AppRootView: View {
     @State private var bootstrapper = AppBootstrapper()
     @State private var selectedTab: AppTab = .overview
     @State private var yearResetToken = UUID()
+    @State private var plannerResetToken = UUID()
     @State private var bootstrapErrorMessage: String?
 
     private var isCompact: Bool { horizontalSizeClass == .compact }
@@ -24,6 +25,9 @@ struct AppRootView: View {
     private func select(_ tab: AppTab) {
         if tab == .year && selectedTab == .year {
             yearResetToken = UUID()
+        }
+        if tab == .planner && selectedTab == .planner {
+            plannerResetToken = UUID()
         }
         selectedTab = tab
     }
@@ -71,7 +75,7 @@ struct AppRootView: View {
         TabView(selection: tabSelection) {
             ForEach(visibleTabs) { tab in
                 Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
-                    tabDestination(for: tab, yearResetToken: yearResetToken)
+                    tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
                 }
             }
         }
@@ -87,7 +91,7 @@ struct AppRootView: View {
                 Label(tab.titleKey, systemImage: tab.systemImage)
             }
         } detail: {
-            tabDestination(for: selectedTab, yearResetToken: yearResetToken)
+            tabDestination(for: selectedTab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
         }
     }
 
@@ -104,10 +108,11 @@ struct AppRootView: View {
 }
 
 @ViewBuilder
-func tabDestination(for tab: AppTab, yearResetToken: UUID) -> some View {
+func tabDestination(for tab: AppTab, yearResetToken: UUID, plannerResetToken: UUID) -> some View {
     switch tab {
     case .overview: OverviewView()
     case .year: ServiceYearView(resetToken: yearResetToken)
+    case .planner: PlannerView(resetToken: plannerResetToken)
     case .settings: SettingsView()
     }
 }
@@ -115,6 +120,7 @@ func tabDestination(for tab: AppTab, yearResetToken: UUID) -> some View {
 enum AppTab: String, CaseIterable, Identifiable, Hashable {
     case overview
     case year
+    case planner
     case settings
 
     var id: String { rawValue }
@@ -123,6 +129,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .overview: return "tab.overview"
         case .year: return "tab.year"
+        case .planner: return "tab.planner"
         case .settings: return "tab.settings"
         }
     }
@@ -131,6 +138,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .overview: "house"
         case .year: "tray.full.fill"
+        case .planner: "calendar"
         case .settings: "switch.2"
         }
     }
@@ -139,6 +147,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .overview: .all
         case .year: .all
+        case .planner: .all
         case .settings: .sidebarOnly
         }
     }

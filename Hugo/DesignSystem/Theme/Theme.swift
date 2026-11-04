@@ -18,6 +18,7 @@ enum HugoLayout {
     enum CornerRadius {
         static let compactCard: CGFloat = 24
         static let card: CGFloat = 32
+        static let calendarBar: CGFloat = 4
     }
 
     enum Size {
@@ -34,6 +35,9 @@ enum HugoLayout {
         static let addEntryCompactSheetHeight: CGFloat = 300
         static let goalTrackHeight: CGFloat = 12
         static let goalKnobDiameter: CGFloat = 36
+        static let calendarDayNumber: CGFloat = 32
+        static let calendarDayMinHeight: CGFloat = 64
+        static let calendarBarHeight: CGFloat = 16
 
         static let minimumHitTarget: CGFloat = 44
     }
