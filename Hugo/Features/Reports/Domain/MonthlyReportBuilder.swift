@@ -4,7 +4,8 @@ nonisolated enum MonthlyReportBuilder {
     static func summaries(
         from entries: [Entry],
         calendar: Calendar = .current,
-        locale: Locale = .current
+        locale: Locale = .current,
+        trackers: [Tracker] = []
     ) -> [MonthlyReportSummary] {
         var grouped: [YearMonth: [Entry]] = [:]
         for entry in entries {
@@ -16,30 +17,19 @@ nonisolated enum MonthlyReportBuilder {
             var bibleStudies = 0
             var mainDuration: TimeInterval = 0
             var separateDuration: TimeInterval = 0
-            var categories: [String: (name: String, iconName: String, type: TrackerType?, duration: TimeInterval)] = [:]
 
             for entry in monthEntries {
                 totalSeconds += entry.duration
                 bibleStudies += entry.bibleStudies
 
-                let category = entry.resolvedCategory(locale: locale)
-                let metadata = (
-                    key: category.key, name: category.name, iconName: category.iconName, type: category.type
-                )
-
-                if metadata.type == .main { mainDuration += entry.duration }
-                if metadata.type == .separate { separateDuration += entry.duration }
-                categories[metadata.key, default: (metadata.name, metadata.iconName, metadata.type, 0)].duration +=
-                    entry.duration
+                let type = entry.resolvedCategory(locale: locale).type
+                if type == .main { mainDuration += entry.duration }
+                if type == .separate { separateDuration += entry.duration }
             }
 
-            let categorySummaries = categories.map { key, value in
+            let categorySummaries = CategoryTotals.rows(entries: monthEntries, trackers: trackers, locale: locale).map {
                 MonthlyCategorySummary(
-                    id: key, name: value.name, iconName: value.iconName, type: value.type, duration: value.duration)
-            }.sorted {
-                if $0.duration != $1.duration { return $0.duration > $1.duration }
-                if $0.name != $1.name { return $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-                return $0.id < $1.id
+                    id: $0.id, name: $0.name, iconName: $0.iconName, type: $0.type, duration: $0.duration)
             }
 
             return MonthlyReportSummary(

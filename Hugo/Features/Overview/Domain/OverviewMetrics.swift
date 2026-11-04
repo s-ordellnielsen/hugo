@@ -44,57 +44,25 @@ enum CategoryProgressAggregator {
     static func rows(
         entries: [Entry], trackers: [Tracker], locale: Locale = .current
     ) -> [CategoryProgressRow] {
-        var totals: [UUID: TimeInterval] = [:]
-        var snapshotRows: [String: (name: String, iconName: String, duration: TimeInterval)] = [:]
-        var untrackedDuration: TimeInterval = 0
-        for entry in entries {
-            let category = entry.resolvedCategory(locale: locale)
-            if let trackerID = category.trackerID {
-                totals[trackerID, default: 0] += entry.duration
-            } else if let type = category.type {
-                if let match = trackers.first(where: { $0.name == category.name && $0.type == type }) {
-                    totals[match.id, default: 0] += entry.duration
-                } else {
-                    snapshotRows[category.key, default: (category.name, category.iconName, 0)].duration +=
-                        entry.duration
-                }
-            } else {
-                untrackedDuration += entry.duration
-            }
-        }
+        let totals = CategoryTotals.rows(entries: entries, trackers: trackers, locale: locale)
+            .filter { $0.duration > 0 }
+        let trackersByID = Dictionary(trackers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
 
-        var rows = trackers.compactMap { tracker -> CategoryProgressRow? in
-            let duration = totals[tracker.id, default: 0]
-            guard duration > 0 else { return nil }
+        func row(_ total: CategoryTotal) -> CategoryProgressRow {
+            let tracker = total.trackerID.flatMap { trackersByID[$0] }
             return CategoryProgressRow(
-                id: tracker.id.uuidString,
-                name: tracker.name,
-                iconName: tracker.iconName,
-                duration: duration,
-                color: CategoryProgressColor(hue: tracker.hue, saturation: tracker.sat, brightness: tracker.bri)
+                id: total.id, name: total.name, iconName: total.iconName, duration: total.duration,
+                color: tracker.flatMap { CategoryProgressColor(hue: $0.hue, saturation: $0.sat, brightness: $0.bri) }
             )
         }
 
-        let sortedSnapshots = snapshotRows.sorted {
-            $0.value.name.localizedStandardCompare($1.value.name) == .orderedAscending
-        }
-        for (key, value) in sortedSnapshots where value.duration > 0 {
-            rows.append(
-                CategoryProgressRow(
-                    id: key, name: value.name, iconName: value.iconName, duration: value.duration, color: nil))
-        }
-
-        if untrackedDuration > 0 {
-            rows.append(
-                CategoryProgressRow(
-                    id: "untracked",
-                    name: String(localized: "entry.untracked", locale: locale),
-                    iconName: "questionmark.circle",
-                    duration: untrackedDuration,
-                    color: nil
-                )
-            )
-        }
-        return rows
+        let live = trackers.compactMap { tracker in totals.first { $0.trackerID == tracker.id } }
+        let liveIDs = Set(live.map(\.id))
+        let others =
+            totals
+            .filter { $0.id != "untracked" && !liveIDs.contains($0.id) }
+            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        let untracked = totals.filter { $0.id == "untracked" }
+        return (live + others + untracked).map(row)
     }
 }

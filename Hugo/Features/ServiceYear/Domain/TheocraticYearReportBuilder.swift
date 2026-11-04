@@ -5,6 +5,7 @@ nonisolated enum TheocraticYearReportBuilder {
         for year: TheocraticYear,
         entries: [Entry],
         submissions: [SubmittedReport] = [],
+        trackers: [Tracker] = [],
         now: Date = .now,
         calendar: Calendar = .current,
         locale: Locale = .current
@@ -12,7 +13,8 @@ nonisolated enum TheocraticYearReportBuilder {
         let yearEntries = entries.filter { year.contains($0.date.yearMonth(using: calendar)) }
         let months = year.months.map { month in
             ServiceMonth.make(
-                month, entries: yearEntries, submissions: submissions, now: now, calendar: calendar, locale: locale)
+                month, entries: yearEntries, submissions: submissions, trackers: trackers, now: now,
+                calendar: calendar, locale: locale)
         }
         let contributions = months.map(\.contribution)
 

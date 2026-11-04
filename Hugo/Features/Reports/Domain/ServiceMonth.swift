@@ -69,12 +69,15 @@ nonisolated struct ServiceMonth: Identifiable {
         _ month: YearMonth,
         entries: [Entry],
         submissions: [SubmittedReport],
+        trackers: [Tracker] = [],
         now: Date = .now,
         calendar: Calendar = .current,
         locale: Locale = .current
     ) -> ServiceMonth {
         let monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
-        let summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar, locale: locale).first
+        let summary = MonthlyReportBuilder.summaries(
+            from: monthEntries, calendar: calendar, locale: locale, trackers: trackers
+        ).first
         let report = SubmittedReportSelection.canonical(for: month, in: submissions)
         return ServiceMonth(
             id: month,
