@@ -119,8 +119,8 @@ func tabDestination(for tab: AppTab, yearResetToken: UUID, plannerResetToken: UU
 
 enum AppTab: String, CaseIterable, Identifiable, Hashable {
     case overview
-    case year
     case planner
+    case year
     case settings
 
     var id: String { rawValue }
