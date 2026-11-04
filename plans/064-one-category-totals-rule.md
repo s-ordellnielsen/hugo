@@ -273,7 +273,7 @@ Commit steps 1-3: `fix: show carried-in time under its category on every screen`
 - [ ] `Scripts/verify.sh` exits 0
 - [ ] `grep -rn 'categories\[metadata.key' Hugo` prints nothing
 - [ ] `grep -c 'CategoryTotals.rows' Hugo/Features/Reports/Domain/MonthlyReportBuilder.swift Hugo/Features/Overview/Domain/OverviewMetrics.swift` prints `1` for each file
-- [ ] `git diff --stat 26e63f4..HEAD -- HugoTests/Features/Overview/Domain/OverviewMetricsTests.swift` shows no change made by this plan
+- [ ] `git diff --stat 03eb5c3..HEAD -- HugoTests/Features/Overview/Domain/OverviewMetricsTests.swift` prints nothing (this plan does not edit that file; `03eb5c3` is `main` after plan 063)
 - [ ] `git status --porcelain` lists only files from the Scope list
 - [ ] `plans/README.md` row for 064 updated
 
