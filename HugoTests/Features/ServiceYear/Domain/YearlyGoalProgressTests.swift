@@ -10,8 +10,7 @@ struct YearlyGoalProgressTests {
         return calendar
     }()
     private let locale = Locale(identifier: "en_US_POSIX")
-    private let rule = YearlyGoalRule(monthlyGoalSeconds: 50 * 3_600, separateAllowanceSeconds: 5 * 3_600)
-    private let yearlyGoalSeconds: TimeInterval = 600 * 3_600
+    private let status = PublisherStatus.status(for: "regular-pioneer")!
     private let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
     private let separate = Tracker(name: "Bethel", type: .separate, iconName: "building")
 
@@ -58,23 +57,23 @@ struct YearlyGoalProgressTests {
     }
 
     @Test
-    func creditDiffersFromActualWhenSeparateExceedsTheAllowance() {
+    func creditDiffersFromYearTotalWhenSeparateExceedsTheAllowance() {
         let entries = [
             Entry(date: date(2026, 9, 1), duration: 40 * 3_600, tracker: main),
             Entry(date: date(2026, 9, 2), duration: 20 * 3_600, tracker: separate),
         ]
         let progress = makeProgress(entries: entries, now: date(2026, 10, 15))
         #expect(progress.creditedSeconds == 55 * 3_600)
-        #expect(progress.actualSeconds == 60 * 3_600)
-        #expect(progress.showsActualTotal)
+        #expect(progress.yearTotalSeconds == 60 * 3_600)
+        #expect(progress.showsYearTotal)
     }
 
     @Test
-    func mainOnlyTimeDoesNotShowAnActualTotal() {
+    func mainOnlyTimeDoesNotShowAYearTotal() {
         let entries = [Entry(date: date(2026, 9, 1), duration: 40 * 3_600, tracker: main)]
         let progress = makeProgress(entries: entries, now: date(2026, 10, 15))
-        #expect(progress.creditedSeconds == progress.actualSeconds)
-        #expect(!progress.showsActualTotal)
+        #expect(progress.creditedSeconds == progress.yearTotalSeconds)
+        #expect(!progress.showsYearTotal)
     }
 
     @Test
@@ -104,15 +103,49 @@ struct YearlyGoalProgressTests {
         let entries = [Entry(date: date(2026, 9, 1), duration: 30 * 3_600, tracker: main)]
         let progress = makeProgress(entries: entries, submissions: [submission], now: date(2026, 10, 15))
         #expect(progress.creditedSeconds == 6 * 3_600)
-        #expect(progress.actualSeconds == 6 * 3_600)
+        #expect(progress.yearTotalSeconds == 6 * 3_600)
     }
 
     @Test
-    func creditedByMonthHoldsOneEntryPerYearMonth() {
+    func monthsHoldOneRowPerYearMonth() {
         let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 10, 15))
-        let year = TheocraticYear(startYear: 2026)
-        #expect(Set(progress.creditedByMonth.keys) == Set(year.months))
-        #expect(progress.creditedByMonth[YearMonth(year: 2026, month: 9)] == TimeInterval(50 * 3_600))
+        #expect(progress.months.map(\.id) == TheocraticYear(startYear: 2026).months)
+        #expect(progress.months.first?.creditedSeconds == TimeInterval(50 * 3_600))
+    }
+
+    @Test
+    func statusWithoutAYearlyGoalHasNoProgress() {
+        let report = TheocraticYearReportBuilder.report(
+            for: TheocraticYear(startYear: 2026),
+            entries: [],
+            submissions: [],
+            now: date(2026, 10, 15),
+            calendar: calendar,
+            locale: locale
+        )
+        let progress = YearlyGoalProgress.make(
+            report: report,
+            status: PublisherStatus.status(for: "auxiliary-pioneer")!,
+            pacing: .proRated,
+            now: date(2026, 10, 15),
+            calendar: calendar
+        )
+        #expect(progress == nil)
+    }
+
+    @Test
+    func monthRowShowsItsTotalOnlyWhenItDiffersFromCredit() throws {
+        let entries = [
+            Entry(date: date(2026, 9, 1), duration: 40 * 3_600, tracker: main),
+            Entry(date: date(2026, 9, 2), duration: 20 * 3_600, tracker: separate),
+        ]
+        let progress = makeProgress(entries: entries, now: date(2026, 10, 15))
+        let september = try #require(progress.months.first { $0.id == YearMonth(year: 2026, month: 9) })
+        #expect(september.creditedSeconds == 55 * 3_600)
+        #expect(september.totalSeconds == 60 * 3_600)
+        #expect(september.showsTotal)
+        let october = try #require(progress.months.first { $0.id == YearMonth(year: 2026, month: 10) })
+        #expect(!october.showsTotal)
     }
 
     private func septemberAndOctober() -> [Entry] {
@@ -138,12 +171,11 @@ struct YearlyGoalProgressTests {
         )
         return YearlyGoalProgress.make(
             report: report,
-            rule: rule,
-            yearlyGoalSeconds: yearlyGoalSeconds,
+            status: status,
             pacing: pacing,
             now: now,
             calendar: calendar
-        )
+        )!
     }
 
     private func date(_ year: Int, _ month: Int, _ day: Int, hour: Int = 0) -> Date {

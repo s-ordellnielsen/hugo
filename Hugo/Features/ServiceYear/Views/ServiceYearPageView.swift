@@ -36,13 +36,8 @@ struct ServiceYearPageView: View {
     }
 
     private func progress(for report: TheocraticYearReport) -> YearlyGoalProgress? {
-        guard let status, let rule = status.yearlyGoalRule else { return nil }
-        return YearlyGoalProgress.make(
-            report: report,
-            rule: rule,
-            yearlyGoalSeconds: TimeInterval(status.yearlyGoal) * 3_600,
-            pacing: pacing
-        )
+        guard let status else { return nil }
+        return YearlyGoalProgress.make(report: report, status: status, pacing: pacing)
     }
 
     var body: some View {

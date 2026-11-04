@@ -68,14 +68,12 @@ struct ServiceYearDetailView: View {
 
     private func monthsSection(_ progress: YearlyGoalProgress) -> some View {
         Section {
-            ForEach(report.months.filter { !$0.isFuture }) { month in
-                let credited = progress.creditedByMonth[month.id] ?? 0
-                let actual = month.contribution.total
+            ForEach(progress.months.filter { !$0.isFuture }) { month in
                 LabeledContent {
                     VStack(alignment: .trailing) {
-                        duration(credited)
-                        if abs(actual - credited) >= 60 {
-                            Text(ServiceDurationFormatter.hoursString(from: actual))
+                        duration(month.creditedSeconds)
+                        if month.showsTotal {
+                            Text(ServiceDurationFormatter.hoursString(from: month.totalSeconds))
                                 .font(.caption)
                                 .monospacedDigit()
                                 .foregroundStyle(.tertiary)
@@ -98,11 +96,9 @@ struct ServiceYearDetailView: View {
 }
 
 #Preview {
-    let status = PublisherStatus.status(for: "regular-pioneer")
     let report = ReportPreviewFixtures.yearReport
-    let progress = status?.yearlyGoalRule.map {
-        YearlyGoalProgress.make(
-            report: report, rule: $0, yearlyGoalSeconds: 600 * 3_600, pacing: .proRated)
+    let progress = PublisherStatus.status(for: "regular-pioneer").flatMap {
+        YearlyGoalProgress.make(report: report, status: $0, pacing: .proRated)
     }
     NavigationStack {
         ServiceYearDetailView(report: report, progress: progress)

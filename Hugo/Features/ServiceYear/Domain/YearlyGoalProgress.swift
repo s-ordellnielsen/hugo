@@ -2,14 +2,30 @@ import Foundation
 
 nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     let creditedSeconds: TimeInterval
-    let actualSeconds: TimeInterval
+    /// The year total: reported hours of submitted months plus logged time of the rest.
+    let yearTotalSeconds: TimeInterval
     /// Seconds the user should have by now. Nil when the year has not started.
     let expectedSeconds: TimeInterval?
     let yearlyGoalSeconds: TimeInterval
     let monthlyGoalSeconds: TimeInterval
-    let creditedByMonth: [YearMonth: TimeInterval]
+    let months: [Month]
 
-    var showsActualTotal: Bool { abs(actualSeconds - creditedSeconds) >= 60 }
+    /// One month on the year detail screen.
+    struct Month: Identifiable, Equatable, Sendable {
+        let id: YearMonth
+        let displayName: String
+        let isFuture: Bool
+        let creditedSeconds: TimeInterval
+        /// What the month adds to the year total.
+        let totalSeconds: TimeInterval
+
+        var showsTotal: Bool { abs(totalSeconds - creditedSeconds) >= YearlyGoalProgress.differenceThreshold }
+    }
+
+    /// Differences smaller than a minute are shown as equal.
+    static let differenceThreshold: TimeInterval = 60
+
+    var showsYearTotal: Bool { abs(yearTotalSeconds - creditedSeconds) >= Self.differenceThreshold }
 
     /// Credited minus expected. Nil when there is no expectation.
     var differenceSeconds: TimeInterval? { expectedSeconds.map { creditedSeconds - $0 } }
@@ -20,21 +36,25 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
         return min(1, max(-1, differenceSeconds / monthlyGoalSeconds))
     }
 
-    var isOnTrack: Bool { abs(differenceSeconds ?? 0) < 60 }
+    var isOnTrack: Bool { abs(differenceSeconds ?? 0) < Self.differenceThreshold }
 
+    /// Nil when the status has no yearly goal.
     static func make(
         report: TheocraticYearReport,
-        rule: YearlyGoalRule,
-        yearlyGoalSeconds: TimeInterval,
+        status: PublisherStatus,
         pacing: YearlyGoalPacing,
         now: Date = .now,
         calendar: Calendar = .current
-    ) -> YearlyGoalProgress {
-        var creditedByMonth: [YearMonth: TimeInterval] = [:]
-        for month in report.months {
+    ) -> YearlyGoalProgress? {
+        guard let rule = status.yearlyGoalRule else { return nil }
+        let months = report.months.map { month in
             let contribution = month.contribution
-            creditedByMonth[month.id] = rule.creditedSeconds(
-                main: contribution.main, separate: contribution.separate)
+            return Month(
+                id: month.id,
+                displayName: month.displayName,
+                isFuture: month.isFuture,
+                creditedSeconds: rule.creditedSeconds(main: contribution.main, separate: contribution.separate),
+                totalSeconds: contribution.total)
         }
 
         let current = now.yearMonth(using: calendar)
@@ -61,12 +81,12 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
         }
 
         return YearlyGoalProgress(
-            creditedSeconds: creditedByMonth.values.reduce(0, +),
-            actualSeconds: report.totalSeconds,
+            creditedSeconds: months.reduce(0) { $0 + $1.creditedSeconds },
+            yearTotalSeconds: report.totalSeconds,
             expectedSeconds: expectedSeconds,
-            yearlyGoalSeconds: yearlyGoalSeconds,
+            yearlyGoalSeconds: TimeInterval(status.yearlyGoal) * 3_600,
             monthlyGoalSeconds: rule.monthlyGoalSeconds,
-            creditedByMonth: creditedByMonth)
+            months: months)
     }
 }
 

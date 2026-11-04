@@ -30,12 +30,12 @@ struct TheocraticYearTotalsView: View {
                 .contentTransition(.numericText())
                 .motion(Motion.value, value: primarySeconds)
 
-            if let progress, progress.showsActualTotal {
+            if let progress, progress.showsYearTotal {
                 Text(
                     String(
                         localized: "year.header.actual",
                         defaultValue:
-                            "Actual total \(ServiceDurationFormatter.hoursString(from: progress.actualSeconds))",
+                            "Actual total \(ServiceDurationFormatter.hoursString(from: progress.yearTotalSeconds))",
                         comment:
                             "Real total of the year, shown when it differs from the counted time. The argument is a duration."
                     )
@@ -87,11 +87,9 @@ struct TheocraticYearTotalsView: View {
 }
 
 #Preview("Yearly goal") {
-    let status = PublisherStatus.status(for: "regular-pioneer")
     let report = ReportPreviewFixtures.yearReport
-    let progress = status?.yearlyGoalRule.map {
-        YearlyGoalProgress.make(
-            report: report, rule: $0, yearlyGoalSeconds: 600 * 3_600, pacing: .proRated)
+    let progress = PublisherStatus.status(for: "regular-pioneer").flatMap {
+        YearlyGoalProgress.make(report: report, status: $0, pacing: .proRated)
     }
     TheocraticYearTotalsView(report: report, progress: progress)
         .padding()
