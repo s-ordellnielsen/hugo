@@ -40,6 +40,10 @@ struct SubmitReportFormModelTests {
         return SubmitReportFormModel(month: month, calendar: calendar, now: now ?? self.now, userDefaults: defaults)
     }
 
+    private func service(_ context: ModelContext) -> ReportSubmissionService {
+        ReportSubmissionService(context: context, calendar: calendar)
+    }
+
     private func mainLineID(in model: SubmitReportFormModel) -> String {
         #expect(model.lines.contains { $0.type == .main })
         return model.lines.first { $0.type == .main }?.id ?? ""
@@ -63,7 +67,7 @@ struct SubmitReportFormModelTests {
 
         #expect(!model.canSend)
         #expect(model.prepareSubmission() == nil)
-        #expect(try model.persistSubmission(in: InMemoryModelContainer.make().mainContext) == nil)
+        #expect(try model.persistSubmission(using: service(InMemoryModelContainer.make().mainContext)) == nil)
 
         model.setRule(.down, for: mainLineID(in: model))
 
@@ -126,7 +130,7 @@ struct SubmitReportFormModelTests {
         model.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [])
         model.setRule(.transfer, for: mainLineID(in: model))
 
-        let report = try #require(try model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(using: service(context)))
 
         #expect(report.reportingLines.count == 1)
         #expect(report.reportingLines[0].roundingRaw == "transfer")
@@ -155,13 +159,13 @@ struct SubmitReportFormModelTests {
         let firstModel = makeModel()
         firstModel.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [])
         firstModel.setRule(.transfer, for: mainLineID(in: firstModel))
-        let original = try #require(try firstModel.persistSubmission(in: context))
+        let original = try #require(try firstModel.persistSubmission(using: service(context)))
         let firstSubmittedAt = original.firstSubmittedAt
 
         let secondModel = makeModel(now: now.addingTimeInterval(86_400))
         secondModel.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [original])
         secondModel.setRule(.down, for: mainLineID(in: secondModel))
-        let replacement = try #require(try secondModel.persistSubmission(in: context))
+        let replacement = try #require(try secondModel.persistSubmission(using: service(context)))
 
         #expect(replacement === original)
         #expect(replacement.firstSubmittedAt == firstSubmittedAt)
@@ -179,7 +183,7 @@ struct SubmitReportFormModelTests {
         let firstModel = makeModel()
         firstModel.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [])
         firstModel.setRule(.transfer, for: mainLineID(in: firstModel))
-        let june = try #require(try firstModel.persistSubmission(in: context))
+        let june = try #require(try firstModel.persistSubmission(using: service(context)))
 
         guard julySubmitted else { return (june, nil) }
         let july = SubmittedReport(
@@ -234,7 +238,7 @@ struct SubmitReportFormModelTests {
         let model = makeModel(now: now.addingTimeInterval(86_400))
         model.load(entries: [entry(2026, 6, 5, seconds: 5_400)], submissions: [june, julyReport])
         model.setRule(.up, for: mainLineID(in: model))
-        _ = try #require(try model.persistSubmission(in: context))
+        _ = try #require(try model.persistSubmission(using: service(context)))
 
         let julyEntries = try context.fetch(FetchDescriptor<Entry>()).filter {
             $0.date.yearMonth(using: calendar) == YearMonth(year: 2026, month: 7)
@@ -253,7 +257,7 @@ struct SubmitReportFormModelTests {
         let firstModel = makeModel()
         firstModel.load(entries: entries, submissions: [])
         firstModel.setRule(.transfer, for: mainLineID(in: firstModel))
-        let report = try #require(try firstModel.persistSubmission(in: context))
+        let report = try #require(try firstModel.persistSubmission(using: service(context)))
         let generated = try #require(report.generatedEntries?.first)
         let originalCreatedAt = date(2026, 7, 2, hour: 9)
         generated.createdAt = originalCreatedAt
@@ -261,7 +265,7 @@ struct SubmitReportFormModelTests {
 
         let laterModel = makeModel(now: now.addingTimeInterval(86_400))
         laterModel.load(entries: entries, submissions: [report])
-        let replacement = try #require(try laterModel.persistSubmission(in: context))
+        let replacement = try #require(try laterModel.persistSubmission(using: service(context)))
 
         #expect(replacement.generatedEntries?.count == 1)
         #expect(replacement.generatedEntries?.first === generated)
@@ -278,7 +282,7 @@ struct SubmitReportFormModelTests {
         let line = try #require(model.lines.first { $0.type == .separate })
         model.setRule(.transfer, for: line.id)
 
-        let report = try #require(try model.persistSubmission(in: container.mainContext))
+        let report = try #require(try model.persistSubmission(using: service(container.mainContext)))
         let generated = try #require(report.generatedEntries?.first)
 
         #expect(generated.sourceReportingLineID == "LDC")
@@ -328,7 +332,7 @@ struct SubmitReportFormModelTests {
         #expect(model.results[0].submittedHours == 0)
         #expect(model.prepareSubmission() != nil)
 
-        let report = try #require(try model.persistSubmission(in: container.mainContext))
+        let report = try #require(try model.persistSubmission(using: service(container.mainContext)))
 
         #expect(report.reportingLines.count == 1)
         #expect(report.reportingLines[0].submittedHours == 0)
@@ -347,7 +351,7 @@ struct SubmitReportFormModelTests {
 
         let model = makeModel()
         model.load(entries: [entry(2026, 6, 5)], submissions: [sentinel])
-        let report = try #require(try model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(using: service(context)))
 
         #expect(report === sentinel)
         #expect(report.firstSubmittedAt == now)
@@ -388,7 +392,7 @@ struct SubmitReportFormModelTests {
 
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext
-        let report = try #require(try model.persistSubmission(in: context))
+        let report = try #require(try model.persistSubmission(using: service(context)))
         let stored = report.reportingLines.first { $0.typeName == mainLineID(in: model) }
         #expect(stored?.durationInSeconds == 5_400)
     }

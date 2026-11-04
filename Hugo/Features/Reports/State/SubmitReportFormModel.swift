@@ -144,7 +144,7 @@ final class SubmitReportFormModel {
 
     /// Builds the message for the current line rules. The view presents Messages
     /// (or copies to the pasteboard) from the returned content, then calls
-    /// `persistSubmission(in:)` once the user confirms.
+    /// `persistSubmission(using:)` once the user confirms.
     @discardableResult
     func prepareSubmission() -> ReportMessageContent? {
         guard canSend else { return nil }
@@ -163,79 +163,20 @@ final class SubmitReportFormModel {
         return content
     }
 
-    /// Persists the submission snapshot. An existing row for the same month
-    /// (a real submission or a V8→V9 backfill sentinel) is updated in place,
-    /// preserving `firstSubmittedAt` and the CloudKit record identity; the
-    /// theocratic-year rollup keys submissions by month and would double-count
-    /// a delete-and-insert duplicate.
+    /// Saves the submission through `service` once the user has confirmed.
+    /// An existing row for the same month is updated in place by the service.
     /// Returns the stored report (nil when not submittable or rounding is undecided).
     @discardableResult
-    func persistSubmission(in context: ModelContext) throws -> SubmittedReport? {
+    func persistSubmission(using service: ReportSubmissionService) throws -> SubmittedReport? {
         guard canSend else { return nil }
 
-        let mainResult = results.first { $0.line.type == .main }
-        let categoryHours = ReportingLineCalculator.categoryHours(
-            results: results,
-            categories: summary?.categories ?? []
+        let report = try service.submit(
+            results,
+            summary: summary,
+            for: month,
+            replacing: existingSubmission,
+            at: now
         )
-        let snapshots = (summary?.categories ?? []).map { category in
-            SubmittedReport.SubmittedCategory(
-                name: category.name,
-                iconName: category.iconName,
-                typeRaw: category.type?.rawValue,
-                actualSeconds: category.duration,
-                submittedHours: categoryHours[category.id] ?? 0
-            )
-        }
-        let carriedInSeconds = results.reduce(0) { $0 + $1.line.carriedInSeconds }
-        let carriedOutSeconds = results.reduce(0) { total, result in
-            guard case .transferred(let seconds) = result.disposition else { return total }
-            return total + seconds
-        }
-        let roundedUpSeconds = results.reduce(0) { total, result in
-            guard case .roundedUp(let seconds) = result.disposition else { return total }
-            return total + seconds
-        }
-        let roundedDownSeconds = results.reduce(0) { total, result in
-            guard case .roundedDown(let seconds) = result.disposition else { return total }
-            return total + seconds
-        }
-        let submittedHours = results.reduce(0) { $0 + $1.submittedHours }
-        let closedAt = monthEntries.map(\.createdAt).max() ?? now
-
-        let report: SubmittedReport
-        if let existing = existingSubmission {
-            if existing.firstSubmittedAt == nil || existing.firstSubmittedAt == .distantPast {
-                existing.firstSubmittedAt = now
-            }
-            existing.submittedAt = now
-            existing.entriesClosedAt = closedAt
-            report = existing
-        } else {
-            report = SubmittedReport(
-                year: month.year,
-                month: month.month,
-                firstSubmittedAt: now,
-                submittedAt: now,
-                entriesClosedAt: closedAt
-            )
-            context.insert(report)
-        }
-
-        report.roundingRuleRaw = mainResult?.rule?.rawValue ?? ""
-        report.fieldServiceSeconds = mainResult?.line.actualSeconds ?? 0
-        report.actualTotalSeconds = summary?.totalSeconds ?? 0
-        report.submittedHours = submittedHours
-        report.carriedInSeconds = carriedInSeconds
-        report.carriedOutSeconds = carriedOutSeconds
-        report.roundedUpSeconds = roundedUpSeconds
-        report.roundedDownSeconds = roundedDownSeconds
-        report.totalBibleStudies = summary?.totalBibleStudies ?? 0
-        report.categories = snapshots
-        report.reportingLines = results.map(\.persisted)
-
-        reconcileGeneratedEntries(for: report, in: context)
-        try context.save()
         preparedContent = nil
         pendingLoad = nil
         return report
@@ -264,39 +205,4 @@ final class SubmitReportFormModel {
         results = ReportingLineCalculator.compute(lines, rules: rules)
     }
 
-    private func reconcileGeneratedEntries(for report: SubmittedReport, in context: ModelContext) {
-        let carryDate = month.nextMonth(calendar: calendar).middayOnFirst(calendar: calendar)
-        var existingByLine = Dictionary(grouping: report.generatedEntries ?? [], by: { $0.sourceReportingLineID ?? "" })
-
-        for result in results {
-            guard case .transferred(let seconds) = result.disposition else { continue }
-
-            if let entry = existingByLine[result.id]?.first {
-                if entry.duration != seconds {
-                    entry.duration = seconds
-                    entry.createdAt = now
-                }
-                existingByLine[result.id]?.removeFirst()
-            } else {
-                let entry = Entry(
-                    date: carryDate,
-                    duration: seconds,
-                    tracker: nil,
-                    source: (submission: report, lineID: result.id)
-                )
-                entry.storedTracker =
-                    if result.line.type == .main {
-                        .init(name: String(localized: "category.default.label"), icon: "figure.walk", type: .main)
-                    } else {
-                        .init(name: result.line.name, icon: result.line.iconName, type: .separate)
-                    }
-                entry.createdAt = now
-                context.insert(entry)
-            }
-        }
-
-        for leftover in existingByLine.values.flatMap({ $0 }) {
-            context.delete(leftover)
-        }
-    }
 }

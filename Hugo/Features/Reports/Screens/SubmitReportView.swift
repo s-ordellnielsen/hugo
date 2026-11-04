@@ -245,7 +245,7 @@ struct SubmitReportView: View {
         do {
             var stored: SubmittedReport?
             try context.performIsolatedChange {
-                stored = try model.persistSubmission(in: context)
+                stored = try model.persistSubmission(using: ReportSubmissionService(context: context))
             }
             guard stored != nil else {
                 saveErrorMessage = String(localized: "report.submit.not-saved")
