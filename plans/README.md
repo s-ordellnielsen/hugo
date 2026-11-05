@@ -62,7 +62,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 078 | Add the Planner build changelog in English and Danish | P1 | S | 077 | DONE (committed on main as 4044865) | [SLN-280](https://linear.app/sebastianln/issue/SLN-280) |
 | 079 | Check and ship the Planner build to TestFlight | P1 | S + owner | 077, 078 | DONE (shipped as build 120 from e643bd3; changelog renamed in d4b8cd2; local verify.sh and Release build skipped, owner checked the internal build 2026-11-05) | [SLN-282](https://linear.app/sebastianln/issue/SLN-282) |
 | 080 | Show durations as "23 hours, 15 min" (Danish "23 timer 15 min") | P1 | S + owner | — | DONE (committed on main as 7c53a82; owner check passed 2026-11-05) | [SLN-291](https://linear.app/sebastianln/issue/SLN-291) |
-| 081 | Declutter the Planner header and stop it opening the target settings | P1 | M + owner | 080 | IN PROGRESS | [SLN-296](https://linear.app/sebastianln/issue/SLN-296) |
+| 081 | Declutter the Planner header and stop it opening the target settings | P1 | M + owner | 080 | DONE (committed on main as 766e0ac; owner check pending) | [SLN-296](https://linear.app/sebastianln/issue/SLN-296) |
 | 082 | Label the Year page total below the number, like the Planner header | P2 | S + owner | 080, after 081 | TODO | [SLN-297](https://linear.app/sebastianln/issue/SLN-297) |
 | 083 | Group the goal settings at the top of Settings and give yearly goal pacing its own page | P2 | M + owner | — | TODO | [SLN-292](https://linear.app/sebastianln/issue/SLN-292) |
 | 084 | Show this month's target next to each option on the monthly target page | P2 | M + owner | 081, 083 | TODO | [SLN-298](https://linear.app/sebastianln/issue/SLN-298) |
