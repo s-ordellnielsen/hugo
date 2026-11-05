@@ -11,36 +11,36 @@ struct TheocraticYearTotalsView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-            HStack {
-                eyebrow
-                Spacer(minLength: HugoLayout.Spacing.regular)
-                Image(systemName: "chevron.right")
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-                    .accessibilityHidden(true)
-            }
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
+                HStack(alignment: .center) {
+                    Text(ServiceDurationFormatter.hoursString(from: primarySeconds))
+                        .font(.system(.largeTitle, design: .serif, weight: .bold))
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.6)
+                        .lineLimit(1)
+                        .contentTransition(.numericText())
+                        .motion(Motion.value, value: primarySeconds)
+                    Spacer(minLength: HugoLayout.Spacing.regular)
+                    Image(systemName: "chevron.right")
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
+                }
 
-            Text(ServiceDurationFormatter.hoursString(from: primarySeconds))
-                .font(.system(.largeTitle, design: .serif, weight: .bold))
-                .monospacedDigit()
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-                .contentTransition(.numericText())
-                .motion(Motion.value, value: primarySeconds)
-
-            if let progress, progress.showsYearTotal {
-                Text(
-                    String(
-                        localized: "year.header.actual",
-                        defaultValue:
-                            "Actual total \(ServiceDurationFormatter.hoursString(from: progress.yearTotalSeconds))",
-                        comment:
-                            "Real total of the year, shown when it differs from the counted time. The argument is a duration."
-                    )
-                )
-                .font(.caption)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) {
+                        label
+                        Spacer(minLength: HugoLayout.Spacing.regular)
+                        actualTotal
+                    }
+                    VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
+                        label
+                        actualTotal
+                    }
+                }
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
             }
 
@@ -48,30 +48,42 @@ struct TheocraticYearTotalsView: View {
                 Text(paceSentence)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .padding(.top, HugoLayout.Spacing.spacious)
+                    .padding(.top, HugoLayout.Spacing.compact)
 
                 CenteredProgressBar(
                     fraction: fraction,
-                    accessibilityLabel: "year.header.counted.eyebrow",
+                    accessibilityLabel: "year.header.counted.label",
                     accessibilityValue: paceSentence
                 )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, HugoLayout.Spacing.card)
-        .padding(.vertical, HugoLayout.Spacing.regular)
+        .padding(.vertical, HugoLayout.Spacing.roomy)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabelText)
         .accessibilityHint("year.header.a11y.hint")
     }
 
-    private var eyebrow: some View {
-        Text(progress == nil ? "year.header.total.eyebrow" : "year.header.counted.eyebrow")
-            .font(.caption)
-            .textCase(.uppercase)
-            .tracking(HugoLayout.Typography.eyebrowTracking)
-            .fontWeight(.semibold)
-            .foregroundStyle(.secondary)
+    /// What the big number is: credited time with a yearly goal, the year total without one.
+    private var label: some View {
+        Text(progress == nil ? "year.header.total.label" : "year.header.counted.label")
+    }
+
+    /// The year total, shown only when it differs from the credited time.
+    @ViewBuilder
+    private var actualTotal: some View {
+        if let progress, progress.showsYearTotal {
+            Text(
+                String(
+                    localized: "year.header.actual",
+                    defaultValue:
+                        "Actual total \(ServiceDurationFormatter.hoursString(from: progress.yearTotalSeconds))",
+                    comment:
+                        "Real total of the year, shown when it differs from the counted time. The argument is a duration."
+                )
+            )
+        }
     }
 
     private var accessibilityLabelText: String {

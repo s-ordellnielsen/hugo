@@ -4612,8 +4612,8 @@
         }
       }
     },
-    "year.header.counted.eyebrow" : {
-      "comment" : "Small label above the year header total when a yearly goal applies.",
+    "year.header.counted.label" : {
+      "comment" : "Label under the year header total when a yearly goal applies: the time credited toward the goal.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -4646,8 +4646,8 @@
         }
       }
     },
-    "year.header.total.eyebrow" : {
-      "comment" : "Small label above the year header total when no yearly goal applies.",
+    "year.header.total.label" : {
+      "comment" : "Label under the year header total when no yearly goal applies.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
