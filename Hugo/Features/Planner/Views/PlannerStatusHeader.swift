@@ -40,20 +40,14 @@ struct PlannerStatusHeader: View {
                 .padding(.vertical, HugoLayout.Spacing.tight)
             }
 
-            HStack(spacing: HugoLayout.Spacing.spacious) {
-                legendItem(
-                    fraction: 1,
-                    text: String(
-                        localized: "planner.header.logged",
-                        defaultValue: "Logged \(ServiceDurationFormatter.hoursString(from: status.loggedSeconds))",
-                        comment: "Time already logged this month. The argument is a duration."))
-                legendItem(
-                    fraction: 0,
-                    text: String(
-                        localized: "planner.header.stillPlanned",
-                        defaultValue:
-                            "Still planned \(ServiceDurationFormatter.hoursString(from: status.stillPlannedSeconds))",
-                        comment: "Time planned but not logged yet this month. The argument is a duration."))
+            // Side by side when both fit on one line each; otherwise stacked, so no label breaks mid-value.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: HugoLayout.Spacing.spacious) {
+                    legendItems(keepsLabelsOnOneLine: true)
+                }
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.small) {
+                    legendItems(keepsLabelsOnOneLine: false)
+                }
             }
 
             VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
@@ -84,12 +78,32 @@ struct PlannerStatusHeader: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func legendItem(fraction: Double, text: String) -> some View {
+    @ViewBuilder
+    private func legendItems(keepsLabelsOnOneLine: Bool) -> some View {
+        legendItem(
+            fraction: 1,
+            text: String(
+                localized: "planner.header.logged",
+                defaultValue: "Logged \(ServiceDurationFormatter.hoursString(from: status.loggedSeconds))",
+                comment: "Time already logged this month. The argument is a duration."),
+            keepsLabelOnOneLine: keepsLabelsOnOneLine)
+        legendItem(
+            fraction: 0,
+            text: String(
+                localized: "planner.header.stillPlanned",
+                defaultValue:
+                    "Still planned \(ServiceDurationFormatter.hoursString(from: status.stillPlannedSeconds))",
+                comment: "Time planned but not logged yet this month. The argument is a duration."),
+            keepsLabelOnOneLine: keepsLabelsOnOneLine)
+    }
+
+    private func legendItem(fraction: Double, text: String, keepsLabelOnOneLine: Bool) -> some View {
         HStack(spacing: HugoLayout.Spacing.small) {
             PlannerBarShape(fraction: fraction, color: .hugoAccent)
                 .frame(width: 16, height: HugoLayout.Size.calendarBarHeight)
                 .accessibilityHidden(true)
             Text(text)
+                .fixedSize(horizontal: keepsLabelOnOneLine, vertical: true)
         }
         .font(.footnote)
         .foregroundStyle(.secondary)
