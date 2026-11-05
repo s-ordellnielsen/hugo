@@ -1171,6 +1171,57 @@
         }
       }
     },
+    "planner.day.a11y.hint" : {
+      "comment" : "VoiceOver hint for a calendar day. Opens the day's plans and entries.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbner dagen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the day"
+          }
+        }
+      }
+    },
+    "planner.day.logged.empty" : {
+      "comment" : "Shown in the Planner day sheet when no entries are logged on that day.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet udført på denne dag."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing logged on this day."
+          }
+        }
+      }
+    },
+    "planner.day.planned.empty" : {
+      "comment" : "Shown in the Planner day sheet when no plans are set for that day.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet planlagt for denne dag."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing planned for this day."
+          }
+        }
+      }
+    },
     "planner.intro.description" : {
       "comment" : "One sentence under the Planner calendar that explains the Planner. Shown when the month has no plans.",
       "localizations" : {
@@ -1235,6 +1286,227 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Planned"
+          }
+        }
+      }
+    },
+    "planner.plan.add" : {
+      "comment" : "Button under the plans in the Planner day sheet. Adds a plan to that day.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilføj plan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Plan"
+          }
+        }
+      }
+    },
+    "planner.plan.delete" : {
+      "comment" : "Button that deletes a plan. Used in the plan form and in its confirmation.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slet plan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Plan"
+          }
+        }
+      }
+    },
+    "planner.plan.delete.confirm" : {
+      "comment" : "Title of the confirmation shown before a plan is deleted.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slet denne plan?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete this plan?"
+          }
+        }
+      }
+    },
+    "planner.plan.edit" : {
+      "comment" : "Navigation title of the plan form when an existing plan is edited.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rediger plan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Plan"
+          }
+        }
+      }
+    },
+    "planner.plan.edit.hint" : {
+      "comment" : "VoiceOver hint for a plan card in the Planner day sheet. Opens the plan form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbner planen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the plan"
+          }
+        }
+      }
+    },
+    "planner.plan.log" : {
+      "comment" : "Button on a plan card in the Planner day sheet. Opens Add Entry filled in from the plan.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrér"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log"
+          }
+        }
+      }
+    },
+    "planner.plan.log.a11y" : {
+      "comment" : "VoiceOver label of the Log button on a plan card in the Planner day sheet.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrér planen som udført tid"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log this plan as an entry"
+          }
+        }
+      }
+    },
+    "planner.plan.progress" : {
+      "comment" : "On a plan in the Planner day sheet: how much of the plan is logged. Logged time, planned time.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ af %2$@ udført"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$@ logged"
+          }
+        }
+      }
+    },
+    "planner.plan.save" : {
+      "comment" : "Toolbar button that saves a plan in the plan form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gem"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "planner.plan.startTime" : {
+      "comment" : "Row in the plan form that sets an optional start time for the plan.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starttidspunkt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Time"
+          }
+        }
+      }
+    },
+    "planner.plan.startTime.footer" : {
+      "comment" : "Footer under the start time row in the plan form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valgfrit. Vises kun på dagen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional. Shown on the day only."
+          }
+        }
+      }
+    },
+    "planner.plan.startTime.none" : {
+      "comment" : "Value of the start time row in the plan form when the plan has no start time.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        }
+      }
+    },
+    "planner.plan.validation.invalid" : {
+      "comment" : "Shown when a plan cannot be saved because the duration is zero or no category is chosen.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg en varighed og en kategori."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a duration and a category."
           }
         }
       }

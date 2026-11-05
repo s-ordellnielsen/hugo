@@ -9,6 +9,7 @@ struct PlannerMonthPage: View {
     @Query private var entries: [Entry]
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
+    @State private var selectedDay: CalendarDay?
 
     init(month: YearMonth, today: Date, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.month = month
@@ -31,7 +32,7 @@ struct PlannerMonthPage: View {
         let plannerMonth = self.plannerMonth
         ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
-                PlannerCalendarGrid(month: plannerMonth)
+                PlannerCalendarGrid(month: plannerMonth, onSelect: { selectedDay = $0 })
                 if !plannerMonth.hasPlans {
                     PlannerIntroCard()
                 }
@@ -43,6 +44,10 @@ struct PlannerMonthPage: View {
             geometry.contentOffset.y + geometry.contentInsets.top > 0
         } action: { _, isScrolledFromTop in
             onScrolledFromTopChange?(isScrolledFromTop)
+        }
+        .sheet(item: $selectedDay) { day in
+            PlannerDaySheet(day: day, today: today)
+                .presentationDetents([.medium, .large])
         }
     }
 }

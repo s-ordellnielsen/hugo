@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PlannerCalendarGrid: View {
     let month: PlannerMonth
+    var onSelect: ((CalendarDay) -> Void)? = nil
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: HugoLayout.Spacing.tight, alignment: .top), count: 7)
@@ -20,7 +21,13 @@ struct PlannerCalendarGrid: View {
                     Color.clear.accessibilityHidden(true)
                 }
                 ForEach(month.days) { day in
-                    PlannerDayCell(day: day)
+                    Button {
+                        onSelect?(day.id)
+                    } label: {
+                        PlannerDayCell(day: day)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(onSelect == nil)
                 }
             }
             PlannerLegend()

@@ -34,6 +34,8 @@ struct PlannerDayCell: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(day.id.startDate(), format: .dateTime.weekday(.wide).day().month(.wide)))
         .accessibilityValue(Text(accessibilityValue))
+        .accessibilityHint(Text("planner.day.a11y.hint"))
+        .accessibilityAddTraits(.isButton)
     }
 
     /// Up to three bars; with four or more, the first two and a "+N" line.
