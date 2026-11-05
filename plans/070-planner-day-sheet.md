@@ -21,6 +21,7 @@
 - **Depends on**: plans/067-plan-model-schema-v12.md, plans/068-planner-domain-math.md, plans/069-planner-tab-and-calendar.md, plans/073-planner-calendar-polish.md
 - **Category**: direction
 - **Planned at**: commit `2e8a451`, 2026-11-04
+- **Issue**: [SLN-273](https://linear.app/sebastianln/issue/SLN-273)
 
 ## Why this matters
 

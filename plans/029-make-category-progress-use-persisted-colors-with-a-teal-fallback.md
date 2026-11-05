@@ -14,6 +14,7 @@
 * **Depends on**: `plans/027-establish-safe-hugo-theme-tokens-and-monochrome-root-tint.md`, `plans/028-apply-monochrome-palette-and-intentional-accent.md`
 * **Category**: correctness
 * **Planned at**: commit `f15e122`, August 10, 2026
+* **Issue**: [SLN-242](https://linear.app/sebastianln/issue/SLN-242)
 
 ## Why this matters
 

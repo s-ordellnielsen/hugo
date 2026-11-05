@@ -15,6 +15,7 @@
 - **Depends on**: plans 031–035
 - **Category**: migration
 - **Planned at**: commit `dc0b7f6`, 2026-10-09
+- **Issue**: [SLN-245](https://linear.app/sebastianln/issue/SLN-245)
 
 ## Why this matters
 

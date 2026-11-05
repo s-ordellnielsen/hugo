@@ -22,6 +22,7 @@
 - **Depends on**: plans/061-service-month-record.md (`ServiceMonth.make`), plans/062-month-ranges-and-reminder-rule.md (edits `OverviewMetrics.swift` first)
 - **Category**: bug + tech-debt
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-267](https://linear.app/sebastianln/issue/SLN-267)
 
 ## Why this matters
 

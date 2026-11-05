@@ -20,6 +20,7 @@
 - **Depends on**: plans/070-planner-day-sheet.md (DONE, commits `4cf4a80`, `ddc2964`)
 - **Category**: bug + direction (owner feedback after testing 070)
 - **Planned at**: commit `ddc2964`, 2026-11-05
+- **Issue**: [SLN-277](https://linear.app/sebastianln/issue/SLN-277)
 
 ## Why this matters
 

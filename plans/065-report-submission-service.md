@@ -24,6 +24,7 @@
 - **Depends on**: plans/061-service-month-record.md, plans/062-month-ranges-and-reminder-rule.md (both edit the same files first)
 - **Category**: tech-debt
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-268](https://linear.app/sebastianln/issue/SLN-268)
 
 ## Why this matters
 

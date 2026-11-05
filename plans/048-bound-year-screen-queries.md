@@ -20,6 +20,7 @@
 - **Depends on**: plans/045-flag-changes-after-submission.md (it makes each month's report check heavier, so measure after it)
 - **Category**: perf
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-174](https://linear.app/sebastianln/issue/SLN-174)
 
 ## Why this matters
 

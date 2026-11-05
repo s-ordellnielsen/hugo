@@ -20,6 +20,7 @@
 - **Depends on**: plans/037-green-gate-and-serial-tests.md (green gate)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-247](https://linear.app/sebastianln/issue/SLN-247)
 
 ## Why this matters
 

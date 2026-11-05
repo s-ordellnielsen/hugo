@@ -22,6 +22,7 @@
 - **Depends on**: plans/061-service-month-record.md (`ServiceMonth.contribution`)
 - **Category**: tech-debt
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-266](https://linear.app/sebastianln/issue/SLN-266)
 
 ## Why this matters
 

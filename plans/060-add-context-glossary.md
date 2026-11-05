@@ -20,6 +20,7 @@
 - **Depends on**: none
 - **Category**: docs
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-263](https://linear.app/sebastianln/issue/SLN-263)
 
 ## Why this matters
 

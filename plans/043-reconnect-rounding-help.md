@@ -21,6 +21,7 @@
 - **Depends on**: plans/037-green-gate-and-serial-tests.md; run after plans/042-accessibility-and-localization-fixes.md (both edit `Localizable.xcstrings`)
 - **Category**: direction (usability)
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-250](https://linear.app/sebastianln/issue/SLN-250)
 
 ## Why this matters
 

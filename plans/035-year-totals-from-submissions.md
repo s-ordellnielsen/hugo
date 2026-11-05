@@ -17,6 +17,7 @@
 - **Depends on**: plans/031-formatting-and-verification-baseline.md (independent of 032–034)
 - **Category**: bug
 - **Planned at**: commit `dc0b7f6`, 2026-10-09
+- **Issue**: [SLN-147](https://linear.app/sebastianln/issue/SLN-147)
 
 ## Why this matters
 

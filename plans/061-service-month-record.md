@@ -21,6 +21,7 @@
 - **Depends on**: plans/060-add-context-glossary.md (this plan adds a term to `CONTEXT.md`)
 - **Category**: bug + tech-debt
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-264](https://linear.app/sebastianln/issue/SLN-264)
 
 ## Why this matters
 

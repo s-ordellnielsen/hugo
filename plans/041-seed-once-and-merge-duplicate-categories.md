@@ -20,6 +20,7 @@
 - **Depends on**: plans/040-resolve-entry-category-in-one-place.md (uses `Entry.refreshStoredTracker()`)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-168](https://linear.app/sebastianln/issue/SLN-168)
 
 ## Why this matters
 

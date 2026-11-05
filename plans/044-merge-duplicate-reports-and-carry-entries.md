@@ -21,6 +21,7 @@
 - **Depends on**: plans/041-seed-once-and-merge-duplicate-categories.md (extends its `SyncDeduplicator`)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-193](https://linear.app/sebastianln/issue/SLN-193)
 
 ## Why this matters
 

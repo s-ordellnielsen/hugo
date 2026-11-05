@@ -20,6 +20,7 @@
 - **Depends on**: plans/044-merge-duplicate-reports-and-carry-entries.md (edits `OverviewView.reminderMonth`; run it first)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-159](https://linear.app/sebastianln/issue/SLN-159)
 
 ## Why this matters
 

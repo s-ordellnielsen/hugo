@@ -16,6 +16,7 @@
 - **Depends on**: plans/058-changelog-build-116.md (DONE)
 - **Category**: docs
 - **Planned at**: commit `177500d`, 2026-11-03
+- **Issue**: [SLN-262](https://linear.app/sebastianln/issue/SLN-262)
 
 ## Why this matters
 

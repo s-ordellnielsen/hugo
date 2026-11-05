@@ -21,6 +21,7 @@
 - **Depends on**: plans/067-plan-model-schema-v12.md
 - **Category**: direction
 - **Planned at**: commit `2e8a451`, 2026-11-04
+- **Issue**: [SLN-271](https://linear.app/sebastianln/issue/SLN-271)
 
 ## Why this matters
 

@@ -22,6 +22,7 @@
 - **Depends on**: plans/061-service-month-record.md (it introduces `SubmittedReportSelection`, used below)
 - **Category**: tech-debt
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-265](https://linear.app/sebastianln/issue/SLN-265)
 
 ## Why this matters
 

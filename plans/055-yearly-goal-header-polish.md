@@ -21,6 +21,7 @@
 - **Depends on**: plans/054-yearly-goal-header.md (DONE)
 - **Category**: direction
 - **Planned at**: commit `672aa54`, 2026-11-03
+- **Issue**: [SLN-258](https://linear.app/sebastianln/issue/SLN-258)
 
 ## Why this matters
 

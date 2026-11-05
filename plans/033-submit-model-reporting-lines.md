@@ -18,6 +18,7 @@
 - **Depends on**: plans/032-reporting-line-domain.md
 - **Category**: bug
 - **Planned at**: commit `dc0b7f6`, 2026-10-09
+- **Issue**: [SLN-236](https://linear.app/sebastianln/issue/SLN-236)
 
 ## Why this matters
 

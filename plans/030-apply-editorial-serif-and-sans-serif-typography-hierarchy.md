@@ -14,6 +14,7 @@
 * **Depends on**: `plans/027-establish-safe-hugo-theme-tokens-and-monochrome-root-tint.md`
 * **Category**: tech-debt
 * **Planned at**: commit `f15e122`, August 10, 2026
+* **Issue**: [SLN-243](https://linear.app/sebastianln/issue/SLN-243)
 
 ## Why this matters
 

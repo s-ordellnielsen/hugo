@@ -21,6 +21,7 @@
 - **Depends on**: none (plans 001-053 are DONE)
 - **Category**: direction
 - **Planned at**: commit `a29e7f9`, 2026-11-03
+- **Issue**: [SLN-257](https://linear.app/sebastianln/issue/SLN-257)
 
 ## Why this matters
 

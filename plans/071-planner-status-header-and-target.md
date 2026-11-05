@@ -21,6 +21,7 @@
 - **Depends on**: plans/067 to plans/070, plans/073-planner-calendar-polish.md
 - **Category**: direction
 - **Planned at**: commit `2e8a451`, 2026-11-04
+- **Issue**: [SLN-274](https://linear.app/sebastianln/issue/SLN-274)
 
 ## Why this matters
 

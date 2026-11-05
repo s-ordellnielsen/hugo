@@ -20,6 +20,7 @@
 - **Depends on**: plans/044-merge-duplicate-reports-and-carry-entries.md (adds to its `SyncDeduplicator`), plans/047-safe-saves-names-and-submission-snapshot.md (last edit to `SubmitReportFormModel.swift`)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-252](https://linear.app/sebastianln/issue/SLN-252)
 
 ## Why this matters
 

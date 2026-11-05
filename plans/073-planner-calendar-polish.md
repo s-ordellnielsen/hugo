@@ -21,6 +21,7 @@
 - **Depends on**: plans/069-planner-tab-and-calendar.md (DONE, merged as `34423ef`)
 - **Category**: direction
 - **Planned at**: commit `34423ef`, 2026-11-04
+- **Issue**: [SLN-276](https://linear.app/sebastianln/issue/SLN-276)
 
 ## Why this matters
 

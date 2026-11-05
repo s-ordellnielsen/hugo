@@ -20,6 +20,7 @@
 - **Depends on**: plans/061-service-month-record.md (edits `ServiceYearMonthRow.swift` first). Run after 063, which also edits ServiceYear files.
 - **Category**: tech-debt
 - **Planned at**: commit `26e63f4`, 2026-11-03
+- **Issue**: [SLN-269](https://linear.app/sebastianln/issue/SLN-269)
 
 ## Why this matters
 

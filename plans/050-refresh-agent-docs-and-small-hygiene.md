@@ -21,6 +21,7 @@
 - **Depends on**: run after plans 037–049 (it documents the patterns they introduce). Plan 053 depends on this plan: this plan writes the folder conventions into AGENTS.md, and 053 moves the files to match. Run 053 right after this one.
 - **Category**: docs
 - **Planned at**: commit `3f8d48b`, 2026-10-12; revised 2026-11-03 at `359d37e` (new folder conventions; the `Checkmark.swift` move now belongs to plan 053)
+- **Issue**: [SLN-253](https://linear.app/sebastianln/issue/SLN-253)
 
 ## Why this matters
 

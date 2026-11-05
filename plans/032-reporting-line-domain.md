@@ -18,6 +18,7 @@
 - **Depends on**: plans/031-formatting-and-verification-baseline.md
 - **Category**: direction
 - **Planned at**: commit `dc0b7f6`, 2026-10-09
+- **Issue**: [SLN-244](https://linear.app/sebastianln/issue/SLN-244)
 
 ## Why this matters
 

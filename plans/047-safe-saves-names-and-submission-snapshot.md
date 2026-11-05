@@ -20,6 +20,7 @@
 - **Depends on**: plans/045-flag-changes-after-submission.md (last plan to edit `SubmitReportView.swift` / `SubmitReportFormModel.swift` before this one)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-251](https://linear.app/sebastianln/issue/SLN-251)
 
 ## Why this matters
 

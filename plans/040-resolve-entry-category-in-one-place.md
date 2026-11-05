@@ -21,6 +21,7 @@
 - **Depends on**: plans/037-green-gate-and-serial-tests.md, plans/039-durations-as-seconds.md (both edit `EntryDetailView.swift`/`OverviewListView.swift`; run them first)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-160](https://linear.app/sebastianln/issue/SLN-160)
 
 ## Why this matters
 

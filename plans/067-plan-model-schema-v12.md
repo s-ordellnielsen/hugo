@@ -21,6 +21,7 @@
 - **Depends on**: none
 - **Category**: direction
 - **Planned at**: commit `2e8a451`, 2026-11-04
+- **Issue**: [SLN-270](https://linear.app/sebastianln/issue/SLN-270)
 
 ## Why this matters
 

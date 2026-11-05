@@ -20,6 +20,7 @@
 - **Depends on**: plans/074-planner-day-sheet-fixes.md (DONE, commits `0e2ec93`, `4b01234`)
 - **Category**: bug + design (owner feedback after testing 074)
 - **Planned at**: commit `4b01234`, 2026-11-05
+- **Issue**: [SLN-278](https://linear.app/sebastianln/issue/SLN-278)
 
 ## Why this matters
 

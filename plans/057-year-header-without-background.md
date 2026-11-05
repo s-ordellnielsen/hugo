@@ -18,6 +18,7 @@
 - **Depends on**: plans/056-year-header-chevron-and-spacing.md (DONE)
 - **Category**: direction
 - **Planned at**: commit `32a49cc`, 2026-11-03
+- **Issue**: [SLN-260](https://linear.app/sebastianln/issue/SLN-260)
 
 ## Why this matters
 

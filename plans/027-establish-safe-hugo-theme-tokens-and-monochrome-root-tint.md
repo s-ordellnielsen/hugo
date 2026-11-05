@@ -14,6 +14,7 @@
 * **Depends on**: none
 * **Category**: tech-debt
 * **Planned at**: commit `f15e122`, August 10, 2026
+* **Issue**: [SLN-240](https://linear.app/sebastianln/issue/SLN-240)
 
 ## Why this matters
 

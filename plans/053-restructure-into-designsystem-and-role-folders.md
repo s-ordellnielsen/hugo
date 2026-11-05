@@ -17,6 +17,7 @@
 - **Depends on**: plans/050-refresh-agent-docs-and-small-hygiene.md (it writes the folder rules into AGENTS.md; this plan makes the repository match them). Run it after plans 037–052 so that their paths are already in place.
 - **Category**: tech-debt
 - **Planned at**: commit `359d37e`, 2026-11-03
+- **Issue**: [SLN-256](https://linear.app/sebastianln/issue/SLN-256)
 - **Owner decisions (2026-11-03)**: generic UI gets a `Hugo/DesignSystem` folder. Every feature file lives in a role folder (`Screens`, `Views`, `State`, `Domain`, `Services`), even when it is the only file in that role. State classes go in `State`. The refactor is done in one pass.
 
 ## Why this matters

@@ -20,6 +20,7 @@
 - **Depends on**: none
 - **Category**: dx
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-246](https://linear.app/sebastianln/issue/SLN-246)
 
 ## Why this matters
 

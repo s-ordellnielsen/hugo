@@ -22,6 +22,7 @@
 - **Depends on**: plans/040-resolve-entry-category-in-one-place.md, plans/043-reconnect-rounding-help.md (both edit files here); plans/044-merge-duplicate-reports-and-carry-entries.md recommended first (duplicate carried-in entries would otherwise trigger the new flag)
 - **Category**: bug
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-170](https://linear.app/sebastianln/issue/SLN-170)
 - **Owner decision (2026-10-12)**: compare totals and warn. Show the "changed since you reported" state whenever a submitted month's current totals differ from what was submitted. Keep today's "new entries" rule for reports whose stored lines cannot be compared. Ask for confirmation before a re-submission changes minutes carried into an already submitted month.
 
 ## Why this matters

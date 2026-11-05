@@ -21,6 +21,7 @@
 - **Depends on**: plans/040-resolve-entry-category-in-one-place.md (DONE)
 - **Category**: bug
 - **Planned at**: commit `6613507`, 2026-11-03; revised 2026-11-03 at `e96ff45` (plan 042 touched this file; see the note on `DateListItem` below)
+- **Issue**: [SLN-255](https://linear.app/sebastianln/issue/SLN-255)
 
 ## Why this matters
 

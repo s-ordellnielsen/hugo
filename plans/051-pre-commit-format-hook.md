@@ -21,6 +21,7 @@
 - **Depends on**: 037 (the repo must lint clean first, otherwise the hook rewrites unrelated files)
 - **Category**: dx
 - **Planned at**: commit `3f8d48b`, 2026-11-03; revised 2026-11-03 at `455a3e4` after the first execution attempt found two defects (see Step 1 and Step 3)
+- **Issue**: [SLN-254](https://linear.app/sebastianln/issue/SLN-254)
 
 ## Why this matters
 

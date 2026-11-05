@@ -18,6 +18,7 @@
 - **Depends on**: plans/033-submit-model-reporting-lines.md
 - **Category**: bug
 - **Planned at**: commit `dc0b7f6`, 2026-10-09
+- **Issue**: [SLN-235](https://linear.app/sebastianln/issue/SLN-235)
 
 ## Why this matters
 

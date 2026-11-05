@@ -21,6 +21,7 @@
 - **Depends on**: plans/037-green-gate-and-serial-tests.md; run after plans/040-resolve-entry-category-in-one-place.md (both edit `OverviewListView.swift`)
 - **Category**: bug (accessibility and localization)
 - **Planned at**: commit `3f8d48b`, 2026-10-12
+- **Issue**: [SLN-249](https://linear.app/sebastianln/issue/SLN-249)
 
 ## Why this matters
 

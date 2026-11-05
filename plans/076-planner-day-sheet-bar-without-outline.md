@@ -20,6 +20,7 @@
 - **Depends on**: plans/075-planner-plans-per-category.md (DONE, commits `4453300`, `418b41e`)
 - **Category**: design (owner feedback after testing 075)
 - **Planned at**: commit `418b41e`, 2026-11-05
+- **Issue**: [SLN-279](https://linear.app/sebastianln/issue/SLN-279)
 
 ## Why this matters
 

@@ -18,6 +18,7 @@
 - **Depends on**: plans/055-yearly-goal-header-polish.md (DONE)
 - **Category**: direction
 - **Planned at**: commit `b249953`, 2026-11-03
+- **Issue**: [SLN-259](https://linear.app/sebastianln/issue/SLN-259)
 
 ## Why this matters
 
