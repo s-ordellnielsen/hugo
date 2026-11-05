@@ -59,7 +59,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 075 | Match and show plans per category, and draw bar fills in the bar's color (run before 071) | P1 | M | 074 | DONE (committed on main as 4453300, 418b41e; owner checks passed 2026-11-05) | [SLN-278](https://linear.app/sebastianln/issue/SLN-278) |
 | 076 | Draw the day sheet's progress bar without an outline | P1 | S | 075 | DONE (committed on main as 9a14276; owner check passed 2026-11-05) | [SLN-279](https://linear.app/sebastianln/issue/SLN-279) |
 | 077 | Fix the Danish wording of the plan status and the Planner target | P1 | S | — | DONE (committed on main as 41bdfd6, 86c936d; device check is part of 079) | [SLN-281](https://linear.app/sebastianln/issue/SLN-281) |
-| 078 | Add the Planner build changelog in English and Danish | P1 | S | 077 | TODO | [SLN-280](https://linear.app/sebastianln/issue/SLN-280) |
+| 078 | Add the Planner build changelog in English and Danish | P1 | S | 077 | DONE (committed on main as 4044865) | [SLN-280](https://linear.app/sebastianln/issue/SLN-280) |
 | 079 | Check and ship the Planner build to TestFlight | P1 | S + owner | 077, 078 | TODO | [SLN-282](https://linear.app/sebastianln/issue/SLN-282) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
