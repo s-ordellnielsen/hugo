@@ -61,6 +61,17 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 077 | Fix the Danish wording of the plan status and the Planner target | P1 | S | — | DONE (committed on main as 41bdfd6, 86c936d; device check is part of 079) | [SLN-281](https://linear.app/sebastianln/issue/SLN-281) |
 | 078 | Add the Planner build changelog in English and Danish | P1 | S | 077 | DONE (committed on main as 4044865) | [SLN-280](https://linear.app/sebastianln/issue/SLN-280) |
 | 079 | Check and ship the Planner build to TestFlight | P1 | S + owner | 077, 078 | DONE (shipped as build 120 from e643bd3; changelog renamed in d4b8cd2; local verify.sh and Release build skipped, owner checked the internal build 2026-11-05) | [SLN-282](https://linear.app/sebastianln/issue/SLN-282) |
+| 080 | Show durations as "23 hours, 15 min" (Danish "23 timer 15 min") | P1 | S + owner | — | TODO | [SLN-291](https://linear.app/sebastianln/issue/SLN-291) |
+| 081 | Declutter the Planner header and stop it opening the target settings | P1 | M + owner | 080 | TODO | [SLN-296](https://linear.app/sebastianln/issue/SLN-296) |
+| 082 | Label the Year page total below the number, like the Planner header | P2 | S + owner | 080, after 081 | TODO | [SLN-297](https://linear.app/sebastianln/issue/SLN-297) |
+| 083 | Group the goal settings at the top of Settings and give yearly goal pacing its own page | P2 | M + owner | — | TODO | [SLN-292](https://linear.app/sebastianln/issue/SLN-292) |
+| 084 | Show this month's target next to each option on the monthly target page | P2 | M + owner | 081, 083 | TODO | [SLN-298](https://linear.app/sebastianln/issue/SLN-298) |
+| 085 | Replace the Overview month details with a plan pace sheet opened from the status line | P1 | M + owner | — | TODO | [SLN-293](https://linear.app/sebastianln/issue/SLN-293) |
+| 086 | Fill the Overview circle by area, and against the plan when there is no monthly goal | P1 | M + owner | 085 | TODO | [SLN-190](https://linear.app/sebastianln/issue/SLN-190), [SLN-191](https://linear.app/sebastianln/issue/SLN-191) |
+| 087 | Make the Overview date list as useful as the entry list | P1 | S + owner | — | TODO | [SLN-294](https://linear.app/sebastianln/issue/SLN-294) |
+| 088 | Add a jump-to-month menu to the Year page | P2 | S + owner | — | TODO | [SLN-295](https://linear.app/sebastianln/issue/SLN-295) |
+| 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | TODO | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
+| 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -113,6 +124,23 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 * Owner decisions for 077 (2026-11-05): the Overview plan status uses "Foran planen / Langt foran planen / Følger planen / Bagud / Langt bagud" ("Efter plan" read as "according to plan"); the Planner says "mål" instead of "måltal" for the monthly target, and the one line about the yearly goal says "årsmål"; "Stadig planlagt" becomes "Tilbage i planen". English text is unchanged.
 * The CloudKit schema for V12 (`CD_Plan`) was deployed to Production on 2026-11-05 (owner), so plan 079 does not repeat that step.
 
+* Plans 080–090 (2026-11-05, planned at `1432319`) are the next external TestFlight build after build 120. All eleven issues are in Todo. Run them in numeric order; almost all add keys to `Localizable.xcstrings`, so run them one at a time.
+  * 080 → 081 → 082: the short duration format first, then the Planner header, then the Year header in the same style. 081 removes the Planner header's tap and target sheet, the only caller that passes `showsDone: true`.
+  * 083 → 084: 083 adds `SelectableOptionRow` (DesignSystem) and the goal section in Settings; 084 rebuilds the monthly target page with it and removes `showsDone` (needs 081 first).
+  * 085 → 086: both edit `MonthlyProgressCard`. 085 removes the month details sheet and `CategoryProgressAggregator`; 086 changes what the circle fills against and fills it by area.
+  * 087, 088, 089 and 090 are independent. 089 leaves `ServiceDurationFormatter.swift` alone because 080 changes it.
+  * A changelog plan for this build (like 078) is not written yet. Add it once the build's contents are final.
+* Owner decisions for 080–090 (2026-11-05):
+  * Short durations everywhere: "23 hours, 15 min" / "23 timer 15 min"; VoiceOver keeps full words.
+  * The Planner header keeps a per-day line, but about planning: the shortfall (target minus projected time) spread over the days left. The line based on logged time goes.
+  * The Year header gets the same label-below layout as the Planner header.
+  * The Planner target settings live only in Settings. Custom option pages for the monthly target and yearly goal pacing; tidy the Settings root. Native lists, at most one tip per page.
+  * The Overview month details sheet goes. The status line opens a small plan pace sheet without an "Open Planner" button.
+  * Without a monthly goal, the circle fills against this month's planned time; with no plans it is empty without entries and full with any. Plan 086 counts only non-carried-in entries for that; the owner confirms on device.
+  * The date list matches the entry list (tap to edit, icon, Bible studies, VoiceOver) and drops the time column. No context menu or swipe actions yet (SLN-216).
+  * The "Allow Bible studies" category toggle is honored, not removed.
+  * Jump to month is a native menu of the displayed year's twelve months.
+
 ## Planner: next steps (not planned yet)
 
 * **Suggestion pills in Add Entry** (owner idea, 2026-11-04). When Add Entry opens for a date, show that day's plans that are not full (`PlannerDay.make(...).bars` where `kind == .plan && !isFull`) as pills. Tapping a pill fills the duration (`remainingSeconds`), category and start time through the seeding parameters that plan 070 adds to `AddEntryFormModel`. Future **entry presets** should be a second source of the same pills: model both as one suggestion value (duration, category id, optional start minute, label) so Add Entry does not care where a suggestion came from. Effort S once 070 is done. This also covers logging from the Overview's + button, which is where most users log.
@@ -143,6 +171,11 @@ Found while planning 060–066 (2026-11-03), not planned:
 * **Write-only report fields.** `SubmittedReport.categories`, the carried and rounded seconds, `fieldServiceSeconds` and `roundingRuleRaw` are written on every submission but read only by migrations. Stop writing them only after confirming that no supported build reads them through CloudKit (see plan 065).
 
 ## Findings considered and rejected
+
+* **SLN-194 (Debug page in Release builds) for the 080–090 build** (2026-11-05): the owner left it out, so testers keep the Debug page. It stays with the App Store launch work (SLN-284).
+* **SLN-172 (migration crash loop), SLN-205 (report locale) and SLN-288 (untracked time) for the 080–090 build** (2026-11-05): real, but not this build's theme. While planning 080 a fork confirmed that `String(localized:locale:)` does not pick the catalog language (only `LocalizedStringResource` with `locale` does), which supports SLN-205 because `ReportComposer.message` uses the former.
+* **SLN-183 (hero visuals lack accessibility)** (2026-11-05): the circle is already covered by the card's label and value, and plan 085 removes the category bar. Close it once 085 lands.
+* **A stale redraw in the Overview date list** (2026-11-05): suspected because `DateSection.==` compares only ids, durations and dates, but plan 052 already made each row read its entry in its own body. Plan 087 keeps `.equatable()` with a STOP condition if a row does not update on device.
 
 * **Fixing SLN-194 (Debug screen in Release builds) and SLN-172 (migration crash loop) before the Planner TestFlight build** (2026-11-05): both were already true for build 116 and neither is a blocker in Linear. They belong to the App Store launch work (SLN-284).
 * **A "Måltid" string in Danish** (owner report, 2026-11-05): no such string exists in the app, the changelogs or the plans. The word in use was "Måltal", which plan 077 replaces with "Mål".
