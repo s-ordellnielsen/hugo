@@ -4,3 +4,6 @@ DerivedData/
 xcuserdata/
 *.xccheckout
 *.xcscmblueprint
+
+# Claude Code local files
+.claude/
