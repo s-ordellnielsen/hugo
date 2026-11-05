@@ -1,8 +1,9 @@
 import SwiftData
 import SwiftUI
 
-/// One day in the Planner: its plans, and for today and earlier days its logged
-/// entries. A plan can be logged, which opens Add Entry filled from the plan.
+/// One day in the Planner: its plans first, then, on days with logged
+/// entries, a smaller list of those entries. Logging a plan opens Add Entry
+/// filled from the plan.
 struct PlannerDaySheet: View {
     let day: CalendarDay
     let today: Date
@@ -15,7 +16,6 @@ struct PlannerDaySheet: View {
     @State private var isAddingPlan = false
     @State private var editingPlan: Plan?
     @State private var loggingSeed: PlanLogSeed?
-    @State private var isAddingEntry = false
     @State private var selectedEntry: Entry?
 
     init(day: CalendarDay, today: Date) {
@@ -29,15 +29,19 @@ struct PlannerDaySheet: View {
     }
 
     var body: some View {
-        let bars = barsByID
+        let plannerDay = self.plannerDay
+        let bars = Dictionary(plannerDay.bars.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
                     plannedSection(bars: bars)
-                    if canLog {
-                        loggedSection
+                    if !entries.isEmpty {
+                        PlannerLoggedEntryList(entries: entries, total: plannerDay.logged.total) { entry in
+                            selectedEntry = entry
+                        }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
@@ -46,6 +50,11 @@ struct PlannerDaySheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+                }
+                ToolbarItem {
+                    Button("planner.plan.add", systemImage: "plus") {
+                        isAddingPlan = true
+                    }
                 }
             }
             .sheet(isPresented: $isAddingPlan) {
@@ -61,9 +70,6 @@ struct PlannerDaySheet: View {
                     preferredTrackerID: seed.trackerID,
                     seededStartMinute: seed.startMinute)
             }
-            .sheet(isPresented: $isAddingEntry) {
-                AddEntryView(seededDate: day.midday())
-            }
             .sheet(item: $selectedEntry) { entry in
                 EntryDetailView(entry: entry)
                     .presentationDetents([.medium, .large])
@@ -73,8 +79,6 @@ struct PlannerDaySheet: View {
 
     private func plannedSection(bars: [String: PlannerBar]) -> some View {
         VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
-            Text("planner.legend.planned")
-                .font(.headline)
             if items.isEmpty {
                 Text("planner.day.planned.empty")
                     .foregroundStyle(.secondary)
@@ -89,28 +93,6 @@ struct PlannerDaySheet: View {
                         ? { loggingSeed = PlanLogSeed(item: item, bar: bars[item.id]) } : nil
                 )
             }
-            Button("planner.plan.add", systemImage: "plus") {
-                isAddingPlan = true
-            }
-            .buttonStyle(.bordered)
-        }
-    }
-
-    private var loggedSection: some View {
-        VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
-            Text("planner.legend.logged")
-                .font(.headline)
-            if entries.isEmpty {
-                Text("planner.day.logged.empty")
-                    .foregroundStyle(.secondary)
-            }
-            ForEach(entries) { entry in
-                EntryRow(entry: entry, selectedEntry: $selectedEntry)
-            }
-            Button("entry.add.label", systemImage: "plus") {
-                isAddingEntry = true
-            }
-            .buttonStyle(.bordered)
         }
     }
 
@@ -121,11 +103,9 @@ struct PlannerDaySheet: View {
             .sorted { ($0.startMinute ?? Int.max) < ($1.startMinute ?? Int.max) }
     }
 
-    /// The day's bars, matched by plan 068's rules. Plan bars share the item's id.
-    private var barsByID: [String: PlannerBar] {
-        let plannerDay = PlannerDay.make(
-            day: day, items: items, entries: entries, trackers: trackers, today: CalendarDay(today))
-        return Dictionary(plannerDay.bars.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+    /// The day's plans matched with its logged time (plan 068's rules).
+    private var plannerDay: PlannerDay {
+        PlannerDay.make(day: day, items: items, entries: entries, trackers: trackers, today: CalendarDay(today))
     }
 }
 

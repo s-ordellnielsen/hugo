@@ -1188,36 +1188,36 @@
         }
       }
     },
-    "planner.day.logged.empty" : {
-      "comment" : "Shown in the Planner day sheet when no entries are logged on that day.",
+    "planner.day.logged.header" : {
+      "comment" : "Header above the logged entries in the Planner day sheet. The day's logged time in words.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intet udført på denne dag."
+            "value" : "Udført · %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nothing logged on this day."
+            "value" : "Logged · %@"
           }
         }
       }
     },
     "planner.day.planned.empty" : {
-      "comment" : "Shown in the Planner day sheet when no plans are set for that day.",
+      "comment" : "Shown in the Planner day sheet when the day has no plans. + is the Add Plan button in the navigation bar.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intet planlagt for denne dag."
+            "value" : "Intet planlagt endnu. Tryk på + for at tilføje en plan."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nothing planned for this day."
+            "value" : "Nothing planned yet. Tap + to add a plan."
           }
         }
       }

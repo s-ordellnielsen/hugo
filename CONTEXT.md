@@ -149,6 +149,9 @@ The part of a plan that logged time on the same day accounts for: first time in 
 **Unplanned time**:
 Logged time on a day that no plan covers, including time beyond a plan.
 
+**Logging a plan**:
+Opening Add Entry filled from a plan: its day, category and start time, and the part of the plan that logged time has not covered yet. The user still saves the entry, and the plan stays.
+
 ## Sync
 
 **Sync duplicate**:
