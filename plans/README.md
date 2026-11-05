@@ -58,6 +58,9 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 074 | Make the Planner day sheet about plans, and fill Add Entry when logging a plan (run before 071) | P1 | S | 070 | DONE (committed on main as 0e2ec93, 4b01234; owner checks passed 2026-11-05) | [SLN-277](https://linear.app/sebastianln/issue/SLN-277) |
 | 075 | Match and show plans per category, and draw bar fills in the bar's color (run before 071) | P1 | M | 074 | DONE (committed on main as 4453300, 418b41e; owner checks passed 2026-11-05) | [SLN-278](https://linear.app/sebastianln/issue/SLN-278) |
 | 076 | Draw the day sheet's progress bar without an outline | P1 | S | 075 | DONE (committed on main as 9a14276; owner check passed 2026-11-05) | [SLN-279](https://linear.app/sebastianln/issue/SLN-279) |
+| 077 | Fix the Danish wording of the plan status and the Planner target | P1 | S | — | TODO | [SLN-281](https://linear.app/sebastianln/issue/SLN-281) |
+| 078 | Add the Planner build changelog in English and Danish | P1 | S | 077 | TODO | [SLN-280](https://linear.app/sebastianln/issue/SLN-280) |
+| 079 | Check and ship the Planner build to TestFlight | P1 | S + owner | 077, 078 | TODO | [SLN-282](https://linear.app/sebastianln/issue/SLN-282) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -106,6 +109,10 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * Matching ignores start times (2026-11-05, plan 075): an entry does not record whether its time was picked or guessed. Each category's plans on a day share one bar in the grid and one card in the day sheet. Time beyond the plans stays on that bar; only a category with no plan that day gets an unplanned bar.
   * The day sheet is for planning (2026-11-05, plan 074): one + in the navigation bar adds a plan, there is no Add Entry in the sheet, and logging from the Planner happens only through a plan's Log button. Logged entries show below the plans as compact rows under "Logged · total", only when the day has entries.
 
+* Plans 077–079 (2026-11-05, planned at `34395b4`) are everything Linear lists before the next TestFlight build (SLN-282 is blocked by SLN-280 and SLN-281). Run them in numeric order. 077 changes 16 Danish catalog values. 078 adds the changelog under placeholder names (`Changelog/1.0.0/next.*.txt`), because Xcode Cloud assigns the build number. 079 runs the gate and a Release build, then hands over to the owner for the upgrade check and the build, and finally renames the changelog to the build number.
+* Owner decisions for 077 (2026-11-05): the Overview plan status uses "Foran planen / Langt foran planen / Følger planen / Bagud / Langt bagud" ("Efter plan" read as "according to plan"); the Planner says "mål" instead of "måltal" for the monthly target, and the one line about the yearly goal says "årsmål"; "Stadig planlagt" becomes "Tilbage i planen". English text is unchanged.
+* The CloudKit schema for V12 (`CD_Plan`) was deployed to Production on 2026-11-05 (owner), so plan 079 does not repeat that step.
+
 ## Planner: next steps (not planned yet)
 
 * **Suggestion pills in Add Entry** (owner idea, 2026-11-04). When Add Entry opens for a date, show that day's plans that are not full (`PlannerDay.make(...).bars` where `kind == .plan && !isFull`) as pills. Tapping a pill fills the duration (`remainingSeconds`), category and start time through the seeding parameters that plan 070 adds to `AddEntryFormModel`. Future **entry presets** should be a second source of the same pills: model both as one suggestion value (duration, category id, optional start minute, label) so Add Entry does not care where a suggestion came from. Effort S once 070 is done. This also covers logging from the Overview's + button, which is where most users log.
@@ -136,6 +143,9 @@ Found while planning 060–066 (2026-11-03), not planned:
 * **Write-only report fields.** `SubmittedReport.categories`, the carried and rounded seconds, `fieldServiceSeconds` and `roundingRuleRaw` are written on every submission but read only by migrations. Stop writing them only after confirming that no supported build reads them through CloudKit (see plan 065).
 
 ## Findings considered and rejected
+
+* **Fixing SLN-194 (Debug screen in Release builds) and SLN-172 (migration crash loop) before the Planner TestFlight build** (2026-11-05): both were already true for build 116 and neither is a blocker in Linear. They belong to the App Store launch work (SLN-284).
+* **A "Måltid" string in Danish** (owner report, 2026-11-05): no such string exists in the app, the changelogs or the plans. The word in use was "Måltal", which plan 077 replaces with "Mål".
 
 * **A SwiftData relationship from `Plan` to `Tracker`** (2026-11-04): CloudKit needs an inverse, so V12 would need new `Tracker`, `Entry` and `SubmittedReport` classes. Plans store the category id and a snapshot instead (plan 067).
 * **Storing one row per occurrence of a repeating plan** (2026-11-04): sync would duplicate them. Compute occurrences when reading.
