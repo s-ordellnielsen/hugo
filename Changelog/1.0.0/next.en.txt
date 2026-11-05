@@ -1,0 +1,18 @@
+Hugo is back with a new update, and this time it brings a whole new feature: the Planner. Let's dive in.
+
+PLANNER
+The Planner is a new tab between Overview and Year. Here you can plan how much time you want to spend in service each day, and see your plan for this month and the next 11 months.
+
+- Tap a day to add a plan. A plan has a duration, a category and, if you like, a start time. You can have several plans on the same day.
+- Each plan shows as a bar in the calendar that fills up as you log time.
+- Tap "Log" on a plan to open Add Entry with the plan's time and category already filled in. A plan never turns into time in your report on its own.
+- At the top you can see how far your plan gets you toward your target for the month. You can change the target under Settings → Planner.
+
+The Overview now also shows whether you are ahead of or behind your plan. It only appears in months where you have made a plan.
+
+Is the Planner easy to understand? Or do you have ideas for how I can make it better?
+
+CHANGES
+- Time carried in from the previous month now shows under the same category on every screen
+- When you edit an entry in a month you already submitted, Hugo no longer says there are new entries
+- General bug fixes and improvements

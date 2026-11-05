@@ -1,0 +1,18 @@
+Hugo er tilbage med en ny opdatering, og denne gang med en helt ny fane: Planlæg. Lad os dykke ned i det.
+
+PLANLÆG
+Planlæg er en ny fane mellem Overblik og Tjenesteår. Her kan du planlægge, hvor meget tid du vil bruge i tjenesten hver dag, og se din plan for denne måned og de næste 11 måneder.
+
+- Tryk på en dag for at tilføje en plan. En plan har en varighed, en kategori og eventuelt et starttidspunkt. Du kan have flere planer på samme dag.
+- Hver plan vises som en bjælke i kalenderen, der fyldes op, efterhånden som du registrerer tid.
+- Tryk på "Registrér" ved en plan for at åbne "Tilføj til rapport", hvor planens tid og kategori allerede er udfyldt. En plan bliver aldrig til tid i din rapport af sig selv.
+- Øverst kan du se, hvor langt din plan bringer dig mod dit mål for måneden. Du kan ændre målet under Indstillinger → Planlæg.
+
+Overblik viser nu også, om du ligger foran eller bagud i forhold til din plan. Det vises kun i måneder, hvor du har lagt en plan.
+
+Er Planlæg nem at forstå? Eller har du idéer til, hvordan jeg kan gøre den bedre?
+
+ÆNDRINGER
+- Tid, der er overført fra forrige måned, vises nu under den samme kategori på alle skærme
+- Når du ændrer en post i en måned, du allerede har indsendt, skriver Hugo ikke længere, at der er nye poster
+- Generelle fejlrettelser og forbedringer
