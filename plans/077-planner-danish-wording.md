@@ -73,7 +73,7 @@ If the simulator reports "Busy" before any test runs, wait 20 seconds and run th
 
 **Out of scope**:
 - Every `en` value, every key name, every `comment`, every `state`. Leave `"state" : "translated"` as it is.
-- Any other Danish value, even ones that look related ("Udført", "Registrér", "Planlægger", "Månedligt mål", "årsmål" elsewhere). The owner reviewed them and keeps them.
+- Any other Danish value, even ones that look related ("Udført", "Registrér", "Månedligt mål", "årsmål" elsewhere). The owner reviewed them and keeps them. ("Planlægger" is handled by the addendum at the end of this plan.)
 - Swift files, `InfoPlist.xcstrings`, the `Changelog/` folder.
 - Do not open the catalog in Xcode and save it; Xcode may rewrite unrelated parts. Edit the text file directly.
 
@@ -170,3 +170,30 @@ Owner check on a device in Danish (part of plan 079): the Overview circle still 
 - In Danish the Planner now says "mål" for the monthly target and "årsmål" for the yearly goal. New Planner strings should follow that: "mål" alone means this month's target; say "årsmål" or "månedligt mål" when the goal from the publisher status is meant.
 - The five plan status labels are shown inside the Overview circle; "Langt foran planen" is the longest. If a later design shrinks the circle, check this label first.
 - English keeps "target" and "goal" apart as `CONTEXT.md` requires; this plan does not change that.
+
+## Addendum (2026-11-05): rename the Danish tab title
+
+Steps 1 to 3 shipped as commit `41bdfd6`. Afterwards the owner asked for one more change: the Danish tab title "Planlægger" sounds old-fashioned, so it becomes "Planlæg". English stays "Planner".
+
+- Key `tab.planner` is the only key whose Danish value is "Planlægger" (line 3995 at `e5cd7b2`). The same key is the tab title (`Hugo/App/AppRootView.swift:132`), the Settings row that opens the target setting (`Hugo/Features/Settings/Screens/SettingsView.swift:66`) and the Planner screen's navigation subtitle (`Hugo/Features/Planner/Screens/PlannerView.swift:105`). All three should read "Planlæg"; no Swift file changes.
+- In scope: only the one Danish value line in `Hugo/Resources/Localizable.xcstrings`. Same out-of-scope rules and git rules as above.
+
+### Step A1: Replace the value
+
+Check first: `grep -c '"value" : "Planlægger"' Hugo/Resources/Localizable.xcstrings` → `1`, and `grep -c '"value" : "Planlæg"' Hugo/Resources/Localizable.xcstrings` → `0`. Any other count is a STOP condition.
+
+Replace the full line `"value" : "Planlægger"` with `"value" : "Planlæg"`, keeping the leading spaces.
+
+**Verify**:
+- The JSON check from "Commands you will need" exits 0.
+- `grep -c "Planlægger" Hugo/Resources/Localizable.xcstrings` → `0`
+- `git diff --numstat Hugo/Resources/Localizable.xcstrings` → `1	1	Hugo/Resources/Localizable.xcstrings`
+- `git diff Hugo/Resources/Localizable.xcstrings | grep '^[-+] '` shows exactly the two lines `-            "value" : "Planlægger"` and `+            "value" : "Planlæg"`.
+
+### Step A2: Gate and commit
+
+Run `Scripts/verify.sh` (exit 0), stage the catalog by path, and commit: `fix: rename the Danish Planner tab to Planlæg`.
+
+**Verify**: `git show --stat HEAD` lists only `Hugo/Resources/Localizable.xcstrings` with 1 insertion and 1 deletion.
+
+Maintenance: in Danish the feature and its tab are now called "Planlæg". New Danish strings that name the Planner (for example in changelogs or help text) should say "Planlæg" or "fanen Planlæg", not "Planlægger" or "Planlæggeren".

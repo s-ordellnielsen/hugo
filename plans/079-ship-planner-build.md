@@ -92,7 +92,7 @@ Do this before inviting testers.
    - The Year page shows the same year total and the same submitted months.
    - Categories and the carried-in entries in the month after a transfer are unchanged.
 3. Add a plan in the Planner. On a second device signed in to the same Apple Account, with this build, check that the plan appears within a few minutes.
-4. With the device in Danish: the Overview circle in a planned month fits the new labels ("Langt foran planen", "Bagud"), and the Planner header and Settings → Planlægger say "Mål".
+4. With the device in Danish: the Overview circle in a planned month fits the new labels ("Langt foran planen", "Bagud"), and the tab bar, the Planner screen subtitle and the Settings row say "Planlæg", and the Planner header and Settings → Planlæg say "Mål".
 
 ### Step 5 [owner]: Make the build and add the notes
 

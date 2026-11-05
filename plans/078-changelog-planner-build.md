@@ -29,7 +29,7 @@ The next TestFlight build is the first with the Planner, and testers need "What 
 - `Changelog/1.0.0/` holds `111.en.md`, `116.da.txt` and `116.en.txt`. Files are named `<build number>.<language>.<ext>`. The `116.*.txt` files are UTF-8, use LF line endings, and have **no trailing newline**. Do not edit or rename them.
 - Style of `116.da.txt` (the owner's own wording; match its tone): a short welcome, a section with an UPPERCASE heading, plain paragraphs, a question asking testers for feedback, then an `ÆNDRINGER` / `CHANGES` section with `- ` bullets.
 - The notes cover what changed on `main` since the `testflight` branch (commit `26e63f4`, build 116). The reviewer checked the content below against `git log --oneline --no-merges testflight..main`: the Planner tab, plans, Log, the month header and target setting, plan pace on the Overview, carried-in time under its category on every screen (`6c07478`), and the changed-month banner no longer claiming new entries after an edit (`9a44c2e`). Everything else in that range is refactoring with no visible change.
-- Facts the text relies on, checked in code: the Planner pages through the current month and the next 11 (`PlannerMonth.reachableMonths`, 12 months); the Log button is "Registrér" / "Log"; Add Entry is titled "Tilføj til rapport" / "Add Entry"; the target setting is under Settings → "Planlægger" / "Planner".
+- Facts the text relies on, checked in code: the Planner pages through the current month and the next 11 (`PlannerMonth.reachableMonths`, 12 months); the Log button is "Registrér" / "Log"; Add Entry is titled "Tilføj til rapport" / "Add Entry"; the target setting is under Settings → "Planlæg" / "Planner" (the Danish tab title changed from "Planlægger" to "Planlæg" in the plan 077 addendum).
 
 ## Scope
 
@@ -53,19 +53,19 @@ Create `Changelog/1.0.0/next.da.txt` with exactly the text between the `BEGIN-DA
 
 ```
 BEGIN-DA
-Hugo er tilbage med en ny opdatering, og denne gang med en helt ny funktion: Planlæggeren. Lad os dykke ned i det.
+Hugo er tilbage med en ny opdatering, og denne gang med en helt ny fane: Planlæg. Lad os dykke ned i det.
 
-PLANLÆGGER
-Planlæggeren er en ny fane mellem Overblik og Tjenesteår. Her kan du planlægge, hvor meget tid du vil bruge i tjenesten hver dag, og se din plan for denne måned og de næste 11 måneder.
+PLANLÆG
+Planlæg er en ny fane mellem Overblik og Tjenesteår. Her kan du planlægge, hvor meget tid du vil bruge i tjenesten hver dag, og se din plan for denne måned og de næste 11 måneder.
 
 - Tryk på en dag for at tilføje en plan. En plan har en varighed, en kategori og eventuelt et starttidspunkt. Du kan have flere planer på samme dag.
 - Hver plan vises som en bjælke i kalenderen, der fyldes op, efterhånden som du registrerer tid.
 - Tryk på "Registrér" ved en plan for at åbne "Tilføj til rapport", hvor planens tid og kategori allerede er udfyldt. En plan bliver aldrig til tid i din rapport af sig selv.
-- Øverst kan du se, hvor langt din plan bringer dig mod dit mål for måneden. Du kan ændre målet under Indstillinger → Planlægger.
+- Øverst kan du se, hvor langt din plan bringer dig mod dit mål for måneden. Du kan ændre målet under Indstillinger → Planlæg.
 
 Overblik viser nu også, om du ligger foran eller bagud i forhold til din plan. Det vises kun i måneder, hvor du har lagt en plan.
 
-Er Planlæggeren nem at forstå? Eller har du idéer til, hvordan jeg kan gøre den bedre?
+Er Planlæg nem at forstå? Eller har du idéer til, hvordan jeg kan gøre den bedre?
 
 ÆNDRINGER
 - Tid, der er overført fra forrige måned, vises nu under den samme kategori på alle skærme
