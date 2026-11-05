@@ -1313,13 +1313,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Med din plan"
+            "value" : "Planlagt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "With your plan"
+            "value" : "Planned"
           }
         }
       }

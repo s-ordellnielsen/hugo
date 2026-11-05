@@ -130,7 +130,7 @@ _Avoid_: Planned entry, schedule, appointment
 Planned time on today and later days that logged time has not yet covered. For each day and each kind of time, the planned time minus the logged time, never below zero.
 
 **Projected time**:
-A month's logged time plus its still-planned time. The Planner shows it as "With your plan".
+A month's logged time plus its still-planned time. The Planner shows it as "Planned".
 _Avoid_: Expected time (that is yearly-goal pacing)
 
 **Monthly target**:
