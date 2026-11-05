@@ -9,6 +9,15 @@ nonisolated enum PlannerTargetBase: String, CaseIterable, Sendable {
     case yearlyGoalShare
 }
 
+extension PlannerTargetBase {
+    var label: LocalizedStringResource {
+        switch self {
+        case .monthlyGoal: "planner.target.base.monthlyGoal"
+        case .yearlyGoalShare: "planner.target.base.yearlyGoalShare"
+        }
+    }
+}
+
 nonisolated enum PlannerTarget {
     /// The monthly target for `month` in seconds, or nil when it would be zero.
     /// `creditedBeforeCurrentMonth` is the credited time of the current

@@ -51,3 +51,48 @@ nonisolated struct PlannerMonthStatus: Equatable, Sendable {
             daysLeft: month.days.filter { $0.id >= month.today }.count)
     }
 }
+
+extension PlannerMonthStatus {
+    nonisolated var summarySentence: String {
+        guard let shortfall = shortfallSeconds else {
+            return String(
+                localized: "planner.header.noTarget", defaultValue: "Set a target to compare your plan with",
+                comment: "Planner header when there is no monthly target.")
+        }
+        let amount = ServiceDurationFormatter.hoursString(from: abs(shortfall))
+        if shortfall >= Self.differenceThreshold {
+            return String(
+                localized: "planner.header.short", defaultValue: "Plan \(amount) more to reach your target",
+                comment: "The plan falls short of the monthly target. The argument is a duration such as 4 hours.")
+        }
+        if shortfall <= -Self.differenceThreshold {
+            return String(
+                localized: "planner.header.over", defaultValue: "Your plan is \(amount) over your target",
+                comment: "The plan goes past the monthly target. The argument is a duration such as 3 hours.")
+        }
+        return String(
+            localized: "planner.header.reached", defaultValue: "Your plan reaches your target",
+            comment: "The plan meets the monthly target.")
+    }
+
+    /// "16 hours left · about 1 hour, 10 minutes a day", or nil.
+    nonisolated var perDaySentence: String? {
+        guard let leftSeconds, let perDaySeconds else { return nil }
+        let left = ServiceDurationFormatter.hoursString(from: leftSeconds)
+        let perDay = ServiceDurationFormatter.hoursString(from: perDaySeconds)
+        return String(
+            localized: "planner.header.perDay", defaultValue: "\(left) left · about \(perDay) a day",
+            comment:
+                "Time still needed this month and that time spread over the days left. Both arguments are durations.")
+    }
+
+    /// Nil unless some planned or logged time will not count toward the yearly goal.
+    nonisolated var uncountedSentence: String? {
+        guard uncountedSeconds >= Self.differenceThreshold else { return nil }
+        let amount = ServiceDurationFormatter.hoursString(from: uncountedSeconds)
+        return String(
+            localized: "planner.header.uncounted",
+            defaultValue: "\(amount) in other categories won't count toward your goal",
+            comment: "Separate-category time beyond the allowance. The argument is a duration.")
+    }
+}

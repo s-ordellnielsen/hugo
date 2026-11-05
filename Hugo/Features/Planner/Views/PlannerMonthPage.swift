@@ -4,16 +4,24 @@ import SwiftUI
 struct PlannerMonthPage: View {
     let month: YearMonth
     let today: Date
+    let targetSeconds: TimeInterval?
+    let rule: YearlyGoalRule?
     var onScrolledFromTopChange: ((Bool) -> Void)? = nil
 
     @Query private var entries: [Entry]
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
     @State private var selectedDay: CalendarDay?
+    @State private var isShowingTarget = false
 
-    init(month: YearMonth, today: Date, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
+    init(
+        month: YearMonth, today: Date, targetSeconds: TimeInterval?, rule: YearlyGoalRule?,
+        onScrolledFromTopChange: ((Bool) -> Void)? = nil
+    ) {
         self.month = month
         self.today = today
+        self.targetSeconds = targetSeconds
+        self.rule = rule
         self.onScrolledFromTopChange = onScrolledFromTopChange
         let range = month.dateRange()
         let start = range.lowerBound
@@ -32,6 +40,14 @@ struct PlannerMonthPage: View {
         let plannerMonth = self.plannerMonth
         ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
+                Button {
+                    isShowingTarget = true
+                } label: {
+                    PlannerStatusHeader(
+                        status: PlannerMonthStatus.make(
+                            month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
+                }
+                .buttonStyle(.card)
                 PlannerCalendarGrid(month: plannerMonth, onSelect: { selectedDay = $0 })
                 if !plannerMonth.hasPlans {
                     PlannerIntroCard()
@@ -48,6 +64,12 @@ struct PlannerMonthPage: View {
         .sheet(item: $selectedDay) { day in
             PlannerDaySheet(day: day, today: today)
                 .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $isShowingTarget) {
+            NavigationStack {
+                PlannerTargetSettingsView(showsDone: true)
+            }
+            .presentationDetents([.medium, .large])
         }
     }
 }

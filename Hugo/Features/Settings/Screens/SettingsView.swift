@@ -62,6 +62,9 @@ struct SettingsView: View {
                     NavigationLink(destination: GeneralSettingsView()) {
                         Label("settings.group.settings.general", systemImage: "gearshape")
                     }
+                    NavigationLink(destination: PlannerTargetSettingsView()) {
+                        Label("tab.planner", systemImage: "calendar")
+                    }
                 }
 
                 if let testFlightURL = Self.testFlightURL {

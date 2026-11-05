@@ -1222,6 +1222,193 @@
         }
       }
     },
+    "planner.header.a11y.hint" : {
+      "comment" : "VoiceOver hint for the Planner month header, which opens the target settings.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbner indstillingerne for måltal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the target settings"
+          }
+        }
+      }
+    },
+    "planner.header.eyebrow" : {
+      "comment" : "Eyebrow above the Planner month header.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med din plan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With your plan"
+          }
+        }
+      }
+    },
+    "planner.header.logged" : {
+      "comment" : "Time already logged this month. The argument is a duration.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udført %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logged %@"
+          }
+        }
+      }
+    },
+    "planner.header.noTarget" : {
+      "comment" : "Planner header when there is no monthly target.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg et måltal at sammenligne din plan med"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set a target to compare your plan with"
+          }
+        }
+      }
+    },
+    "planner.header.over" : {
+      "comment" : "The plan goes past the monthly target. The argument is a duration such as 3 hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din plan er %@ over dit måltal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your plan is %@ over your target"
+          }
+        }
+      }
+    },
+    "planner.header.perDay" : {
+      "comment" : "Time still needed this month and that time spread over the days left. Both arguments are durations.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ tilbage · cirka %2$@ om dagen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ left · about %2$@ a day"
+          }
+        }
+      }
+    },
+    "planner.header.reached" : {
+      "comment" : "The plan meets the monthly target.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din plan når dit måltal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your plan reaches your target"
+          }
+        }
+      }
+    },
+    "planner.header.short" : {
+      "comment" : "The plan falls short of the monthly target. The argument is a duration such as 4 hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planlæg %@ mere for at nå dit måltal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plan %@ more to reach your target"
+          }
+        }
+      }
+    },
+    "planner.header.stillPlanned" : {
+      "comment" : "Time planned but not logged yet this month. The argument is a duration.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stadig planlagt %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Still planned %@"
+          }
+        }
+      }
+    },
+    "planner.header.target" : {
+      "comment" : "The monthly target. The argument is a duration such as 50 hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Måltal %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target %@"
+          }
+        }
+      }
+    },
+    "planner.header.uncounted" : {
+      "comment" : "Separate-category time beyond the allowance. The argument is a duration.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ i andre kategorier tæller ikke med mod dit mål"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ in other categories won't count toward your goal"
+          }
+        }
+      }
+    },
     "planner.intro.description" : {
       "comment" : "One sentence under the Planner calendar that explains the Planner. Shown when the month has no plans.",
       "localizations" : {
@@ -1524,6 +1711,142 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose a duration and a category."
+          }
+        }
+      }
+    },
+    "planner.target.base" : {
+      "comment" : "Label of the picker that chooses what the monthly target starts from.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udgangspunkt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start From"
+          }
+        }
+      }
+    },
+    "planner.target.base.footer" : {
+      "comment" : "Footer that explains the 'Share of what's left' option.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Andel af det, der mangler\" fordeler de timer, du stadig mangler til årsmålet, ligeligt over de resterende måneder i tjenesteåret, rundet op til hele timer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Share of what's left\" spreads the hours you still need for your yearly goal evenly over the months left in the service year, rounded up to whole hours."
+          }
+        }
+      }
+    },
+    "planner.target.base.monthlyGoal" : {
+      "comment" : "Option that starts the monthly target from the publisher status's monthly goal.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Månedligt mål"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly goal"
+          }
+        }
+      }
+    },
+    "planner.target.base.yearlyGoalShare" : {
+      "comment" : "Option that starts the monthly target from an even share of what is left of the yearly goal.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andel af det, der mangler til årsmålet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share of what's left of the yearly goal"
+          }
+        }
+      }
+    },
+    "planner.target.extra" : {
+      "comment" : "Label of the stepper for extra hours added to the monthly target.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekstra timer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra Hours"
+          }
+        }
+      }
+    },
+    "planner.target.extra.footer" : {
+      "comment" : "Footer that explains extra hours when the publisher status has a monthly goal.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lægges til dit måltal hver måned, for eksempel for at have lidt luft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added to your target every month, for example to keep a buffer."
+          }
+        }
+      }
+    },
+    "planner.target.extra.footer.noGoal" : {
+      "comment" : "Footer that explains extra hours when the publisher status has no goal.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din forkynderstatus har intet mål, så de ekstra timer bliver dit måltal for måneden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your publisher status has no goal, so extra hours become your monthly target."
+          }
+        }
+      }
+    },
+    "planner.target.title" : {
+      "comment" : "Title of the screen where the monthly target is set.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Måltal for måneden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly Target"
           }
         }
       }

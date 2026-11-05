@@ -4,6 +4,8 @@ enum UserDefaultsKeys {
 
     static let publisherStatus = "publisherStatus"
     static let yearlyGoalPacing = "yearlyGoalPacing"
+    static let plannerTargetBase = "plannerTargetBase"
+    static let plannerExtraHours = "plannerExtraHours"
 
     static let durationMinuteInterval = "durationMinuteInterval"
 

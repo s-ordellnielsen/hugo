@@ -90,6 +90,56 @@ struct PlannerMonthStatusTests {
         #expect(status.shortfallSeconds == TimeInterval(-2 * 3_600))
     }
 
+    @Test
+    func summarySentenceNamesTheShortfallAndTreatsSmallDifferencesAsEqual() {
+        let short = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 0, stillPlannedSeconds: 46 * 3_600,
+            uncountedSeconds: 0, daysLeft: 10)
+        let reached = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 0, stillPlannedSeconds: 50 * 3_600,
+            uncountedSeconds: 0, daysLeft: 10)
+        let nearlyReached = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 0, stillPlannedSeconds: 50 * 3_600 - 30,
+            uncountedSeconds: 0, daysLeft: 10)
+        let over = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 0, stillPlannedSeconds: 53 * 3_600,
+            uncountedSeconds: 0, daysLeft: 10)
+        let noTarget = PlannerMonthStatus(
+            targetSeconds: nil, loggedSeconds: 0, stillPlannedSeconds: 46 * 3_600,
+            uncountedSeconds: 0, daysLeft: 10)
+
+        #expect(short.summarySentence.contains("4"))
+        #expect(short.summarySentence != reached.summarySentence)
+        #expect(nearlyReached.summarySentence == reached.summarySentence)
+        #expect(over.summarySentence != reached.summarySentence)
+        #expect(over.summarySentence != short.summarySentence)
+        #expect(noTarget.summarySentence != short.summarySentence)
+        #expect(noTarget.summarySentence != reached.summarySentence)
+        #expect(noTarget.summarySentence != over.summarySentence)
+    }
+
+    @Test
+    func perDaySentenceNeedsATarget() {
+        let withoutTarget = PlannerMonthStatus(
+            targetSeconds: nil, loggedSeconds: 0, stillPlannedSeconds: 0,
+            uncountedSeconds: 0, daysLeft: 10)
+
+        #expect(withoutTarget.perDaySentence == nil)
+    }
+
+    @Test
+    func uncountedSentenceAppearsOnlyForAMinuteOrMore() {
+        let belowThreshold = PlannerMonthStatus(
+            targetSeconds: nil, loggedSeconds: 0, stillPlannedSeconds: 0,
+            uncountedSeconds: 59, daysLeft: 10)
+        let aboveThreshold = PlannerMonthStatus(
+            targetSeconds: nil, loggedSeconds: 0, stillPlannedSeconds: 0,
+            uncountedSeconds: 15 * 3_600, daysLeft: 10)
+
+        #expect(belowThreshold.uncountedSentence == nil)
+        #expect(aboveThreshold.uncountedSentence != nil)
+    }
+
     private func makeNovember(items: [PlannedItem], entries: [Entry]) -> PlannerMonth {
         PlannerMonth.make(
             month: YearMonth(year: 2026, month: 11), items: items, entries: entries,
