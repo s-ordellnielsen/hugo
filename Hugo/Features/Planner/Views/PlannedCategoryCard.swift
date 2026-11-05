@@ -40,6 +40,21 @@ struct PlannedCategoryCard: View {
         return time.formatted(date: .omitted, time: .shortened)
     }
 
+    /// A gray track filled from the left in the category's color. Unlike the
+    /// calendar's bars it has no outline: on a bar this wide, an outline reads
+    /// as a dark border around the unfilled part.
+    private var progressBar: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color(.secondarySystemFill))
+                Capsule()
+                    .fill(color)
+                    .frame(width: proxy.size.width * bar.fraction)
+            }
+        }
+    }
+
     /// Everything the header says, for VoiceOver.
     private var headerValue: String {
         var parts = [ServiceDurationFormatter.accessibilityString(from: bar.seconds)]
@@ -89,8 +104,7 @@ struct PlannedCategoryCard: View {
                 }
             }
 
-            PlannerBarShape(fraction: bar.fraction, color: color)
-                .frame(maxWidth: .infinity)
+            progressBar
                 .frame(height: HugoLayout.Size.calendarBarHeight)
                 .accessibilityHidden(true)
             if let progressText {
