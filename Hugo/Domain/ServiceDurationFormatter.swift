@@ -36,18 +36,33 @@ nonisolated enum ServiceDurationFormatter {
         }
     }
 
-    /// "152 hours" or "152 hours, 30 minutes". Seconds are dropped and zero minutes are omitted.
+    /// "23 hours", "23 hours, 15 min" or "45 min" (Danish: "23 timer 15 min").
+    /// Hours are a full word and minutes are always "min". Seconds are dropped,
+    /// zero minutes are left out, and zero is "0 hours". Negative values count as zero.
     static func hoursString(from duration: TimeInterval, locale: Locale = .current) -> String {
-        let clamped = max(duration, 0)
-        let wholeMinutes = Int(clamped / 60)
-        let allowedUnits: Set<Duration.UnitsFormatStyle.Unit> =
-            wholeMinutes == 0 ? [.hours] : [.hours, .minutes]
-        var style = Duration.UnitsFormatStyle(
-            allowedUnits: allowedUnits,
-            width: .wide,
-            zeroValueUnits: wholeMinutes == 0 ? .show(length: 1) : .hide
-        )
-        style.locale = locale
-        return Duration.seconds(wholeMinutes * 60).formatted(style)
+        let wholeMinutes = Int(max(duration, 0) / 60)
+        let hours = wholeMinutes / 60
+        let minutes = wholeMinutes % 60
+
+        var hoursStyle = Duration.UnitsFormatStyle(
+            allowedUnits: [.hours], width: .wide, zeroValueUnits: .show(length: 1))
+        hoursStyle.locale = locale
+        let hoursText = Duration.seconds(hours * 3_600).formatted(hoursStyle)
+        guard minutes > 0 else { return hoursText }
+
+        // LocalizedStringResource picks the catalog language from `locale`;
+        // String(localized:locale:) would not.
+        let minutesText = String(
+            localized: LocalizedStringResource(
+                "duration.minutesShort", defaultValue: "\(minutes) min", locale: locale,
+                comment: "Minutes in a short duration, such as the 15 min in 23 hours, 15 min. No period after min."))
+        guard hours > 0 else { return minutesText }
+
+        return String(
+            localized: LocalizedStringResource(
+                "duration.hoursAndMinutes", defaultValue: "\(hoursText), \(minutesText)", locale: locale,
+                comment:
+                    "A duration with hours and minutes, such as 23 hours, 15 min. The first argument is the hours (23 hours), the second the minutes (15 min)."
+            ))
     }
 }

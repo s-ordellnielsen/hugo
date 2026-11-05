@@ -31,12 +31,21 @@ struct DurationFormattingTests {
         #expect(ServiceDurationFormatter.hoursString(from: 90_000, locale: us) == "25 hours")
     }
 
-    @Test func hoursStringAddsMinutesOnlyWhenPresent() {
+    @Test func hoursStringShortensMinutesInEnglish() {
         let us = Locale(identifier: "en_US")
-        let withMinutes = ServiceDurationFormatter.hoursString(from: 5_400, locale: us)
-        #expect(withMinutes.contains("1 hour"))
-        #expect(withMinutes.contains("30 minutes"))
+        #expect(ServiceDurationFormatter.hoursString(from: 23 * 3_600 + 15 * 60, locale: us) == "23 hours, 15 min")
+        #expect(ServiceDurationFormatter.hoursString(from: 5_400, locale: us) == "1 hour, 30 min")
+        #expect(ServiceDurationFormatter.hoursString(from: 45 * 60, locale: us) == "45 min")
         #expect(ServiceDurationFormatter.hoursString(from: 3_659, locale: us) == "1 hour")
+    }
+
+    @Test func hoursStringShortensMinutesInDanish() {
+        let da = Locale(identifier: "da_DK")
+        #expect(ServiceDurationFormatter.hoursString(from: 23 * 3_600 + 15 * 60, locale: da) == "23 timer 15 min")
+        #expect(ServiceDurationFormatter.hoursString(from: 3_600 + 60, locale: da) == "1 time 1 min")
+        #expect(ServiceDurationFormatter.hoursString(from: 45 * 60, locale: da) == "45 min")
+        #expect(ServiceDurationFormatter.hoursString(from: 2 * 3_600, locale: da) == "2 timer")
+        #expect(ServiceDurationFormatter.hoursString(from: 0, locale: da) == "0 timer")
     }
 
     @Test func hoursStringClampsNegativeToZero() {
