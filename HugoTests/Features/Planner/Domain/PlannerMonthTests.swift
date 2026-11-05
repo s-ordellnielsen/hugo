@@ -150,9 +150,9 @@ struct PlannerMonthTests {
             day: day, items: [fieldService, phoneItem, ldc], entries: entries,
             trackers: [main, phone, separate], today: CalendarDay(year: 2026, month: 11, day: 3))
 
-        let mainRemaining = planned.bars.filter { ["fs", "phone"].contains($0.id) }
+        let mainRemaining = planned.bars.filter { $0.items.first?.categoryType == .main }
             .reduce(0) { $0 + $1.remainingSeconds }
-        let separateRemaining = planned.bars.filter { $0.id == "ldc" }
+        let separateRemaining = planned.bars.filter { $0.items.first?.categoryType == .separate }
             .reduce(0) { $0 + $1.remainingSeconds }
         let expected = planned.planned.remaining(after: planned.logged)
 

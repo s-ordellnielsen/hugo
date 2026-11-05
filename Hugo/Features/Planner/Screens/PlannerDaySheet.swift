@@ -1,9 +1,9 @@
 import SwiftData
 import SwiftUI
 
-/// One day in the Planner: its plans first, then, on days with logged
-/// entries, a smaller list of those entries. Logging a plan opens Add Entry
-/// filled from the plan.
+/// One day in the Planner: its plans first, one card per category, then, on
+/// days with logged entries, a smaller list of those entries. Logging a
+/// category's plans opens Add Entry filled from them.
 struct PlannerDaySheet: View {
     let day: CalendarDay
     let today: Date
@@ -30,11 +30,11 @@ struct PlannerDaySheet: View {
 
     var body: some View {
         let plannerDay = self.plannerDay
-        let bars = Dictionary(plannerDay.bars.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        let planBars = plannerDay.bars.filter { $0.kind == .plan }
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
-                    plannedSection(bars: bars)
+                    plannedSection(planBars: planBars)
                     if !entries.isEmpty {
                         PlannerLoggedEntryList(entries: entries, total: plannerDay.logged.total) { entry in
                             selectedEntry = entry
@@ -77,20 +77,18 @@ struct PlannerDaySheet: View {
         }
     }
 
-    private func plannedSection(bars: [String: PlannerBar]) -> some View {
+    private func plannedSection(planBars: [PlannerBar]) -> some View {
         VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
-            if items.isEmpty {
+            if planBars.isEmpty {
                 Text("planner.day.planned.empty")
                     .foregroundStyle(.secondary)
             }
-            ForEach(items) { item in
-                PlannedItemRow(
-                    item: item,
-                    bar: bars[item.id],
+            ForEach(planBars) { bar in
+                PlannedCategoryCard(
+                    bar: bar,
                     showsProgress: canLog,
-                    onEdit: { editingPlan = plans.first(where: { $0.id.uuidString == item.id }) },
-                    onLog: canLog && !(bars[item.id]?.isFull ?? false)
-                        ? { loggingSeed = PlanLogSeed(item: item, bar: bars[item.id]) } : nil
+                    onEdit: { item in editingPlan = plans.first(where: { $0.id.uuidString == item.id }) },
+                    onLog: canLog && !bar.isFull ? { loggingSeed = PlanLogSeed(bar: bar, day: day) } : nil
                 )
             }
         }

@@ -29,7 +29,8 @@ nonisolated struct PlannerDay: Identifiable, Equatable, Sendable {
     let id: CalendarDay
     let logged: TimeSplit
     let planned: TimeSplit
-    /// Plan bars in fill order, then unplanned bars.
+    /// Plan bars, one per category in the order of each category's first plan,
+    /// then unplanned bars.
     let bars: [PlannerBar]
     let isToday: Bool
     let isPast: Bool

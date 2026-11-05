@@ -144,13 +144,13 @@ Hours the user adds to the monthly target each month, as a buffer, or as a perso
 How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.
 
 **Covered time**:
-The part of a plan that logged time on the same day accounts for: first time in the plan's category, then other time of the same kind (main or separate). The Planner draws it as the filled part of the plan's bar.
+The part of a category's planned time on a day that logged time accounts for: first time in that category, then other time of the same kind (main or separate). Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar.
 
 **Unplanned time**:
-Logged time on a day that no plan covers, including time beyond a plan.
+Logged time in a category that has no plan on that day and that no plan of the same kind took. It gets its own bar.
 
 **Logging a plan**:
-Opening Add Entry filled from a plan: its day, category and start time, and the part of the plan that logged time has not covered yet. The user still saves the entry, and the plan stays.
+Opening Add Entry filled from a category's plans on a day: the category, the start time of the first plan not covered yet, and the planned time not covered yet. The user still saves the entry, and the plans stay.
 
 ## Sync
 

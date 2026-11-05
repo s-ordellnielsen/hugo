@@ -5,6 +5,7 @@ import Testing
 
 struct PlanLogSeedTests {
     private let fieldServiceID = UUID()
+    private let day = CalendarDay(year: 2026, month: 11, day: 5)
 
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
@@ -15,11 +16,11 @@ struct PlanLogSeedTests {
     @Test
     func unloggedPlanSeedsTheWholePlan() throws {
         let item = plan("p", fieldServiceID, type: .main, hours: 2, startMinute: 600)
-        let bar = PlanMatcher.bars(plans: [item], logged: []).first
+        let bar = try planBar([item])
 
-        let seed = PlanLogSeed(item: item, bar: bar, calendar: calendar)
+        let seed = PlanLogSeed(bar: bar, day: day, calendar: calendar)
 
-        #expect(seed.id == "p")
+        #expect(seed.id == "plan:\(fieldServiceID.uuidString)")
         #expect(seed.duration == 7_200)
         #expect(seed.trackerID == fieldServiceID)
         #expect(seed.startMinute == 600)
@@ -31,9 +32,9 @@ struct PlanLogSeedTests {
     func partlyLoggedPlanSeedsOnlyTheRemainingTime() throws {
         let item = plan("p", fieldServiceID, type: .main, hours: 2)
         let logged = [time(fieldServiceID, name: "Field Service", type: .main, seconds: 3_600)]
-        let bar = PlanMatcher.bars(plans: [item], logged: logged).first
+        let bar = try planBar([item], logged: logged)
 
-        let seed = PlanLogSeed(item: item, bar: bar, calendar: calendar)
+        let seed = PlanLogSeed(bar: bar, day: day, calendar: calendar)
 
         #expect(seed.duration == 3_600)
     }
@@ -42,20 +43,45 @@ struct PlanLogSeedTests {
     func remainingTimeIsRoundedDownToWholeMinutes() throws {
         let item = plan("p", fieldServiceID, type: .main, hours: 1)
         let logged = [time(fieldServiceID, name: "Field Service", type: .main, seconds: 1_830)]
-        let bar = PlanMatcher.bars(plans: [item], logged: logged).first
+        let bar = try planBar([item], logged: logged)
 
-        let seed = PlanLogSeed(item: item, bar: bar, calendar: calendar)
+        let seed = PlanLogSeed(bar: bar, day: day, calendar: calendar)
 
         #expect(seed.duration == 1_740)
     }
 
     @Test
-    func missingBarSeedsTheWholePlan() {
-        let item = plan("p", fieldServiceID, type: .main, hours: 1.5)
+    func startTimeComesFromTheFirstPlanNotCoveredYet() throws {
+        let plans = [
+            plan("morning", fieldServiceID, type: .main, hours: 2, startMinute: 600),
+            plan("afternoon", fieldServiceID, type: .main, hours: 3, startMinute: 840),
+        ]
+        let logged = [time(fieldServiceID, name: "Field Service", type: .main, seconds: 9_000)]
+        let bar = try planBar(plans, logged: logged)
 
-        let seed = PlanLogSeed(item: item, bar: nil, calendar: calendar)
+        let seed = PlanLogSeed(bar: bar, day: day, calendar: calendar)
 
-        #expect(seed.duration == 5_400)
+        #expect(seed.duration == 9_000)
+        #expect(seed.startMinute == 840)
+    }
+
+    @Test
+    func startTimeIsNilWhenThatPlanHasNone() throws {
+        let plans = [
+            plan("a", fieldServiceID, type: .main, hours: 1, startMinute: 600),
+            plan("b", fieldServiceID, type: .main, hours: 1, startMinute: nil),
+        ]
+        let logged = [time(fieldServiceID, name: "Field Service", type: .main, seconds: 3_600)]
+        let bar = try planBar(plans, logged: logged)
+
+        let seed = PlanLogSeed(bar: bar, day: day, calendar: calendar)
+
+        #expect(seed.duration == 3_600)
+        #expect(seed.startMinute == nil)
+    }
+
+    private func planBar(_ plans: [PlannedItem], logged: [LoggedCategoryTime] = []) throws -> PlannerBar {
+        try #require(PlanMatcher.bars(plans: plans, logged: logged).first { $0.kind == .plan })
     }
 
     private func plan(

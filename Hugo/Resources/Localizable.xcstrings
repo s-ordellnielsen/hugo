@@ -1409,6 +1409,23 @@
         }
       }
     },
+    "planner.plan.noStartTime" : {
+      "comment" : "On a plan line in the Planner day sheet when the plan has no start time.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet starttidspunkt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No start time"
+          }
+        }
+      }
+    },
     "planner.plan.progress" : {
       "comment" : "On a plan in the Planner day sheet: how much of the plan is logged. Logged time, planned time.",
       "localizations" : {
