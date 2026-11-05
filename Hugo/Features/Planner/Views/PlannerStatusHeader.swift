@@ -1,27 +1,12 @@
 import SwiftUI
 
-/// The month's numbers above the Planner calendar: projected time against the target.
+/// The month's numbers above the Planner calendar: projected time, the monthly target, and how the plan compares.
 struct PlannerStatusHeader: View {
     let status: PlannerMonthStatus
 
     var body: some View {
-        VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-            HStack {
-                Text("planner.header.eyebrow")
-                    .font(.caption)
-                    .textCase(.uppercase)
-                    .tracking(HugoLayout.Typography.eyebrowTracking)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-                Spacer(minLength: HugoLayout.Spacing.regular)
-                Image(systemName: "chevron.right")
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-                    .accessibilityHidden(true)
-            }
-
-            HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
                 Text(ServiceDurationFormatter.hoursString(from: status.projectedSeconds))
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .monospacedDigit()
@@ -29,17 +14,21 @@ struct PlannerStatusHeader: View {
                     .lineLimit(1)
                     .contentTransition(.numericText())
                     .motion(Motion.value, value: status.projectedSeconds)
-                Spacer()
-                if let targetSeconds = status.targetSeconds {
-                    Text(
-                        String(
-                            localized: "planner.header.target",
-                            defaultValue: "Target \(ServiceDurationFormatter.hoursString(from: targetSeconds))",
-                            comment: "The monthly target. The argument is a duration such as 50 hours.")
-                    )
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+
+                HStack(alignment: .firstTextBaseline) {
+                    Text("planner.header.projected.label")
+                    Spacer(minLength: HugoLayout.Spacing.regular)
+                    if let targetSeconds = status.targetSeconds {
+                        Text(
+                            String(
+                                localized: "planner.header.target",
+                                defaultValue: "Target \(ServiceDurationFormatter.hoursString(from: targetSeconds))",
+                                comment: "The monthly target. The argument is a duration such as 50 hours.")
+                        )
+                    }
                 }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             }
 
             if let targetSeconds = status.targetSeconds {
@@ -67,31 +56,32 @@ struct PlannerStatusHeader: View {
                         comment: "Time planned but not logged yet this month. The argument is a duration."))
             }
 
-            Text(status.summarySentence)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, HugoLayout.Spacing.compact)
-
-            if let perDaySentence = status.perDaySentence {
-                Text(perDaySentence)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
+                Text(status.summarySentence)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .fixedSize(horizontal: false, vertical: true)
-            }
 
-            if let uncountedSentence = status.uncountedSentence {
-                Text(uncountedSentence)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                if let perDaySentence = status.perDaySentence {
+                    Text(perDaySentence)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                if let uncountedSentence = status.uncountedSentence {
+                    Text(uncountedSentence)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
+            .padding(.top, HugoLayout.Spacing.compact)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, HugoLayout.Spacing.card)
-        .padding(.vertical, HugoLayout.Spacing.regular)
+        .padding(.vertical, HugoLayout.Spacing.roomy)
         .accessibilityElement(children: .combine)
-        .accessibilityHint(Text("planner.header.a11y.hint"))
     }
 
     private func legendItem(fraction: Double, text: String) -> some View {

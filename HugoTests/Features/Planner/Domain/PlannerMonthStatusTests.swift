@@ -26,7 +26,6 @@ struct PlannerMonthStatusTests {
         #expect(status.stillPlannedSeconds == TimeInterval(30 * 3_600))
         #expect(status.projectedSeconds == TimeInterval(40 * 3_600))
         #expect(status.shortfallSeconds == TimeInterval(10 * 3_600))
-        #expect(status.leftSeconds == TimeInterval(40 * 3_600))
     }
 
     @Test
@@ -45,11 +44,11 @@ struct PlannerMonthStatusTests {
 
         #expect(novemberStatus.daysLeft == 28)
         #expect(decemberStatus.daysLeft == 31)
-        #expect(novemberStatus.perDaySeconds == TimeInterval(40 * 3_600) / 28)
+        #expect(novemberStatus.shortfallPerDaySeconds == TimeInterval(40 * 3_600) / 28)
     }
 
     @Test
-    func noTargetMeansNoShortfallLeftOrPerDay() {
+    func noTargetMeansNoShortfallOrPerDay() {
         let month = makeNovember(
             items: [item(CalendarDay(year: 2026, month: 11, day: 10), hours: 4, tracker: main)],
             entries: [])
@@ -57,8 +56,7 @@ struct PlannerMonthStatusTests {
         let status = PlannerMonthStatus.make(month: month, targetSeconds: nil, rule: nil)
 
         #expect(status.shortfallSeconds == nil)
-        #expect(status.leftSeconds == nil)
-        #expect(status.perDaySeconds == nil)
+        #expect(status.shortfallPerDaySeconds == nil)
     }
 
     @Test
@@ -85,8 +83,7 @@ struct PlannerMonthStatusTests {
 
         let status = PlannerMonthStatus.make(month: month, targetSeconds: 50 * 3_600, rule: nil)
 
-        #expect(status.leftSeconds == 0)
-        #expect(status.perDaySeconds == nil)
+        #expect(status.shortfallPerDaySeconds == nil)
         #expect(status.shortfallSeconds == TimeInterval(-2 * 3_600))
     }
 
@@ -125,6 +122,38 @@ struct PlannerMonthStatusTests {
             uncountedSeconds: 0, daysLeft: 10)
 
         #expect(withoutTarget.perDaySentence == nil)
+    }
+
+    @Test
+    func perDayShareSpreadsTheShortfallOfThePlanNotOfLoggedTime() {
+        // 10 h logged + 30 h still planned = 40 h projected; target 50 h; 10 days left.
+        let status = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 10 * 3_600, stillPlannedSeconds: 30 * 3_600,
+            uncountedSeconds: 0, daysLeft: 10)
+
+        #expect(status.shortfallPerDaySeconds == TimeInterval(3_600))
+        #expect(status.perDaySentence != nil)
+        #expect(status.perDaySentence?.contains("1") == true)
+    }
+
+    @Test
+    func perDayShareIsHiddenWhenThePlanReachesTheTargetOrNoDaysAreLeft() {
+        let reached = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 10 * 3_600, stillPlannedSeconds: 40 * 3_600,
+            uncountedSeconds: 0, daysLeft: 10)
+        let pastMonth = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 10 * 3_600, stillPlannedSeconds: 0,
+            uncountedSeconds: 0, daysLeft: 0)
+        // 5 minutes short over 10 days is 30 seconds a day: too small to show.
+        let tiny = PlannerMonthStatus(
+            targetSeconds: 50 * 3_600, loggedSeconds: 0, stillPlannedSeconds: 50 * 3_600 - 300,
+            uncountedSeconds: 0, daysLeft: 10)
+
+        #expect(reached.shortfallPerDaySeconds == nil)
+        #expect(reached.perDaySentence == nil)
+        #expect(pastMonth.shortfallPerDaySeconds == nil)
+        #expect(tiny.shortfallPerDaySeconds == nil)
+        #expect(tiny.perDaySentence == nil)
     }
 
     @Test

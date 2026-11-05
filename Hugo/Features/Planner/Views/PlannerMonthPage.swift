@@ -12,7 +12,6 @@ struct PlannerMonthPage: View {
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
     @State private var selectedDay: CalendarDay?
-    @State private var isShowingTarget = false
 
     init(
         month: YearMonth, today: Date, targetSeconds: TimeInterval?, rule: YearlyGoalRule?,
@@ -40,14 +39,9 @@ struct PlannerMonthPage: View {
         let plannerMonth = self.plannerMonth
         ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
-                Button {
-                    isShowingTarget = true
-                } label: {
-                    PlannerStatusHeader(
-                        status: PlannerMonthStatus.make(
-                            month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
-                }
-                .buttonStyle(.card)
+                PlannerStatusHeader(
+                    status: PlannerMonthStatus.make(
+                        month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
                 PlannerCalendarGrid(month: plannerMonth, onSelect: { selectedDay = $0 })
                 if !plannerMonth.hasPlans {
                     PlannerIntroCard()
@@ -64,12 +58,6 @@ struct PlannerMonthPage: View {
         .sheet(item: $selectedDay) { day in
             PlannerDaySheet(day: day, today: today)
                 .presentationDetents([.medium, .large])
-        }
-        .sheet(isPresented: $isShowingTarget) {
-            NavigationStack {
-                PlannerTargetSettingsView(showsDone: true)
-            }
-            .presentationDetents([.medium, .large])
         }
     }
 }

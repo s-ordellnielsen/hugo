@@ -22,14 +22,14 @@ nonisolated struct PlannerMonthStatus: Equatable, Sendable {
     /// Target minus projected time. Positive when the plan falls short. Nil without a target.
     var shortfallSeconds: TimeInterval? { targetSeconds.map { $0 - projectedSeconds } }
 
-    /// Target minus logged time, never below zero. Nil without a target.
-    var leftSeconds: TimeInterval? { targetSeconds.map { max(0, $0 - loggedSeconds) } }
-
-    /// `leftSeconds` spread evenly over `daysLeft`. Nil without a target, when
-    /// nothing is left, or when no days are left.
-    var perDaySeconds: TimeInterval? {
-        guard let leftSeconds, leftSeconds >= Self.differenceThreshold, daysLeft > 0 else { return nil }
-        return leftSeconds / TimeInterval(daysLeft)
+    /// The shortfall spread evenly over `daysLeft`: how much more to plan each
+    /// day to reach the monthly target. Nil without a target, when the plan
+    /// reaches the target, when no days are left, or when the daily share is
+    /// under a minute.
+    var shortfallPerDaySeconds: TimeInterval? {
+        guard let shortfallSeconds, shortfallSeconds >= Self.differenceThreshold, daysLeft > 0 else { return nil }
+        let perDay = shortfallSeconds / TimeInterval(daysLeft)
+        return perDay >= Self.differenceThreshold ? perDay : nil
     }
 
     /// With a yearly goal `rule`, logged and projected time count only their credited part.
@@ -75,15 +75,16 @@ extension PlannerMonthStatus {
             comment: "The plan meets the monthly target.")
     }
 
-    /// "16 hours left · about 1 hour, 10 minutes a day", or nil.
+    /// "About 20 min more a day for the rest of the month", or nil.
     nonisolated var perDaySentence: String? {
-        guard let leftSeconds, let perDaySeconds else { return nil }
-        let left = ServiceDurationFormatter.hoursString(from: leftSeconds)
-        let perDay = ServiceDurationFormatter.hoursString(from: perDaySeconds)
+        guard let shortfallPerDaySeconds else { return nil }
+        let perDay = ServiceDurationFormatter.hoursString(from: shortfallPerDaySeconds)
         return String(
-            localized: "planner.header.perDay", defaultValue: "\(left) left · about \(perDay) a day",
+            localized: "planner.header.shortfallPerDay",
+            defaultValue: "About \(perDay) more a day for the rest of the month",
             comment:
-                "Time still needed this month and that time spread over the days left. Both arguments are durations.")
+                "How much more to plan each day to reach the monthly target, spread over the days left. The argument is a duration such as 20 min."
+        )
     }
 
     /// Nil unless some planned or logged time will not count toward the yearly goal.

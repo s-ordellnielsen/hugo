@@ -1256,40 +1256,6 @@
         }
       }
     },
-    "planner.header.a11y.hint" : {
-      "comment" : "VoiceOver hint for the Planner month header, which opens the target settings.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Åbner indstillingerne for dit mål"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opens the target settings"
-          }
-        }
-      }
-    },
-    "planner.header.eyebrow" : {
-      "comment" : "Eyebrow above the Planner month header.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Med din plan"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "With your plan"
-          }
-        }
-      }
-    },
     "planner.header.logged" : {
       "comment" : "Time already logged this month. The argument is a duration.",
       "localizations" : {
@@ -1341,19 +1307,19 @@
         }
       }
     },
-    "planner.header.perDay" : {
-      "comment" : "Time still needed this month and that time spread over the days left. Both arguments are durations.",
+    "planner.header.projected.label" : {
+      "comment" : "Label under the projected time in the Planner header: logged time plus time still planned this month.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ tilbage · cirka %2$@ om dagen"
+            "value" : "Med din plan"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ left · about %2$@ a day"
+            "value" : "With your plan"
           }
         }
       }
@@ -1388,6 +1354,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plan %@ more to reach your target"
+          }
+        }
+      }
+    },
+    "planner.header.shortfallPerDay" : {
+      "comment" : "How much more to plan each day to reach the monthly target, spread over the days left. The argument is a duration such as 20 min.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cirka %@ mere om dagen resten af måneden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %@ more a day for the rest of the month"
           }
         }
       }
