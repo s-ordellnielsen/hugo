@@ -786,7 +786,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foran plan"
+            "value" : "Foran planen"
           }
         },
         "en" : {
@@ -804,7 +804,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efter plan"
+            "value" : "Bagud"
           }
         },
         "en" : {
@@ -822,7 +822,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Følger plan"
+            "value" : "Følger planen"
           }
         },
         "en" : {
@@ -840,7 +840,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Langt foran plan"
+            "value" : "Langt foran planen"
           }
         },
         "en" : {
@@ -858,7 +858,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Langt efter plan"
+            "value" : "Langt bagud"
           }
         },
         "en" : {
@@ -1228,7 +1228,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbner indstillingerne for måltal"
+            "value" : "Åbner indstillingerne for dit mål"
           }
         },
         "en" : {
@@ -1279,7 +1279,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg et måltal at sammenligne din plan med"
+            "value" : "Vælg et mål at sammenligne din plan med"
           }
         },
         "en" : {
@@ -1296,7 +1296,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din plan er %@ over dit måltal"
+            "value" : "Din plan er %@ over dit mål"
           }
         },
         "en" : {
@@ -1330,7 +1330,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din plan når dit måltal"
+            "value" : "Din plan når dit mål"
           }
         },
         "en" : {
@@ -1347,7 +1347,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planlæg %@ mere for at nå dit måltal"
+            "value" : "Planlæg %@ mere for at nå dit mål"
           }
         },
         "en" : {
@@ -1364,7 +1364,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stadig planlagt %@"
+            "value" : "Tilbage i planen %@"
           }
         },
         "en" : {
@@ -1381,7 +1381,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måltal %@"
+            "value" : "Mål %@"
           }
         },
         "en" : {
@@ -1398,7 +1398,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ i andre kategorier tæller ikke med mod dit mål"
+            "value" : "%@ i andre kategorier tæller ikke med mod dit årsmål"
           }
         },
         "en" : {
@@ -1806,7 +1806,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lægges til dit måltal hver måned, for eksempel for at have lidt luft."
+            "value" : "Lægges til dit mål hver måned, for eksempel for at have lidt luft."
           }
         },
         "en" : {
@@ -1823,7 +1823,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din forkynderstatus har intet mål, så de ekstra timer bliver dit måltal for måneden."
+            "value" : "Din forkynderstatus har intet mål, så de ekstra timer bliver dit mål for måneden."
           }
         },
         "en" : {
@@ -1840,7 +1840,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måltal for måneden"
+            "value" : "Mål for måneden"
           }
         },
         "en" : {
