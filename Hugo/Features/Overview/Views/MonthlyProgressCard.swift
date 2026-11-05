@@ -3,7 +3,7 @@ import SwiftUI
 struct MonthlyProgressCard: View {
     let value: Double
     let monthlyGoal: Double
-    let expectedProgress: Double
+    var planStatus: MonthlyProgressStatus? = nil
     let onAddEntry: () -> Void
     let onShowDetails: () -> Void
 
@@ -25,20 +25,19 @@ struct MonthlyProgressCard: View {
                             .lineLimit(1)
                             .contentTransition(.numericText())
                             .motion(Motion.value, value: value)
-                        // Keep this status view for future planning features. It is hidden for now because
-                        // schedule labels can discourage users who are behind their expected progress.
-                        // MonthlyProgressStatusView(expected: expectedProgress, current: value)
+                        if let planStatus {
+                            MonthlyProgressStatusView(status: planStatus)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .transition(.opacity)
+                        }
                     }
                 }
             }
             .buttonStyle(.card)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
-            .accessibilityValue(
-                monthlyGoal > 0
-                    ? Text("a11y.monthly_progress_card.value.\(Int(value)).\(Int(monthlyGoal))")
-                    : Text("a11y.monthly_progress_card.value.\(Int(value))")
-            )
+            .accessibilityValue(Text(verbatim: accessibilityValueText))
 
             Button(action: onAddEntry) {
                 Label("entry.add.label", systemImage: "plus")
@@ -52,5 +51,14 @@ struct MonthlyProgressCard: View {
             .padding(.trailing, HugoLayout.Spacing.compact)
             .padding(.bottom, HugoLayout.Spacing.compact)
         }
+    }
+
+    private var accessibilityValueText: String {
+        let amount =
+            monthlyGoal > 0
+            ? String(localized: "a11y.monthly_progress_card.value.\(Int(value)).\(Int(monthlyGoal))")
+            : String(localized: "a11y.monthly_progress_card.value.\(Int(value))")
+        guard let planStatus else { return amount }
+        return "\(amount), \(planStatus.label)"
     }
 }

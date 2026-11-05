@@ -32,6 +32,8 @@ private struct OverviewDayView: View {
     let today: Date
 
     @Query private var entries: [Entry]
+    @Query private var plans: [Plan]
+    @Query private var trackers: [Tracker]
     @Query private var submissions: [SubmittedReport]
 
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
@@ -46,11 +48,21 @@ private struct OverviewDayView: View {
         let end = range.upperBound
         _entries = Query(
             filter: #Predicate<Entry> { $0.date >= start && $0.date < end }, sort: \Entry.date, order: .reverse)
+        _plans = Query(filter: #Predicate<Plan> { $0.date >= start && $0.date < end })
     }
 
     private var metrics: OverviewMetrics {
         OverviewMetrics.make(
             entries: entries, status: PublisherStatus.status(for: statusID), now: .now, calendar: .current)
+    }
+
+    /// Nil unless the current month has plans.
+    private var planStatus: MonthlyProgressStatus? {
+        let month = PlannerMonth.make(
+            month: today.yearMonth(using: .current),
+            items: plans.map { PlannedItem($0, trackers: trackers) },
+            entries: entries, trackers: trackers, now: .now, calendar: .current)
+        return PlanPace.make(month: month).map(MonthlyProgressStatus.make(pace:))
     }
 
     /// The month whose report reminder should show, if any. See
@@ -69,7 +81,7 @@ private struct OverviewDayView: View {
                     }
                     MonthlyProgressCard(
                         value: metrics.progress, monthlyGoal: metrics.monthlyGoal,
-                        expectedProgress: metrics.expectedProgress, onAddEntry: { showingAddEntry = true },
+                        planStatus: planStatus, onAddEntry: { showingAddEntry = true },
                         onShowDetails: { showingDetails = true })
                     Spacer(minLength: HugoLayout.Spacing.section)
 

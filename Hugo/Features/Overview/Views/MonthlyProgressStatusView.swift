@@ -1,11 +1,9 @@
 import SwiftUI
 
 struct MonthlyProgressStatusView: View {
-    let expected: Double
-    let current: Double
+    let status: MonthlyProgressStatus
     var body: some View {
-        let status = MonthlyProgressStatus.make(expected: expected, current: current)
-        return HStack {
+        HStack {
             Image(systemName: status.icon)
             Text(status.label)
         }.fontWeight(.semibold)

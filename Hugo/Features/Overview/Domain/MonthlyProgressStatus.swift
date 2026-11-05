@@ -31,3 +31,10 @@ nonisolated enum MonthlyProgressStatus: Equatable {
         }
     }
 }
+
+extension MonthlyProgressStatus {
+    /// The current month compared with the user's plan.
+    static func make(pace: PlanPace) -> Self {
+        make(expected: pace.expectedSeconds / 3_600, current: pace.loggedSeconds / 3_600)
+    }
+}
