@@ -14,8 +14,7 @@ struct PlannerDaySheet: View {
 
     @State private var isAddingPlan = false
     @State private var editingPlan: Plan?
-    @State private var loggingItem: PlannedItem?
-    @State private var loggingSeconds: TimeInterval = 0
+    @State private var loggingSeed: PlanLogSeed?
     @State private var isAddingEntry = false
     @State private var selectedEntry: Entry?
 
@@ -55,12 +54,12 @@ struct PlannerDaySheet: View {
             .sheet(item: $editingPlan) { plan in
                 PlanFormView(day: day, plan: plan)
             }
-            .sheet(item: $loggingItem) { item in
+            .sheet(item: $loggingSeed) { seed in
                 AddEntryView(
-                    seededDate: day.midday(),
-                    seededDuration: (loggingSeconds / 60).rounded(.down) * 60,
-                    preferredTrackerID: item.trackerID,
-                    seededStartMinute: item.startMinute)
+                    seededDate: seed.date,
+                    seededDuration: seed.duration,
+                    preferredTrackerID: seed.trackerID,
+                    seededStartMinute: seed.startMinute)
             }
             .sheet(isPresented: $isAddingEntry) {
                 AddEntryView(seededDate: day.midday())
@@ -87,7 +86,7 @@ struct PlannerDaySheet: View {
                     showsProgress: canLog,
                     onEdit: { editingPlan = plans.first(where: { $0.id.uuidString == item.id }) },
                     onLog: canLog && !(bars[item.id]?.isFull ?? false)
-                        ? { startLogging(item, bars: bars) } : nil
+                        ? { loggingSeed = PlanLogSeed(item: item, bar: bars[item.id]) } : nil
                 )
             }
             Button("planner.plan.add", systemImage: "plus") {
@@ -113,13 +112,6 @@ struct PlannerDaySheet: View {
             }
             .buttonStyle(.bordered)
         }
-    }
-
-    /// The Log button opens Add Entry with the plan's remaining time, so a
-    /// partly logged plan suggests only what is still missing.
-    private func startLogging(_ item: PlannedItem, bars: [String: PlannerBar]) {
-        loggingSeconds = bars[item.id]?.remainingSeconds ?? item.duration
-        loggingItem = item
     }
 
     private var canLog: Bool { day <= CalendarDay(today) }
