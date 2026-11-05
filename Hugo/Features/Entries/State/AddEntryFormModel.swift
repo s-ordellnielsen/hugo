@@ -22,15 +22,29 @@ final class AddEntryFormModel {
 
     private let calendar: Calendar
     private let now: Date
+    private let preferredTrackerID: UUID?
 
     // If no time is provided, snap to nearest minute matching
     // this interval
     private let minuteInterval: Int = 15
 
-    init(calendar: Calendar = .current, now: Date = .now, seededDate: Date? = nil) {
+    init(
+        calendar: Calendar = .current,
+        now: Date = .now,
+        seededDate: Date? = nil,
+        seededDuration: TimeInterval? = nil,
+        preferredTrackerID: UUID? = nil,
+        seededStartMinute: Int? = nil
+    ) {
         self.calendar = calendar
         self.now = now
         self.date = calendar.startOfDay(for: seededDate ?? now)
+        self.durationInSeconds = max(0, seededDuration ?? 0)
+        self.preferredTrackerID = preferredTrackerID
+        if let seededStartMinute {
+            self.time = calendar.date(
+                bySettingHour: seededStartMinute / 60, minute: seededStartMinute % 60, second: 0, of: self.date)
+        }
     }
 
     var isSubmitDisabled: Bool {
@@ -58,7 +72,9 @@ final class AddEntryFormModel {
         if let selectedTracker, trackers.contains(where: { $0.id == selectedTracker.id }) {
             return
         }
-        selectedTracker = trackers.first(where: \.isDefault) ?? trackers.first
+        selectedTracker =
+            trackers.first(where: { $0.id == preferredTrackerID })
+            ?? trackers.first(where: \.isDefault) ?? trackers.first
     }
 
     func incrementBibleStudies() {

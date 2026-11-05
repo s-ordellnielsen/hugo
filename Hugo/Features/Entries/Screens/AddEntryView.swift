@@ -10,8 +10,16 @@ struct AddEntryView: View {
 
     @State private var form: AddEntryFormModel
 
-    init(seededDate: Date? = nil) {
-        _form = State(initialValue: AddEntryFormModel(seededDate: seededDate))
+    init(
+        seededDate: Date? = nil,
+        seededDuration: TimeInterval? = nil,
+        preferredTrackerID: UUID? = nil,
+        seededStartMinute: Int? = nil
+    ) {
+        _form = State(
+            initialValue: AddEntryFormModel(
+                seededDate: seededDate, seededDuration: seededDuration,
+                preferredTrackerID: preferredTrackerID, seededStartMinute: seededStartMinute))
     }
 
     var body: some View {

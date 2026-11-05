@@ -95,6 +95,34 @@ struct AddEntryFormModelTests {
         #expect(model.selectedTracker?.id == defaultTracker.id)
     }
 
+    @Test
+    func seedsDurationCategoryAndStartTimeFromAPlan() throws {
+        let fieldService = Tracker(name: "Field Service", isDefault: true)
+        let ldc = Tracker(name: "LDC", type: .separate)
+        let model = AddEntryFormModel(
+            calendar: calendar, now: date(2026, 11, 4, hour: 15), seededDate: date(2026, 11, 4, hour: 12),
+            seededDuration: 7_200, preferredTrackerID: ldc.id, seededStartMinute: 600)
+
+        model.reconcileSelection(with: [fieldService, ldc])
+
+        #expect(model.durationInSeconds == 7_200)
+        #expect(model.selectedTracker?.id == ldc.id)
+        let combined = try #require(model.combinedDate)
+        #expect(combined == date(2026, 11, 4, hour: 10))
+    }
+
+    @Test
+    func unknownPreferredCategoryFallsBackToDefault() {
+        let fieldService = Tracker(name: "Field Service", isDefault: true)
+        let ldc = Tracker(name: "LDC", type: .separate)
+        let model = AddEntryFormModel(
+            calendar: calendar, now: date(2026, 11, 4, hour: 15), preferredTrackerID: UUID())
+
+        model.reconcileSelection(with: [ldc, fieldService])
+
+        #expect(model.selectedTracker?.id == fieldService.id)
+    }
+
     private func date(_ year: Int, _ month: Int, _ day: Int, hour: Int = 0, minute: Int = 0) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute))!
     }
