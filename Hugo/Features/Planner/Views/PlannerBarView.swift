@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// The rounded rectangle behind a bar: outline and tint in `color`, filled from
-/// the left up to `fraction`. Also drawn on its own in legends.
+/// The rounded rectangle behind a bar: an outline and a light tint in `color`,
+/// and a fill in the same `color` from the left up to `fraction`. Also drawn on
+/// its own in legends.
 struct PlannerBarShape: View {
     let fraction: Double
     let color: Color
@@ -12,7 +13,7 @@ struct PlannerBarShape: View {
             ZStack(alignment: .leading) {
                 shape.fill(color.opacity(0.15))
                 Rectangle()
-                    .fill(color.opacity(0.55))
+                    .fill(color)
                     .frame(width: proxy.size.width * min(1, max(0, fraction)))
             }
         }
