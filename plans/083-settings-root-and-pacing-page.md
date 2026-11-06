@@ -14,7 +14,7 @@
 
 ## Status
 
-* **Status**: IMPLEMENTED — `Scripts/verify.sh` passed. Owner device, live English/Danish, and accessibility checks remain pending.
+* **Status**: DONE — `Scripts/verify.sh` passed, and owner device, English/Danish, and accessibility checks are complete.
 * **Priority**: P2
 * **Effort**: M + owner device check
 * **Risk**: MED — settings navigation and an extraction from yearly expected-time math; no schema change.
