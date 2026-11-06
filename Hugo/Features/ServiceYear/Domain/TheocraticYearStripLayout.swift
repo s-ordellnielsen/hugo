@@ -23,15 +23,20 @@ nonisolated struct TheocraticYearStripLayout: Equatable, Sendable {
     /// The newest theocratic year in the strip.
     let lastYear: TheocraticYear
     let cellWidth: CGFloat
+    /// The visible width: the band (two cells) and one and a half cells on each
+    /// side, so the next years peek in at the edges. Never wider than the
+    /// caller's maximum and never narrower than the band.
+    let stripWidth: CGFloat
 
     /// `years` is the pager's list of years, which has no gaps. An empty list
     /// gives a strip with a single year; callers show the picker only with two
     /// or more years.
-    init(years: [TheocraticYear], cellWidth: CGFloat) {
+    init(years: [TheocraticYear], cellWidth: CGFloat, maximumStripWidth: CGFloat = .infinity) {
         let fallback = TheocraticYear(startYear: 0)
         self.firstYear = years.min() ?? fallback
         self.lastYear = years.max() ?? fallback
         self.cellWidth = cellWidth
+        self.stripWidth = max(cellWidth * 2, min(cellWidth * 5, maximumStripWidth))
     }
 
     /// The number of theocratic years the strip can put in the band.
@@ -44,15 +49,11 @@ nonisolated struct TheocraticYearStripLayout: Equatable, Sendable {
         Array(firstYear.startYear...(lastYear.startYear + 1))
     }
 
-    /// Space before the first cell and after the last. With it, the scroll
-    /// range is exactly the offsets that put a theocratic year in the band.
+    /// Space before the first cell and after the last: what the strip shows
+    /// beside the band. With it, the scroll range is exactly the offsets that
+    /// put a theocratic year in the band.
     var edgePadding: CGFloat {
-        cellWidth
-    }
-
-    /// The visible width: the band (two cells) and one cell on each side.
-    var stripWidth: CGFloat {
-        cellWidth * 4
+        (stripWidth - cellWidth * 2) / 2
     }
 
     /// The content offset that puts `year` in the band. Years outside the strip are clamped.

@@ -34,10 +34,27 @@ struct TheocraticYearStripLayoutTests {
     }
 
     @Test
-    func showsTheBandAndOneYearOnEachSide() {
+    func showsTheBandWithTheNextYearsPeekingIn() {
         let strip = layout(2024...2026)
-        #expect(strip.stripWidth == 256)
-        #expect(strip.edgePadding == 64)
+        #expect(strip.stripWidth == 320)
+        #expect(strip.edgePadding == 96)
+    }
+
+    @Test
+    func capsTheStripAtTheMaximumWidth() {
+        let years = (2024...2026).map(TheocraticYear.init(startYear:))
+        let strip = TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: 300)
+        #expect(strip.stripWidth == 300)
+        #expect(strip.edgePadding == 86)
+        #expect(strip.offset(for: year(2025)) == 64)
+    }
+
+    @Test
+    func neverNarrowsTheStripBelowTheBand() {
+        let years = (2024...2026).map(TheocraticYear.init(startYear:))
+        let strip = TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: 100)
+        #expect(strip.stripWidth == 128)
+        #expect(strip.edgePadding == 0)
     }
 
     @Test
@@ -81,24 +98,31 @@ struct TheocraticYearStripLayoutTests {
 
     @Test
     func endsTheScrollRangeWithTheLastYearInTheBand() {
-        let strip = layout(2019...2026)
-        let contentWidth = strip.edgePadding * 2 + strip.cellWidth * CGFloat(strip.calendarYears.count)
-        #expect(contentWidth - strip.stripWidth == strip.offset(for: year(2026)))
+        let years = (2019...2026).map(TheocraticYear.init(startYear:))
+        let strips = [
+            TheocraticYearStripLayout(years: years, cellWidth: cellWidth),
+            TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: 300),
+        ]
+        for strip in strips {
+            let contentWidth = strip.edgePadding * 2 + strip.cellWidth * CGFloat(strip.calendarYears.count)
+            #expect(contentWidth - strip.stripWidth == strip.offset(for: year(2026)))
+        }
     }
 
     @Test
     func emphasizesTheTwoYearsInTheBand() {
         let strip = layout(2024...2026)
         let dimmed = TheocraticYearStripLayout.dimmedEmphasis
-        // The strip is 256 wide, so the band's cells are centered at 96 and 160.
-        #expect(strip.emphasis(forCellMidX: 96) == 1)
-        #expect(strip.emphasis(forCellMidX: 160) == 1)
+        // The strip is 320 wide, so the band's cells are centered at 128 and 192.
         #expect(strip.emphasis(forCellMidX: 128) == 1)
-        // The neighbouring cells are centered at 32 and 224.
-        #expect(strip.emphasis(forCellMidX: 32) == dimmed)
-        #expect(strip.emphasis(forCellMidX: 224) == dimmed)
+        #expect(strip.emphasis(forCellMidX: 192) == 1)
+        #expect(strip.emphasis(forCellMidX: 160) == 1)
+        // The neighbouring cells are centered at 64 and 256, the peeking ones at 0 and 320.
+        #expect(strip.emphasis(forCellMidX: 64) == dimmed)
+        #expect(strip.emphasis(forCellMidX: 256) == dimmed)
+        #expect(strip.emphasis(forCellMidX: 0) == dimmed)
         #expect(strip.emphasis(forCellMidX: -100) == dimmed)
-        let halfway = strip.emphasis(forCellMidX: 64)
+        let halfway = strip.emphasis(forCellMidX: 96)
         #expect(abs(halfway - (1 + dimmed) / 2) < 0.0001)
     }
 

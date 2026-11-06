@@ -21,7 +21,11 @@ struct TheocraticYearPicker: View {
     @State private var scrollPhase: ScrollPhase = .idle
 
     private var layout: TheocraticYearStripLayout {
-        TheocraticYearStripLayout(years: years, cellWidth: cellWidth)
+        TheocraticYearStripLayout(
+            years: years,
+            cellWidth: cellWidth,
+            maximumStripWidth: HugoLayout.Size.yearPickerMaximumStripWidth
+        )
     }
 
     private var shownYear: TheocraticYear {
@@ -30,14 +34,15 @@ struct TheocraticYearPicker: View {
 
     var body: some View {
         let layout = self.layout
-        VStack(spacing: HugoLayout.Spacing.compact) {
+        VStack(spacing: HugoLayout.Spacing.regular) {
             strip(layout)
             Text("year.picker.hint")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
         }
-        .padding(HugoLayout.Spacing.spacious)
+        .padding(.horizontal, HugoLayout.Spacing.spacious)
+        .padding(.vertical, HugoLayout.Spacing.card)
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .onAppear {
             yearInBand = selection

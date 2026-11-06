@@ -56,6 +56,14 @@ struct ServiceYearView: View {
         .monospacedDigit()
     }
 
+    /// The chevron after the year title. A hidden copy before the title keeps
+    /// the year text optically centered.
+    private var yearTitleChevron: some View {
+        Image(systemName: "chevron.down")
+            .font(.caption.weight(.bold))
+            .foregroundStyle(.secondary)
+    }
+
     /// Shows `year` on the pager. The existing `onChange(of: scrollPosition)`
     /// handler updates `displayedYear` and animates the title.
     private func jump(to year: TheocraticYear) {
@@ -93,10 +101,10 @@ struct ServiceYearView: View {
                             isYearPickerPresented = true
                         } label: {
                             HStack(spacing: HugoLayout.Spacing.tight) {
+                                yearTitleChevron
+                                    .hidden()
                                 yearTitle
-                                Image(systemName: "chevron.down")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.secondary)
+                                yearTitleChevron
                             }
                         }
                         .buttonStyle(.plain)
