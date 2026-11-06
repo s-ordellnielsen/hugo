@@ -859,3 +859,234 @@ Stop and report back, without improvising, if:
 - **Offsets and insets.** The layout assumes the strip's content offset is 0 when the first year is in the band (padding is in the content, not in `contentMargins`). If someone adds `contentMargins` or `safeAreaPadding` to the strip, the snapping and the year in the band will drift by that inset.
 - **Text size.** The popover is capped at `.xxLarge`. If owners report that is too small for some users, the next step is showing the native menu at accessibility sizes, not widening the strip.
 - **Review focus.** Check that the pager changes only when the strip comes to rest (not on every tick), that the title is plain text with a single year, and that `ServiceYearPageView.swift` is untouched.
+
+## Revision 1 (2026-11-06, after the owner's first look on device)
+
+The owner likes the strip and wants three tweaks before the device check is finished. Apply them on top of commit `ad0ba60` (Steps 1–5 are already done; do not redo them). The same Scope, Git workflow, STOP conditions and commands apply. In scope for this revision: `TheocraticYearStripLayout.swift`, `TheocraticYearStripLayoutTests.swift`, `TheocraticYearPicker.swift`, `ServiceYearView.swift`, `Theme.swift`. Nothing else.
+
+What changes:
+
+1. **More room.** The popover gets more vertical padding (24 instead of 16) and more space between the strip and the hint (12 instead of 8). Side padding stays 16, because the popover must fit on a 375-point iPhone and the strip's edge fade already gives visual room.
+2. **Wider strip that peeks.** The strip shows the band plus one and a half cells on each side (5 cells instead of 4), so the next years peek in, half visible and faded. Cells get wider (68 pt instead of 64) for more space between the years. The strip is capped at 320 pt. Below the cap it is `5 * cellWidth`, and it is never narrower than the band. The side space is `(stripWidth - 2 * cellWidth) / 2` and becomes the edge padding, so `offset(for:)` stays `index * cellWidth` and the scroll range still ends with the last year in the band.
+3. **Centered title.** A hidden copy of the chevron goes before the year text, so the text sits in the exact center and the visible chevron hangs to its right.
+
+### Step R1: Layout
+
+In `Hugo/Features/ServiceYear/Domain/TheocraticYearStripLayout.swift`, replace:
+
+```swift
+    let cellWidth: CGFloat
+
+    /// `years` is the pager's list of years, which has no gaps. An empty list
+    /// gives a strip with a single year; callers show the picker only with two
+    /// or more years.
+    init(years: [TheocraticYear], cellWidth: CGFloat) {
+        let fallback = TheocraticYear(startYear: 0)
+        self.firstYear = years.min() ?? fallback
+        self.lastYear = years.max() ?? fallback
+        self.cellWidth = cellWidth
+    }
+```
+
+with:
+
+```swift
+    let cellWidth: CGFloat
+    /// The visible width: the band (two cells) and one and a half cells on each
+    /// side, so the next years peek in at the edges. Never wider than the
+    /// caller's maximum and never narrower than the band.
+    let stripWidth: CGFloat
+
+    /// `years` is the pager's list of years, which has no gaps. An empty list
+    /// gives a strip with a single year; callers show the picker only with two
+    /// or more years.
+    init(years: [TheocraticYear], cellWidth: CGFloat, maximumStripWidth: CGFloat = .infinity) {
+        let fallback = TheocraticYear(startYear: 0)
+        self.firstYear = years.min() ?? fallback
+        self.lastYear = years.max() ?? fallback
+        self.cellWidth = cellWidth
+        self.stripWidth = max(cellWidth * 2, min(cellWidth * 5, maximumStripWidth))
+    }
+```
+
+Then replace:
+
+```swift
+    /// Space before the first cell and after the last. With it, the scroll
+    /// range is exactly the offsets that put a theocratic year in the band.
+    var edgePadding: CGFloat {
+        cellWidth
+    }
+
+    /// The visible width: the band (two cells) and one cell on each side.
+    var stripWidth: CGFloat {
+        cellWidth * 4
+    }
+```
+
+with:
+
+```swift
+    /// Space before the first cell and after the last: what the strip shows
+    /// beside the band. With it, the scroll range is exactly the offsets that
+    /// put a theocratic year in the band.
+    var edgePadding: CGFloat {
+        (stripWidth - cellWidth * 2) / 2
+    }
+```
+
+### Step R2: Layout tests
+
+In `HugoTests/Features/ServiceYear/Domain/TheocraticYearStripLayoutTests.swift`:
+
+Replace the whole `showsTheBandAndOneYearOnEachSide` test with these three tests:
+
+```swift
+    @Test
+    func showsTheBandWithTheNextYearsPeekingIn() {
+        let strip = layout(2024...2026)
+        #expect(strip.stripWidth == 320)
+        #expect(strip.edgePadding == 96)
+    }
+
+    @Test
+    func capsTheStripAtTheMaximumWidth() {
+        let years = (2024...2026).map(TheocraticYear.init(startYear:))
+        let strip = TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: 300)
+        #expect(strip.stripWidth == 300)
+        #expect(strip.edgePadding == 86)
+        #expect(strip.offset(for: year(2025)) == 64)
+    }
+
+    @Test
+    func neverNarrowsTheStripBelowTheBand() {
+        let years = (2024...2026).map(TheocraticYear.init(startYear:))
+        let strip = TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: 100)
+        #expect(strip.stripWidth == 128)
+        #expect(strip.edgePadding == 0)
+    }
+```
+
+Replace the whole `endsTheScrollRangeWithTheLastYearInTheBand` test with:
+
+```swift
+    @Test
+    func endsTheScrollRangeWithTheLastYearInTheBand() {
+        let years = (2019...2026).map(TheocraticYear.init(startYear:))
+        let strips = [
+            TheocraticYearStripLayout(years: years, cellWidth: cellWidth),
+            TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: 300),
+        ]
+        for strip in strips {
+            let contentWidth = strip.edgePadding * 2 + strip.cellWidth * CGFloat(strip.calendarYears.count)
+            #expect(contentWidth - strip.stripWidth == strip.offset(for: year(2026)))
+        }
+    }
+```
+
+Replace the whole `emphasizesTheTwoYearsInTheBand` test with:
+
+```swift
+    @Test
+    func emphasizesTheTwoYearsInTheBand() {
+        let strip = layout(2024...2026)
+        let dimmed = TheocraticYearStripLayout.dimmedEmphasis
+        // The strip is 320 wide, so the band's cells are centered at 128 and 192.
+        #expect(strip.emphasis(forCellMidX: 128) == 1)
+        #expect(strip.emphasis(forCellMidX: 192) == 1)
+        #expect(strip.emphasis(forCellMidX: 160) == 1)
+        // The neighbouring cells are centered at 64 and 256, the peeking ones at 0 and 320.
+        #expect(strip.emphasis(forCellMidX: 64) == dimmed)
+        #expect(strip.emphasis(forCellMidX: 256) == dimmed)
+        #expect(strip.emphasis(forCellMidX: 0) == dimmed)
+        #expect(strip.emphasis(forCellMidX: -100) == dimmed)
+        let halfway = strip.emphasis(forCellMidX: 96)
+        #expect(abs(halfway - (1 + dimmed) / 2) < 0.0001)
+    }
+```
+
+Leave every other test unchanged.
+
+**Verify**: "Focused tests" command with only `-only-testing:HugoTests/TheocraticYearStripLayoutTests` → `** TEST SUCCEEDED **`, 17 tests passed.
+
+### Step R3: Tokens and picker
+
+**R3a.** In `Hugo/DesignSystem/Theme/Theme.swift`, replace `static let yearPickerCellWidth: CGFloat = 64` with these two lines:
+
+```swift
+        static let yearPickerCellWidth: CGFloat = 68
+        static let yearPickerMaximumStripWidth: CGFloat = 320
+```
+
+**R3b.** In `Hugo/Features/ServiceYear/Views/TheocraticYearPicker.swift`, make exactly these three replacements:
+
+- `TheocraticYearStripLayout(years: years, cellWidth: cellWidth)` →
+  `TheocraticYearStripLayout(years: years, cellWidth: cellWidth, maximumStripWidth: HugoLayout.Size.yearPickerMaximumStripWidth)`
+  (if the line passes 120 characters, break the arguments onto separate lines the way swift-format wants).
+- `VStack(spacing: HugoLayout.Spacing.compact) {` → `VStack(spacing: HugoLayout.Spacing.regular) {`
+- `.padding(HugoLayout.Spacing.spacious)` → these two lines:
+
+  ```swift
+        .padding(.horizontal, HugoLayout.Spacing.spacious)
+        .padding(.vertical, HugoLayout.Spacing.card)
+  ```
+
+Do not change anything else in the picker (the mask, band capsule, slash, snapping and accessibility stay as they are).
+
+**Verify**: "Build only" → `** BUILD SUCCEEDED **`; "Lint" → exit 0.
+
+### Step R4: Center the title
+
+In `Hugo/Features/ServiceYear/Screens/ServiceYearView.swift`, replace the Button's label content:
+
+```swift
+                            HStack(spacing: HugoLayout.Spacing.tight) {
+                                yearTitle
+                                Image(systemName: "chevron.down")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.secondary)
+                            }
+```
+
+with:
+
+```swift
+                            HStack(spacing: HugoLayout.Spacing.tight) {
+                                yearTitleChevron
+                                    .hidden()
+                                yearTitle
+                                yearTitleChevron
+                            }
+```
+
+and add this property directly after the `yearTitle` property:
+
+```swift
+
+    /// The chevron after the year title. A hidden copy before the title keeps
+    /// the year text optically centered.
+    private var yearTitleChevron: some View {
+        Image(systemName: "chevron.down")
+            .font(.caption.weight(.bold))
+            .foregroundStyle(.secondary)
+    }
+```
+
+**Verify**: "Build only" → `** BUILD SUCCEEDED **`; `grep -c 'Image(systemName: "chevron.down")' Hugo/Features/ServiceYear/Screens/ServiceYearView.swift` → `1`; "Lint" → exit 0.
+
+### Step R5: Gate and commit
+
+`Scripts/verify.sh` → exit 0. Stage only the five files above by explicit path and commit with `feat: give the year picker more room and center the Year title`.
+
+### Revision done criteria
+
+- [ ] `Scripts/verify.sh` exits 0, and `TheocraticYearStripLayoutTests` has 17 passing tests.
+- [ ] `git show --stat HEAD` lists only the five revision files.
+- [ ] `grep -rn "viewAligned" Hugo/Features/ServiceYear` prints nothing.
+
+### Revision owner check
+
+Repeat owner checks 1–5 and 8 from the list above, and also check:
+- The year text in the title sits in the center of the navigation bar, with the chevron hanging to its right.
+- Half a year peeks in, faded, on each side of the strip, and the popover has visibly more room above and below.
+- On the smallest iPhone, at the default and the largest standard text size, the whole popover fits on screen without being clipped.
