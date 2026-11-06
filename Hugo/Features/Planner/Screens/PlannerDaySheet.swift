@@ -31,12 +31,13 @@ struct PlannerDaySheet: View {
     var body: some View {
         let plannerDay = self.plannerDay
         let planBars = plannerDay.bars.filter { $0.kind == .plan }
+        let loggedEntries = self.loggedEntries
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
                     plannedSection(planBars: planBars)
-                    if !entries.isEmpty {
-                        PlannerLoggedEntryList(entries: entries, total: plannerDay.logged.total) { entry in
+                    if !loggedEntries.isEmpty {
+                        PlannerLoggedEntryList(entries: loggedEntries, total: plannerDay.logged.total) { entry in
                             selectedEntry = entry
                         }
                     }
@@ -105,6 +106,9 @@ struct PlannerDaySheet: View {
     private var plannerDay: PlannerDay {
         PlannerDay.make(day: day, items: items, entries: entries, trackers: trackers, today: CalendarDay(today))
     }
+
+    /// The day's entries without carried-in entries, which the Planner keeps off every day.
+    private var loggedEntries: [Entry] { entries.filter { !$0.isCarriedIn } }
 }
 
 #Preview {

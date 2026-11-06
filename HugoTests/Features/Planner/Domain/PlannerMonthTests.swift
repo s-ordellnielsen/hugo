@@ -161,6 +161,47 @@ struct PlannerMonthTests {
         #expect(separateRemaining == expected.separate)
     }
 
+    @Test
+    func carriedInEntryLeavesTheFirstWithoutABarOrLoggedTime() {
+        let entries = [carriedIn(date(2026, 11, 1), seconds: 1_800, tracker: main)]
+        let month = makeMonth(items: [], entries: entries)
+
+        #expect(month.days[0].bars.isEmpty)
+        #expect(month.days[0].logged == .zero)
+    }
+
+    @Test
+    func carriedInEntryStillCountsInTheMonthsLoggedTime() {
+        let entries = [
+            carriedIn(date(2026, 11, 1), seconds: 1_800, tracker: main),
+            carriedIn(date(2026, 11, 1), seconds: 900, tracker: separate),
+            Entry(date: date(2026, 11, 2, hour: 10), duration: 3_600, tracker: main),
+        ]
+        let month = makeMonth(items: [], entries: entries)
+
+        #expect(month.carriedIn == TimeSplit(main: 1_800, separate: 900))
+        #expect(month.logged == TimeSplit(main: 5_400, separate: 900))
+    }
+
+    @Test
+    func carriedInEntryDoesNotCoverAPlanOnTheFirst() {
+        let now = date(2026, 11, 1, hour: 8)
+        let items = [item(CalendarDay(year: 2026, month: 11, day: 1), hours: 1, tracker: main)]
+        let entries = [carriedIn(date(2026, 11, 1), seconds: 3_600, tracker: main)]
+        let month = PlannerMonth.make(
+            month: november, items: items, entries: entries, now: now, calendar: calendar)
+
+        #expect(month.days[0].bars.first?.filledSeconds == 0)
+        #expect(month.stillPlanned == TimeSplit(main: 3_600, separate: 0))
+    }
+
+    private func carriedIn(_ date: Date, seconds: TimeInterval, tracker: Tracker?) -> Entry {
+        let entry = Entry(date: date, duration: seconds, tracker: tracker)
+        entry.sourceReportYear = 2026
+        entry.sourceReportMonth = 10
+        return entry
+    }
+
     private func makeMonth(items: [PlannedItem], entries: [Entry]) -> PlannerMonth {
         PlannerMonth.make(month: november, items: items, entries: entries, now: now, calendar: calendar)
     }

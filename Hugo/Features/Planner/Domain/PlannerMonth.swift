@@ -36,7 +36,7 @@ nonisolated struct PlannerDay: Identifiable, Equatable, Sendable {
     let isPast: Bool
 
     /// `items` and `entries` must already belong to `day`. `trackers` give the
-    /// colors of logged categories.
+    /// colors of logged categories. Carried-in entries are skipped: their time was not logged on this day.
     static func make(
         day: CalendarDay,
         items: [PlannedItem],
@@ -51,7 +51,7 @@ nonisolated struct PlannerDay: Identifiable, Equatable, Sendable {
 
         var logged = TimeSplit.zero
         var byCategory: [String: LoggedCategoryTime] = [:]
-        for entry in entries {
+        for entry in entries where !entry.isCarriedIn {
             let seconds = max(entry.duration, 0)
             let category = entry.resolvedCategory()
             logged.add(seconds, type: category.type)
@@ -80,10 +80,13 @@ nonisolated struct PlannerMonth: Equatable, Sendable {
     let month: YearMonth
     let today: CalendarDay
     let days: [PlannerDay]
+    /// Time from carried-in entries. It is on no day, but it counts toward
+    /// the month, as it does on the month's report.
+    let carriedIn: TimeSplit
 
     var hasPlans: Bool { days.contains { $0.planned.total > 0 } }
 
-    var logged: TimeSplit { days.reduce(.zero) { $0 + $1.logged } }
+    var logged: TimeSplit { days.reduce(carriedIn) { $0 + $1.logged } }
 
     var planned: TimeSplit { days.reduce(.zero) { $0 + $1.planned } }
 
@@ -112,7 +115,13 @@ nonisolated struct PlannerMonth: Equatable, Sendable {
                 day: day, items: itemsByDay[day] ?? [], entries: entriesByDay[day] ?? [],
                 trackers: trackers, today: today)
         }
-        return PlannerMonth(month: month, today: today, days: days)
+        let monthDays = Set(days.map(\.id))
+        var carriedIn = TimeSplit.zero
+        for entry in entries where entry.isCarriedIn {
+            guard monthDays.contains(CalendarDay(entry.date, calendar: calendar)) else { continue }
+            carriedIn.add(max(entry.duration, 0), type: entry.resolvedCategory().type)
+        }
+        return PlannerMonth(month: month, today: today, days: days, carriedIn: carriedIn)
     }
 
     /// The months the Planner pages through: the current month and the next 11.
