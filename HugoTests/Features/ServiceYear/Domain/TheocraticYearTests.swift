@@ -23,6 +23,14 @@ struct TheocraticYearTests {
     }
 
     @Test
+    func spellsOutBothCalendarYearsForVoiceOver() {
+        let spoken = TheocraticYear(startYear: 2026).spokenName
+        #expect(spoken.contains("2026"))
+        #expect(spoken.contains("2027"))
+        #expect(!spoken.contains("/"))
+    }
+
+    @Test
     func providesTwelveChronologicalMonths() {
         let months = TheocraticYear(startYear: 2026).months
         #expect(months.count == 12)

@@ -7,6 +7,16 @@ nonisolated struct TheocraticYear: Hashable, Comparable, Identifiable, Sendable 
 
     var displayName: String { "\(startYear)/\(startYear + 1)" }
 
+    /// The year as VoiceOver says it, for example "2026 to 2027".
+    var spokenName: String {
+        String(
+            localized: "year.picker.a11y.value",
+            defaultValue: "\(String(startYear)) to \(String(startYear + 1))",
+            comment:
+                "Spoken name of a theocratic year. The arguments are its two calendar years, such as 2026 and 2027."
+        )
+    }
+
     var months: [YearMonth] {
         (9...12).map { YearMonth(year: startYear, month: $0) }
             + (1...8).map { YearMonth(year: startYear + 1, month: $0) }

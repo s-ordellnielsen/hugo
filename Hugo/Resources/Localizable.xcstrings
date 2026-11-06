@@ -5115,6 +5115,74 @@
         }
       }
     },
+    "year.picker.a11y.hint" : {
+      "comment" : "Accessibility hint for the Year tab's title, which opens the year picker.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg et andet tjenesteår"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose another service year"
+          }
+        }
+      }
+    },
+    "year.picker.a11y.label" : {
+      "comment" : "Accessibility label for the Year tab's title button and for the year picker strip.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tjenesteår"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Service year"
+          }
+        }
+      }
+    },
+    "year.picker.a11y.value" : {
+      "comment" : "Spoken name of a theocratic year. The arguments are its two calendar years, such as 2026 and 2027.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ til %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ to %2$@"
+          }
+        }
+      }
+    },
+    "year.picker.hint" : {
+      "comment" : "Short instruction below the year picker strip.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stryg eller tryk på et år"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe or tap a year"
+          }
+        }
+      }
+    },
     "year.subtitle" : {
       "comment" : "Navigation subtitle below the theocratic year designation.",
       "localizations" : {

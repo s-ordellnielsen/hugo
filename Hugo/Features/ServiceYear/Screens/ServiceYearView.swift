@@ -8,6 +8,7 @@ struct ServiceYearView: View {
     @State private var scrollPosition: TheocraticYear.ID?
     @State private var displayedYear: TheocraticYear?
     @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
+    @State private var isYearPickerPresented = false
 
     var resetToken: UUID
 
@@ -40,6 +41,27 @@ struct ServiceYearView: View {
         scrolledPages[activeYear.id] ?? false
     }
 
+    private var yearTitle: some View {
+        HStack(spacing: 0) {
+            Text(String(activeYear.startYear))
+                .contentTransition(.numericText(value: Double(activeYear.startYear)))
+            Text(String("/"))
+            Text(String(activeYear.startYear + 1))
+                .contentTransition(.numericText(value: Double(activeYear.startYear + 1)))
+                .animation(.snappy.delay(0.05), value: activeYear.startYear + 1)
+        }
+        .font(.system(.headline, design: .serif, weight: .bold))
+        .lineLimit(1)
+        .minimumScaleFactor(0.75)
+        .monospacedDigit()
+    }
+
+    /// Shows `year` on the pager. The existing `onChange(of: scrollPosition)`
+    /// handler updates `displayedYear` and animates the title.
+    private func jump(to year: TheocraticYear) {
+        scrollPosition = year.id
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView(.horizontal) {
@@ -66,18 +88,28 @@ struct ServiceYearView: View {
             .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    HStack(spacing: 0) {
-                        Text(String(activeYear.startYear))
-                            .contentTransition(.numericText(value: Double(activeYear.startYear)))
-                        Text(String("/"))
-                        Text(String(activeYear.startYear + 1))
-                            .contentTransition(.numericText(value: Double(activeYear.startYear + 1)))
-                            .animation(.snappy.delay(0.05), value: activeYear.startYear + 1)
+                    if years.count > 1 {
+                        Button {
+                            isYearPickerPresented = true
+                        } label: {
+                            HStack(spacing: HugoLayout.Spacing.tight) {
+                                yearTitle
+                                Image(systemName: "chevron.down")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("year.picker.a11y.label")
+                        .accessibilityValue(activeYear.spokenName)
+                        .accessibilityHint("year.picker.a11y.hint")
+                        .popover(isPresented: $isYearPickerPresented) {
+                            TheocraticYearPicker(years: years, selection: activeYear, onSelect: jump(to:))
+                                .presentationCompactAdaptation(.popover)
+                        }
+                    } else {
+                        yearTitle
                     }
-                    .font(.system(.headline, design: .serif, weight: .bold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-                    .monospacedDigit()
                 }
                 ToolbarItem {
                     SettingsButton(sizeClass: .compact)
