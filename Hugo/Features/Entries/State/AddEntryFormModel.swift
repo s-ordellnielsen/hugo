@@ -15,7 +15,11 @@ final class AddEntryFormModel {
     var time: Date?
     var durationInSeconds: TimeInterval = 0
     var bibleStudies = 0
-    var selectedTracker: Tracker?
+    var selectedTracker: Tracker? {
+        didSet {
+            if !categoryAllowsBibleStudies { bibleStudies = 0 }
+        }
+    }
     var isTimePickerPresented = false
     var isCategoryPickerPresented = false
     var validationMessage: String?
@@ -49,6 +53,15 @@ final class AddEntryFormModel {
 
     var isSubmitDisabled: Bool {
         durationInSeconds == 0 || selectedTracker == nil
+    }
+
+    /// False when the chosen category turned Bible studies off.
+    var categoryAllowsBibleStudies: Bool {
+        selectedTracker?.allowBibleStudies ?? true
+    }
+
+    var showsBibleStudies: Bool {
+        BibleStudiesRule.showsControl(categoryAllows: categoryAllowsBibleStudies, count: bibleStudies)
     }
 
     var combinedDate: Date? {
@@ -92,7 +105,8 @@ final class AddEntryFormModel {
         }
         validationMessage = nil
         return EntryDraft(
-            date: combinedDate, duration: durationInSeconds, tracker: selectedTracker, bibleStudies: bibleStudies)
+            date: combinedDate, duration: durationInSeconds, tracker: selectedTracker,
+            bibleStudies: BibleStudiesRule.savedCount(bibleStudies, categoryAllows: categoryAllowsBibleStudies))
     }
 
     private func inferredTime() -> Date {

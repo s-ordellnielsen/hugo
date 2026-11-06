@@ -46,4 +46,24 @@ struct EntryCategoryTests {
         #expect(entry.storedTracker?.name == "Field Service")
         #expect(entry.storedTracker?.type == .main)
     }
+
+    @Test
+    func liveTrackerCarriesItsBibleStudiesSetting() {
+        let tracker = Tracker(name: "LDC", type: .separate, allowBibleStudies: false)
+        let entry = Entry(date: .now, duration: 1_800, tracker: tracker)
+        #expect(entry.resolvedCategory().allowsBibleStudies == false)
+    }
+
+    @Test
+    func snapshotAllowsBibleStudies() {
+        let entry = Entry(date: .now, duration: 1_800, tracker: nil)
+        entry.storedTracker = Entry.EntryTracker(name: "LDC", icon: "hammer", type: .separate)
+        #expect(entry.resolvedCategory().allowsBibleStudies)
+    }
+
+    @Test
+    func untrackedEntryAllowsBibleStudies() {
+        let entry = Entry(date: .now, duration: 1_800, tracker: nil)
+        #expect(entry.resolvedCategory().allowsBibleStudies)
+    }
 }

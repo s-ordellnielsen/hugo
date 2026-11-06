@@ -13,6 +13,9 @@ nonisolated struct EntryCategory: Hashable {
     let type: TrackerType?
     /// Set only when the live tracker is attached.
     let trackerID: UUID?
+    /// False only when the live category turned Bible studies off. A
+    /// category snapshot and an untracked entry allow them.
+    let allowsBibleStudies: Bool
 }
 
 extension Entry {
@@ -20,16 +23,17 @@ extension Entry {
         if let tracker {
             return EntryCategory(
                 key: tracker.id.uuidString, name: tracker.name, iconName: tracker.iconName,
-                type: tracker.type, trackerID: tracker.id)
+                type: tracker.type, trackerID: tracker.id, allowsBibleStudies: tracker.allowBibleStudies)
         }
         if let snapshot = storedTracker {
             return EntryCategory(
                 key: "stored:\(snapshot.name)|\(snapshot.icon)|\(snapshot.type.rawValue)",
-                name: snapshot.name, iconName: snapshot.icon, type: snapshot.type, trackerID: nil)
+                name: snapshot.name, iconName: snapshot.icon, type: snapshot.type, trackerID: nil,
+                allowsBibleStudies: true)
         }
         return EntryCategory(
             key: "untracked", name: String(localized: "entry.untracked", locale: locale),
-            iconName: "questionmark.circle", type: nil, trackerID: nil)
+            iconName: "questionmark.circle", type: nil, trackerID: nil, allowsBibleStudies: true)
     }
 }
 

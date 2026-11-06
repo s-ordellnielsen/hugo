@@ -31,15 +31,19 @@ struct EntryDetailView: View {
                     }
                 }
 
-                Section {
-                    Stepper(
-                        onIncrement: incrementBibleStudies,
-                        onDecrement: decrementBibleStudies
-                    ) {
-                        Label(
-                            "entry.biblestudies.count.label.\(entry.bibleStudies)",
-                            systemImage: "book"
-                        )
+                if BibleStudiesRule.showsControl(
+                    categoryAllows: category.allowsBibleStudies, count: entry.bibleStudies)
+                {
+                    Section {
+                        Stepper(
+                            onIncrement: incrementBibleStudies,
+                            onDecrement: decrementBibleStudies
+                        ) {
+                            Label(
+                                "entry.biblestudies.count.label.\(entry.bibleStudies)",
+                                systemImage: "book"
+                            )
+                        }
                     }
                 }
             }

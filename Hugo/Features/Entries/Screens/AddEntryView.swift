@@ -57,9 +57,11 @@ struct AddEntryView: View {
                         }
                     }
                 }
-                Section {
-                    Stepper(onIncrement: form.incrementBibleStudies, onDecrement: form.decrementBibleStudies) {
-                        bibleStudiesLabel
+                if form.showsBibleStudies {
+                    Section {
+                        Stepper(onIncrement: form.incrementBibleStudies, onDecrement: form.decrementBibleStudies) {
+                            bibleStudiesLabel
+                        }
                     }
                 }
             }

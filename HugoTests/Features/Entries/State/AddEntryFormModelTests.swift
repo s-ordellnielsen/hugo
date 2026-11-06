@@ -63,6 +63,43 @@ struct AddEntryFormModelTests {
     }
 
     @Test
+    func choosingACategoryWithoutBibleStudiesClearsTheCount() {
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
+        model.selectedTracker = Tracker(name: "Field Service")
+        model.incrementBibleStudies()
+        model.incrementBibleStudies()
+
+        model.selectedTracker = Tracker(name: "LDC", type: .separate, allowBibleStudies: false)
+
+        #expect(model.bibleStudies == 0)
+        #expect(model.showsBibleStudies == false)
+    }
+
+    @Test
+    func categoryWithBibleStudiesKeepsTheCount() {
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
+        model.selectedTracker = Tracker(name: "Field Service")
+        model.incrementBibleStudies()
+
+        model.selectedTracker = Tracker(name: "Bethel", type: .separate)
+
+        #expect(model.bibleStudies == 1)
+        #expect(model.showsBibleStudies)
+    }
+
+    @Test
+    func draftSavesNoBibleStudiesForACategoryWithoutThem() throws {
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
+        model.selectedTracker = Tracker(name: "LDC", type: .separate, allowBibleStudies: false)
+        model.durationInSeconds = 3_600
+        model.incrementBibleStudies()
+
+        let draft = try #require(model.draft())
+
+        #expect(draft.bibleStudies == 0)
+    }
+
+    @Test
     func emptyCategoryPreventsDraftCreation() {
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
         model.durationInSeconds = 3_600
