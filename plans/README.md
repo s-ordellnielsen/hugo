@@ -67,10 +67,10 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 091 | Share a clipped, animated marked progress bar between Planner and Settings | P1 | M + owner | — | DONE (committed as `a43cb85`; full `Scripts/verify.sh` passed; owner tested and accepted 2026-11-06) | [SLN-300](https://linear.app/sebastianln/issue/SLN-300) |
 | 083 | Put Planner and Service Year settings in General and explain the current-month calculation | P2 | M + owner | 091 + owner check | IMPLEMENTED; owner device check pending | [SLN-292](https://linear.app/sebastianln/issue/SLN-292) |
 | 084 | Explain Monthly Target with a live goal marker, adjusted target, and Buffer | P2 | M + owner | 081, 083 (091 transitively) | DONE (implemented and accepted by owner 2026-11-06) | [SLN-298](https://linear.app/sebastianln/issue/SLN-298) |
-| 085 | Replace the Overview month details with a plan pace sheet opened from the status line | P1 | M + owner | — | TODO | [SLN-293](https://linear.app/sebastianln/issue/SLN-293) |
+| 085 | Replace the Overview month details with a plan pace sheet opened from the status line | P1 | M + owner | — | IMPLEMENTED (committed on main as f70c114; verify.sh passed, 362 tests); owner device, VoiceOver and Danish check pending | [SLN-293](https://linear.app/sebastianln/issue/SLN-293) |
 | 086 | Fill the Overview circle by area, and against the plan when there is no monthly goal | P1 | M + owner | 085 | TODO | [SLN-190](https://linear.app/sebastianln/issue/SLN-190), [SLN-191](https://linear.app/sebastianln/issue/SLN-191) |
 | 087 | Make the Overview date list as useful as the entry list | P1 | S + owner | — | TODO | [SLN-294](https://linear.app/sebastianln/issue/SLN-294) |
-| 088 | Add a jump-to-month menu to the Year page | P2 | S + owner | — | TODO | [SLN-295](https://linear.app/sebastianln/issue/SLN-295) |
+| 088 | Add a jump-to-month menu to the Year page | P2 | S + owner | — | CANCELLED (wrong interaction; owner wants jump-to-year instead) | [SLN-295](https://linear.app/sebastianln/issue/SLN-295) |
 | 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | IMPLEMENTED; owner VoiceOver check in English and Danish pending | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
 | 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
 

@@ -1,4 +1,6 @@
-# Plan 088: Add a jump-to-month menu to the Year page
+# Plan 088: Add navigation to a specific service year
+
+> **Status**: CANCELLED 2026-11-06. The original month-jump idea did not match the owner's intent. The desired interaction is to jump to a specific theocratic year, not a month. Revisit and write a new plan tomorrow; no implementation changes were retained.
 
 > **Executor instructions**: Follow this plan step by step. Run every
 > verification command and confirm the expected result before moving to the
