@@ -14,7 +14,7 @@ struct MonthlyProgressCard: View {
             ZStack {
                 MonthlyProgressCircle(progress: value, maxValue: monthlyGoal)
                     .accessibilityHidden(true)
-                VStack {
+                VStack(spacing: 0) {
                     VStack {
                         Text(Date.now, format: .dateTime.month(.wide))
                             .font(.caption)
@@ -43,7 +43,6 @@ struct MonthlyProgressCard: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .frame(minHeight: HugoLayout.Size.minimumHitTarget)
-                            .fixedSize(horizontal: false, vertical: true)
                             .contentShape(.rect)
                         }
                         .buttonStyle(.card)
