@@ -9,6 +9,7 @@ struct ServiceYearView: View {
     @State private var displayedYear: TheocraticYear?
     @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
     @State private var isYearPickerPresented = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var resetToken: UUID
 
@@ -64,10 +65,13 @@ struct ServiceYearView: View {
             .foregroundStyle(.secondary)
     }
 
-    /// Shows `year` on the pager. The existing `onChange(of: scrollPosition)`
-    /// handler updates `displayedYear` and animates the title.
+    /// Slides the pager to `year`, or jumps there with Reduce Motion on. The
+    /// existing `onChange(of: scrollPosition)` handler updates `displayedYear`
+    /// and animates the title.
     private func jump(to year: TheocraticYear) {
-        scrollPosition = year.id
+        withAnimation(reduceMotion ? nil : Motion.presence) {
+            scrollPosition = year.id
+        }
     }
 
     var body: some View {
