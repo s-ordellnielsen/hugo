@@ -1147,3 +1147,51 @@ Change nothing else: not the `onChange` handlers, not `onAppear`, not the picker
 - **Long jump:** with entries spread over many years (add one entry about ten years back), flick from the newest to the oldest year. If the slide stutters or takes too long, report it. A possible follow-up is to slide only for nearby years and jump for far ones.
 - With Reduce Motion on, the pages jump with no slide.
 - Decide: keep the slide, or undo Revision 2.
+
+## Revision 3 (2026-11-06, owner request: bigger tap area for the title)
+
+The owner finds the year title hard to tap. Cause: the title `Button` uses `.buttonStyle(.plain)` with no content shape, so only drawn pixels (the glyphs and the visible chevron) take taps. The gaps between digits and the hidden balancing chevron don't. Fix: give the label a rectangular content shape, at least `HugoLayout.Size.minimumHitTarget` (44 pt) tall, with a little horizontal padding.
+
+Apply on top of commit `77c50c7`. The only in-scope file is `Hugo/Features/ServiceYear/Screens/ServiceYearView.swift`. Git workflow, STOP conditions and commands from above still apply.
+
+### Step T1: Enlarge the tap area
+
+Replace:
+
+```swift
+                            HStack(spacing: HugoLayout.Spacing.tight) {
+                                yearTitleChevron
+                                    .hidden()
+                                yearTitle
+                                yearTitleChevron
+                            }
+                        }
+```
+
+with:
+
+```swift
+                            HStack(spacing: HugoLayout.Spacing.tight) {
+                                yearTitleChevron
+                                    .hidden()
+                                yearTitle
+                                yearTitleChevron
+                            }
+                            .padding(.horizontal, HugoLayout.Spacing.compact)
+                            .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+                            .contentShape(.rect)
+                        }
+```
+
+Change nothing else. The padding is symmetric, so the title stays centered.
+
+**Verify**: "Build only" → `** BUILD SUCCEEDED **`; "Lint" → exit 0; `grep -c "contentShape(.rect)" Hugo/Features/ServiceYear/Screens/ServiceYearView.swift` → `1`.
+
+### Step T2: Gate and commit
+
+`Scripts/verify.sh` → exit 0. Stage only `ServiceYearView.swift` by explicit path and commit with `fix: enlarge the Year title's tap area`.
+
+### Revision 3 owner check
+
+- Tapping anywhere on the title, including between the digits, just left of the year, and slightly above or below it, opens the picker.
+- The title is still centered and the navigation bar height doesn't change.
