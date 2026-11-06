@@ -74,7 +74,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | IMPLEMENTED; owner VoiceOver check in English and Danish pending | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
 | 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
 | 092 | Stop the Planner header crashing when the plan goes past the target | P1 | S | — (fixes 091) | DONE (committed on main as d5abf7d; owner check passed 2026-11-06) | [SLN-301](https://linear.app/sebastianln/issue/SLN-301) |
-| 093 | Jump to a theocratic year from the Year tab's title (custom year strip; native menu is the fallback) | P2 | M + owner | — (replaces 088) | IN PROGRESS (Revision 2: slide the pages) (base `ad0ba60`, Revision 1 `d5226e0`: more room, peeking strip, centered title; full `Scripts/verify.sh` passed, 400 tests; reviewer re-ran the focused tests, 27 passed) | [SLN-303](https://linear.app/sebastianln/issue/SLN-303) |
+| 093 | Jump to a theocratic year from the Year tab's title (custom year strip; native menu is the fallback) | P2 | M + owner | — (replaces 088) | DONE, owner device check pending (base `ad0ba60`, Revision 1 `d5226e0`, Revision 2 `77c50c7` slides the pages as a trial: more room, peeking strip, centered title; full `Scripts/verify.sh` passed, 400 tests; reviewer re-ran the focused tests, 27 passed) | [SLN-303](https://linear.app/sebastianln/issue/SLN-303) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
