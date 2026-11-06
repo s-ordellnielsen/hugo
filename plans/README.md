@@ -64,8 +64,9 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 080 | Show durations as "23 hours, 15 min" (Danish "23 timer 15 min") | P1 | S + owner | — | DONE (committed on main as 7c53a82; owner check passed 2026-11-05) | [SLN-291](https://linear.app/sebastianln/issue/SLN-291) |
 | 081 | Declutter the Planner header and stop it opening the target settings | P1 | M + owner | 080 | DONE (committed on main as 766e0ac, da33d08, 0763cd1; owner check passed 2026-11-05) | [SLN-296](https://linear.app/sebastianln/issue/SLN-296) |
 | 082 | Label the Year page total below the number, like the Planner header | P2 | S + owner | 080, after 081 | DONE (committed on main as 5e34f45; owner check passed 2026-11-05) | [SLN-297](https://linear.app/sebastianln/issue/SLN-297) |
-| 083 | Group the goal settings at the top of Settings and give yearly goal pacing its own page | P2 | M + owner | — | TODO | [SLN-292](https://linear.app/sebastianln/issue/SLN-292) |
-| 084 | Show this month's target next to each option on the monthly target page | P2 | M + owner | 081, 083 | TODO | [SLN-298](https://linear.app/sebastianln/issue/SLN-298) |
+| 091 | Share a clipped, animated marked progress bar between Planner and Settings | P1 | M + owner | — | DONE (committed as `a43cb85`; full `Scripts/verify.sh` passed; owner tested and accepted 2026-11-06) | [SLN-300](https://linear.app/sebastianln/issue/SLN-300) |
+| 083 | Put Planner and Service Year settings in General and explain the current-month calculation | P2 | M + owner | 091 + owner check | TODO (scope revised 2026-11-06) | [SLN-292](https://linear.app/sebastianln/issue/SLN-292) |
+| 084 | Explain Monthly Target with a live goal marker, adjusted target, and Buffer | P2 | M + owner | 081, 083 (091 transitively) | TODO (scope revised 2026-11-06) | [SLN-298](https://linear.app/sebastianln/issue/SLN-298) |
 | 085 | Replace the Overview month details with a plan pace sheet opened from the status line | P1 | M + owner | — | TODO | [SLN-293](https://linear.app/sebastianln/issue/SLN-293) |
 | 086 | Fill the Overview circle by area, and against the plan when there is no monthly goal | P1 | M + owner | 085 | TODO | [SLN-190](https://linear.app/sebastianln/issue/SLN-190), [SLN-191](https://linear.app/sebastianln/issue/SLN-191) |
 | 087 | Make the Overview date list as useful as the entry list | P1 | S + owner | — | TODO | [SLN-294](https://linear.app/sebastianln/issue/SLN-294) |
@@ -124,9 +125,9 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 * Owner decisions for 077 (2026-11-05): the Overview plan status uses "Foran planen / Langt foran planen / Følger planen / Bagud / Langt bagud" ("Efter plan" read as "according to plan"); the Planner says "mål" instead of "måltal" for the monthly target, and the one line about the yearly goal says "årsmål"; "Stadig planlagt" becomes "Tilbage i planen". English text is unchanged.
 * The CloudKit schema for V12 (`CD_Plan`) was deployed to Production on 2026-11-05 (owner), so plan 079 does not repeat that step.
 
-* Plans 080–090 (2026-11-05, planned at `1432319`) are the next external TestFlight build after build 120. All eleven issues are in Todo. Run them in numeric order; almost all add keys to `Localizable.xcstrings`, so run them one at a time.
+* Plans 080–090 were originally planned at `1432319` on 2026-11-05 for the next external TestFlight build after build 120. Plans 080–082 are now Done. The settings work was revised at `9be5c03` on 2026-11-06: run **091 → 083 → 084**, including 091's owner device check before 083. Then continue 085–090 in order; almost all edit `Localizable.xcstrings`, so run them one at a time.
   * 080 → 081 → 082: the short duration format first, then the Planner header, then the Year header in the same style. 081 removes the Planner header's tap and target sheet, the only caller that passes `showsDone: true`.
-  * 083 → 084: 083 adds `SelectableOptionRow` (DesignSystem) and the goal section in Settings; 084 rebuilds the monthly target page with it and removes `showsDone` (needs 081 first).
+    * 091 → 083 → 084: 091 adds the shared clipped `MarkedProgressBar` and moves the Planner header to it without changing target math. After its owner check, 083 moves Planner and Service Year settings into General, adds `SelectableOptionRow`, and explains the current-month calculation with a live month bar. 084 adds the real-data Monthly Target bar, Buffer, and the adjusted-target wording, and removes `showsDone` (081 already removed its outside caller).
   * 085 → 086: both edit `MonthlyProgressCard`. 085 removes the month details sheet and `CategoryProgressAggregator`; 086 changes what the circle fills against and fills it by area.
   * 087, 088, 089 and 090 are independent. 089 leaves `ServiceDurationFormatter.swift` alone because 080 changes it.
   * A changelog plan for this build (like 078) is not written yet. Add it once the build's contents are final.
@@ -134,12 +135,21 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * Short durations everywhere: "23 hours, 15 min" / "23 timer 15 min"; VoiceOver keeps full words.
   * The Planner header keeps a per-day line, but about planning: the shortfall (target minus projected time) spread over the days left. The line based on logged time goes.
   * The Year header gets the same label-below layout as the Planner header.
-  * The Planner target settings live only in Settings. Custom option pages for the monthly target and yearly goal pacing; tidy the Settings root. Native lists, at most one tip per page.
+    * The Planner target settings live only in Settings. Updated 2026-11-06: both settings belong under General, not in a goal section at the Settings root. Native visual-first option pages explain Monthly Target and Current Month Calculation using real inputs.
   * The Overview month details sheet goes. The status line opens a small plan pace sheet without an "Open Planner" button.
   * Without a monthly goal, the circle fills against this month's planned time; with no plans it is empty without entries and full with any. Plan 086 counts only non-carried-in entries for that; the owner confirms on device.
   * The date list matches the entry list (tap to edit, icon, Bible studies, VoiceOver) and drops the time column. No context menu or swipe actions yet (SLN-216).
   * The "Allow Bible studies" category toggle is honored, not removed.
   * Jump to month is a native menu of the displayed year's twelve months.
+
+## Settings decisions for plans 091, 083 and 084 (2026-11-06)
+
+* Execute **091 → 083 → 084**, not numeric order. These are implementation handoffs; this revision does not implement the app or create commits.
+* General contains a Planner section with Monthly Target, a Service Year section with Current Month Calculation (yearly-goal statuses only), and an unlabelled Minute Interval section last. Publisher Status stays at the root; Categories opens the actual list directly.
+* Exact names: **Adjusted to yearly goal / Tilpasset årsmålet**, **Buffer / Buffer**, and **Current Month Calculation / Beregning af nuværende måned**. No emphasis in the Danish title. Stored keys, enum raw values, and `extraHours` API names stay unchanged.
+* Both Settings pages show an animated, real-input explanation above their options. Monthly Target compares the selected base and faded Buffer with the factual monthly goal. The current-month bar shows today's fixed date marker and the selected 0/inclusive-day-fraction/whole-month contribution to expected time; it does not show logged progress.
+* Share drawing in `DesignSystem`, not feature calculations. Contain zero/tiny/interpolated fills, let endpoint marker labels wrap, disable spatial interpolation under Reduce Motion, and expose equivalent accessible text.
+* The bar extraction has its own owner device gate before the settings pages. Keep implementation verification and owner acceptance distinct; Linear Done requires the latter.
 
 ## Planner: next steps (not planned yet)
 
