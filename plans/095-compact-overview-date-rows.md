@@ -213,3 +213,149 @@ Stop and report back (do not improvise) if:
 - The rows depend on `.contentShape(.rect)` coming after the padding. Moving it before the padding brings back dead gaps between rows.
 - The rows no longer meet the 44 pt guideline at default text size (about 38 pt). The owner accepted this on 2026-11-06 because the rows touch and have no dead space. If testers mis-tap, the fallback is `.frame(minHeight: HugoLayout.Size.minimumHitTarget)` with `VStack(spacing: 0)` (44 pt per row), still shorter than today's 50 pt.
 - `OverviewDateListLayoutTests` measures through `ImageRenderer` at the test's default text size. If the default body font changes, the 30–44 pt band may need adjusting.
+
+---
+
+## Revision 1 (2026-11-06): timestamps instead of icons, and the old row spacing
+
+> **Drift check for this revision**: `git diff --stat 78c479c..HEAD -- Hugo/Features/Overview/Views/OverviewListView.swift HugoTests/Features/Overview`
+> Expected: no output. On any change, compare the excerpts below with the live code; on a mismatch, STOP.
+
+### Why
+
+The owner tested the base plan (commit `78c479c`) and found two problems. The category icon clutters the row, and they preferred the start time that rows showed before SLN-294. The rows also still look further apart than before, at 37 pt per entry against about 28 pt before SLN-294.
+
+Before SLN-294 (commit `a76ce93^`), a row was one line of text and rows were 6 pt apart. Revision 1 brings back exactly that look and keeps every pixel tappable. The 6 pt gap becomes 3 pt of padding above and below each row (`HugoLayout.Spacing.small / 2`). Rows sit exactly as far apart as before, and the space between two rows' text belongs to the rows' tap areas instead of being a dead gap.
+
+### Current state (after `78c479c`)
+
+`DateEntryRow.body` in `Hugo/Features/Overview/Views/OverviewListView.swift`:
+
+```swift
+            let category = entry.resolvedCategory()
+            Button {
+                selectedEntry = entry
+            } label: {
+                HStack {
+                    Image(systemName: category.iconName)
+                        .frame(width: HugoLayout.Size.labelReservedIconWidth)
+                        .foregroundStyle(.secondary)
+                    Text(category.name)
+                    Spacer()
+                    if entry.bibleStudies != 0 {
+                        ...book icon and count...
+                    }
+                    Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
+                        .monospacedDigit()
+                }
+                .padding(.vertical, HugoLayout.Spacing.compact)
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Text(category.name))
+            .accessibilityValue(...)
+```
+
+Before SLN-294, the row's first element was the start time:
+
+```swift
+                Text(entry.date, format: .dateTime.hour().minute())
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+```
+
+`HugoTests/Features/Overview/Views/OverviewDateListLayoutTests.swift` asserts `rowPitch < HugoLayout.Size.minimumHitTarget` and `rowPitch >= 30`. The measured pitch after `78c479c` was 37 pt.
+
+### Scope
+
+The same two files as the base plan, and nothing else:
+- `Hugo/Features/Overview/Views/OverviewListView.swift` (only `DateEntryRow`)
+- `HugoTests/Features/Overview/Views/OverviewDateListLayoutTests.swift`
+
+Out of scope: the Bible studies count (book icon and number) stays exactly as it is. The owner meant the category icon only. `EntryRow` and the "by entry" list keep their icons. Leave `VStack(spacing: 0)`, the day header and the card padding unchanged.
+
+### Steps
+
+#### R1 Step 1: Tighten the test band (it must fail first)
+
+In `OverviewDateListLayoutTests.swift`, replace the two `#expect` lines in `entryRowsAreCompact` with:
+
+```swift
+        // Same spacing as before SLN-294: one line of text plus 6 pt, all of it tappable.
+        #expect(rowPitch < 32)
+        #expect(rowPitch >= 24)
+```
+
+and change the struct's doc comment to:
+
+```swift
+/// The "by date" rows touch and sit as close together as before SLN-294
+/// (one line of text plus 6 pt), so the day cards stay compact.
+```
+
+**Verify**: focused test → `** TEST FAILED **` on `rowPitch < 32` (the pitch is still about 37). If it passes, STOP.
+
+#### R1 Step 2: Show the start time instead of the icon, and halve the gap into padding
+
+In `DateEntryRow.body`:
+
+1. Replace the `Image(systemName: category.iconName)` element and its two modifiers (`.frame(width: HugoLayout.Size.labelReservedIconWidth)`, `.foregroundStyle(.secondary)`) with:
+
+   ```swift
+                    Text(entry.date, format: .dateTime.hour().minute())
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+   ```
+
+2. Replace `.padding(.vertical, HugoLayout.Spacing.compact)` with:
+
+   ```swift
+                .padding(.vertical, HugoLayout.Spacing.small / 2)
+   ```
+
+   Keep `.contentShape(.rect)` directly after it.
+
+3. VoiceOver must hear the time too, because it is now visible. Replace `.accessibilityLabel(Text(category.name))` with:
+
+   ```swift
+            .accessibilityLabel(
+                Text(verbatim: "\(entry.date.formatted(date: .omitted, time: .shortened)), \(category.name)"))
+   ```
+
+   Leave `.accessibilityValue(...)` unchanged.
+
+4. Update the doc comment above `private struct DateEntryRow` to:
+
+   ```swift
+    /// One entry in a day card: start time, category, Bible studies and duration.
+    /// Rows touch and the half-gap padding is part of the tap area, so rows sit as
+    /// close as before SLN-294 while the whole list stays tappable (SLN-302).
+   ```
+
+**Verify**:
+- `grep -n "iconName\|labelReservedIconWidth" Hugo/Features/Overview/Views/OverviewListView.swift` → no line inside `DateEntryRow`. Lines in other views of the file are fine; if there are any, list them in your report.
+- Focused test → `** TEST SUCCEEDED **`. Report the measured row pitch (temporary print, removed before commit).
+- Lint → exit 0.
+
+#### R1 Step 3: Gate and commit
+
+`Scripts/verify.sh` exits 0. Stage the two files by path. Commit: `fix: show start times and the old spacing in the Overview date list`. `git show --stat HEAD` lists only the two files.
+
+### Done criteria (Revision 1)
+
+- [ ] R1 Step 1's test failed before the change.
+- [ ] Measured row pitch is at least 24 and under 32 pt.
+- [ ] `Scripts/verify.sh` exits 0.
+- [ ] `git show --stat HEAD` lists only the two in-scope files.
+- [ ] Owner check on device: rows show the start time, no category icon, and look as tight as before SLN-294. Tapping anywhere on a row, including the space between two rows, opens the nearest row. VoiceOver reads "time, category" and then the duration.
+
+### STOP conditions (Revision 1)
+
+- The drift check shows changes and the excerpts no longer match.
+- The measured pitch after R1 Step 2 is outside 24–32 pt.
+- The change seems to need any file other than the two in scope.
+
+### Maintenance note
+
+The rows now use 3 pt padding, so a row's tap area at the default text size is about 27 pt tall. The owner chose this on 2026-11-06 for density. The rows touch, so no tap lands in a dead gap. If testers mis-tap, raise the padding back to `HugoLayout.Spacing.compact` (37 pt per entry).
