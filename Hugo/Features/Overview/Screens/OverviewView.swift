@@ -70,7 +70,12 @@ private struct OverviewDayView: View {
         ReportReminderSchedule.reminderMonth(now: .now, submissions: submissions, calendar: .current)
     }
     var body: some View {
-        let pace = PlanPace.make(month: plannerMonth)
+        let month = plannerMonth
+        let pace = PlanPace.make(month: month)
+        let metrics = self.metrics
+        let fill = MonthlyCircleFill.make(
+            monthlyGoalHours: metrics.monthlyGoal, loggedSeconds: metrics.progress * 3_600,
+            plannedSeconds: month.planned.total, hasOwnEntries: metrics.hasOwnEntries)
         NavigationStack {
             ScrollView {
                 VStack {
@@ -80,7 +85,7 @@ private struct OverviewDayView: View {
                         Spacer(minLength: HugoLayout.Spacing.section)
                     }
                     MonthlyProgressCard(
-                        value: metrics.progress, monthlyGoal: metrics.monthlyGoal,
+                        value: metrics.progress, fill: fill,
                         planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
                         onAddEntry: { showingAddEntry = true },
                         onShowPlanPace: { showingPlanPace = true })

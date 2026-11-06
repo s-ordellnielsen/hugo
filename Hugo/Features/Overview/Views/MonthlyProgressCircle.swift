@@ -1,13 +1,18 @@
 import SwiftUI
 
 struct MonthlyProgressCircle: View {
-    let progress: Double
-    let maxValue: Double
+    /// Share of the circle's area to fill, from 0 to 1.
+    let fraction: Double
 
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .largeTitle) private var preferredSize: CGFloat = HugoLayout.Size.monthlyProgressDiameter
 
-    var normalizedProgress: Double { maxValue > 0 ? min(max(progress / maxValue, 0), 1) : 0 }
+    private var clampedFraction: Double { min(max(fraction, 0), 1) }
+
+    /// The fill's height as a share of the diameter, chosen so the colored
+    /// area matches `fraction` (a circle is narrow at the bottom, so a
+    /// quarter of the area needs about 30 % of the height).
+    private var fillHeight: Double { CircleFillGeometry.height(forAreaFraction: clampedFraction) }
 
     private var progressGradient: LinearGradient {
         LinearGradient(
@@ -34,10 +39,10 @@ struct MonthlyProgressCircle: View {
                             .frame(
                                 width: side,
                                 height: CGFloat(
-                                    ceil(normalizedProgress * Double(side) + (normalizedProgress >= 1 ? 1 : 0)))
+                                    ceil(fillHeight * Double(side) + (clampedFraction >= 1 ? 1 : 0)))
                             )
                     }
-                    .motion(Motion.progress, value: normalizedProgress)
+                    .motion(Motion.progress, value: fillHeight)
             }
             .frame(width: side, height: side)
             .clipShape(Circle())

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MonthlyProgressCard: View {
     let value: Double
-    let monthlyGoal: Double
+    let fill: MonthlyCircleFill
     var planStatus: MonthlyProgressStatus? = nil
     let onAddEntry: () -> Void
     let onShowPlanPace: () -> Void
@@ -12,7 +12,7 @@ struct MonthlyProgressCard: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ZStack {
-                MonthlyProgressCircle(progress: value, maxValue: monthlyGoal)
+                MonthlyProgressCircle(fraction: fill.fraction)
                     .accessibilityHidden(true)
                 VStack(spacing: 0) {
                     VStack {
@@ -68,8 +68,16 @@ struct MonthlyProgressCard: View {
     }
 
     private var accessibilityValueText: String {
-        monthlyGoal > 0
-            ? String(localized: "a11y.monthly_progress_card.value.\(Int(value)).\(Int(monthlyGoal))")
-            : String(localized: "a11y.monthly_progress_card.value.\(Int(value))")
+        switch fill.basis {
+        case .monthlyGoal(let hours):
+            String(localized: "a11y.monthly_progress_card.value.\(Int(value)).\(Int(hours))")
+        case .plan(let plannedSeconds):
+            String(
+                localized:
+                    "a11y.monthly_progress_card.value.planned.\(Int(value)).\(Int((plannedSeconds / 3_600).rounded(.up)))"
+            )
+        case .presence:
+            String(localized: "a11y.monthly_progress_card.value.\(Int(value))")
+        }
     }
 }

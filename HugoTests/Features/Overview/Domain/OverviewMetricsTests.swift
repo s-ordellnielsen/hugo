@@ -32,6 +32,32 @@ struct OverviewMetricsTests {
         #expect(metrics.expectedProgress == 0)
     }
 
+    @Test
+    func carriedInEntriesAloneAreNotOwnEntries() {
+        let carried = Entry(date: date(2026, 1, 1), duration: 1_800, tracker: nil)
+        carried.sourceReportYear = 2025
+        carried.sourceReportMonth = 12
+        let metrics = OverviewMetrics.make(
+            entries: [carried], status: nil, now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.hasOwnEntries == false)
+    }
+
+    @Test
+    func aRegularEntryIsAnOwnEntry() {
+        let metrics = OverviewMetrics.make(
+            entries: [Entry(date: date(2026, 1, 1), duration: 600, tracker: nil)], status: nil,
+            now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.hasOwnEntries == true)
+    }
+
+    @Test
+    func zeroLengthEntriesAreNotOwnEntries() {
+        let metrics = OverviewMetrics.make(
+            entries: [Entry(date: date(2026, 1, 1), duration: 0, tracker: nil)], status: nil,
+            now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.hasOwnEntries == false)
+    }
+
     private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day))!
     }
