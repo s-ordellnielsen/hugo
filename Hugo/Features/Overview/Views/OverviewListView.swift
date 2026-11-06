@@ -171,7 +171,7 @@ struct OverviewDateList: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 Divider()
-                VStack(spacing: HugoLayout.Spacing.small) {
+                VStack(spacing: 0) {
                     ForEach(section.entries) { entry in
                         DateEntryRow(entry: entry, selectedEntry: $selectedEntry)
                     }
@@ -188,6 +188,8 @@ struct OverviewDateList: View {
         }
     }
 
+    /// One entry in a day card. Rows touch and their padding is part of the
+    /// tap area, so the whole list is tappable while staying compact (SLN-302).
     private struct DateEntryRow: View {
         var entry: Entry
         @Binding var selectedEntry: Entry?
@@ -213,7 +215,7 @@ struct OverviewDateList: View {
                     Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
                         .monospacedDigit()
                 }
-                .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+                .padding(.vertical, HugoLayout.Spacing.compact)
                 .contentShape(.rect)
             }
             .buttonStyle(.plain)
