@@ -74,7 +74,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | IMPLEMENTED; owner VoiceOver check in English and Danish pending | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
 | 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
 | 092 | Stop the Planner header crashing when the plan goes past the target | P1 | S | — (fixes 091) | DONE (committed on main as d5abf7d; owner check passed 2026-11-06) | [SLN-301](https://linear.app/sebastianln/issue/SLN-301) |
-| 093 | Jump to a theocratic year from the Year tab's title (custom year strip; native menu is the fallback) | P2 | M + owner | — (replaces 088) | TODO | [SLN-303](https://linear.app/sebastianln/issue/SLN-303) |
+| 093 | Jump to a theocratic year from the Year tab's title (custom year strip; native menu is the fallback) | P2 | M + owner | — (replaces 088) | DONE, owner device check pending (committed on main as `ad0ba60`; full `Scripts/verify.sh` passed, 398 tests; reviewer re-ran the focused tests, 25 passed; the device check decides whether the strip stays or falls back to a menu) | [SLN-303](https://linear.app/sebastianln/issue/SLN-303) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
