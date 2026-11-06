@@ -74,6 +74,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | IMPLEMENTED; owner VoiceOver check in English and Danish pending | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
 | 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
 | 092 | Stop the Planner header crashing when the plan goes past the target | P1 | S | — (fixes 091) | DONE (committed on main as d5abf7d; owner check passed 2026-11-06) | [SLN-301](https://linear.app/sebastianln/issue/SLN-301) |
+| 093 | Jump to a theocratic year from the Year tab's title (custom year strip; native menu is the fallback) | P2 | M + owner | — (replaces 088) | TODO | [SLN-303](https://linear.app/sebastianln/issue/SLN-303) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -142,6 +143,10 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * The date list matches the entry list (tap to edit, icon, Bible studies, VoiceOver) and drops the time column. No context menu or swipe actions yet (SLN-216).
   * The "Allow Bible studies" category toggle is honored, not removed.
   * Jump to month is a native menu of the displayed year's twelve months.
+
+* Plan 093 (2026-11-06, planned at `b5f2177`) replaces the cancelled 088: jump to a theocratic year, not a month.
+  * The advisor recommended a native `Menu`. The owner chose to try a custom strip first: tapping the year title opens a popover with a strip of calendar years and a band that holds one theocratic year, with momentum and snapping. If the owner's device check finds it no faster or clearer than swiping pages, mark 093 REJECTED and plan the fallback in its maintenance notes (a native `Menu` over the same years).
+  * The strip lists exactly `TheocraticYear.availableYears`, which never has gaps (years without entries still get a page), so the "gap" concern does not apply. The planned data import keeps that property.
 
 ## Settings decisions for plans 091, 083 and 084 (2026-11-06)
 
