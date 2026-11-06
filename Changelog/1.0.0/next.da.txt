@@ -1,0 +1,28 @@
+Hugo er tilbage med en ny opdatering. Denne gang handler det om finpudsning: en masse små forbedringer ud fra jeres tilbagemeldinger på Planlæg. Lad os dykke ned i det.
+
+OVERBLIK
+- Tryk på linjen under dine timer, der viser, om du er foran eller bagud i forhold til din plan, så viser Hugo tallene bag.
+- Hvis du ikke har et månedligt mål, fyldes cirklen nu op i forhold til den tid, du har planlagt for måneden.
+- Cirklen fyldes også mere præcist, så halvdelen af dine timer nu farver halvdelen af cirklen.
+- Rapporten, der åbnede, når du trykkede på cirklen, er fjernet. Fanen Tjenesteår viser de samme tal.
+- I listen sorteret efter dato kan du nu trykke på en post for at åbne og ændre den. Posterne viser nu også bibelstudier.
+
+PLANLÆG
+- Toppen af Planlæg er roligere og lettere at læse. Den viser nu, hvor meget mere du skal planlægge for at nå dit mål, og cirka hvor meget det er om dagen.
+- Tid, der er overført fra forrige måned, vises ikke længere som tid udført den 1. Den tæller stadig med i måneden.
+
+TJENESTEÅR
+- Tryk på året øverst for at skifte til et andet tjenesteår.
+- Årets samlede tid har nu sin tekst under tallet.
+
+INDSTILLINGER
+- Planlæg og Tjenesteår ligger nu under Indstillinger → Generelt.
+- Begge sider forklarer, hvad hver mulighed gør, med en bjælke, der viser effekten på dine egne tal.
+
+Er det nemt at skifte mellem tjenesteår? Og er du nogensinde kommet til at åbne den forkerte post, når du trykkede i listen sorteret efter dato?
+
+ÆNDRINGER
+- Varigheder vises nu som "23 timer 15 min"
+- Når "Kan tilføje bibelstudier" er slået fra for en kategori, kan du ikke længere tilføje bibelstudier til nye poster i den kategori
+- VoiceOver læser timer og minutter op på varighedshjulet
+- Generelle fejlrettelser og forbedringer

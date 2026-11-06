@@ -1,0 +1,28 @@
+Hugo is back with a new update. This one is all about polish: lots of small improvements based on your feedback on the Planner. Let's dive in.
+
+OVERVIEW
+- Tap the line under your hours that says whether you are ahead of or behind your plan, and Hugo shows you the numbers behind it.
+- If you don't have a monthly goal, the circle now fills up against the time you have planned for the month.
+- The circle also fills more accurately, so half of your hours now color half of the circle.
+- The report that opened when you tapped the circle is gone. The Year tab shows the same totals.
+- In the list sorted by date, tap an entry to open and edit it. Entries now also show their Bible studies.
+
+PLANNER
+- The top of the Planner is calmer and easier to read. It now tells you how much more to plan to reach your target, and about how much that is per day.
+- Time carried in from the previous month no longer shows as time logged on the 1st. It still counts toward the month.
+
+YEAR
+- Tap the year at the top to jump to another service year.
+- The year's total now has its label below the number.
+
+SETTINGS
+- Planner and Service Year are now under Settings → General.
+- Both pages explain what each option does, with a bar that shows the effect on your own numbers.
+
+Is it easy to jump between service years? And have you ever opened the wrong entry when you tapped in the list sorted by date?
+
+CHANGES
+- Durations now read "23 hours, 15 min"
+- When "Can add Bible Studies" is off for a category, you can no longer add Bible studies to new entries in that category
+- VoiceOver reads hours and minutes on the duration wheel
+- General bug fixes and improvements
