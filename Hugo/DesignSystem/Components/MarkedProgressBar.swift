@@ -220,7 +220,7 @@ private nonisolated struct MarkedProgressBarLayout: Layout {
         let width = max(0, proposal.width ?? 0)
         guard marker != nil else { return CGSize(width: width, height: markerHeight) }
 
-        let labelSize = subviews[1].sizeThatFits(ProposedViewSize(width: width, height: nil))
+        let labelSize = labelSize(in: subviews, width: width)
         let labelGap = labelSize.height > 0 ? self.labelGap : 0
         return CGSize(width: width, height: labelSize.height + labelGap + markerHeight)
     }
@@ -237,16 +237,18 @@ private nonisolated struct MarkedProgressBarLayout: Layout {
             return
         }
 
-        let labelSize = subviews[1].sizeThatFits(ProposedViewSize(width: width, height: nil))
+        let labelSize = labelSize(in: subviews, width: width)
         let labelGap = labelSize.height > 0 ? self.labelGap : 0
         let markerCenter = physicalPosition(for: markerPosition, width: width)
         let labelCenter = min(max(markerCenter, labelSize.width / 2), width - labelSize.width / 2)
 
-        subviews[1].place(
-            at: CGPoint(x: bounds.minX + labelCenter, y: bounds.minY + labelSize.height / 2),
-            anchor: .center,
-            proposal: ProposedViewSize(width: width, height: labelSize.height)
-        )
+        if subviews.count > 1 {
+            subviews[1].place(
+                at: CGPoint(x: bounds.minX + labelCenter, y: bounds.minY + labelSize.height / 2),
+                anchor: .center,
+                proposal: ProposedViewSize(width: width, height: labelSize.height)
+            )
+        }
         subviews[0].place(
             at: CGPoint(
                 x: bounds.minX,
@@ -255,6 +257,13 @@ private nonisolated struct MarkedProgressBarLayout: Layout {
             anchor: .leading,
             proposal: ProposedViewSize(width: width, height: markerHeight)
         )
+    }
+
+    /// The marker label's size. An empty label (`EmptyView`, or an `if` that
+    /// produced nothing) gives the layout no second subview, so its size is zero.
+    private func labelSize(in subviews: Subviews, width: CGFloat) -> CGSize {
+        guard subviews.count > 1 else { return .zero }
+        return subviews[1].sizeThatFits(ProposedViewSize(width: width, height: nil))
     }
 
     private func physicalPosition(for fraction: Double, width: CGFloat) -> CGFloat {
