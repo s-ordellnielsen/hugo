@@ -73,6 +73,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 088 | Add a jump-to-month menu to the Year page | P2 | S + owner | — | CANCELLED (wrong interaction; owner wants jump-to-year instead) | [SLN-295](https://linear.app/sebastianln/issue/SLN-295) |
 | 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | IMPLEMENTED; owner VoiceOver check in English and Danish pending | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
 | 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
+| 092 | Stop the Planner header crashing when the plan goes past the target | P1 | S | — (fixes 091) | TODO (crash reproduced and fix confirmed in a scratch worktree at 333c857) | [SLN-301](https://linear.app/sebastianln/issue/SLN-301) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
