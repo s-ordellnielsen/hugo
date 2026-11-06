@@ -71,11 +71,9 @@ private struct PlannerPager: View {
     /// Credited time of this theocratic year's months before the current month.
     /// Built only when the target needs it.
     private var creditedBeforeCurrentMonth: TimeInterval {
-        guard targetBase == .yearlyGoalShare, let rule = status?.yearlyGoalRule else { return 0 }
-        let report = TheocraticYearReportBuilder.report(
-            for: TheocraticYear.containing(today), entries: yearEntries, submissions: submissions,
-            trackers: trackers, now: today)
-        return PlannerTarget.creditedSeconds(before: today.yearMonth(), in: report, rule: rule)
+        guard targetBase == .yearlyGoalShare else { return 0 }
+        return PlannerTarget.creditedBeforeCurrentMonth(
+            entries: yearEntries, submissions: submissions, trackers: trackers, status: status, now: today)
     }
 
     var body: some View {

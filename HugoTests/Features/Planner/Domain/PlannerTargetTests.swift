@@ -82,7 +82,7 @@ struct PlannerTargetTests {
                 == "Monthly goal + 5 hours")
         #expect(
             PlannerTarget.settingSummary(base: .yearlyGoalShare, extraHours: 0, status: regular, locale: locale)
-                == "Share of what's left of the yearly goal")
+                == "Adjusted to yearly goal")
     }
 
     @Test
@@ -110,24 +110,46 @@ struct PlannerTargetTests {
     }
 
     @Test
-    func creditedBeforeMonthUsesTheYearlyGoalCreditRule() throws {
+    func sharedCreditHelperUsesSubmittedSnapshotsAndIgnoresRawEntryTime() {
+        let submission = SubmittedReport(
+            year: 2026,
+            month: 9,
+            submittedAt: date(2026, 10, 1),
+            reportingLines: [
+                .init(typeRaw: TrackerType.main.rawValue, submittedHours: 4),
+                .init(typeRaw: TrackerType.separate.rawValue, typeName: "Bethel", submittedHours: 2),
+            ]
+        )
+        let rawEntry = Entry(date: date(2026, 9, 1), duration: 30 * 3_600, tracker: main)
+
+        #expect(
+            PlannerTarget.creditedBeforeCurrentMonth(
+                entries: [rawEntry], submissions: [submission], trackers: [main, separate], status: regular,
+                now: date(2026, 10, 15), calendar: calendar, locale: locale)
+                == TimeInterval(6 * 3_600))
+    }
+
+    @Test
+    func sharedCreditHelperReturnsZeroWithoutYearlyGoal() {
+        #expect(
+            PlannerTarget.creditedBeforeCurrentMonth(
+                entries: [], submissions: [], trackers: [], status: auxiliary,
+                now: date(2026, 11, 3), calendar: calendar, locale: locale) == 0)
+    }
+
+    @Test
+    func sharedCreditedInputMatchesReportCreditAndExcludesCurrentMonthEntries() throws {
         let entries = [
             Entry(date: date(2026, 9, 10, hour: 10), duration: 40 * 3_600, tracker: main),
             Entry(date: date(2026, 10, 10, hour: 10), duration: 30 * 3_600, tracker: main),
             Entry(date: date(2026, 10, 11, hour: 10), duration: 30 * 3_600, tracker: separate),
             Entry(date: date(2026, 11, 2, hour: 10), duration: 10 * 3_600, tracker: main),
         ]
-        let report = TheocraticYearReportBuilder.report(
-            for: TheocraticYear(startYear: 2026),
-            entries: entries,
-            now: date(2026, 11, 3, hour: 12),
-            calendar: calendar,
-            locale: locale)
-        let rule = try #require(regular.yearlyGoalRule)
-
-        let credited = PlannerTarget.creditedSeconds(before: november, in: report, rule: rule)
-
-        #expect(credited == TimeInterval(95 * 3_600))
+        #expect(
+            PlannerTarget.creditedBeforeCurrentMonth(
+                entries: entries, submissions: [], trackers: [main, separate], status: regular,
+                now: date(2026, 11, 3, hour: 12), calendar: calendar, locale: locale)
+                == TimeInterval(95 * 3_600))
     }
 
     private var november: YearMonth { YearMonth(year: 2026, month: 11) }

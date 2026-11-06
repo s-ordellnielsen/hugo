@@ -134,11 +134,14 @@ A month's logged time plus its still-planned time. The Planner shows it as "Plan
 _Avoid_: Expected time (that is yearly-goal pacing)
 
 **Monthly target**:
-The hours the Planner aims at for one month: the monthly goal, or an even share of what is left of the yearly goal, plus extra hours.
+The hours the Planner aims at for one month: the monthly goal, or an adjusted yearly-goal base, plus Buffer. Without a publisher-status goal, the selected duration is the personal monthly target.
 _Avoid_: Goal (the goal comes from the publisher status)
 
-**Extra hours**:
-Hours the user adds to the monthly target each month, as a buffer, or as a personal target when the publisher status has no goal.
+**Adjusted target**:
+The remaining yearly goal divided over the months left in the theocratic year, including the current month, rounded up to whole hours and based on credited time before the current month. The Settings label is "Adjusted to yearly goal" / "Tilpasset årsmålet". The Settings explanation names the remaining goal and month count. The persisted case remains `yearlyGoalShare`.
+
+**Buffer**:
+The nonnegative hours added to the base monthly target. Without a publisher-status goal, the same preference sets the whole personal monthly target. Settings calls it "Buffer" / "Buffer". Historical storage and API names remain `plannerExtraHours` / `extraHours`. The Planner bar draws the base as a solid fill and Buffer as a separate faded extension.
 
 **Plan pace**:
 How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.

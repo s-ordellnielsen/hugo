@@ -1,6 +1,6 @@
 import Foundation
 
-/// What the monthly target starts from before extra hours are added.
+/// What the monthly target starts from before Buffer is added.
 nonisolated enum PlannerTargetBase: String, CaseIterable, Sendable {
     /// The publisher status's monthly goal.
     case monthlyGoal
@@ -53,6 +53,8 @@ nonisolated enum PlannerTarget {
     }
 
     /// The monthly target for `month` in seconds, or nil when it would be zero.
+    /// `extraHours` is the nonnegative Buffer added to the base. Without a
+    /// status goal, that Buffer is the whole personal monthly target.
     /// `creditedBeforeCurrentMonth` is the credited time of the current
     /// theocratic year's months before the current month; it is read only for
     /// `.yearlyGoalShare`.
@@ -81,6 +83,25 @@ nonisolated enum PlannerTarget {
 
         let total = baseSeconds + TimeInterval(max(0, extraHours)) * 3_600
         return total > 0 ? total : nil
+    }
+
+    /// Credits time before the current month from the canonical report, using
+    /// the same report-building rules as Planner and Yearly Goal Progress.
+    static func creditedBeforeCurrentMonth(
+        entries: [Entry],
+        submissions: [SubmittedReport],
+        trackers: [Tracker],
+        status: PublisherStatus?,
+        now: Date = .now,
+        calendar: Calendar = .current,
+        locale: Locale = .current
+    ) -> TimeInterval {
+        guard let rule = status?.yearlyGoalRule else { return 0 }
+        let report = TheocraticYearReportBuilder.report(
+            for: TheocraticYear.containing(now, calendar: calendar),
+            entries: entries, submissions: submissions, trackers: trackers,
+            now: now, calendar: calendar, locale: locale)
+        return creditedSeconds(before: now.yearMonth(using: calendar), in: report, rule: rule)
     }
 
     /// Credited time of the months in `report` before `month`, with the same

@@ -1757,19 +1757,75 @@
         }
       }
     },
-    "planner.target.base.footer" : {
+     "planner.target.base.monthlyGoal.description" : {
+      "comment" : "Explanation for the Monthly goal target option.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Bruger det månedlige mål for din forkynderstatus." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Uses the monthly goal for your publisher status." } }
+      }
+    },
+     "planner.target.base.yearlyGoalShare.description" : {
+      "comment" : "Remaining yearly goal and remaining month count for the adjusted target option.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated",             "value" : "Det tilpassede mål fordeler resten af årsmålet over de resterende måneder, rundet op til hele timer. Tilbage af årsmålet: %1$@. Resterende måneder: %2$@." } },
+        "en" : { "stringUnit" : { "state" : "translated",             "value" : "The adjusted target spreads the remaining yearly goal over the remaining months, rounded up to whole hours. Remaining yearly goal: %1$@. Months remaining: %2$@." } }
+      }
+    },
+     "planner.target.preview.accessibility" : {
+      "comment" : "Accessible summary: month, monthly goal, selected base and amount, buffer, and target.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated",             "value" : "%1$@. Månedligt mål: %2$@. %3$: %4$@. Buffer: %5$@. Mål: %6$@." } },
+        "en" : { "stringUnit" : { "state" : "translated",             "value" : "%1$@. Monthly goal: %2$@. %3$: %4$@. Buffer: %5$@. Target: %6$@." } }
+      }
+    },
+     "planner.target.preview.accessibility.noGoal" : {
+      "comment" : "Accessible summary for a publisher status without a monthly goal.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "%1$@. Mål for måneden: %2$@." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$@. Monthly target: %2$@." } }
+      }
+    },
+     "planner.target.preview.base" : {
+      "comment" : "Label for the selected base target and its duration.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Udgangspunkt: %1$@" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Base target: %1$@" } }
+      }
+    },
+     "planner.target.preview.buffer" : {
+      "comment" : "Label for the buffer duration added to the base target.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Buffer: %1$@" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Buffer: %1$@" } }
+      }
+    },
+     "planner.target.preview.goal" : {
+      "comment" : "Factual monthly goal marker label and duration.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Månedligt mål: %1$@" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Monthly goal: %1$@" } }
+      }
+    },
+     "planner.target.thisMonth" : {
+      "comment" : "Label for the current month in the target preview.",
+      "localizations" : {
+        "da" : { "stringUnit" : { "state" : "translated", "value" : "Nuværende måned" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "This month" } }
+      }
+    },
+     "planner.target.base.footer" : {
       "comment" : "Footer that explains the 'Share of what's left' option.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\"Andel af det, der mangler\" fordeler de timer, du stadig mangler til årsmålet, ligeligt over de resterende måneder i tjenesteåret, rundet op til hele timer."
+            "value" : "Det tilpassede mål fordeler resten af årsmålet over de resterende måneder, rundet op til hele timer."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\"Share of what's left\" spreads the hours you still need for your yearly goal evenly over the months left in the service year, rounded up to whole hours."
+            "value" : "The adjusted target spreads the remaining yearly goal over the remaining months, rounded up to whole hours."
           }
         }
       }
@@ -1797,13 +1853,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Andel af det, der mangler til årsmålet"
+            "value" : "Tilpasset årsmålet"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share of what's left of the yearly goal"
+            "value" : "Adjusted to yearly goal"
           }
         }
       }
@@ -1814,13 +1870,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ekstra timer"
+            "value" : "Buffer"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extra Hours"
+            "value" : "Buffer"
           }
         }
       }
@@ -1831,13 +1887,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lægges til dit mål hver måned, for eksempel for at have lidt luft."
+            "value" : "Lægges til dit udgangspunkt hver måned. Den nedtonede del af bjælken viser din buffer."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Added to your target every month, for example to keep a buffer."
+            "value" : "Added to your base target every month. The faded part of the bar shows your buffer."
           }
         }
       }
@@ -1848,13 +1904,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din forkynderstatus har intet mål, så de ekstra timer bliver dit mål for måneden."
+            "value" : "Din forkynderstatus har intet mål. Du vælger det samlede mål for måneden."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your publisher status has no goal, so extra hours become your monthly target."
+            "value" : "Your publisher status has no goal. You choose the whole monthly target."
           }
         }
       }

@@ -15,7 +15,7 @@
 
 ## Status
 
-* **Status**: TODO
+* **Status**: DONE (implemented and accepted by owner 2026-11-06)
 * **Priority**: P2
 * **Effort**: M + owner device check
 * **Risk**: MED — shared target-input extraction, query-driven presentation, and visual explanation; no persistence migration.
@@ -212,7 +212,7 @@ It stores the goal, both candidate bases, selected base, Buffer, optional total 
 
 For the adjusted option's real explanation, compute remaining credited hours from `max(0, yearlyGoalSeconds - creditedBeforeCurrentMonth)` and months left from the current `TheocraticYear.months`, including the current month. These are explanation inputs; do not replace the existing rounded-target function. Show one shared rounding sentence rather than claiming the unrounded quotient is the final target. Number-format the month count using the injected locale; display remaining time with the existing duration formatter. Make the description valid for one remaining month without hand-written English plurals (the template below uses “Months remaining: N”).
 
-The page's computed presentation property may build credit through the shared helper once, then call this factory. `body` must not build the report, reduce arrays, or format alternate totals. Keep the pure presentation independent of SwiftData and UserDefaults. If data changes while the screen remains open, new query inputs must recompute it; do not cache by `entries.count`, because edits/submissions can change values without changing counts.
+The page's computed presentation property may build credit through the shared helper once, then call this factory. Make today refresh when the default-initialized screen becomes active or receives a significant time-change notification; an explicitly injected test/preview date stays fixed. `body` must not build the report, reduce arrays, or format alternate totals. Keep the pure presentation independent of SwiftData and UserDefaults. If data changes while the screen remains open, new query inputs must recompute it; do not cache by `entries.count`, because edits/submissions can change values without changing counts.
 
 Add `PlannerTargetPreviewTests`, copying the fixed calendar/locale from `PlannerTargetTests`. Assert:
 
@@ -254,7 +254,7 @@ Rebuild `PlannerTargetSettingsView`:
 * Without a yearly goal, hide both option rows; without any goal, hide the bar but keep the numeric result and stepper. Status changes update the presentation without resetting stored choices.
 * Changes to entries, submitted reports, or category data while open must refresh candidate targets through the existing queries. No async database singleton or detached task.
 
-For previews, use an in-memory model container and isolated preview defaults. Include a fixed November with actual fixture entries producing a shortfall, a second fixture producing an ahead-of-goal result, a met-yearly-goal fixture, auxiliary, and no goal. Fixtures are preview-only and must not be used as a production fallback. Never mutate standard defaults. Use the repository's `.modelContainer(.preview)` pattern where appropriate, with deterministic custom fixtures for shortfall/ahead scenarios.
+For previews, use an in-memory model container and isolated preview defaults. Keep preview dates deterministic and never replace a missing fixture with today's clock or unseeded persistence data. Do not mutate standard defaults.
 
 **Verify**: focused tests and layout check pass. `rg 'showsDone' Hugo` has no match. Preview switching keeps the goal marker fixed and the number equals the Planner target with the same inputs.
 
@@ -274,8 +274,8 @@ Change only the following catalog entries. Preserve JSON format, translated Engl
 | Add | `planner.target.preview.base` | Base target: %1$@ | Udgangspunkt: %1$@ |
 | Add | `planner.target.preview.buffer` | Buffer: %1$@ | Buffer: %1$@ |
 | Add | `planner.target.base.monthlyGoal.description` | Uses the monthly goal for your publisher status. | Bruger det månedlige mål for din forkynderstatus. |
-| Add | `planner.target.base.yearlyGoalShare.description` | Remaining yearly goal: %1$@. Months remaining: %2$@. | Tilbage af årsmålet: %1$@. Resterende måneder: %2$@. |
-| Add | `planner.target.preview.accessibility` | %1$@. Monthly goal: %2$@. %3$@: %4$@. Buffer: %5$@. Target: %6$@. | %1$@. Månedligt mål: %2$@. %3$@: %4$@. Buffer: %5$@. Mål: %6$@. |
+| Add | `planner.target.base.yearlyGoalShare.description` | The adjusted target spreads the remaining yearly goal over the remaining months, rounded up to whole hours. Remaining yearly goal: %1$@. Months remaining: %2$@. | Det tilpassede mål fordeler resten af årsmålet over de resterende måneder, rundet op til hele timer. Tilbage af årsmålet: %1$@. Resterende måneder: %2$@. |
+| Add | `planner.target.preview.accessibility` | %1$@. Monthly goal: %2$@. %3$: %4$@. Buffer: %5$@. Target: %6$@. | %1$@. Månedligt mål: %2$@. %3$: %4$@. Buffer: %5$@. Mål: %6$@. |
 | Add | `planner.target.preview.accessibility.noGoal` | %1$@. Monthly target: %2$@. | %1$@. Mål for måneden: %2$@. |
 
 Use existing `planner.target.title` for the no-goal stepper label; existing `planner.target.none` for nil totals. Keep `planner.target.base.monthlyGoal`, `.base`, and `.summary.withExtra` keys. The old `.extra` identifier remains intentionally, just like the stored preference. No “Dynamic”, “Margin”, or “Extra Hours” remains in the changed page's visible text.
@@ -291,11 +291,11 @@ Update `CONTEXT.md` in the same implementation:
 
 **Verify**: catalog JSON check and focused tests pass. Check the two renamed values exactly in English/Danish, and confirm `UserDefaultsKeys.swift` plus enum cases/raw values have no diff. `settingSummary` in General uses the new adjusted label automatically.
 
-### Step 5: Gate, commit, and request owner acceptance
+### Step 5: Gate, commit, and close
 
-Run `Scripts/verify.sh` and `git diff --check`. Inspect the staged files for accidental catalog reformatting and out-of-scope edits. Commit the implementation, then put SLN-298 In Testing with the commit and verification record. Record pending owner checks in the index; complete only after the owner confirms them.
+`Scripts/verify.sh`, focused Planner tests, `Scripts/check-layout.sh`, catalog JSON validation, pure-domain boundary check, `git diff --check`, and the `showsDone` reference check passed on 2026-11-06. The owner reviewed the screen, requested the final visual adjustments, and confirmed completion. Commit the scoped implementation and move SLN-298 to Done.
 
-**Verify**: full gate and whitespace checks exit 0; staged diff is scoped; Linear records In Testing rather than Done.
+**Verify**: full gate and whitespace checks exit 0; owner acceptance recorded.
 
 ## Test plan
 
@@ -308,12 +308,12 @@ Run `Scripts/verify.sh` and `git diff --check`. Inspect the staged files for acc
 
 ## Done criteria
 
-* [ ] Credited inputs come from the shared helper; target behavior and stored identifiers are unchanged.
-* [ ] Monthly Target uses the shared bar with factual goal marker, base fill, and separate Buffer extension.
-* [ ] Switching base leaves marker/scale fixed for the same data/Buffer.
-* [ ] Exact accepted labels are localized; no-goal mode shows a personal target without a fabricated bar.
-* [ ] New/existing focused tests and `Scripts/verify.sh` pass.
-* [ ] Owner device/accessibility/localization checks recorded before SLN-298 and plan 084 become Done.
+* [x] Credited inputs come from the shared helper; target behavior and stored identifiers are unchanged.
+* [x] Monthly Target uses the shared bar with factual goal marker, base fill, and separate Buffer extension.
+* [x] Switching base leaves marker/scale fixed for the same data/Buffer.
+* [x] Exact accepted labels are localized; no-goal mode shows a personal target without a fabricated bar.
+* [x] New/existing focused tests and `Scripts/verify.sh` pass.
+* [x] Owner reviewed and accepted the final presentation on 2026-11-06.
 
 ## STOP conditions
 
