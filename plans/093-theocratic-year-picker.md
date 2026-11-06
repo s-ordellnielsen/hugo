@@ -1195,3 +1195,31 @@ Change nothing else. The padding is symmetric, so the title stays centered.
 
 - Tapping anywhere on the title, including between the digits, just left of the year, and slightly above or below it, opens the picker.
 - The title is still centered and the navigation bar height doesn't change.
+
+## Revision 4 (2026-11-06, owner decision: remove the Year subtitle)
+
+Revision 3's 44 pt minimum height pushed the year title away from the system "Service Year" subtitle. The owner chose to remove the subtitle on the Year tab ("the user knows what page they're on") and keep the 44 pt tap area. The Planner tab keeps its subtitle; this is a deliberate difference.
+
+Apply on top of commit `75e513e`. The only in-scope file is `Hugo/Features/ServiceYear/Screens/ServiceYearView.swift`. Git workflow, STOP conditions and commands from above still apply.
+
+### Step U1: Remove the subtitle
+
+Delete exactly this one line from `ServiceYearView.swift`:
+
+```swift
+            .navigationSubtitle("year.subtitle")
+```
+
+Do NOT delete the `year.subtitle` key from `Localizable.xcstrings`: `Hugo/Features/Settings/Screens/GeneralSettingsView.swift` still uses it. Change nothing else.
+
+**Verify**: `grep -c "navigationSubtitle" Hugo/Features/ServiceYear/Screens/ServiceYearView.swift` → `0`; `grep -rn '"year.subtitle"' Hugo --include=*.swift` → still one match in `GeneralSettingsView.swift`; "Build only" → `** BUILD SUCCEEDED **`; "Lint" → exit 0.
+
+### Step U2: Gate and commit
+
+`Scripts/verify.sh` → exit 0. Stage only `ServiceYearView.swift` by explicit path and commit with `fix: remove the Year tab subtitle so the title keeps its tap area`.
+
+### Revision 4 owner check
+
+- The Year tab shows only "2026/2027 ⌄", vertically centered in the bar, with no subtitle and no odd gap.
+- Tapping anywhere around the title opens the picker.
+- With one year only, the plain title still looks right without a subtitle.
