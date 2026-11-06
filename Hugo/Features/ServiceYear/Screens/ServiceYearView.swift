@@ -95,7 +95,6 @@ struct ServiceYearView: View {
             .scrollIndicators(.hidden)
             .background(Color(.systemGroupedBackground))
             .navigationTitle(activeYear.displayName)
-            .navigationSubtitle("year.subtitle")
             .navigationBarTitleDisplayMode(.inline)
             .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
             .toolbar {
