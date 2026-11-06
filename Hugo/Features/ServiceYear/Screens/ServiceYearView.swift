@@ -110,6 +110,9 @@ struct ServiceYearView: View {
                                 yearTitle
                                 yearTitleChevron
                             }
+                            .padding(.horizontal, HugoLayout.Spacing.compact)
+                            .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+                            .contentShape(.rect)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel("year.picker.a11y.label")
