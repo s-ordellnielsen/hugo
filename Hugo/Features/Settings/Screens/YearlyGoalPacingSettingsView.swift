@@ -32,17 +32,11 @@ struct YearlyGoalPacingSettingsView: View {
                         SelectableOptionRow(
                             title: Text(option.pacing.label),
                             description: Text(option.pacing.explanation),
-                            value: Text(
-                                ServiceDurationFormatter.hoursString(from: option.expectedSeconds, locale: locale)),
                             isSelected: pacing == option.pacing
                         ) {
                             pacing = option.pacing
                         }
                     }
-                } header: {
-                    Text("settings.yearlyGoal.pacing.expectedByToday")
-                } footer: {
-                    Text("settings.yearlyGoal.pacing.options.caption")
                 }
             } else {
                 Section {

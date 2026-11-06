@@ -23,8 +23,21 @@ struct CurrentMonthCalculationPreview: View {
                                     "\(ServiceDurationFormatter.hoursString(from: option.contributionSeconds, locale: locale)) of \(ServiceDurationFormatter.hoursString(from: calculation.monthlyGoalSeconds, locale: locale))",
                                 locale: locale))
                     )
-                    .font(.title3).fontWeight(.semibold).fixedSize(horizontal: false, vertical: true)
+                    .font(.system(.title2, design: .serif, weight: .semibold))
+                    .contentTransition(.numericText(value: option.contributionSeconds / 3_600))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                    HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
+                        Text("settings.yearlyGoal.pacing.expectedByToday")
+                            .font(.footnote).foregroundStyle(.secondary)
+                        Text(ServiceDurationFormatter.hoursString(from: option.expectedSeconds, locale: locale))
+                            .font(.footnote.monospacedDigit().weight(.medium))
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityElement(children: .combine)
                 }
+                .animation(.default, value: option.contributionSeconds)
+                .animation(.default, value: option.expectedSeconds)
 
                 MarkedProgressBar(filled: option.fraction, marker: calculation.todayFraction) {
                     Text(calculation.todayLabel)

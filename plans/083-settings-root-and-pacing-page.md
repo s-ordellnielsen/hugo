@@ -14,7 +14,7 @@
 
 ## Status
 
-* **Status**: IMPLEMENTED — `Scripts/verify.sh` passed; owner device, localization, and accessibility checks pending.
+* **Status**: IMPLEMENTED — `Scripts/verify.sh` passed. Owner device, live English/Danish, and accessibility checks remain pending.
 * **Priority**: P2
 * **Effort**: M + owner device check
 * **Risk**: MED — settings navigation and an extraction from yearly expected-time math; no schema change.
@@ -286,11 +286,11 @@ In `CONTEXT.md`, rename the **Pacing** entry to **Current month calculation** an
 
 **Verify**: catalog JSON check and focused tests pass. Search Swift sources for removed keys: no matches. Confirm the title's `da` string is exactly `Beregning af nuværende måned`; no literal month names occur in production UI code.
 
-### Step 6: Full gate, commit, and hand over for the owner check
+### Step 6: Full gate and hand over for the owner check
 
-Run `Scripts/verify.sh` and inspect `git diff --check`. Keep this implementation uncommitted until explicitly asked. Update SLN-292 to In Testing with the verification result. Record pending owner checks in the plan index; do not mark Done yet.
+Run `Scripts/verify.sh` and inspect `git diff --check`. Keep implementation and plan completion notes in separate commits. Record pending owner checks in the plan index; keep SLN-292 In Testing until the owner verifies the interface.
 
-**Verify**: full gate and `git diff --check` exit 0. Changes remain uncommitted unless explicitly requested. SLN-292 is In Testing, not Done.
+**Verify**: full gate and `git diff --check` exit 0. SLN-292 is In Testing until the owner device, localization, and accessibility checks pass.
 
 ## Test plan
 
