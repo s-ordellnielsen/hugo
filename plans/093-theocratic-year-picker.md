@@ -1090,3 +1090,60 @@ Repeat owner checks 1–5 and 8 from the list above, and also check:
 - The year text in the title sits in the center of the navigation bar, with the chevron hanging to its right.
 - Half a year peeks in, faded, on each side of the strip, and the popover has visibly more room above and below.
 - On the smallest iPhone, at the default and the largest standard text size, the whole popover fits on screen without being clipped.
+
+## Revision 2 (2026-11-06, owner request: slide the pages)
+
+The owner wants the Year tab's pages to slide to the chosen year instead of jumping, to see whether it feels more fluid. This overrides the earlier out-of-scope line "Animating the pager's jump". It is a trial; the owner may ask to undo it after the device check.
+
+Apply on top of commit `d5226e0`. The only in-scope file is `Hugo/Features/ServiceYear/Screens/ServiceYearView.swift`. The Git workflow, STOP conditions and commands from above still apply.
+
+### Step S1: Animate the jump
+
+**S1a.** Add this property directly after `@State private var isYearPickerPresented = false`:
+
+```swift
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+```
+
+**S1b.** Replace:
+
+```swift
+    /// Shows `year` on the pager. The existing `onChange(of: scrollPosition)`
+    /// handler updates `displayedYear` and animates the title.
+    private func jump(to year: TheocraticYear) {
+        scrollPosition = year.id
+    }
+```
+
+with:
+
+```swift
+    /// Slides the pager to `year`, or jumps there with Reduce Motion on. The
+    /// existing `onChange(of: scrollPosition)` handler updates `displayedYear`
+    /// and animates the title.
+    private func jump(to year: TheocraticYear) {
+        withAnimation(reduceMotion ? nil : Motion.presence) {
+            scrollPosition = year.id
+        }
+    }
+```
+
+Change nothing else: not the `onChange` handlers, not `onAppear`, not the picker.
+
+**Verify**: "Build only" → `** BUILD SUCCEEDED **`; "Lint" → exit 0; `grep -c "Motion.presence" Hugo/Features/ServiceYear/Screens/ServiceYearView.swift` → `1`.
+
+### Step S2: Gate and commit
+
+`Scripts/verify.sh` → exit 0. Stage only `ServiceYearView.swift` by explicit path and commit with `feat: slide the Year pages to the year chosen in the picker`.
+
+### Revision 2 done criteria
+
+- [ ] `Scripts/verify.sh` exits 0.
+- [ ] `git show --stat HEAD` lists only `ServiceYearView.swift`.
+
+### Revision 2 owner check
+
+- Picking a year one or two years away slides the pages behind the popover smoothly, and the title digits still roll.
+- **Long jump:** with entries spread over many years (add one entry about ten years back), flick from the newest to the oldest year. If the slide stutters or takes too long, report it. A possible follow-up is to slide only for nearby years and jump for far ones.
+- With Reduce Motion on, the pages jump with no slide.
+- Decide: keep the slide, or undo Revision 2.
