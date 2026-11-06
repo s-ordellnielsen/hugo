@@ -39,7 +39,7 @@ private struct OverviewDayView: View {
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
 
     @State private var showingAddEntry = false
-    @State private var showingDetails = false
+    @State private var showingPlanPace = false
 
     init(today: Date) {
         self.today = today
@@ -56,13 +56,12 @@ private struct OverviewDayView: View {
             entries: entries, status: PublisherStatus.status(for: statusID), now: .now, calendar: .current)
     }
 
-    /// Nil unless the current month has plans.
-    private var planStatus: MonthlyProgressStatus? {
-        let month = PlannerMonth.make(
+    /// The current month in Planner terms: its plans and logged time per day.
+    private var plannerMonth: PlannerMonth {
+        PlannerMonth.make(
             month: today.yearMonth(using: .current),
             items: plans.map { PlannedItem($0, trackers: trackers) },
             entries: entries, trackers: trackers, now: .now, calendar: .current)
-        return PlanPace.make(month: month).map(MonthlyProgressStatus.make(pace:))
     }
 
     /// The month whose report reminder should show, if any. See
@@ -71,6 +70,7 @@ private struct OverviewDayView: View {
         ReportReminderSchedule.reminderMonth(now: .now, submissions: submissions, calendar: .current)
     }
     var body: some View {
+        let pace = PlanPace.make(month: plannerMonth)
         NavigationStack {
             ScrollView {
                 VStack {
@@ -81,8 +81,9 @@ private struct OverviewDayView: View {
                     }
                     MonthlyProgressCard(
                         value: metrics.progress, monthlyGoal: metrics.monthlyGoal,
-                        planStatus: planStatus, onAddEntry: { showingAddEntry = true },
-                        onShowDetails: { showingDetails = true })
+                        planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
+                        onAddEntry: { showingAddEntry = true },
+                        onShowPlanPace: { showingPlanPace = true })
                     Spacer(minLength: HugoLayout.Spacing.section)
 
                     OverviewListView(entries: entries)
@@ -101,8 +102,14 @@ private struct OverviewDayView: View {
             .sheet(isPresented: $showingAddEntry) {
                 AddEntryView()
             }
-            .sheet(isPresented: $showingDetails) {
-                MonthlyProgressDetailView(month: Date.now.yearMonth())
+            .sheet(isPresented: $showingPlanPace) {
+                if let pace {
+                    PlanPaceSheet(pace: pace)
+                        .presentationDetents([.medium])
+                }
+            }
+            .onChange(of: pace == nil) { _, hasNoPlans in
+                if hasNoPlans { showingPlanPace = false }
             }
         }
     }

@@ -29,7 +29,6 @@ enum HugoLayout {
         static let labelReservedIconWidth: CGFloat = 24
         static let symbolPickerMinimumCellWidth: CGFloat = 70
         static let monthlyProgressDiameter: CGFloat = 360
-        static let categoryProgressHeight: CGFloat = 56
         static let durationPickerComponentWidth: CGFloat = 70
         static let durationPickerHeight: CGFloat = 216
         static let addEntryCompactSheetHeight: CGFloat = 300

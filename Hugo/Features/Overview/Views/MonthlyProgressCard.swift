@@ -5,15 +5,16 @@ struct MonthlyProgressCard: View {
     let monthlyGoal: Double
     var planStatus: MonthlyProgressStatus? = nil
     let onAddEntry: () -> Void
-    let onShowDetails: () -> Void
+    let onShowPlanPace: () -> Void
 
     @ScaledMetric(relativeTo: .largeTitle) private var heroSize: CGFloat = HugoLayout.Typography.monthlyProgressHeroSize
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            Button(action: onShowDetails) {
-                ZStack {
-                    MonthlyProgressCircle(progress: value, maxValue: monthlyGoal)
+            ZStack {
+                MonthlyProgressCircle(progress: value, maxValue: monthlyGoal)
+                    .accessibilityHidden(true)
+                VStack {
                     VStack {
                         Text(Date.now, format: .dateTime.month(.wide))
                             .font(.caption)
@@ -25,19 +26,32 @@ struct MonthlyProgressCard: View {
                             .lineLimit(1)
                             .contentTransition(.numericText())
                             .motion(Motion.value, value: value)
-                        if let planStatus {
-                            MonthlyProgressStatusView(status: planStatus)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .transition(.opacity)
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
+                    .accessibilityValue(Text(verbatim: accessibilityValueText))
+
+                    if let planStatus {
+                        Button(action: onShowPlanPace) {
+                            HStack(spacing: HugoLayout.Spacing.tight) {
+                                MonthlyProgressStatusView(status: planStatus)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2)
+                                    .fontWeight(.semibold)
+                                    .accessibilityHidden(true)
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+                            .contentShape(.rect)
                         }
+                        .buttonStyle(.card)
+                        .accessibilityLabel(Text(verbatim: planStatus.label))
+                        .accessibilityHint(Text("overview.pace.a11y.hint"))
+                        .transition(.opacity)
                     }
                 }
             }
-            .buttonStyle(.card)
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
-            .accessibilityValue(Text(verbatim: accessibilityValueText))
 
             Button(action: onAddEntry) {
                 Label("entry.add.label", systemImage: "plus")
@@ -54,11 +68,8 @@ struct MonthlyProgressCard: View {
     }
 
     private var accessibilityValueText: String {
-        let amount =
-            monthlyGoal > 0
+        monthlyGoal > 0
             ? String(localized: "a11y.monthly_progress_card.value.\(Int(value)).\(Int(monthlyGoal))")
             : String(localized: "a11y.monthly_progress_card.value.\(Int(value))")
-        guard let planStatus else { return amount }
-        return "\(amount), \(planStatus.label)"
     }
 }

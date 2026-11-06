@@ -16,38 +16,3 @@ struct OverviewMetrics {
         return OverviewMetrics(totalHours: totalHours, monthlyGoal: goal, expectedProgress: expected)
     }
 }
-
-struct CategoryProgressRow: Identifiable {
-    let id: String
-    let name: String
-    let iconName: String
-    let duration: TimeInterval
-    let color: CategoryProgressColor?
-}
-
-enum CategoryProgressAggregator {
-    static func rows(
-        entries: [Entry], trackers: [Tracker], locale: Locale = .current
-    ) -> [CategoryProgressRow] {
-        let totals = CategoryTotals.rows(entries: entries, trackers: trackers, locale: locale)
-            .filter { $0.duration > 0 }
-        let trackersByID = Dictionary(trackers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-
-        func row(_ total: CategoryTotal) -> CategoryProgressRow {
-            let tracker = total.trackerID.flatMap { trackersByID[$0] }
-            return CategoryProgressRow(
-                id: total.id, name: total.name, iconName: total.iconName, duration: total.duration,
-                color: tracker.flatMap { CategoryProgressColor(hue: $0.hue, saturation: $0.sat, brightness: $0.bri) }
-            )
-        }
-
-        let live = trackers.compactMap { tracker in totals.first { $0.trackerID == tracker.id } }
-        let liveIDs = Set(live.map(\.id))
-        let others =
-            totals
-            .filter { $0.id != "untracked" && !liveIDs.contains($0.id) }
-            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-        let untracked = totals.filter { $0.id == "untracked" }
-        return (live + others + untracked).map(row)
-    }
-}
