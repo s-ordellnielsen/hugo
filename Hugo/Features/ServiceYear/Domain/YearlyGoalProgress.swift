@@ -67,16 +67,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
                     return total + rule.monthlyGoalSeconds
                 }
                 guard month.id == current else { return total }
-                switch pacing {
-                case .proRated:
-                    let day = calendar.component(.day, from: now)
-                    let lastDay = current.lastDay(calendar: calendar)
-                    return total + rule.monthlyGoalSeconds * TimeInterval(day) / TimeInterval(lastDay)
-                case .completedMonths:
-                    return total
-                case .includeCurrentMonth:
-                    return total + rule.monthlyGoalSeconds
-                }
+                return total + rule.monthlyGoalSeconds * pacing.currentMonthFraction(now: now, calendar: calendar)
             }
         }
 

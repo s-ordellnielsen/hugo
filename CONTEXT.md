@@ -114,8 +114,8 @@ The hours of separate-category time that may count beyond the monthly goal in on
 **Expected time**:
 The credited time the user should have by now to reach the yearly goal at an even pace.
 
-**Pacing**:
-How expected time is worked out for the current month: in proportion to the days passed, counting only completed months, or counting the whole current month.
+**Current month calculation**:
+How expected time is worked out for the current month: in proportion to the inclusive day fraction, counting only completed months, or counting the whole current month. Settings calls this "Current Month Calculation" / "Beregning af nuværende måned". It changes expected time, not credited or logged time. Persisted code names remain `YearlyGoalPacing`.
 
 ## Planning
 

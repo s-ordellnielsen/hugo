@@ -1,19 +1,46 @@
-//
-//  GeneralSettingsView.swift
-//  Hugo
-//
-//  Created by Sebastian Nielsen on 06/08/2026.
-//
-
 import SwiftUI
 
 struct GeneralSettingsView: View {
     @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
     @AppStorage(UserDefaultsKeys.yearlyGoalPacing) private var pacing: YearlyGoalPacing = .proRated
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
+    @AppStorage(UserDefaultsKeys.plannerTargetBase) private var base: PlannerTargetBase = .monthlyGoal
+    @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
+
+    private var status: PublisherStatus? { PublisherStatus.status(for: statusID) }
 
     var body: some View {
         List {
+            Section {
+                NavigationLink(destination: PlannerTargetSettingsView()) {
+                    LabeledContent {
+                        Text(
+                            PlannerTarget.settingSummary(
+                                base: base, extraHours: extraHours, status: status)
+                        )
+                        .foregroundStyle(.secondary)
+                    } label: {
+                        Label("planner.target.title", systemImage: "calendar")
+                    }
+                }
+            } header: {
+                Text("tab.planner")
+            }
+
+            if status?.yearlyGoalRule != nil {
+                Section {
+                    NavigationLink(destination: YearlyGoalPacingSettingsView()) {
+                        LabeledContent {
+                            Text(pacing.label).foregroundStyle(.secondary)
+                        } label: {
+                            Label("settings.yearlyGoal.pacing", systemImage: "chart.line.uptrend.xyaxis")
+                        }
+                    }
+                } header: {
+                    Text("year.subtitle")
+                }
+            }
+
             Section {
                 Picker(selection: $durationMinuteInterval) {
                     Text("settings.duration.minute-interval.1").tag(1)
@@ -23,21 +50,6 @@ struct GeneralSettingsView: View {
                     Label("settings.duration.minute-interval", systemImage: "clock")
                 }
                 .pickerStyle(.navigationLink)
-            }
-
-            if PublisherStatus.status(for: statusID)?.yearlyGoalRule != nil {
-                Section {
-                    Picker(selection: $pacing) {
-                        ForEach(YearlyGoalPacing.allCases, id: \.self) { option in
-                            Text(option.label).tag(option)
-                        }
-                    } label: {
-                        Label("settings.yearlyGoal.pacing", systemImage: "chart.line.uptrend.xyaxis")
-                    }
-                    .pickerStyle(.navigationLink)
-                } footer: {
-                    Text("settings.yearlyGoal.pacing.footer")
-                }
             }
         }
         .navigationTitle("settings.group.settings.general")

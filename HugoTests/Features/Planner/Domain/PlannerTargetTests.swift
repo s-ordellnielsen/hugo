@@ -76,6 +76,40 @@ struct PlannerTargetTests {
     }
 
     @Test
+    func settingSummaryUsesTheSelectedBaseAndPositiveExtra() {
+        #expect(
+            PlannerTarget.settingSummary(base: .monthlyGoal, extraHours: 5, status: regular, locale: locale)
+                == "Monthly goal + 5 hours")
+        #expect(
+            PlannerTarget.settingSummary(base: .yearlyGoalShare, extraHours: 0, status: regular, locale: locale)
+                == "Share of what's left of the yearly goal")
+    }
+
+    @Test
+    func settingSummaryUsesMonthlyGoalWhenYearlyShareIsUnavailable() {
+        #expect(
+            PlannerTarget.settingSummary(base: .yearlyGoalShare, extraHours: 0, status: auxiliary, locale: locale)
+                == "Monthly goal")
+    }
+
+    @Test
+    func settingSummaryClampsNegativeExtraAndHandlesStatusesWithoutGoals() {
+        #expect(
+            PlannerTarget.settingSummary(base: .monthlyGoal, extraHours: -5, status: regular, locale: locale)
+                == "Monthly goal")
+        #expect(
+            PlannerTarget.settingSummary(base: .monthlyGoal, extraHours: 0, status: publisher, locale: locale)
+                == "Not set")
+        #expect(
+            PlannerTarget.settingSummary(base: .monthlyGoal, extraHours: 0, status: nil, locale: locale) == "Not set")
+        #expect(
+            PlannerTarget.settingSummary(base: .monthlyGoal, extraHours: 3, status: publisher, locale: locale)
+                == "3 hours")
+        #expect(
+            PlannerTarget.settingSummary(base: .monthlyGoal, extraHours: 3, status: nil, locale: locale) == "3 hours")
+    }
+
+    @Test
     func creditedBeforeMonthUsesTheYearlyGoalCreditRule() throws {
         let entries = [
             Entry(date: date(2026, 9, 10, hour: 10), duration: 40 * 3_600, tracker: main),

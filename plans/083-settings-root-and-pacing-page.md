@@ -14,7 +14,7 @@
 
 ## Status
 
-* **Status**: TODO — revised scope has not been implemented.
+* **Status**: IMPLEMENTED — `Scripts/verify.sh` passed; owner device, localization, and accessibility checks pending.
 * **Priority**: P2
 * **Effort**: M + owner device check
 * **Risk**: MED — settings navigation and an extraction from yearly expected-time math; no schema change.
@@ -288,9 +288,9 @@ In `CONTEXT.md`, rename the **Pacing** entry to **Current month calculation** an
 
 ### Step 6: Full gate, commit, and hand over for the owner check
 
-Run `Scripts/verify.sh`, inspect `git diff --check` and the staged diff, then commit only the allowed implementation files. Update SLN-292 to In Testing with the commit and verification result. Record pending owner checks in the plan index; do not mark Done yet.
+Run `Scripts/verify.sh` and inspect `git diff --check`. Keep this implementation uncommitted until explicitly asked. Update SLN-292 to In Testing with the verification result. Record pending owner checks in the plan index; do not mark Done yet.
 
-**Verify**: full gate and `git diff --check` exit 0. The commit contains only in-scope files. SLN-292 is In Testing, not Done.
+**Verify**: full gate and `git diff --check` exit 0. Changes remain uncommitted unless explicitly requested. SLN-292 is In Testing, not Done.
 
 ## Test plan
 

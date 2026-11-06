@@ -9,7 +9,7 @@ nonisolated enum PlannerTargetBase: String, CaseIterable, Sendable {
     case yearlyGoalShare
 }
 
-extension PlannerTargetBase {
+nonisolated extension PlannerTargetBase {
     var label: LocalizedStringResource {
         switch self {
         case .monthlyGoal: "planner.target.base.monthlyGoal"
@@ -19,6 +19,39 @@ extension PlannerTargetBase {
 }
 
 nonisolated enum PlannerTarget {
+    static func settingSummary(
+        base: PlannerTargetBase,
+        extraHours: Int,
+        status: PublisherStatus?,
+        locale: Locale = .current
+    ) -> String {
+        let baseText: String?
+        if let status, status.yearlyGoalRule != nil {
+            switch base {
+            case .monthlyGoal:
+                baseText = String(localized: "planner.target.base.monthlyGoal", locale: locale)
+            case .yearlyGoalShare:
+                baseText = String(localized: "planner.target.base.yearlyGoalShare", locale: locale)
+            }
+        } else if (status?.monthlyGoal ?? 0) > 0 {
+            baseText = String(localized: "planner.target.base.monthlyGoal", locale: locale)
+        } else {
+            baseText = nil
+        }
+
+        let extra = ServiceDurationFormatter.hoursString(from: TimeInterval(max(0, extraHours)) * 3_600, locale: locale)
+        guard let baseText else {
+            return extraHours > 0
+                ? extra
+                : String(localized: LocalizedStringResource("planner.target.none", locale: locale))
+        }
+        guard extraHours > 0 else { return baseText }
+        let summary = LocalizedStringResource(
+            "planner.target.summary.withExtra", defaultValue: "\(baseText) + \(extra)", locale: locale,
+            comment: "A monthly target summary followed by extra hours. Both arguments are localized text.")
+        return String(localized: summary)
+    }
+
     /// The monthly target for `month` in seconds, or nil when it would be zero.
     /// `creditedBeforeCurrentMonth` is the credited time of the current
     /// theocratic year's months before the current month; it is read only for

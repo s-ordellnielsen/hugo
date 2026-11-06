@@ -56,14 +56,11 @@ struct SettingsView: View {
                     NavigationLink(destination: ReportSettingsView()) {
                         Label("settings.group.settings.report", systemImage: "doc.text")
                     }
-                    NavigationLink(destination: CategorySettingsView()) {
+                    NavigationLink(destination: CategoryListView()) {
                         Label("settings.group.settings.category", systemImage: "square.grid.2x2")
                     }
                     NavigationLink(destination: GeneralSettingsView()) {
                         Label("settings.group.settings.general", systemImage: "gearshape")
-                    }
-                    NavigationLink(destination: PlannerTargetSettingsView()) {
-                        Label("tab.planner", systemImage: "calendar")
                     }
                 }
 
