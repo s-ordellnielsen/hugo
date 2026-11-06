@@ -10,27 +10,11 @@ struct PlannerProgressBar: View {
     private var projectedSeconds: TimeInterval { loggedSeconds + stillPlannedSeconds }
 
     var body: some View {
-        GeometryReader { proxy in
-            let scale = max(targetSeconds, projectedSeconds, 1)
-            let width = proxy.size.width
-            ZStack(alignment: .leading) {
-                Capsule().fill(.quaternary)
-                Capsule()
-                    .fill(Color.hugoAccent.opacity(0.35))
-                    .frame(width: width * min(1, projectedSeconds / scale))
-                Capsule()
-                    .fill(Color.hugoAccent)
-                    .frame(width: width * min(1, loggedSeconds / scale))
-                if projectedSeconds > targetSeconds {
-                    Rectangle()
-                        .fill(.primary)
-                        .frame(width: 2)
-                        .offset(x: width * targetSeconds / scale - 1)
-                }
-            }
-        }
-        .frame(height: HugoLayout.Size.goalTrackHeight)
-        .motion(Motion.progress, value: projectedSeconds)
-        .accessibilityHidden(true)
+        let scale = max(targetSeconds, projectedSeconds, 1)
+        MarkedProgressBar(
+            filled: loggedSeconds / scale,
+            extended: projectedSeconds / scale,
+            marker: projectedSeconds > targetSeconds ? targetSeconds / scale : nil
+        )
     }
 }

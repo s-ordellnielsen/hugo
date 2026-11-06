@@ -37,7 +37,6 @@ struct PlannerStatusHeader: View {
                     stillPlannedSeconds: status.stillPlannedSeconds,
                     targetSeconds: targetSeconds
                 )
-                .padding(.vertical, HugoLayout.Spacing.tight)
             }
 
             // Side by side when both fit on one line each; otherwise stacked, so no label breaks mid-value.
