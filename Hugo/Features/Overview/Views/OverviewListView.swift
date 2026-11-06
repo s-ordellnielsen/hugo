@@ -107,7 +107,7 @@ struct OverviewDateList: View {
 
     var body: some View {
         ForEach(dates) { date in
-            DateListItem(section: date)
+            DateListItem(section: date, selectedEntry: $selectedEntry)
                 .equatable()
                 .transition(.move(edge: .top).combined(with: .opacity))
         }
@@ -142,6 +142,11 @@ struct OverviewDateList: View {
 
     private struct DateListItem: View, Equatable {
         var section: DateSection
+        @Binding var selectedEntry: Entry?
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.section == rhs.section
+        }
 
         var body: some View {
             VStack {
@@ -163,10 +168,12 @@ struct OverviewDateList: View {
                             .fontWeight(.medium)
                     }
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(.isHeader)
                 Divider()
                 VStack(spacing: HugoLayout.Spacing.small) {
                     ForEach(section.entries) { entry in
-                        DateEntryRow(entry: entry)
+                        DateEntryRow(entry: entry, selectedEntry: $selectedEntry)
                     }
                 }
                 .padding(.top, HugoLayout.Spacing.small)
@@ -183,17 +190,38 @@ struct OverviewDateList: View {
 
     private struct DateEntryRow: View {
         var entry: Entry
+        @Binding var selectedEntry: Entry?
 
         var body: some View {
-            HStack {
-                Text(entry.date, format: .dateTime.hour().minute())
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
-                Text(entry.resolvedCategory().name)
-                Spacer()
-                Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
-                    .monospacedDigit()
+            let category = entry.resolvedCategory()
+            Button {
+                selectedEntry = entry
+            } label: {
+                HStack {
+                    Image(systemName: category.iconName)
+                        .frame(width: HugoLayout.Size.labelReservedIconWidth)
+                        .foregroundStyle(.secondary)
+                    Text(category.name)
+                    Spacer()
+                    if entry.bibleStudies != 0 {
+                        HStack(spacing: HugoLayout.Spacing.tight) {
+                            Image(systemName: "book")
+                            Text(String("\(entry.bibleStudies)"))
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                    Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
+                        .monospacedDigit()
+                }
+                .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+                .contentShape(.rect)
             }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Text(category.name))
+            .accessibilityValue(
+                Text(verbatim: EntryAccessibilityValue.text(duration: entry.duration, bibleStudies: entry.bibleStudies))
+            )
         }
     }
 }

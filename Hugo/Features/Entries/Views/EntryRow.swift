@@ -7,15 +7,7 @@ struct EntryRow: View {
     @Binding var selectedEntry: Entry?
 
     private var accessibilityValue: Text {
-        let duration = ServiceDurationFormatter.accessibilityString(from: entry.duration)
-
-        guard entry.bibleStudies != 0 else {
-            return Text(verbatim: duration)
-        }
-
-        let bibleStudies = String(localized: "entry.bibelstudies.count.accessibility.\(entry.bibleStudies)")
-
-        return Text(String("\(duration), \(bibleStudies)"))
+        Text(verbatim: EntryAccessibilityValue.text(duration: entry.duration, bibleStudies: entry.bibleStudies))
     }
 
     private var category: EntryCategory { entry.resolvedCategory() }
