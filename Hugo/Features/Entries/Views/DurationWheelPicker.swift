@@ -25,6 +25,7 @@ struct DurationWheelPicker: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("entry.duration.label"))
+        .accessibilityValue(Text(verbatim: ServiceDurationFormatter.accessibilityString(from: duration)))
     }
 }
 
@@ -128,6 +129,10 @@ private struct DurationPickerRepresentable: UIViewRepresentable {
             let label = view as? UILabel ?? UILabel()
             let value = component == 0 ? row : minuteOptions[row]
             label.text = String(format: "%02d", value)
+            label.accessibilityLabel =
+                component == 0
+                ? DurationWheelAccessibility.hoursLabel(value)
+                : DurationWheelAccessibility.minutesLabel(value)
             label.font = .preferredFont(forTextStyle: .title2)
             label.textAlignment = .center
             return label

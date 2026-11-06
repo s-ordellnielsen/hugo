@@ -71,7 +71,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 086 | Fill the Overview circle by area, and against the plan when there is no monthly goal | P1 | M + owner | 085 | TODO | [SLN-190](https://linear.app/sebastianln/issue/SLN-190), [SLN-191](https://linear.app/sebastianln/issue/SLN-191) |
 | 087 | Make the Overview date list as useful as the entry list | P1 | S + owner | — | TODO | [SLN-294](https://linear.app/sebastianln/issue/SLN-294) |
 | 088 | Add a jump-to-month menu to the Year page | P2 | S + owner | — | TODO | [SLN-295](https://linear.app/sebastianln/issue/SLN-295) |
-| 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | TODO | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
+| 089 | Announce hours and minutes on the duration wheel | P2 | S + owner | — | IMPLEMENTED; owner VoiceOver check in English and Danish pending | [SLN-283](https://linear.app/sebastianln/issue/SLN-283) |
 | 090 | Hide Bible studies for categories that turn them off | P2 | S + owner | — | TODO | [SLN-169](https://linear.app/sebastianln/issue/SLN-169) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)

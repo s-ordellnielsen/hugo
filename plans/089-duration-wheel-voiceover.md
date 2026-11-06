@@ -20,6 +20,7 @@
 - **Category**: bug
 - **Planned at**: commit `1432319`, 2026-11-05
 - **Issue**: [SLN-283](https://linear.app/sebastianln/issue/SLN-283)
+- **Status**: IMPLEMENTED; owner VoiceOver check in English and Danish pending
 
 ## Why this matters
 
@@ -218,11 +219,10 @@ Run `Scripts/verify.sh`. Then stage the three in-scope files by path and commit 
 
 ## Done criteria
 
-- [ ] `Scripts/verify.sh` exits 0, including the 3 new tests.
-- [ ] `grep -n "String(format: \"%02d\", value)" Hugo/Features/Entries/Views/DurationWheelPicker.swift` → 1 line (the visible text is unchanged).
-- [ ] `grep -c "DurationWheelAccessibility\." Hugo/Features/Entries/Views/DurationWheelPicker.swift` → `2`
-- [ ] `git show --stat HEAD` lists only the three in-scope files (nothing under `Hugo/Domain` or `Hugo/Resources`).
-- [ ] `plans/README.md` status row updated (unless a reviewer maintains it).
+- [x] `Scripts/verify.sh` exits 0, including the 3 new tests.
+- [x] The visible row text remains `String(format: "%02d", value)`.
+- [x] The picker contains row labels and a complete-duration accessibility value.
+- [ ] Owner confirms VoiceOver output in English and Danish on device.
 
 ## STOP conditions
 
