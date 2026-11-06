@@ -3,8 +3,8 @@ import Testing
 
 @testable import Hugo
 
-/// The "by date" rows touch and are shorter than the 44 pt minimum at the
-/// default text size, so the day cards stay compact (SLN-302).
+/// The "by date" rows touch and sit as close together as before SLN-294
+/// (one line of text plus 6 pt), so the day cards stay compact.
 @MainActor
 struct OverviewDateListLayoutTests {
     @Test
@@ -13,8 +13,9 @@ struct OverviewDateListLayoutTests {
         let three = try renderedHeight(entryCount: 3)
         let rowPitch = (three - one) / 2
 
-        #expect(rowPitch < HugoLayout.Size.minimumHitTarget)
-        #expect(rowPitch >= 30)
+        // Same spacing as before SLN-294: one line of text plus 6 pt, all of it tappable.
+        #expect(rowPitch < 32)
+        #expect(rowPitch >= 24)
     }
 
     /// Height of one day card holding `entryCount` entries.

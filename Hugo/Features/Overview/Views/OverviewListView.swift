@@ -188,8 +188,9 @@ struct OverviewDateList: View {
         }
     }
 
-    /// One entry in a day card. Rows touch and their padding is part of the
-    /// tap area, so the whole list is tappable while staying compact (SLN-302).
+    /// One entry in a day card: start time, category, Bible studies and duration.
+    /// Rows touch and the half-gap padding is part of the tap area, so rows sit as
+    /// close as before SLN-294 while the whole list stays tappable (SLN-302).
     private struct DateEntryRow: View {
         var entry: Entry
         @Binding var selectedEntry: Entry?
@@ -200,8 +201,8 @@ struct OverviewDateList: View {
                 selectedEntry = entry
             } label: {
                 HStack {
-                    Image(systemName: category.iconName)
-                        .frame(width: HugoLayout.Size.labelReservedIconWidth)
+                    Text(entry.date, format: .dateTime.hour().minute())
+                        .monospacedDigit()
                         .foregroundStyle(.secondary)
                     Text(category.name)
                     Spacer()
@@ -215,12 +216,14 @@ struct OverviewDateList: View {
                     Text(Duration.seconds(entry.duration).formatted(.time(pattern: .hourMinute)))
                         .monospacedDigit()
                 }
-                .padding(.vertical, HugoLayout.Spacing.compact)
+                .padding(.vertical, HugoLayout.Spacing.small / 2)
                 .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .combine)
-            .accessibilityLabel(Text(category.name))
+            .accessibilityLabel(
+                Text(verbatim: "\(entry.date.formatted(date: .omitted, time: .shortened)), \(category.name)")
+            )
             .accessibilityValue(
                 Text(verbatim: EntryAccessibilityValue.text(duration: entry.duration, bibleStudies: entry.bibleStudies))
             )
