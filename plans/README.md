@@ -77,6 +77,8 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 093 | Jump to a theocratic year from the Year tab's title (custom year strip; native menu is the fallback) | P2 | M + owner | — (replaces 088) | DONE (owner accepted all revisions on device 2026-11-06; Revision 3 `75e513e` bigger title tap area, Revision 4 `7ed5d5e` Year subtitle removed) (base `ad0ba60`, Revision 1 `d5226e0` for spacing, width and title centering, Revision 2 `77c50c7` slides the pages; full `Scripts/verify.sh` passed; owner accepted the strip and kept the slide 2026-11-06) | [SLN-303](https://linear.app/sebastianln/issue/SLN-303) |
 | 094 | Keep carried-in entries off Planner days but in the month's logged total | P2 | S + owner | — | DONE (committed on main as 24ce521; full `Scripts/verify.sh` passed; owner check passed 2026-11-06) | [SLN-299](https://linear.app/sebastianln/issue/SLN-299) |
 | 095 | Make the Overview date list compact again with touching tap areas | P3 | S + owner | — (follows 087) | DONE (base 78c479c; Revision 1 d17531f brings back start times and the old spacing, 27 pt per entry; full `Scripts/verify.sh` passed; owner check passed 2026-11-06) | [SLN-302](https://linear.app/sebastianln/issue/SLN-302) |
+| 096 | Add the changelog for the build after 120 in English and Danish | P1 | S | — | TODO (text waits for owner review) | [SLN-305](https://linear.app/sebastianln/issue/SLN-305) |
+| 097 | Check and ship the build after 120 to TestFlight | P1 | S + owner | 096 | TODO | [SLN-307](https://linear.app/sebastianln/issue/SLN-307) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
