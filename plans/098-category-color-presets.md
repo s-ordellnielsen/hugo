@@ -276,8 +276,8 @@ The Xcode project uses synchronized folders (`PBXFileSystemSynchronizedRootGroup
 - Work on `main` directly. No branch, no worktree, no push.
 - Stage explicit paths only. Never stage `.claude/`, `plans/` (the reviewer commits those) or `Hugo.xcodeproj/project.pbxproj`.
 - Two commits, each after `Scripts/verify.sh` exits 0. Use Conventional Commits, as in `git log` (for example `feat: add the Plan model in schema V12`):
-  1. `feat: replace the unused category color channels with hue and tone in schema V13` (Steps 1-3)
-  2. `feat: let users pick a preset color for each category` (Steps 4-9)
+  1. `feat: replace the unused category color channels with hue and tone in schema V13` (Steps 1-4; the app first compiles again after Step 4, because removing `CategoryProgressColor` breaks the two Planner views that Step 4 rewires)
+  2. `feat: let users pick a preset color for each category` (Steps 5-9)
 
 ## Steps
 
@@ -450,9 +450,8 @@ extension Tracker {
 
 **Verify**:
 
-- `grep -rnE "\b(sat|bri)\b|\.hue\b|CategoryProgressColor" Hugo/App Hugo/Features Hugo/Domain Hugo/Persistence/SyncDeduplicator.swift` prints only lines that are about `CategoryColor`'s own `hue` (in `CategoryColor.swift` and `TrackerCategoryColor.swift`), and no `.sat` or `.bri`.
-- The focused test command prints `** TEST SUCCEEDED **`.
-- `Scripts/verify.sh` exits 0, then make commit 1.
+- `grep -rnE "\b(sat|bri)\b|\.hue\b|CategoryProgressColor" Hugo/App Hugo/Features Hugo/Domain Hugo/Persistence/SyncDeduplicator.swift` prints only lines about `CategoryColor`'s own `hue` (in `CategoryColor.swift` and `TrackerCategoryColor.swift`) plus `PlannerBarView.swift:34` and `PlannedCategoryCard.swift:17`, which Step 4 replaces.
+- Do not build yet: `PlannerBarView.swift:34` and `PlannedCategoryCard.swift:17` still read `.saturation`/`.brightness` until Step 4. The build, tests and commit 1 happen at the end of Step 4.
 
 ### Step 4: Draw a category color with a dynamic `ShapeStyle`
 
@@ -506,7 +505,7 @@ struct PlannerBarShape<Style: ShapeStyle>: View {
    `color.opacity(0.15)` still works, because `ShapeStyle.opacity(_:)` exists. `PlannerLegend` and `PlannerStatusHeader` keep passing `.hugoAccent`. In `PlannerBarView`, replace the `color` property with `private var color: CategoryColorStyle { CategoryColorStyle(bar.color) }`.
 4. `PlannedCategoryCard.swift`: replace its `color` property in the same way. Line 52's `.fill(color)` stays.
 
-**Verify**: build via the focused test command (`** TEST SUCCEEDED **`), and `grep -rn "Color(hue:" Hugo/Features` prints nothing.
+**Verify**: the focused test command prints `** TEST SUCCEEDED **` (this is the first build since Step 1, and it runs the Step 2-3 tests), and `grep -rn "Color(hue:" Hugo/Features` prints nothing. Then `Scripts/verify.sh` exits 0, and you make commit 1.
 
 ### Step 5: Add the presets and the suggestion rule
 
