@@ -244,8 +244,7 @@ struct SyncDeduplicator {
         if a.name != b.name { return a.name < b.name }
         if a.iconName != b.iconName { return a.iconName < b.iconName }
         if a.type.rawValue != b.type.rawValue { return a.type.rawValue < b.type.rawValue }
-        if a.hue != b.hue { return a.hue < b.hue }
-        if a.sat != b.sat { return a.sat < b.sat }
-        return a.bri < b.bri
+        if a.colorHue != b.colorHue { return (a.colorHue ?? -1) < (b.colorHue ?? -1) }
+        return (a.colorTone ?? -1) < (b.colorTone ?? -1)
     }
 }

@@ -12,10 +12,7 @@ struct PlannedCategoryCard: View {
 
     @Environment(\.colorScheme) private var colorScheme
 
-    private var color: Color {
-        guard let color = bar.color else { return .hugoAccent }
-        return Color(hue: color.hue, saturation: color.saturation, brightness: color.brightness)
-    }
+    private var color: CategoryColorStyle { CategoryColorStyle(bar.color) }
 
     /// The plan when the category has exactly one on the day.
     private var singleItem: PlannedItem? {

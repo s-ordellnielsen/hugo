@@ -15,8 +15,8 @@ nonisolated struct PlannedItem: Identifiable, Equatable, Sendable {
     let categoryType: TrackerType
     /// The live category's id, or nil when the category no longer exists.
     let trackerID: UUID?
-    /// The live category's color, or nil (views use `.hugoAccent`).
-    let color: CategoryProgressColor?
+    /// The live category's color, or nil for Automatic (views use `CategoryColorStyle`).
+    let color: CategoryColor?
 
     /// The same key `Entry.resolvedCategory()` produces for this category, so
     /// logged time can be matched to the plan.
@@ -40,6 +40,6 @@ extension PlannedItem {
             categoryIconName: live?.iconName ?? plan.categoryIconName,
             categoryType: live?.type ?? plan.categoryType,
             trackerID: live?.id,
-            color: live.flatMap { CategoryProgressColor(hue: $0.hue, saturation: $0.sat, brightness: $0.bri) })
+            color: live?.categoryColor)
     }
 }

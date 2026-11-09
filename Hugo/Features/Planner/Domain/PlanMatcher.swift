@@ -8,7 +8,7 @@ nonisolated struct LoggedCategoryTime: Equatable, Sendable {
     let iconName: String
     /// Nil for untracked time, which counts as main.
     let type: TrackerType?
-    let color: CategoryProgressColor?
+    let color: CategoryColor?
     var seconds: TimeInterval
 }
 
@@ -25,7 +25,7 @@ nonisolated struct PlannerBar: Identifiable, Equatable, Sendable {
     let kind: Kind
     let categoryName: String
     let categoryIconName: String
-    let color: CategoryProgressColor?
+    let color: CategoryColor?
     /// The category's planned time on the day, or the unplanned logged time.
     let seconds: TimeInterval
     /// Logged time counted toward this bar. Can be more than `seconds` when

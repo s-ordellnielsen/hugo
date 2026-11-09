@@ -127,7 +127,21 @@ enum SchemaV12: VersionedSchema {
     }
 }
 
-typealias CurrentSchema = SchemaV12
+/// Replaces the never-used `hue`, `sat` and `bri` category channels with
+/// optional `colorHue` and `colorTone`. `Tracker` changes, so `Entry` and
+/// `SubmittedReport`, which relate to it, and `Plan`, whose initializer takes
+/// a `Tracker`, get V13 classes too. Their stored attributes are unchanged.
+enum SchemaV13: VersionedSchema {
+    static let versionIdentifier = Schema.Version(10, 0, 0)
+
+    typealias Report = SchemaV12.Report
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self, Report.self, SubmittedReport.self, Plan.self]
+    }
+}
+
+typealias CurrentSchema = SchemaV13
 
 // SchemaV8/V9.Report remains as migration compatibility ballast until a tested
 // future schema version can remove it safely.

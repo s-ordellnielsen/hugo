@@ -3,9 +3,9 @@ import SwiftUI
 /// The rounded rectangle behind a bar: an outline and a light tint in `color`,
 /// and a fill in the same `color` from the left up to `fraction`. Also drawn on
 /// its own in legends.
-struct PlannerBarShape: View {
+struct PlannerBarShape<Style: ShapeStyle>: View {
     let fraction: Double
-    let color: Color
+    let color: Style
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.calendarBar)
@@ -29,10 +29,7 @@ struct PlannerBarView: View {
 
     @ScaledMetric(relativeTo: .caption2) private var height = HugoLayout.Size.calendarBarHeight
 
-    private var color: Color {
-        guard let color = bar.color else { return .hugoAccent }
-        return Color(hue: color.hue, saturation: color.saturation, brightness: color.brightness)
-    }
+    private var color: CategoryColorStyle { CategoryColorStyle(bar.color) }
 
     var body: some View {
         PlannerBarShape(fraction: bar.fraction, color: color)

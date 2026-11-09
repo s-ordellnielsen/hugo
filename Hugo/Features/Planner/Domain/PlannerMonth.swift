@@ -59,9 +59,7 @@ nonisolated struct PlannerDay: Identifiable, Equatable, Sendable {
                 let tracker = category.trackerID.flatMap { id in trackers.first { $0.id == id } }
                 byCategory[category.key] = LoggedCategoryTime(
                     key: category.key, name: category.name, iconName: category.iconName, type: category.type,
-                    color: tracker.flatMap {
-                        CategoryProgressColor(hue: $0.hue, saturation: $0.sat, brightness: $0.bri)
-                    },
+                    color: tracker?.categoryColor,
                     seconds: 0)
             }
             byCategory[category.key]?.seconds += seconds

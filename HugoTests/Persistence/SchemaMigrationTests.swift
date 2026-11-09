@@ -314,6 +314,25 @@ struct SchemaMigrationTests {
         #expect(fetched.duration == 5_400)
     }
 
+    @Test
+    func currentStoreRoundTripsCategoryColor() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let tracker = Tracker(name: "LDC", type: .separate, iconName: "hammer")
+        context.insert(tracker)
+        tracker.setCategoryColor(CategoryColor(hue: 0.6, tone: 0.55))
+        try context.save()
+
+        let fetched = try #require(try context.fetch(FetchDescriptor<Tracker>()).first)
+        #expect(fetched.categoryColor == CategoryColor(hue: 0.6, tone: 0.55))
+
+        fetched.setCategoryColor(nil)
+        try context.save()
+        #expect(fetched.colorHue == nil)
+        #expect(fetched.colorTone == nil)
+        #expect(fetched.categoryColor == nil)
+    }
+
     @Test func migratingV10StorePreservesCategorySnapshotUnchanged() async throws {
         let store = try TemporaryStore()
         defer { store.remove() }
@@ -372,7 +391,7 @@ struct SchemaMigrationTests {
             (c.name, c.iconName, c.typeRaw, c.actualSeconds, c.submittedHours)
         }
 
-        func fields(_ c: SchemaV11.SubmittedReport.SubmittedCategory) -> (String, String, String, TimeInterval, Int) {
+        func fields(_ c: SubmittedReport.SubmittedCategory) -> (String, String, String, TimeInterval, Int) {
             (c.name, c.iconName, c.typeRaw, c.actualSeconds, c.submittedHours)
         }
     }
@@ -567,7 +586,7 @@ struct SchemaMigrationTests {
         let mainLine = try #require(
             migratedReport.reportingLines.first { $0.type == .main }
         )
-        let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
+        let entries = try context.fetch(FetchDescriptor<Entry>())
         let entry = try #require(entries.first)
         let expectedDate = YearMonth(year: 2026, month: 8).nextMonth().middayOnFirst()
         let expectedCreatedAt = YearMonth(year: 2026, month: 9).date()
@@ -637,7 +656,7 @@ struct SchemaMigrationTests {
         let migratedPlaceholder = try #require(
             reports.first { $0.submittedAt == .distantPast }
         )
-        let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
+        let entries = try context.fetch(FetchDescriptor<Entry>())
 
         #expect(!migratedReal.reportingLines.isEmpty)
         #expect(migratedPlaceholder.reportingLines.isEmpty)
@@ -696,7 +715,7 @@ struct SchemaMigrationTests {
         let container = try makeCurrentStore(at: store.storeURL)
         let context = container.mainContext
         let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
-        let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
+        let entries = try context.fetch(FetchDescriptor<Entry>())
 
         #expect(entries.isEmpty)
 
@@ -751,7 +770,7 @@ struct SchemaMigrationTests {
         let container = try makeCurrentStore(at: store.storeURL)
         let context = container.mainContext
         let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
-        let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
+        let entries = try context.fetch(FetchDescriptor<Entry>())
         let migratedSentinel = try #require(
             reports.first { $0.year == 2026 && $0.month == 8 }
         )
@@ -835,7 +854,7 @@ struct SchemaMigrationTests {
         let container = try makeCurrentStore(at: store.storeURL)
         let context = container.mainContext
         let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
-        let entries = try context.fetch(FetchDescriptor<SchemaV11.Entry>())
+        let entries = try context.fetch(FetchDescriptor<Entry>())
         let migratedReceivingReport = try #require(
             reports.first {
                 $0.year == receivingMonth.year && $0.month == receivingMonth.month
@@ -1027,6 +1046,41 @@ struct SchemaMigrationTests {
     }
 
     @Test
+    func migratingV12StoreStartsEveryCategoryAsAutomatic() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+        let fieldService = SchemaV12.Tracker(
+            name: "Field Service", type: .main, isDefault: true, iconName: "figure.walk",
+            hue: 0.5, sat: 1, bri: 0
+        )
+        let ldc = SchemaV12.Tracker(
+            name: "LDC", type: .separate, iconName: "hammer", hue: 0.3, sat: 0.8, bri: 0.9
+        )
+        let entry = SchemaV12.Entry(date: Date(), duration: 3_600, tracker: fieldService)
+        let plan = SchemaV12.Plan(date: Date(), duration: 1_800, tracker: ldc)
+        let ldcID = ldc.id
+        try makeV12Store(at: store.storeURL, trackers: [fieldService, ldc], entries: [entry], plans: [plan])
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let context = container.mainContext
+
+        let trackers = try context.fetch(FetchDescriptor<Tracker>())
+        #expect(trackers.count == 2)
+        for tracker in trackers {
+            #expect(tracker.colorHue == nil)
+            #expect(tracker.colorTone == nil)
+            #expect(tracker.categoryColor == nil)
+        }
+
+        let fetchedEntry = try #require(try context.fetch(FetchDescriptor<Entry>()).first)
+        #expect(fetchedEntry.tracker?.name == "Field Service")
+
+        let fetchedPlans = try context.fetch(FetchDescriptor<Plan>())
+        #expect(fetchedPlans.count == 1)
+        #expect(fetchedPlans.first?.categoryID == ldcID)
+    }
+
+    @Test
     func migratesFullChainFromV1ToCurrentSchemaWithoutThrowing() throws {
         let store = try TemporaryStore()
         defer { store.remove() }
@@ -1166,6 +1220,22 @@ struct SchemaMigrationTests {
         let context = container.mainContext
         trackers.forEach(context.insert)
         entries.forEach(context.insert)
+        try context.save()
+    }
+
+    private func makeV12Store(
+        at url: URL,
+        trackers: [SchemaV12.Tracker] = [],
+        entries: [SchemaV12.Entry] = [],
+        plans: [SchemaV12.Plan] = []
+    ) throws {
+        let schema = Schema(versionedSchema: SchemaV12.self)
+        let configuration = ModelConfiguration(schema: schema, url: url, cloudKitDatabase: .none)
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        let context = container.mainContext
+        trackers.forEach(context.insert)
+        entries.forEach(context.insert)
+        plans.forEach(context.insert)
         try context.save()
     }
 

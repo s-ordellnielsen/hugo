@@ -63,10 +63,7 @@ final class AppBootstrapper {
                 name: String(localized: definition.nameKey),
                 type: .main,
                 isDefault: definition.isDefault,
-                iconName: definition.iconName,
-                hue: definition.hue,
-                sat: definition.saturation,
-                bri: definition.brightness
+                iconName: definition.iconName
             )
             context.insert(tracker)
         }

@@ -37,6 +37,7 @@ enum HugoLayout {
         static let calendarDayNumber: CGFloat = 32
         static let calendarDayMinHeight: CGFloat = 64
         static let calendarBarHeight: CGFloat = 6
+        static let colorSwatch: CGFloat = 32
         static let yearPickerCellWidth: CGFloat = 68
         static let yearPickerMaximumStripWidth: CGFloat = 320
 
@@ -56,11 +57,11 @@ enum HugoLayout {
 extension Color {
     /// Hugo's signature opt-in accent color (currently System Teal).
     /// Enables: `.tint(.hugoAccent)`, `Color.hugoAccent`.
-    static var hugoAccent: Color { .mint }
+    nonisolated static var hugoAccent: Color { .mint }
 }
 
 extension ShapeStyle where Self == Color {
     /// Hugo's signature opt-in accent color (currently System Teal).
     /// Enables: `.foregroundStyle(.hugoAccent)`, `.background(.hugoAccent)`.
-    static var hugoAccent: Color { Color.hugoAccent }
+    nonisolated static var hugoAccent: Color { Color.hugoAccent }
 }

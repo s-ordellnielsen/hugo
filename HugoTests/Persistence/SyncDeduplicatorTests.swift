@@ -110,6 +110,25 @@ struct SyncDeduplicatorTests {
     }
 
     @Test
+    func colorBreaksATieBetweenOtherwiseEqualCopies() throws {
+        let context = try makeContext()
+        let sharedID = UUID()
+        let uncolored = makeTracker(id: sharedID, createdAt: early)
+        let colored = makeTracker(id: sharedID, createdAt: early)
+        colored.setCategoryColor(CategoryColor(hue: 0.6, tone: 0.55))
+        context.insert(uncolored)
+        context.insert(colored)
+        try context.save()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateCategories()
+
+        let trackers = try context.fetch(FetchDescriptor<Tracker>())
+        #expect(removed == 1)
+        #expect(trackers.count == 1)
+        #expect(trackers.first?.categoryColor == nil)
+    }
+
+    @Test
     func onlyOneDefaultRemains() throws {
         let context = try makeContext()
         context.insert(makeTracker(name: "Early", isDefault: true, createdAt: early))
