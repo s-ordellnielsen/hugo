@@ -1,10 +1,9 @@
-Hugo is back with a new update. This one is all about polish: lots of small improvements based on your feedback on the Planner. Let's dive in.
+Hugo is back with a new update. This one is all about polish: lots of small improvements. Let's dive in.
 
 OVERVIEW
 - Tap the line under your hours that says whether you are ahead of or behind your plan, and Hugo shows you the numbers behind it.
 - If you don't have a monthly goal, the circle now fills up against the time you have planned for the month.
-- The circle also fills more accurately, so half of your hours now color half of the circle.
-- The report that opened when you tapped the circle is gone. The Year tab shows the same totals.
+- Small fixes to how the circle fills, so it better reflects the time you have logged.
 - In the list sorted by date, tap an entry to open and edit it. Entries now also show their Bible studies.
 
 PLANNER
@@ -13,13 +12,10 @@ PLANNER
 
 YEAR
 - Tap the year at the top to jump to another service year.
-- The year's total now has its label below the number.
 
 SETTINGS
-- Planner and Service Year are now under Settings → General.
-- Both pages explain what each option does, with a bar that shows the effect on your own numbers.
-
-Is it easy to jump between service years? And have you ever opened the wrong entry when you tapped in the list sorted by date?
+- New settings for the Planner and Service Year under Settings > General.
+- Both pages have animated explanations, so it's easier to understand how they affect the app.
 
 CHANGES
 - Durations now read "23 hours, 15 min"
