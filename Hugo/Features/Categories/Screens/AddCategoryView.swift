@@ -16,6 +16,7 @@ struct AddCategoryView: View {
     @State private var isDefault = false
     @State private var iconName = "tag.fill"
     @State private var color: CategoryColor?
+    @State private var colorIsCustom = false
     @State private var didSuggestColor = false
     @State private var iconPickerIsPresented = false
     @State private var errorMessage: String?
@@ -48,11 +49,14 @@ struct AddCategoryView: View {
                 }
 
                 Section {
-                    CategoryColorPicker(selection: $color)
+                    CategoryColorPicker(selection: $color, onCustomChange: { colorIsCustom = $0 })
                 } header: {
                     Text("tracker.color.label")
                 } footer: {
-                    Text("tracker.color.footer")
+                    Text(
+                        colorIsCustom
+                            ? LocalizedStringKey("tracker.color.custom.footer")
+                            : LocalizedStringKey("tracker.color.footer"))
                 }
 
                 Section {

@@ -14,6 +14,7 @@ struct CategoryDetailView: View {
     @State private var iconPickerIsPresented: Bool = false
     @State private var errorMessage: String?
     @State private var originalName: String?
+    @State private var colorIsCustom = false
 
     var body: some View {
         @Bindable var tracker = tracker
@@ -50,11 +51,15 @@ struct CategoryDetailView: View {
                 CategoryColorPicker(
                     selection: Binding(
                         get: { tracker.categoryColor },
-                        set: { tracker.setCategoryColor($0) }))
+                        set: { tracker.setCategoryColor($0) }),
+                    onCustomChange: { colorIsCustom = $0 })
             } header: {
                 Text("tracker.color.label")
             } footer: {
-                Text("tracker.color.footer")
+                Text(
+                    colorIsCustom
+                        ? LocalizedStringKey("tracker.color.custom.footer") : LocalizedStringKey("tracker.color.footer")
+                )
             }
 
             Section {

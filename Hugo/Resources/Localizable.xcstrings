@@ -4596,6 +4596,40 @@
         }
       }
     },
+    "tracker.color.custom" : {
+      "comment" : "VoiceOver name of the color wheel swatch that opens the sliders.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egen farve"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Color"
+          }
+        }
+      }
+    },
+    "tracker.color.custom.footer" : {
+      "comment" : "Footer under the category color sliders.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farvetone vælger farven. Nuance vælger, hvor lys eller dyb den er, og Hugo justerer den, så den er nem at se i både lys og mørk tilstand."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hue picks the color. Tone picks how light or deep it is, and Hugo adjusts it so it stays easy to see in light and dark mode."
+          }
+        }
+      }
+    },
     "tracker.color.footer" : {
       "comment" : "Footer under the category color row.",
       "localizations" : {
@@ -4609,6 +4643,159 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The Planner uses this color for the category, and so does its icon."
+          }
+        }
+      }
+    },
+    "tracker.color.hue" : {
+      "comment" : "VoiceOver label of the hue slider.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farvetone"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hue"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.blue" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blå"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blue"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.green" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grøn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Green"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.orange" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.pink" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.purple" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lilla"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purple"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.red" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rød"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.teal" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blågrøn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teal"
+          }
+        }
+      }
+    },
+    "tracker.color.hue.yellow" : {
+      "comment" : "Spoken hue name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gul"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yellow"
           }
         }
       }
@@ -4728,6 +4915,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Purple"
+          }
+        }
+      }
+    },
+    "tracker.color.tone" : {
+      "comment" : "VoiceOver label of the tone slider.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuance"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tone"
           }
         }
       }

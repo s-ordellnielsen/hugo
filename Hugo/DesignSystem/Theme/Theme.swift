@@ -38,6 +38,8 @@ enum HugoLayout {
         static let calendarDayMinHeight: CGFloat = 64
         static let calendarBarHeight: CGFloat = 6
         static let colorSwatch: CGFloat = 32
+        static let gradientSliderHeight: CGFloat = 36
+        static let gradientSliderThumbRing: CGFloat = 4
         static let yearPickerCellWidth: CGFloat = 68
         static let yearPickerMaximumStripWidth: CGFloat = 320
 
