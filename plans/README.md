@@ -79,7 +79,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 095 | Make the Overview date list compact again with touching tap areas | P3 | S + owner | — (follows 087) | DONE (base 78c479c; Revision 1 d17531f brings back start times and the old spacing, 27 pt per entry; full `Scripts/verify.sh` passed; owner check passed 2026-11-06) | [SLN-302](https://linear.app/sebastianln/issue/SLN-302) |
 | 096 | Add the changelog for the build after 120 in English and Danish | P1 | S | — | DONE (committed on main as 63f9aed; owner reviews the text before pasting it into App Store Connect) | [SLN-305](https://linear.app/sebastianln/issue/SLN-305) |
 | 098 | Let users pick a preset color for each category (schema V13: hue and tone replace the unused `hue`/`sat`/`bri`) | P2 | M + owner | — | DONE (committed on main as b4def03, 4174783; full `Scripts/verify.sh` passed in review, 425 tests; owner still creates `CD_colorHue`/`CD_colorTone` in CloudKit Development, deploys them to Production before a TestFlight build ships V13, and does the device check) | [SLN-287](https://linear.app/sebastianln/issue/SLN-287) |
-| 099 | Let users mix their own category color with a hue and a tone slider | P3 | M + owner | 098 | TODO | [SLN-308](https://linear.app/sebastianln/issue/SLN-308) |
+| 099 | Let users mix their own category color with a hue and a tone slider | P3 | M + owner | 098 | DONE (committed on main as 0b1463a; full `Scripts/verify.sh` passed in review, 432 tests; owner checks slider feel in light and dark mode, scrolling over a slider, and VoiceOver on device) | [SLN-308](https://linear.app/sebastianln/issue/SLN-308) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
