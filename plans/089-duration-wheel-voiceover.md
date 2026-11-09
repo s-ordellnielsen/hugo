@@ -20,7 +20,7 @@
 - **Category**: bug
 - **Planned at**: commit `1432319`, 2026-11-05
 - **Issue**: [SLN-283](https://linear.app/sebastianln/issue/SLN-283)
-- **Status**: IMPLEMENTED; owner VoiceOver check in English and Danish pending
+- **Status**: DONE (owner VoiceOver check in English and Danish passed 2026-11-09)
 
 ## Why this matters
 
