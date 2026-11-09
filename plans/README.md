@@ -78,6 +78,8 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 094 | Keep carried-in entries off Planner days but in the month's logged total | P2 | S + owner | — | DONE (committed on main as 24ce521; full `Scripts/verify.sh` passed; owner check passed 2026-11-06) | [SLN-299](https://linear.app/sebastianln/issue/SLN-299) |
 | 095 | Make the Overview date list compact again with touching tap areas | P3 | S + owner | — (follows 087) | DONE (base 78c479c; Revision 1 d17531f brings back start times and the old spacing, 27 pt per entry; full `Scripts/verify.sh` passed; owner check passed 2026-11-06) | [SLN-302](https://linear.app/sebastianln/issue/SLN-302) |
 | 096 | Add the changelog for the build after 120 in English and Danish | P1 | S | — | DONE (committed on main as 63f9aed; owner reviews the text before pasting it into App Store Connect) | [SLN-305](https://linear.app/sebastianln/issue/SLN-305) |
+| 098 | Let users pick a preset color for each category (schema V13: hue and tone replace the unused `hue`/`sat`/`bri`) | P2 | M + owner | — | TODO (owner deploys the CloudKit fields to Production before a TestFlight build ships V13) | [SLN-287](https://linear.app/sebastianln/issue/SLN-287) |
+| 099 | Let users mix their own category color with a hue and a tone slider | P3 | M + owner | 098 | TODO | [SLN-308](https://linear.app/sebastianln/issue/SLN-308) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -151,6 +153,11 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * The advisor recommended a native `Menu`. The owner chose to try a custom strip first: tapping the year title opens a popover with a strip of calendar years and a band that holds one theocratic year, with momentum and snapping. If the owner's device check finds it no faster or clearer than swiping pages, mark 093 REJECTED and plan the fallback in its maintenance notes (a native `Menu` over the same years).
   * The strip lists exactly `TheocraticYear.availableYears`, which never has gaps (years without entries still get a page), so the "gap" concern does not apply. The planned data import keeps that property.
 
+* Plans 098 and 099 (2026-11-09, planned at `af030fb`) come from `/improve plan SLN-287` and a discussion with the owner.
+  * The owner chose a schema change over reusing the never-shipped `hue`/`sat`/`bri` channels. V13 adds optional `colorHue` and `colorTone` under new names, so builds up to 120 keep drawing Automatic instead of misreading old values. Because `Entry`, `SubmittedReport` and `Plan` refer to `Tracker`, V13 copies those classes too, with unchanged attributes.
+  * A color is a hue plus a tone. The tone maps to a deeper color in light mode and a lighter one in dark mode, with a 2:1 contrast floor, as in the owner's reference app. Six presets: no red (it reads as "behind plan"), no yellow (too faint) and nothing teal (that is Automatic). New categories preselect the least-used preset. There is no white/black swatch.
+  * 099 (custom sliders) needs 098's `CategoryColor`, `CategoryColorStyle` and `CategoryColorPicker`. Run 098 first. Its CloudKit fields must be deployed to Production before a TestFlight build ships V13.
+
 ## Settings decisions for plans 091, 083 and 084 (2026-11-06)
 
 * Execute **091 → 083 → 084**, not numeric order. These are implementation handoffs; this revision does not implement the app or create commits.
@@ -163,15 +170,15 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
 ## Planner: next steps (not planned yet)
 
 * **Suggestion pills in Add Entry** (owner idea, 2026-11-04). When Add Entry opens for a date, show that day's plans that are not full (`PlannerDay.make(...).bars` where `kind == .plan && !isFull`) as pills. Tapping a pill fills the duration (`remainingSeconds`), category and start time through the seeding parameters that plan 070 adds to `AddEntryFormModel`. Future **entry presets** should be a second source of the same pills: model both as one suggestion value (duration, category id, optional start minute, label) so Add Entry does not care where a suggestion came from. Effort S once 070 is done. This also covers logging from the Overview's + button, which is where most users log.
-* **Repeating plans** (owner idea; My Service reviewers complained about entering plans day by day). Store a rule (weekly on chosen weekdays, every N weeks, or the nth weekday of the month, with a duration, a category and an optional start time), and compute its occurrences when a month is read, as `PlannedItem`s with ids built from the rule id and the day. Never store one row per occurrence: every device would create its own rows and CloudKit would duplicate them. Exceptions (skip one day, change one day) are the hard part: store them as rows keyed by rule id and day. Estimated two plans (M + M): schema V13 with the rule and exception models plus the expansion math, then the rule editor and "this day or all days" editing in the day sheet. Plan 068 leaves the seam: `PlannerMonth.make` takes `[PlannedItem]` from any source.
+* **Repeating plans** (owner idea; My Service reviewers complained about entering plans day by day). Store a rule (weekly on chosen weekdays, every N weeks, or the nth weekday of the month, with a duration, a category and an optional start time), and compute its occurrences when a month is read, as `PlannedItem`s with ids built from the rule id and the day. Never store one row per occurrence: every device would create its own rows and CloudKit would duplicate them. Exceptions (skip one day, change one day) are the hard part: store them as rows keyed by rule id and day. Estimated two plans (M + M): schema V14 (V13 is taken by plan 098's category colors) with the rule and exception models plus the expansion math, then the rule editor and "this day or all days" editing in the day sheet. Plan 068 leaves the seam: `PlannerMonth.make` takes `[PlannedItem]` from any source.
 * **Year view of plans.** My Service has an "annual plan" listing planned and actual hours per month. If wanted, add a planned figure to future months on the Year detail screen, not to the Year page's month rows.
-* **Category colors.** The calendar bars use stored category colors, which most categories lack. A color picker (deferred since plan 029) would make the bars easier to tell apart.
+* **Category colors.** Planned as 098 and 099 (2026-11-09).
 
 ## Design decisions carried into every plan
 
 * Hugo’s default app chrome is monochrome: `.primary` is black in Light Mode and white in Dark Mode. Native dynamic system backgrounds and label hierarchy remain the base palette.
 * `.hugoAccent` is System Teal and is strictly opt-in: progress gauges, primary CTAs, active status/completion markers, and fallback category colors only.
-* Category-specific colors are content data, not chrome. Existing persisted tracker color channels may be rendered only when they represent a valid assigned color; otherwise use `.hugoAccent`.
+* Category-specific colors are content data, not chrome. From plan 098 on, a category color is an optional hue and tone (`CategoryColor`), drawn through `CategoryColorStyle`, with `.hugoAccent` for Automatic. Use it only for Planner bars and cards, category icons in lists and pickers, and the category editor's icon tile. Entry rows, the Overview, Reports and the Year tab stay uncolored unless the owner asks.
 * Editorial typography uses Apple’s built-in New York serif through `Font.Design.serif`; interface typography stays on the default San Francisco design. No bundled custom font is required.
 * Existing rounded card geometry is retained. Do not change corner radii or replace native/system backgrounds unless a plan explicitly says to do so.
 
