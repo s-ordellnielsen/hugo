@@ -32,6 +32,7 @@ struct CategoryPicker: View {
                                             Text(tracker.name)
                                         } icon: {
                                             Image(systemName: tracker.iconName)
+                                                .foregroundStyle(CategoryColorStyle(tracker.categoryColor))
                                         }
                                         Spacer()
                                         if selection?.id == tracker.id {

@@ -26,7 +26,7 @@ struct CategoryDetailView: View {
                         VStack {
                             Image(systemName: tracker.iconName)
                                 .font(.system(size: iconSize))
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(CategoryColorStyle(tracker.categoryColor))
                         }
                         .frame(width: tileSize, height: tileSize)
                         .background(Color(.secondarySystemGroupedBackground))
@@ -44,6 +44,17 @@ struct CategoryDetailView: View {
             Section("tracker.settings.name.label") {
                 TextField("tracker.settings.name.placeholder", text: $tracker.name)
                     .onSubmit { commitName() }
+            }
+
+            Section {
+                CategoryColorPicker(
+                    selection: Binding(
+                        get: { tracker.categoryColor },
+                        set: { tracker.setCategoryColor($0) }))
+            } header: {
+                Text("tracker.color.label")
+            } footer: {
+                Text("tracker.color.footer")
             }
 
             Section {

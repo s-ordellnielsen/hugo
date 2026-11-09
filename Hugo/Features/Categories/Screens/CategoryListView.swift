@@ -22,6 +22,7 @@ struct CategoryListView: View {
                                         Text(tracker.name)
                                     } icon: {
                                         Image(systemName: tracker.iconName)
+                                            .foregroundStyle(CategoryColorStyle(tracker.categoryColor))
                                     }
                                     Spacer()
                                     if tracker.isDefault {

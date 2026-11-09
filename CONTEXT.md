@@ -26,6 +26,10 @@ The main category that new entries use unless the user picks another. A new inst
 **Category snapshot**:
 The name, icon and kind of an entry's category, copied onto the entry so the entry keeps its category if the category is renamed or deleted.
 
+**Category color**:
+The color a category is drawn in: Automatic (the app's accent color) or a hue and a tone the user picked. The tone gives a deeper color in light mode and a lighter one in dark mode, so the same choice stays visible on both. A category color is only a visual aid; names and order always tell categories apart.
+_Avoid_: Tint, theme color
+
 **Untracked entry**:
 An entry that has neither a category nor a category snapshot.
 

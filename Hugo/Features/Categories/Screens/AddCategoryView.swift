@@ -15,6 +15,8 @@ struct AddCategoryView: View {
     @State private var allowBibleStudies = true
     @State private var isDefault = false
     @State private var iconName = "tag.fill"
+    @State private var color: CategoryColor?
+    @State private var didSuggestColor = false
     @State private var iconPickerIsPresented = false
     @State private var errorMessage: String?
 
@@ -28,7 +30,7 @@ struct AddCategoryView: View {
                         VStack(spacing: HugoLayout.Spacing.compact) {
                             Image(systemName: iconName)
                                 .font(.system(size: iconSize))
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(CategoryColorStyle(color))
                                 .frame(width: tileSize, height: tileSize)
                                 .background(Color(.secondarySystemGroupedBackground))
                                 .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
@@ -43,6 +45,14 @@ struct AddCategoryView: View {
 
                 Section {
                     TextField("addTracker.field.name.placeholder", text: $name)
+                }
+
+                Section {
+                    CategoryColorPicker(selection: $color)
+                } header: {
+                    Text("tracker.color.label")
+                } footer: {
+                    Text("tracker.color.footer")
                 }
 
                 Section {
@@ -66,6 +76,11 @@ struct AddCategoryView: View {
             }
             .navigationTitle("addTrackerSheet.title")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                guard !didSuggestColor else { return }
+                didSuggestColor = true
+                color = CategoryColorPreset.suggested(forNewCategoryAmong: trackers.map(\.categoryColor))
+            }
             .sheet(isPresented: $iconPickerIsPresented) {
                 SymbolPicker(set: .tracker, selectedSymbol: $iconName)
             }
@@ -92,6 +107,7 @@ struct AddCategoryView: View {
             isDefault: false,
             iconName: iconName
         )
+        tracker.setCategoryColor(color)
         context.insert(tracker)
 
         do {
