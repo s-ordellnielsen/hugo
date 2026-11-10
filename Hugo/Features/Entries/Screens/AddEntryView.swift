@@ -5,6 +5,7 @@ struct AddEntryView: View {
     @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
 
     @Query private var trackers: [Tracker]
 
@@ -37,11 +38,7 @@ struct AddEntryView: View {
                     Button {
                         form.isCategoryPickerPresented = true
                     } label: {
-                        if let tracker = form.selectedTracker {
-                            Label(tracker.name, systemImage: tracker.iconName)
-                        } else {
-                            Label("entry.add.tracker.none", systemImage: "circle")
-                        }
+                        categoryLabel
                     }
                 }
                 Section {
@@ -105,6 +102,29 @@ struct AddEntryView: View {
         } catch {
             context.delete(entry)
             form.validationMessage = error.localizedDescription
+        }
+    }
+
+    /// The selected category in its color, or "no category" in the accent
+    /// color, so the row reads as a button. With Increase Contrast on, the
+    /// name stays in the normal text color and only the icon is tinted.
+    @ViewBuilder
+    private var categoryLabel: some View {
+        let style = CategoryColorStyle(form.selectedTracker?.categoryColor)
+        let nameStyle =
+            colorSchemeContrast == .increased ? AnyShapeStyle(.primary) : AnyShapeStyle(style)
+        if let tracker = form.selectedTracker {
+            Label {
+                Text(tracker.name).foregroundStyle(nameStyle)
+            } icon: {
+                Image(systemName: tracker.iconName).foregroundStyle(style)
+            }
+        } else {
+            Label {
+                Text("entry.add.tracker.none").foregroundStyle(nameStyle)
+            } icon: {
+                Image(systemName: "circle").foregroundStyle(style)
+            }
         }
     }
 
