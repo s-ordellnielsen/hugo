@@ -80,6 +80,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 096 | Add the changelog for the build after 120 in English and Danish | P1 | S | — | DONE (committed on main as 63f9aed; owner reviews the text before pasting it into App Store Connect) | [SLN-305](https://linear.app/sebastianln/issue/SLN-305) |
 | 098 | Let users pick a preset color for each category (schema V13: hue and tone replace the unused `hue`/`sat`/`bri`) | P2 | M + owner | — | DONE (committed on main as b4def03, 4174783; full `Scripts/verify.sh` passed in review, 425 tests; owner still creates `CD_colorHue`/`CD_colorTone` in CloudKit Development, deploys them to Production before a TestFlight build ships V13, and does the device check) | [SLN-287](https://linear.app/sebastianln/issue/SLN-287) |
 | 099 | Let users mix their own category color with a hue and a tone slider | P3 | M + owner | 098 | DONE (committed on main as 0b1463a; full `Scripts/verify.sh` passed in review, 432 tests; owner checks slider feel in light and dark mode, scrolling over a slider, and VoiceOver on device) | [SLN-308](https://linear.app/sebastianln/issue/SLN-308) |
+| 100 | Make category colors in light mode as bright as the system colors (light formula and a 1.8:1 light floor; dark mode unchanged) | P2 | S + owner | 098, 099 | TODO | [SLN-309](https://linear.app/sebastianln/issue/SLN-309) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
