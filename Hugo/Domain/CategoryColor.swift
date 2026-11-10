@@ -18,8 +18,14 @@ nonisolated struct CategoryColor: Hashable, Sendable {
         let brightness: Double
     }
 
-    /// The lowest contrast ratio against any reference background.
-    static let minimumContrast = 2.0
+    /// The lowest contrast ratio against any light-mode reference background.
+    /// Apple's orange, green and mint measure about 1.9-2.0 against
+    /// systemGroupedBackground, so 1.8 allows system-like colors and still
+    /// darkens near-white ones.
+    static let lightMinimumContrast = 1.8
+
+    /// The lowest contrast ratio against any dark-mode reference background.
+    static let darkMinimumContrast = 2.0
 
     let hue: Double
     let tone: Double
@@ -40,15 +46,17 @@ nonisolated struct CategoryColor: Hashable, Sendable {
     }
 
     /// The HSB components for one appearance, nudged away from the reference
-    /// backgrounds when the contrast would be below `minimumContrast`.
+    /// backgrounds when the contrast would be below that appearance's minimum
+    /// contrast.
     func components(for appearance: Appearance) -> Components {
         switch appearance {
         case .light:
-            var saturation = 0.70 + 0.15 * tone
-            var brightness = 0.92 - 0.42 * tone
+            let saturation = 0.55 + 0.35 * tone
+            var brightness = 1.00 - 0.20 * tone
             while brightness > 0.2,
                 !Self.meetsFloor(
-                    hue: hue, saturation: saturation, brightness: brightness, backgrounds: Self.lightBackgrounds)
+                    hue: hue, saturation: saturation, brightness: brightness, backgrounds: Self.lightBackgrounds,
+                    minimumContrast: Self.lightMinimumContrast)
             {
                 brightness -= 0.02
             }
@@ -57,7 +65,8 @@ nonisolated struct CategoryColor: Hashable, Sendable {
             var saturation = 0.12 + 0.68 * tone
             var brightness = 1.00 - 0.10 * tone
             while !Self.meetsFloor(
-                hue: hue, saturation: saturation, brightness: brightness, backgrounds: Self.darkBackgrounds)
+                hue: hue, saturation: saturation, brightness: brightness, backgrounds: Self.darkBackgrounds,
+                minimumContrast: Self.darkMinimumContrast)
             {
                 if brightness < 1.0 {
                     brightness = min(1.0, brightness + 0.02)
@@ -122,7 +131,7 @@ nonisolated struct CategoryColor: Hashable, Sendable {
     }
 
     private static func meetsFloor(
-        hue: Double, saturation: Double, brightness: Double, backgrounds: [Double]
+        hue: Double, saturation: Double, brightness: Double, backgrounds: [Double], minimumContrast: Double
     ) -> Bool {
         let rgbValue = rgb(Components(hue: hue, saturation: saturation, brightness: brightness))
         let luminance = relativeLuminance(red: rgbValue.red, green: rgbValue.green, blue: rgbValue.blue)

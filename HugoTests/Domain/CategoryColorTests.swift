@@ -35,8 +35,8 @@ struct CategoryColorTests {
 
         let light = blue.components(for: .light)
         #expect(abs(light.hue - 0.60) < 1e-9)
-        #expect(abs(light.saturation - 0.7825) < 1e-9)
-        #expect(abs(light.brightness - 0.689) < 1e-9)
+        #expect(abs(light.saturation - 0.7425) < 1e-9)
+        #expect(abs(light.brightness - 0.89) < 1e-9)
 
         let dark = blue.components(for: .dark)
         #expect(abs(dark.hue - 0.60) < 1e-9)
@@ -58,7 +58,7 @@ struct CategoryColorTests {
     @Test
     func faintYellowIsDarkenedInLightMode() {
         let yellow = CategoryColor(hue: 0.15, tone: 0).components(for: .light)
-        #expect(yellow.brightness < 0.92)
+        #expect(yellow.brightness < 1.0)
     }
 
     @Test
@@ -73,7 +73,7 @@ struct CategoryColorTests {
                     red: lightRGB.red, green: lightRGB.green, blue: lightRGB.blue)
                 for background in CategoryColor.lightBackgrounds {
                     let ratio = CategoryColor.contrastRatio(lightLuminance, background)
-                    #expect(ratio >= CategoryColor.minimumContrast - 1e-9)
+                    #expect(ratio >= CategoryColor.lightMinimumContrast - 1e-9)
                 }
 
                 let dark = color.components(for: .dark)
@@ -82,9 +82,19 @@ struct CategoryColorTests {
                     red: darkRGB.red, green: darkRGB.green, blue: darkRGB.blue)
                 for background in CategoryColor.darkBackgrounds {
                     let ratio = CategoryColor.contrastRatio(darkLuminance, background)
-                    #expect(ratio >= CategoryColor.minimumContrast - 1e-9)
+                    #expect(ratio >= CategoryColor.darkMinimumContrast - 1e-9)
                 }
             }
+        }
+    }
+
+    @Test
+    func lightPresetsAreBrighterThanBefore() {
+        // Light-mode brightness at each preset's tone must start at 0.89 or more
+        // (blue, green) and stay at least 0.80 after the floor.
+        for preset in CategoryColorPreset.all {
+            let light = preset.color.components(for: .light)
+            #expect(light.brightness >= 0.80)
         }
     }
 }
