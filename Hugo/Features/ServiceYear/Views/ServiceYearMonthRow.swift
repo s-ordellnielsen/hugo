@@ -80,23 +80,27 @@ extension ServiceYearMonthRow {
 
     private var duration: some View {
         HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
-            Text(displayedHours, format: .number)
+            Text(headline.value, format: .number)
                 .font(.system(.title, design: .serif, weight: .bold))
                 .foregroundStyle(summary == nil ? .tertiary : .primary)
-            Text(hourLabel)
+            Text(unitLabel)
                 .font(.system(.title3, design: .serif, weight: .semibold))
                 .foregroundStyle(summary == nil ? .tertiary : .secondary)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: headline.spokenText()))
     }
 
-    private var displayedHours: Int {
-        ServiceDurationFormatter.wholeHours(from: month.contribution.total)
+    private var headline: HeadlineDuration {
+        HeadlineDuration(seconds: month.contribution.total)
     }
 
-    private var hourLabel: LocalizedStringKey {
-        displayedHours == 1
-            ? "service_year.month.hour"
-            : "service_year.month.hours"
+    private var unitLabel: LocalizedStringKey {
+        switch headline {
+        case .minutes: "duration.minutesUnit"
+        case .hours(1): "service_year.month.hour"
+        case .hours: "service_year.month.hours"
+        }
     }
 }
 

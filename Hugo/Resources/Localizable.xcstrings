@@ -58,6 +58,57 @@
         }
       }
     },
+    "a11y.monthly_progress_card.value.minutes.%@" : {
+      "comment" : "Accessibility value of the monthly progress card when the month has less than an hour and no goal or plan. The argument is the spoken minutes, such as 45 minutes.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ denne måned"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ this month"
+          }
+        }
+      }
+    },
+    "a11y.monthly_progress_card.value.minutes.%@.%lld" : {
+      "comment" : "Accessibility value of the monthly progress card when the month has less than an hour and a goal exists. First argument: the spoken minutes, such as 45 minutes. Second: the monthly goal in hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ af %2$lld timer denne måned"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$lld hours this month"
+          }
+        }
+      }
+    },
+    "a11y.monthly_progress_card.value.minutes.planned.%@.%lld" : {
+      "comment" : "Accessibility value of the monthly progress card when the month has less than an hour, no monthly goal and some plans. First argument: the spoken minutes, such as 45 minutes. Second: hours planned this month.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ af %2$lld planlagte timer denne måned"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$lld planned hours this month"
+          }
+        }
+      }
+    },
     "a11y.monthly_progress_card.value.planned.%lld.%lld" : {
       "comment" : "Accessibility value of the monthly progress card when there is no monthly goal and the month has plans. First argument: hours so far. Second: hours planned this month.",
       "localizations" : {
@@ -557,6 +608,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld min"
+          }
+        }
+      }
+    },
+    "duration.minutesUnit" : {
+      "comment" : "Unit shown after a large number of minutes, such as the min in 45 min on the Overview circle and the Year page. No period.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "min"
           }
         }
       }

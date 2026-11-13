@@ -20,12 +20,7 @@ struct MonthlyProgressCard: View {
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundStyle(.secondary)
-                        Text(String("\(Int(value))"))
-                            .font(.system(size: heroSize, weight: .bold, design: .serif))
-                            .minimumScaleFactor(0.5)
-                            .lineLimit(1)
-                            .contentTransition(.numericText())
-                            .motion(Motion.value, value: value)
+                        heroAmount
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(Text("a11y.monthly_progress_card.label"))
@@ -67,8 +62,43 @@ struct MonthlyProgressCard: View {
         }
     }
 
+    /// The month's total as the hero shows it: minutes under an hour, whole hours above.
+    private var headline: HeadlineDuration {
+        HeadlineDuration(seconds: (value * 3_600).rounded())
+    }
+
+    private var heroAmount: some View {
+        HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.tight) {
+            Text(String("\(headline.value)"))
+                .font(.system(size: heroSize, weight: .bold, design: .serif))
+                .minimumScaleFactor(0.5)
+                .lineLimit(1)
+                .contentTransition(.numericText())
+                .motion(Motion.value, value: value)
+            if case .minutes = headline {
+                Text("duration.minutesUnit")
+                    .font(.system(.title2, design: .serif, weight: .semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     private var accessibilityValueText: String {
-        switch fill.basis {
+        if case .minutes = headline {
+            let minutes = headline.spokenText()
+            return switch fill.basis {
+            case .monthlyGoal(let hours):
+                String(localized: "a11y.monthly_progress_card.value.minutes.\(minutes).\(Int(hours))")
+            case .plan(let plannedSeconds):
+                String(
+                    localized:
+                        "a11y.monthly_progress_card.value.minutes.planned.\(minutes).\(Int((plannedSeconds / 3_600).rounded(.up)))"
+                )
+            case .presence:
+                String(localized: "a11y.monthly_progress_card.value.minutes.\(minutes)")
+            }
+        }
+        return switch fill.basis {
         case .monthlyGoal(let hours):
             String(localized: "a11y.monthly_progress_card.value.\(Int(value)).\(Int(hours))")
         case .plan(let plannedSeconds):
