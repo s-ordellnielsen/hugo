@@ -1,5 +1,5 @@
 //
-//  Release.xcconfig
+//  Production.xcconfig
 //  Hugo
 //
 //  Created by Sebastian Nielsen on 13/11/2025.
@@ -11,6 +11,7 @@
 BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo
 ICLOUD_CONTAINER_IDENTIFIER = iCloud.com.ordellnielsen.Hugo
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
-
-// TestFlight public invite link. Replace this value with the current invite URL.
-INFOPLIST_KEY_TestFlightURL = https://testflight.apple.com/join/AdmsjW16
+// The App Store build.
+// Feature flags. Swift code checks these names with `#if`, never the name of
+// the build. A flag that is not listed is off. See "Builds" in README.md.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) SHOW_JOIN_BETA

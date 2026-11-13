@@ -8,7 +8,7 @@ DERIVED_DATA="${DERIVED_DATA:-/tmp/HugoVerifyDerivedData}"
 
 Scripts/check-layout.sh
 xcrun swift-format lint --strict --recursive Hugo HugoTests
-xcodebuild test -project Hugo.xcodeproj -scheme Hugo -configuration Debug \
+xcodebuild test -project Hugo.xcodeproj -scheme Debug -configuration Debug \
     -destination "$DESTINATION" -derivedDataPath "$DERIVED_DATA" -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO
-xcodebuild analyze -project Hugo.xcodeproj -scheme Hugo -configuration Debug \
+xcodebuild analyze -project Hugo.xcodeproj -scheme Debug -configuration Debug \
     -destination 'generic/platform=iOS Simulator' -derivedDataPath "${DERIVED_DATA}-Analyze" CODE_SIGNING_ALLOWED=NO

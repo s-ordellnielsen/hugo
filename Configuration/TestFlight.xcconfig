@@ -1,0 +1,18 @@
+//
+//  TestFlight.xcconfig
+//  Hugo
+//
+//  Created by Sebastian Nielsen on 13/11/2025.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo
+ICLOUD_CONTAINER_IDENTIFIER = iCloud.com.ordellnielsen.Hugo
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
+// The build for beta testers. It uses the App Store bundle ID and iCloud
+// container, because it uploads to the same App Store Connect app.
+// Feature flags. Swift code checks these names with `#if`, never the name of
+// the build. A flag that is not listed is off. See "Builds" in README.md.
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) SHOW_DEBUG_MENU SHOW_SHARE_TESTFLIGHT

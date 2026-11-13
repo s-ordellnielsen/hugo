@@ -14,7 +14,7 @@ Open `Hugo.xcodeproj` in Xcode, or run:
 
 ```sh
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test \
-    -project Hugo.xcodeproj -scheme Hugo -configuration Debug \
+    -project Hugo.xcodeproj -scheme Debug -configuration Debug \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' \
     -derivedDataPath /tmp/HugoDerivedData CODE_SIGNING_ALLOWED=NO
 ```
@@ -34,6 +34,24 @@ Run once per clone:
     Scripts/install-hooks.sh
 
 After that, every commit formats the staged Swift files with `swift-format`, adds the fixes to the commit, and rejects the commit only if something cannot be fixed automatically. Files with unstaged changes are not reformatted, only checked. It covers formatting only; run `Scripts/verify.sh` for tests and static analysis. Skip it in an emergency with `git commit --no-verify`.
+
+## Builds
+
+Hugo has three build configurations, each with a scheme of the same name:
+
+* **Debug**: development in Xcode. Bundle ID `com.ordellnielsen.Hugo.dev`.
+* **TestFlight**: what beta testers install. Archive with the `TestFlight` scheme.
+* **Production**: the App Store build. Archive with the `Production` scheme.
+
+TestFlight and Production share the App Store bundle ID and iCloud container. Each configuration turns feature flags on in its `Configuration/*.xcconfig` file, and Swift code checks the flag, never the build's name:
+
+| Flag | Debug | TestFlight | Production |
+|---|---|---|---|
+| `SHOW_DEBUG_MENU` | on | on | off |
+| `SHOW_SHARE_TESTFLIGHT` | on | on | off |
+| `SHOW_JOIN_BETA` | off | off | on |
+
+The App Store build must be its own Production archive. A TestFlight archive contains the debug menu and must not be sent to App Review.
 
 ## Architecture
 
