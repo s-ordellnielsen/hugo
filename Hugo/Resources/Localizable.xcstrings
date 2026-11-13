@@ -3302,6 +3302,7 @@
     },
     "settings.account.joinBeta" : {
       "comment" : "A link in Settings that opens the public TestFlight invitation. Shown only in the App Store build.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3319,6 +3320,7 @@
     },
     "settings.account.joinBeta.description" : {
       "comment" : "Footer under the Join the Beta link in Settings.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
