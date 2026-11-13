@@ -21,6 +21,7 @@
 - **Planned at**: commit `3055ae6`, 2026-11-13
 - **Issue**: [SLN-194](https://linear.app/sebastianln/issue/SLN-194)
 - **Revision 1** (2026-11-13, after the first executor stopped at Step 4): the xcconfig files never applied. The project points at them through `baseConfigurationReferenceAnchor` on the synchronized `Hugo` folder plus a `../Configuration/...` path that leaves the folder, and Xcode ignores that silently (at `3055ae6`, `BUNDLE_IDENTIFIER`, which only the xcconfig sets, is missing from `-showBuildSettings`). The Step 2 script now also replaces those anchored references with normal file references (part 5), and Step 3 deletes the broken `INFOPLIST_KEY_TestFlightURL` lines. The advisor dry-ran the revised Steps 2-3 on a copy of `3055ae6` and got exactly Step 4's table.
+- **Revision 2** (2026-11-13, after Steps 1-10 landed as `eef08c1`, `782509c`, `687d230`): the owner's Xcode Cloud test action failed with "Unable to resolve Swift module dependency to a compatible module: 'Hugo'". Step 3 made the `TestFlight` and `Production` schemes test in their own configurations, which build with `ENABLE_TESTABILITY = NO`, so every `@testable import Hugo` in `HugoTests` fails (the advisor reproduced it: `xcodebuild build-for-testing -scheme TestFlight` ends in `** TEST BUILD FAILED **`). The old `Hugo` scheme tested in Debug. **Execute only Step 12**; Steps 1-11 are done.
 
 ## Why this matters
 
@@ -787,6 +788,38 @@ Report these to the owner as open items:
 4. **Contact Us** in any build opens Mail with the subject "Hugo feedback (1.0, build N)" in English, or "Feedback på Hugo (1.0, build N)" in Danish.
 5. Review the Danish wording of the new strings.
 
+### Step 12 (Revision 2): run tests in Debug from every scheme
+
+Only this step is left. Steps 1-10 are committed.
+
+**Current state**: in `Hugo.xcodeproj/xcshareddata/xcschemes/TestFlight.xcscheme` the `TestAction` starts with
+
+```
+   <TestAction
+      buildConfiguration = "TestFlight"
+```
+
+and in `Production.xcscheme` with `buildConfiguration = "Production"`. `Debug.xcscheme` already tests with `Debug`.
+
+1. In `TestFlight.xcscheme`, change only the `TestAction`'s `buildConfiguration = "TestFlight"` to `buildConfiguration = "Debug"`. Leave the Launch, Profile, Analyze and Archive actions as they are.
+2. In `Production.xcscheme`, change only the `TestAction`'s `buildConfiguration = "Production"` to `buildConfiguration = "Debug"`.
+3. In `README.md`, in the "Builds" section, add this sentence at the end of the paragraph that starts "TestFlight and Production share the App Store bundle ID" (same line, after a space):
+
+   ```markdown
+   All three schemes run the tests in the Debug configuration, because the tests use `@testable import Hugo`, which needs a build with testability on.
+   ```
+
+Do not turn on `ENABLE_TESTABILITY` for TestFlight or Production: it would weaken the optimized build that testers and App Store users install.
+
+**Verify**:
+
+- `grep -o 'buildConfiguration = "[A-Za-z]*"' Hugo.xcodeproj/xcshareddata/xcschemes/TestFlight.xcscheme` prints, in order: `Debug`, `TestFlight`, `TestFlight`, `TestFlight`, `TestFlight`.
+- The same for `Production.xcscheme` prints `Debug`, `Production`, `Production`, `Production`, `Production`.
+- For both schemes, `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild build-for-testing -project Hugo.xcodeproj -scheme <Scheme> -destination 'generic/platform=iOS Simulator' -derivedDataPath <a scratch folder> CODE_SIGNING_ALLOWED=NO -quiet` ends without `** TEST BUILD FAILED **` and exits 0.
+- `Scripts/verify.sh` exits 0.
+
+Commit only the three files: `fix: run tests in Debug from the TestFlight and Production schemes`.
+
 ## Test plan
 
 Model the files after `HugoTests/Features/Settings/Domain/CurrentMonthCalculationTests.swift` (`import Testing`, `@testable import Hugo`, a `struct` with `@Test` functions, `#expect`).
@@ -829,6 +862,8 @@ Do not test `DiagnosticsCollector` (CloudKit and `UIDevice`).
 - The `#if` blocks inside `List { }` do not compile, and one obvious fix doesn't solve it.
 
 ## Maintenance notes
+
+- **Tests always run in Debug** (Revision 2). A new scheme's Test action must use `Debug`, or `@testable import Hugo` fails with "Unable to resolve Swift module dependency to a compatible module: 'Hugo'".
 
 - **The App Store build is its own archive.** A TestFlight archive contains the debug menu and must never go to App Review, so the release binary is not the exact one testers ran. Install the Production archive through internal TestFlight before submitting it.
 - **Adding a flag**: list it in `SWIFT_ACTIVE_COMPILATION_CONDITIONS` in each xcconfig where it is on, add a README row, and check it with `#if NAME`. Keep the pbxproj free of `SWIFT_ACTIVE_COMPILATION_CONDITIONS`; if Xcode ever writes that setting back into the pbxproj (for example after someone edits it in the Build Settings editor), the xcconfig flags stop working. `grep -c SWIFT_ACTIVE_COMPILATION_CONDITIONS Hugo.xcodeproj/project.pbxproj` must stay `0`.
