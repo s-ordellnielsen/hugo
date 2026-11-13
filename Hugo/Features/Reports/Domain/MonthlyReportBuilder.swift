@@ -22,9 +22,10 @@ nonisolated enum MonthlyReportBuilder {
                 totalSeconds += entry.duration
                 bibleStudies += entry.bibleStudies
 
-                let type = entry.resolvedCategory(locale: locale).type
-                if type == .main { mainDuration += entry.duration }
-                if type == .separate { separateDuration += entry.duration }
+                switch entry.resolvedCategory(locale: locale).countsAs {
+                case .main: mainDuration += entry.duration
+                case .separate: separateDuration += entry.duration
+                }
             }
 
             let categorySummaries = CategoryTotals.rows(entries: monthEntries, trackers: trackers, locale: locale).map {

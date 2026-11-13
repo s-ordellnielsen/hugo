@@ -11,6 +11,10 @@ nonisolated struct EntryCategory: Hashable {
     let iconName: String
     /// `nil` only for an untracked entry.
     let type: TrackerType?
+    /// What this entry's time counts as. Untracked time counts as main time,
+    /// as it does on the Field Service line. Use this, not `type`, whenever
+    /// time is split into main and separate.
+    var countsAs: TrackerType { type ?? .main }
     /// Set only when the live tracker is attached.
     let trackerID: UUID?
     /// False only when the live category turned Bible studies off. A

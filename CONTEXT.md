@@ -31,7 +31,7 @@ The color a category is drawn in: Automatic (the app's accent color) or a hue an
 _Avoid_: Tint, theme color
 
 **Untracked entry**:
-An entry that has neither a category nor a category snapshot.
+An entry that has neither a category nor a category snapshot. Its time counts as main time everywhere: on the Field Service line, in the month's main total and toward the yearly goal.
 
 **Logged time**:
 The sum of entry durations, before any rounding.

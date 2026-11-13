@@ -81,6 +81,24 @@ struct MonthlyReportBuilderTests {
         #expect(summary.categories.count == 1)
         #expect(summary.categories.first?.name == String(localized: "entry.untracked", locale: locale))
         #expect(summary.categories.first?.type == nil)
+        #expect(summary.mainDuration == 600)
+    }
+
+    @Test
+    func untrackedTimeCountsAsMainDuration() throws {
+        let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
+        let separate = Tracker(name: "Bethel", type: .separate, iconName: "building")
+        let entries = [
+            Entry(date: date(2026, 1, 1), duration: 3_600, tracker: main),
+            Entry(date: date(2026, 1, 2), duration: 600, tracker: nil),
+            Entry(date: date(2026, 1, 3), duration: 900, tracker: separate),
+        ]
+        let summary = try #require(
+            MonthlyReportBuilder.summaries(from: entries, calendar: calendar, locale: locale).first)
+
+        #expect(summary.mainDuration == 4_200)
+        #expect(summary.separateDuration == 900)
+        #expect(summary.mainDuration + summary.separateDuration == summary.totalSeconds)
     }
 
     @Test

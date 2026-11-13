@@ -77,6 +77,15 @@ struct YearlyGoalProgressTests {
     }
 
     @Test
+    func untrackedTimeCountsTowardTheYearlyGoal() {
+        let entries = [Entry(date: date(2026, 9, 1), duration: 40 * 3_600, tracker: nil)]
+        let progress = makeProgress(entries: entries, now: date(2026, 10, 15))
+        #expect(progress.creditedSeconds == 40 * 3_600)
+        #expect(progress.creditedSeconds == progress.yearTotalSeconds)
+        #expect(!progress.showsYearTotal)
+    }
+
+    @Test
     func aPastYearExpectsTheFullYearlyGoal() {
         let progress = makeProgress(entries: septemberAndOctober(), now: date(2028, 1, 15))
         #expect(progress.expectedSeconds == TimeInterval(600 * 3_600))

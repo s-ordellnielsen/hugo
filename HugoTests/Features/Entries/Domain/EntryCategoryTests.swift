@@ -66,4 +66,19 @@ struct EntryCategoryTests {
         let entry = Entry(date: .now, duration: 1_800, tracker: nil)
         #expect(entry.resolvedCategory().allowsBibleStudies)
     }
+
+    @Test
+    func untrackedTimeCountsAsMain() {
+        let entry = Entry(date: .now, duration: 1_800, tracker: nil)
+        #expect(entry.resolvedCategory().countsAs == .main)
+    }
+
+    @Test
+    func categorizedTimeCountsAsItsType() {
+        let separate = Entry(date: .now, duration: 1_800, tracker: Tracker(name: "Bethel", type: .separate))
+        let snapshot = Entry(date: .now, duration: 1_800, tracker: nil)
+        snapshot.storedTracker = Entry.EntryTracker(name: "LDC", icon: "hammer", type: .separate)
+        #expect(separate.resolvedCategory().countsAs == .separate)
+        #expect(snapshot.resolvedCategory().countsAs == .separate)
+    }
 }

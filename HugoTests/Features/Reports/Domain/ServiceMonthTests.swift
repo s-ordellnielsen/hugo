@@ -209,5 +209,7 @@ struct ServiceMonthTests {
     func unsubmittedMonthContributesLoggedTime() {
         let m = month([oldEntry(seconds: 5_400)], [])
         #expect(m.contribution.total == 5_400)
+        #expect(m.contribution.main == 5_400)
+        #expect(m.contribution.separate == 0)
     }
 }
