@@ -23,6 +23,7 @@
 - **Planned at**: commit `3055ae6`, 2026-11-13
 - **Issue**: [SLN-237](https://linear.app/sebastianln/issue/SLN-237)
 - **Revision 1** (2026-11-14, after Steps 1-4 landed as `f0a397f` and `b0ac48c`): the owner looked at it on their iPhone. Tapping the Overview line should not open the Rounding help. It should open a small sheet that lists which categories the carried-in time belongs to and how much each has. The line's text should be centered, as the old pill was. Everything else stays. **Execute only Step 5**; Steps 1-4 are done.
+- **Revision 2** (2026-11-14, after Step 5 landed as `2424ba2`): the owner looked at the sheet on their iPhone. The "… transferred from …" sentence should be larger and serif, and sit at the top of the sheet: no navigation title and no Done button. The list gets a section header ("Breakdown"), and the footer goes. **Execute only Step 6**; Steps 1-5 are done.
 
 ## Why this matters
 
@@ -512,6 +513,75 @@ Commit: `feat: show carried-in time per category on the Overview`.
 
 **STOP conditions for this step**: `CategoryTotals.rows` or `CarriedInTime` would need a change; `@Query` in the sheet doesn't compile; the change seems to need a file outside this step's scope.
 
+### Step 6 (Revision 2): make the sentence the sheet's heading, drop the title bar and footer, add a section header
+
+Steps 1-5 are done. The live `CarriedInBreakdownSheet.swift` is exactly the code in Step 5.1.
+
+**Why.** Without a navigation bar, the sentence moves to the top of the sheet and becomes its heading. The serif bold style matches the heading in `PlanPaceSheet` (`.font(.system(.title2, design: .serif, weight: .bold))`). The sheet has a medium detent and closes with a swipe down; a visible drag indicator shows that, since there is no Done button any more.
+
+**Scope for this step** (the only files you may change):
+
+- `Hugo/Features/Overview/Screens/CarriedInBreakdownSheet.swift`
+- `Hugo/Features/Overview/Views/OverviewListView.swift` (the `.sheet` modifier in `OverviewCarriedEntriesView` only)
+- `Hugo/Resources/Localizable.xcstrings` (remove two keys, add one)
+
+1. Replace the whole `CarriedInBreakdownSheet` struct with:
+
+```swift
+/// The month's carried-in time split by category. Opened from the
+/// carried-in line on the Overview.
+struct CarriedInBreakdownSheet: View {
+    let carriedIn: CarriedInTime
+    /// The month's carried-in entries.
+    let entries: [Entry]
+
+    @Query private var trackers: [Tracker]
+
+    var body: some View {
+        let rows = CategoryTotals.rows(entries: entries, trackers: trackers)
+        List {
+            Section {
+                Text(carriedIn.label())
+                    .font(.system(.title2, design: .serif, weight: .bold))
+                    .accessibilityAddTraits(.isHeader)
+                    .listRowBackground(Color.clear)
+            }
+            Section {
+                ForEach(rows) { row in
+                    LabeledContent {
+                        Text(ServiceDurationFormatter.hoursString(from: row.duration))
+                    } label: {
+                        Label(row.name, systemImage: row.iconName)
+                    }
+                }
+            } header: {
+                Text("overview.carried.breakdown.header")
+            }
+        }
+    }
+}
+```
+
+   Keep the two imports (`SwiftData`, `SwiftUI`). The `NavigationStack`, navigation title, toolbar, `dismiss` and footer are gone.
+
+2. In `OverviewListView.swift`, in `OverviewCarriedEntriesView`'s `.sheet`, add `.presentationDragIndicator(.visible)` after `.presentationDetents([.medium])`. Change nothing else in that file.
+
+3. In `Hugo/Resources/Localizable.xcstrings` (keep the file's formatting; `"state" : "translated"` for both languages):
+   - Remove `overview.carried.breakdown.title` and `overview.carried.breakdown.footer`.
+   - Add `overview.carried.breakdown.header` in sorted position: English "Breakdown", Danish "Fordeling". Comment: "Section header above the list of carried-in time per category."
+
+**Verify**:
+- `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0.
+- `grep -n "NavigationStack\|navigationTitle\|navigation.done\|footer" Hugo/Features/Overview/Screens/CarriedInBreakdownSheet.swift` prints nothing.
+- `grep -rn "overview.carried.breakdown.title\|overview.carried.breakdown.footer" Hugo` prints nothing.
+- `python3 -I -c "import json; d=json.load(open('Hugo/Resources/Localizable.xcstrings'))['strings']; print('overview.carried.breakdown.header' in d, 'overview.carried.breakdown.title' in d, 'overview.carried.breakdown.footer' in d)"` prints `True False False`.
+- `Scripts/verify.sh` exits 0. After it, `git diff -- Hugo/Resources/Localizable.xcstrings` shows only the two removed keys and the one added key.
+- `git status --short` lists only this step's three files (plus files the owner changed, which you must not stage). `git diff --check` exits 0.
+
+Commit: `feat: make the carried-in sentence the heading of its breakdown sheet`.
+
+**STOP conditions for this step**: the live sheet differs from Step 5.1's code; the change seems to need a file outside this step's scope.
+
 ## Test plan
 
 - `CarriedInTimeTests` (5 tests, Step 1) cover the sum, the source months and the empty cases.
@@ -537,7 +607,7 @@ Commit: `feat: show carried-in time per category on the Overview`.
 ## Maintenance notes
 
 - Owner device check, in English and Danish:
-  - Submit a month with **Transfer** on a line that has minutes. In the next month the Overview shows "↘ 30 minutes transferred from October" with an info icon, centered. Tapping it opens a small "Transferred time" sheet that lists each category with its carried-in time (Revision 1).
+  - Submit a month with **Transfer** on a line that has minutes. In the next month the Overview shows "↘ 30 minutes transferred from October" with an info icon, centered. Tapping it opens a small sheet headed by the same sentence in large serif type, with a "Breakdown" list of each category and its carried-in time, and a drag indicator to close it (Revisions 1 and 2).
   - VoiceOver on that line reads the sentence and the hint "Shows the categories the time came from".
   - Year tab → that month → Details: the carried-in time is one gray line at the top and can't be tapped. Ordinary entries still open.
   - Check the Danish hint text.
