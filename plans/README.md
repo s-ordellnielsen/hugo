@@ -82,6 +82,17 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 099 | Let users mix their own category color with a hue and a tone slider | P3 | M + owner | 098 | DONE (committed on main as 0b1463a; full `Scripts/verify.sh` passed in review, 432 tests; owner checks passed 2026-11-10) | [SLN-308](https://linear.app/sebastianln/issue/SLN-308) |
 | 100 | Make category colors in light mode as bright as the system colors (light formula and a 1.8:1 light floor; dark mode unchanged) | P2 | S + owner | 098, 099 | DONE (committed on main as 95f1807; full `Scripts/verify.sh` passed in review, 433 tests; owner checks passed 2026-11-10) | [SLN-309](https://linear.app/sebastianln/issue/SLN-309) |
 | 101 | Show the selected category in its color in Add Entry (icon and name; name stays `.primary` with Increase Contrast) | P2 | S + owner | 098-100 | DONE (committed on main as b7124c2; full `Scripts/verify.sh` passed in review, 433 tests; owner checks passed 2026-11-10) | [SLN-310](https://linear.app/sebastianln/issue/SLN-310) |
+| 102 | Split builds into Debug, TestFlight and Production with feature flags, copy diagnostics from the debug menu, and put the version in support emails | P1 | M + owner | — | TODO | [SLN-194](https://linear.app/sebastianln/issue/SLN-194) |
+| 103 | Show a recovery screen instead of crashing when the data store can't open | P1 | M + owner | — | TODO | [SLN-172](https://linear.app/sebastianln/issue/SLN-172) |
+| 104 | Declare in the privacy manifest that Hugo tracks nothing and collects nothing | P1 | S + owner | — | TODO | [SLN-209](https://linear.app/sebastianln/issue/SLN-209) |
+| 105 | Add a Privacy Policy in English and Danish, shown in the app and published on the web | P1 | S + owner | 102, 104 | TODO | [SLN-53](https://linear.app/sebastianln/issue/SLN-53) |
+| 106 | Add short Terms of Use that point to Apple's standard EULA | P2 | S + owner | 105 | TODO | [SLN-52](https://linear.app/sebastianln/issue/SLN-52) |
+| 107 | Count time without a category as main time everywhere | P2 | S | — | TODO | [SLN-288](https://linear.app/sebastianln/issue/SLN-288) |
+| 108 | Show minutes, not "0", when a month's total is under an hour | P2 | S + owner | — (before 109 and 112) | TODO | [SLN-161](https://linear.app/sebastianln/issue/SLN-161) |
+| 109 | Keep text readable at the largest accessibility text sizes | P2 | S + owner | — (after 108) | TODO | [SLN-188](https://linear.app/sebastianln/issue/SLN-188) |
+| 110 | Not used: SLN-232 (per-line rounding and transfers) was already built by plans 032–034, 044, 065 and 094 | — | — | — | REJECTED (nothing left to do; close SLN-232 when 111 and 112 land) | [SLN-232](https://linear.app/sebastianln/issue/SLN-232) |
+| 111 | Explain carried-in time on the Overview and keep carried-in entries out of the month's entry list | P2 | S + owner | — | TODO | [SLN-237](https://linear.app/sebastianln/issue/SLN-237) |
+| 112 | Show rounded and transferred minutes on the Year page's month cards | P2 | S + owner | 111, after 108 | TODO | [SLN-238](https://linear.app/sebastianln/issue/SLN-238) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -160,6 +171,14 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * A color is a hue plus a tone. The tone maps to a deeper color in light mode and a lighter one in dark mode, with a 2:1 contrast floor, as in the owner's reference app. Six presets: no red (it reads as "behind plan"), no yellow (too faint) and nothing teal (that is Automatic). New categories preselect the least-used preset. There is no white/black swatch.
   * 099 (custom sliders) needs 098's `CategoryColor`, `CategoryColorStyle` and `CategoryColorPicker`. Run 098 first. Its CloudKit fields must be deployed to Production before a TestFlight build ships V13.
 
+* Plans 102–112 (2026-11-13, planned at `3055ae6`) are the next TestFlight build, picked by the owner from the Linear Todo list: the App Store launch blockers, the transferred and rounded minutes work, and three quick wins. Run them in numeric order.
+  * 102 first among the Settings plans. It renames the `Hugo` scheme to `Debug`, adds a `TestFlight` configuration, renames `Release` to `Production` and deletes the unused `Preview` configuration. Code checks flags (`SHOW_DEBUG_MENU`, `SHOW_SHARE_TESTFLIGHT`, `SHOW_JOIN_BETA`), never a build name (owner rule, 2026-11-13). Update any Xcode Cloud workflow that builds the `Hugo` scheme before pushing. The beta app icon is deferred.
+  * 105 and 106 add a legal section to `SettingsView` after 102's changes. Owner decisions (2026-11-13): the Privacy Policy is Markdown in the project, shown in the app and published at `https://hugo.ordellnielsen.com/privacy`. The Terms page links Apple's standard EULA and adds two notes (Hugo is independent, not an official app of Jehovah's Witnesses or JW.org; the user checks the report they send), published at `https://hugo.ordellnielsen.com/terms`. 104 and 105 must agree on "data not collected".
+  * 103 does not offer "reset and download again from iCloud", because Hugo can't tell which local changes haven't reached iCloud yet.
+  * 107: owner decision (2026-11-13) that time without a category counts as main time everywhere. Only `MonthlyReportBuilder` got it wrong.
+  * 108 before 109 and 112: 108 and 112 both edit `ServiceYearMonthRow.swift`, and 109 expects 108's hero text.
+  * 112 needs 111's `CarriedInTime`. No plan 110: SLN-232 was already built; the leftover largest-remainder split in `ReportingLineCalculator.categoryHours` only feeds write-only fields and belongs to SLN-290.
+
 ## Settings decisions for plans 091, 083 and 084 (2026-11-06)
 
 * Execute **091 → 083 → 084**, not numeric order. These are implementation handoffs; this revision does not implement the app or create commits.
@@ -195,7 +214,7 @@ Confirmed findings from the `3f8d48b` audit that have no plan yet. Plan them on 
 
 Found while planning 060–066 (2026-11-03), not planned:
 
-* **Untracked time and the Field Service line.** Reporting lines count an entry with no category as Field Service time, but month summaries leave it out of main time, so it is never credited toward the yearly goal. This needs a product decision first.
+* **Untracked time and the Field Service line.** Planned as 107 (2026-11-13) after the owner decided it counts as main time.
 * **Write-only report fields.** `SubmittedReport.categories`, the carried and rounded seconds, `fieldServiceSeconds` and `roundingRuleRaw` are written on every submission but read only by migrations. Stop writing them only after confirming that no supported build reads them through CloudKit (see plan 065).
 
 ## Findings considered and rejected
