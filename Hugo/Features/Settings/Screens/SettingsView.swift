@@ -7,15 +7,11 @@ struct SettingsView: View {
 
     @Environment(\.openURL) private var openURL
 
-    /// A bundled Markdown page that the legal section opens in a sheet. The
-    /// raw value is the resource name under `Hugo/Resources/Markdown/Legal`.
-    private enum LegalPage: String, Identifiable {
+    /// A bundled Markdown page in the legal section. The raw value is the
+    /// resource name under `Hugo/Resources/Markdown/Legal`.
+    private enum LegalPage: String {
         case privacyPolicy = "PrivacyPolicy"
-
-        var id: String { rawValue }
     }
-
-    @State private var legalPage: LegalPage?
 
     var showDismiss: Bool = false
 
@@ -108,8 +104,8 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Button {
-                        legalPage = .privacyPolicy
+                    NavigationLink {
+                        HelpView(for: LegalPage.privacyPolicy.rawValue, presentation: .pushed)
                     } label: {
                         Label("settings.legal.privacyPolicy", systemImage: "hand.raised")
                     }
@@ -128,9 +124,6 @@ struct SettingsView: View {
             }
             .navigationTitle("settings.title")
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(item: $legalPage) { page in
-                HelpView(for: page.rawValue)
-            }
             .toolbar {
                 if showDismiss {
                     ToolbarItem(placement: .cancellationAction) {

@@ -3531,7 +3531,7 @@
       }
     },
     "settings.legal.privacyPolicy" : {
-      "comment" : "A Settings button that opens Hugo's privacy policy in a sheet.",
+      "comment" : "A Settings row that opens Hugo's privacy policy.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
