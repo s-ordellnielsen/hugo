@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CurrentPublisherStatusView: View {
     var currentStatus: String
+    @ScaledMetric(relativeTo: .largeTitle) private var symbolSize: CGFloat = HugoLayout.Size.prominentSymbol
 
     private var selectedStatus: PublisherStatus? {
         PublisherStatus.status(for: currentStatus)
@@ -20,7 +21,7 @@ struct CurrentPublisherStatusView: View {
                 systemName: PublisherStatus.status(for: currentStatus) != nil
                     ? "person.crop.circle.badge.checkmark" : "person.crop.circle"
             )
-            .font(.system(size: HugoLayout.Size.prominentSymbol))
+            .font(.system(size: symbolSize))
             .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp.byLayer)))
             .symbolRenderingMode(.hierarchical)
             .foregroundStyle(selectedStatus == nil ? Color.secondary : Color.hugoAccent)

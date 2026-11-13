@@ -2,6 +2,8 @@ import SwiftUI
 
 struct EntryRow: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .title2) private var iconSize: CGFloat = HugoLayout.Size.entryIcon
 
     var entry: Entry
     @Binding var selectedEntry: Entry?
@@ -12,6 +14,14 @@ struct EntryRow: View {
 
     private var category: EntryCategory { entry.resolvedCategory() }
 
+    /// Duration and category name on one line normally; on two lines at
+    /// accessibility sizes, so neither wraps word by word.
+    private var titleLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 0))
+            : AnyLayout(HStackLayout(spacing: HugoLayout.Spacing.small))
+    }
+
     var body: some View {
         Button {
             selectedEntry = entry
@@ -21,7 +31,7 @@ struct EntryRow: View {
                     Image(systemName: category.iconName)
                         .font(.title2)
                         .fontWeight(.medium)
-                        .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
+                        .frame(width: iconSize, height: iconSize)
                         .alignmentGuide(
                             .leading,
                             computeValue: { dimension in
@@ -29,9 +39,9 @@ struct EntryRow: View {
                             }
                         )
                 }
-                .frame(width: HugoLayout.Size.entryIcon, height: HugoLayout.Size.entryIcon)
+                .frame(width: iconSize, height: iconSize)
                 VStack(alignment: .leading) {
-                    HStack(spacing: HugoLayout.Spacing.small) {
+                    titleLayout {
                         Text(ServiceDurationFormatter.string(from: entry.duration))
                             .fontWeight(.bold)
                         Text(category.name)

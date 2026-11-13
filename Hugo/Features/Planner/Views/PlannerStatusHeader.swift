@@ -15,16 +15,16 @@ struct PlannerStatusHeader: View {
                     .contentTransition(.numericText())
                     .motion(Motion.value, value: status.projectedSeconds)
 
-                HStack(alignment: .firstTextBaseline) {
-                    Text("planner.header.projected.label")
-                    Spacer(minLength: HugoLayout.Spacing.regular)
-                    if let targetSeconds = status.targetSeconds {
-                        Text(
-                            String(
-                                localized: "planner.header.target",
-                                defaultValue: "Target \(ServiceDurationFormatter.hoursString(from: targetSeconds))",
-                                comment: "The monthly target. The argument is a duration such as 50 hours.")
-                        )
+                // Side by side when both fit on one line; otherwise stacked.
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) {
+                        projectedLabel
+                        Spacer(minLength: HugoLayout.Spacing.regular)
+                        targetLabel
+                    }
+                    VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
+                        projectedLabel
+                        targetLabel
                     }
                 }
                 .font(.subheadline)
@@ -75,6 +75,22 @@ struct PlannerStatusHeader: View {
         .padding(.horizontal, HugoLayout.Spacing.card)
         .padding(.vertical, HugoLayout.Spacing.roomy)
         .accessibilityElement(children: .combine)
+    }
+
+    private var projectedLabel: some View {
+        Text("planner.header.projected.label")
+    }
+
+    @ViewBuilder
+    private var targetLabel: some View {
+        if let targetSeconds = status.targetSeconds {
+            Text(
+                String(
+                    localized: "planner.header.target",
+                    defaultValue: "Target \(ServiceDurationFormatter.hoursString(from: targetSeconds))",
+                    comment: "The monthly target. The argument is a duration such as 50 hours.")
+            )
+        }
     }
 
     @ViewBuilder

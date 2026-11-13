@@ -7,20 +7,30 @@ struct ReportReminderCard: View {
     let month: YearMonth
 
     @State private var isPresentingSubmitSheet = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .title2) private var badgeSize: CGFloat = HugoLayout.Size.prominentSymbol
 
     private var monthName: String {
         month.date().formatted(.dateTime.month(.wide))
+    }
+
+    /// Badge beside the text normally; badge above the text at accessibility
+    /// sizes, so the text keeps the card's full width.
+    private var cardLayout: AnyLayout {
+        dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: HugoLayout.Spacing.regular))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: HugoLayout.Spacing.spacious))
     }
 
     var body: some View {
         Button {
             isPresentingSubmitSheet.toggle()
         } label: {
-            HStack(alignment: .top, spacing: HugoLayout.Spacing.spacious) {
+            cardLayout {
                 ZStack(alignment: .center) {
                     Circle()
                         .fill(.hugoAccent)
-                        .frame(width: HugoLayout.Size.prominentSymbol, height: HugoLayout.Size.prominentSymbol)
+                        .frame(width: badgeSize, height: badgeSize)
                     Image(systemName: "doc.badge.clock.fill")
                         .foregroundStyle(.white)
                         .font(.title2)

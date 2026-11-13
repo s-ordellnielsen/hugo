@@ -5,31 +5,27 @@ struct MonthlyReportTotalsView: View {
     let summary: MonthlyReportSummary
 
     var body: some View {
-        Group {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) { totals }
-            } else {
-                totals
-            }
-        }
-        .padding(HugoLayout.Spacing.compact)
-    }
-
-    @ViewBuilder
-    private var totals: some View {
-        HStack(alignment: .bottom) {
+        // Side by side normally; one under the other at accessibility sizes.
+        let isStacked = dynamicTypeSize.isAccessibilitySize
+        let layout =
+            isStacked
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: HugoLayout.Spacing.regular))
+            : AnyLayout(HStackLayout(alignment: .bottom))
+        layout {
             total(
                 ServiceDurationFormatter.hoursString(from: summary.mainDuration),
                 label: "monthlyReport.detail.largeTotal.main.label", alignment: .leading)
-            Spacer()
+            if !isStacked { Spacer() }
             total(
                 ServiceDurationFormatter.hoursString(from: summary.totalSeconds),
-                label: "monthlyReport.detail.largeTotal.total.label", alignment: .center, prominent: true)
-            Spacer()
+                label: "monthlyReport.detail.largeTotal.total.label", alignment: isStacked ? .leading : .center,
+                prominent: true)
+            if !isStacked { Spacer() }
             total(
                 ServiceDurationFormatter.hoursString(from: summary.separateDuration),
-                label: "monthlyReport.detail.largeTotal.separate.label", alignment: .trailing)
+                label: "monthlyReport.detail.largeTotal.separate.label", alignment: isStacked ? .leading : .trailing)
         }
+        .padding(HugoLayout.Spacing.compact)
     }
 
     @ViewBuilder

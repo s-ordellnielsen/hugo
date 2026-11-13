@@ -55,6 +55,10 @@ struct ServiceYearView: View {
         .lineLimit(1)
         .minimumScaleFactor(0.75)
         .monospacedDigit()
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        .accessibilityShowsLargeContentViewer {
+            Text(activeYear.displayName)
+        }
     }
 
     /// The chevron after the year title. A hidden copy before the title keeps
@@ -63,6 +67,7 @@ struct ServiceYearView: View {
         Image(systemName: "chevron.down")
             .font(.caption.weight(.bold))
             .foregroundStyle(.secondary)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 
     /// Slides the pager to `year`, or jumps there with Reduce Motion on. The

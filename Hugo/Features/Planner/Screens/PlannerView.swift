@@ -105,10 +105,7 @@ private struct PlannerPager: View {
             .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(activeMonth.monthYearString())
-                        .font(.system(.headline, design: .serif, weight: .bold))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
+                    EditorialNavigationTitle(title: activeMonth.monthYearString())
                 }
                 ToolbarItem {
                     SettingsButton(sizeClass: .compact)
