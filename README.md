@@ -53,6 +53,8 @@ TestFlight and Production share the App Store bundle ID and iCloud container. Ea
 
 The App Store build must be its own Production archive. A TestFlight archive contains the debug menu and must not be sent to App Review.
 
+All three schemes run the tests in the Debug configuration, because the tests use `@testable import Hugo`, which needs a build with testability on.
+
 ## Architecture
 
 * `Hugo/App` — app composition only (entry point, root view, bootstrap), and CloudKit boundaries.
