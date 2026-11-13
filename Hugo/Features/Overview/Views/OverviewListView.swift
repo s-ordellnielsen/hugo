@@ -267,6 +267,7 @@ struct OverviewCarriedEntriesView: View {
         .sheet(isPresented: $showingBreakdown) {
             CarriedInBreakdownSheet(carriedIn: carriedIn, entries: entries)
                 .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
     }
 }

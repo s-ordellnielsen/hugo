@@ -1247,36 +1247,19 @@
         }
       }
     },
-    "overview.carried.breakdown.footer" : {
-      "comment" : "Footer under the list of carried-in time per category.",
+    "overview.carried.breakdown.header" : {
+      "comment" : "Section header above the list of carried-in time per category.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du overførte disse minutter, da du indsendte din rapport. De tæller med i denne måned."
+            "value" : "Fordeling"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You transferred these minutes when you submitted your report. They count toward this month."
-          }
-        }
-      }
-    },
-    "overview.carried.breakdown.title" : {
-      "comment" : "Title of the sheet that shows carried-in time per category.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Overført tid"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transferred time"
+            "value" : "Breakdown"
           }
         }
       }

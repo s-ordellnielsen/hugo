@@ -8,36 +8,27 @@ struct CarriedInBreakdownSheet: View {
     /// The month's carried-in entries.
     let entries: [Entry]
 
-    @Environment(\.dismiss) private var dismiss
     @Query private var trackers: [Tracker]
 
     var body: some View {
         let rows = CategoryTotals.rows(entries: entries, trackers: trackers)
-        NavigationStack {
-            List {
-                Section {
-                    Text(carriedIn.label())
-                        .foregroundStyle(.secondary)
-                        .listRowBackground(Color.clear)
-                }
-                Section {
-                    ForEach(rows) { row in
-                        LabeledContent {
-                            Text(ServiceDurationFormatter.hoursString(from: row.duration))
-                        } label: {
-                            Label(row.name, systemImage: row.iconName)
-                        }
-                    }
-                } footer: {
-                    Text("overview.carried.breakdown.footer")
-                }
+        List {
+            Section {
+                Text(carriedIn.label())
+                    .font(.system(.title2, design: .serif, weight: .bold))
+                    .accessibilityAddTraits(.isHeader)
+                    .listRowBackground(Color.clear)
             }
-            .navigationTitle("overview.carried.breakdown.title")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("navigation.done") { dismiss() }
+            Section {
+                ForEach(rows) { row in
+                    LabeledContent {
+                        Text(ServiceDurationFormatter.hoursString(from: row.duration))
+                    } label: {
+                        Label(row.name, systemImage: row.iconName)
+                    }
                 }
+            } header: {
+                Text("overview.carried.breakdown.header")
             }
         }
     }
