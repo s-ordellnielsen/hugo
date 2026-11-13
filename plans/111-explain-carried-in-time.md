@@ -22,6 +22,7 @@
 - **Category**: direction
 - **Planned at**: commit `3055ae6`, 2026-11-13
 - **Issue**: [SLN-237](https://linear.app/sebastianln/issue/SLN-237)
+- **Revision 1** (2026-11-14, after Steps 1-4 landed as `f0a397f` and `b0ac48c`): the owner looked at it on their iPhone. Tapping the Overview line should not open the Rounding help. It should open a small sheet that lists which categories the carried-in time belongs to and how much each has. The line's text should be centered, as the old pill was. Everything else stays. **Execute only Step 5**; Steps 1-4 are done.
 
 ## Why this matters
 
@@ -189,7 +190,7 @@ Its last paragraph already says: "When you transfer minutes, Hugo adds them to t
 
 ## Owner decisions (recommended defaults, change before executing if wanted)
 
-1. **Tapping the Overview line opens the Rounding help.** It shows an `info.circle` icon so it reads as tappable. Alternative: keep it non-interactive.
+1. ~~**Tapping the Overview line opens the Rounding help.**~~ Changed in Revision 1 (owner, 2026-11-14): tapping the line opens a small sheet with the carried-in time per category. The line keeps its `info.circle` icon and its text is centered.
 2. **Wording**: reuse "30 minutes transferred from October" everywhere (the Submit screen's existing string) instead of keeping "Carried in from previous month:".
 3. **Month detail**: carried-in entries leave the tappable list and appear as one non-editable line at the top of the entries section.
 
@@ -401,6 +402,116 @@ In `Hugo/Resources/Localizable.xcstrings`:
 
 Commit 2.
 
+### Step 5 (Revision 1): open a category breakdown instead of the Rounding help, and center the line
+
+Steps 1-4 are done. Read "Current state" for background only; the live code now looks like the end of Step 2 and Step 4.
+
+**Why.** The owner wants the Overview line to answer "where did this time come from?" A short list of categories with their carried-in time does that. The Rounding help stays reachable from Report Settings and Submit Report, where users choose Transfer.
+
+**How the categories are found.** Use `CategoryTotals.rows(entries:trackers:locale:)` (`Hugo/Features/Entries/Domain/CategoryTotals.swift`). It already groups entries by category the way every other screen does. Carried-in main time joins the user's default main category whatever its name, and carried-in separate time joins the live category with the same name and type, or keeps its own row if that category was deleted. Its tests are in `HugoTests/Features/Entries/Domain/CategoryTotalsTests.swift` (`carriedMainTimeJoinsTheDefaultCategoryWhateverItsName` and others). Do not change `CategoryTotals`.
+
+**Pattern for the sheet.** Copy the shape of `Hugo/Features/Overview/Screens/PlanPaceSheet.swift` (a small sheet opened from the Overview): `NavigationStack` > `List` with sections, inline title, a Done button in `.confirmationAction` using `"navigation.done"`. It is shown with `.presentationDetents([.medium])` from `OverviewView`.
+
+**Scope for this step** (the only files you may change or create):
+
+- `Hugo/Features/Overview/Screens/CarriedInBreakdownSheet.swift` (create)
+- `Hugo/Features/Overview/Views/OverviewListView.swift`
+- `Hugo/Resources/Localizable.xcstrings` (change one value, add two keys)
+
+Out of scope: `CarriedInTime.swift`, `CategoryTotals.swift`, `MonthlyReportEntryListView.swift`, `HelpView.swift`, `RoundingRule.md`, and everything listed as out of scope above.
+
+1. Create `Hugo/Features/Overview/Screens/CarriedInBreakdownSheet.swift`:
+
+```swift
+import SwiftData
+import SwiftUI
+
+/// The month's carried-in time split by category. Opened from the
+/// carried-in line on the Overview.
+struct CarriedInBreakdownSheet: View {
+    let carriedIn: CarriedInTime
+    /// The month's carried-in entries.
+    let entries: [Entry]
+
+    @Environment(\.dismiss) private var dismiss
+    @Query private var trackers: [Tracker]
+
+    var body: some View {
+        let rows = CategoryTotals.rows(entries: entries, trackers: trackers)
+        NavigationStack {
+            List {
+                Section {
+                    Text(carriedIn.label())
+                        .foregroundStyle(.secondary)
+                        .listRowBackground(Color.clear)
+                }
+                Section {
+                    ForEach(rows) { row in
+                        LabeledContent {
+                            Text(ServiceDurationFormatter.hoursString(from: row.duration))
+                        } label: {
+                            Label(row.name, systemImage: row.iconName)
+                        }
+                    }
+                } footer: {
+                    Text("overview.carried.breakdown.footer")
+                }
+            }
+            .navigationTitle("overview.carried.breakdown.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("navigation.done") { dismiss() }
+                }
+            }
+        }
+    }
+}
+```
+
+   No preview is needed. `row.name` is a `String`, so `Label(row.name, systemImage:)` shows it as is (it is already localized for the untracked row).
+
+2. In `OverviewListView.swift`:
+   - Change the call site to pass the entries too:
+
+     ```swift
+                     if let carriedIn = CarriedInTime(entries: groups.carried) {
+                         OverviewCarriedEntriesView(carriedIn: carriedIn, entries: groups.carried)
+                     }
+     ```
+
+   - In `OverviewCarriedEntriesView`:
+     - Update the doc comment to: `/// The month's carried-in time as one line. Tapping it opens a breakdown by category.`
+     - Add `let entries: [Entry]` below `let carriedIn: CarriedInTime`.
+     - Rename `showingHelp` to `showingBreakdown`.
+     - Center the line: in the `HStack`, delete `Spacer(minLength: 0)`, change `.multilineTextAlignment(.leading)` to `.multilineTextAlignment(.center)`, and change `.frame(maxWidth: .infinity, alignment: .leading)` to `.frame(maxWidth: .infinity)`. Keep the `↘`, the label and the `info.circle` image in that order.
+     - Replace `.sheet(isPresented: $showingHelp) { HelpView(for: "RoundingRule") }` with:
+
+       ```swift
+               .sheet(isPresented: $showingBreakdown) {
+                   CarriedInBreakdownSheet(carriedIn: carriedIn, entries: entries)
+                       .presentationDetents([.medium])
+               }
+       ```
+
+     Leave every other modifier (button style, accessibility label, hint, traits, background, padding, clip shape) as it is.
+
+3. In `Hugo/Resources/Localizable.xcstrings` (keep the file's formatting, insert new keys in sorted position, `"state" : "translated"` for both languages):
+   - Change `overview.carried.hint`: English "Shows the categories the time came from", Danish "Viser, hvilke kategorier tiden kom fra". Set its comment to "VoiceOver hint for the line that shows carried-in time on the Overview. Opens a breakdown by category."
+   - Add `overview.carried.breakdown.title`: English "Transferred time", Danish "Overført tid". Comment: "Title of the sheet that shows carried-in time per category."
+   - Add `overview.carried.breakdown.footer`: English "You transferred these minutes when you submitted your report. They count toward this month.", Danish "Du overførte disse minutter, da du indsendte din rapport. De tæller med i denne måned." Comment: "Footer under the list of carried-in time per category."
+
+**Verify**:
+- `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0.
+- `grep -n "HelpView\|showingHelp\|Spacer(minLength: 0)\|alignment: .leading)" Hugo/Features/Overview/Views/OverviewListView.swift` prints nothing inside `OverviewCarriedEntriesView` (matches elsewhere in the file are fine; check the line numbers against the struct).
+- `python3 -I -c "import json; d=json.load(open('Hugo/Resources/Localizable.xcstrings'))['strings']; print(all(k in d for k in ['overview.carried.hint','overview.carried.breakdown.title','overview.carried.breakdown.footer']))"` prints `True`.
+- `Scripts/verify.sh` exits 0. After it, `git diff -- Hugo/Resources/Localizable.xcstrings` shows only the changed hint and the two added keys.
+- `git status --short` lists only the three files of this step (plus files the owner changed, which you must not stage). `git diff --check` exits 0.
+
+Commit: `feat: show carried-in time per category on the Overview`.
+
+**STOP conditions for this step**: `CategoryTotals.rows` or `CarriedInTime` would need a change; `@Query` in the sheet doesn't compile; the change seems to need a file outside this step's scope.
+
 ## Test plan
 
 - `CarriedInTimeTests` (5 tests, Step 1) cover the sum, the source months and the empty cases.
@@ -426,8 +537,8 @@ Commit 2.
 ## Maintenance notes
 
 - Owner device check, in English and Danish:
-  - Submit a month with **Transfer** on a line that has minutes. In the next month the Overview shows "↘ 30 minutes transferred from October" with an info icon. Tapping it opens the Rounding help.
-  - VoiceOver on that line reads the sentence and the hint "Shows how transferred minutes work".
+  - Submit a month with **Transfer** on a line that has minutes. In the next month the Overview shows "↘ 30 minutes transferred from October" with an info icon, centered. Tapping it opens a small "Transferred time" sheet that lists each category with its carried-in time (Revision 1).
+  - VoiceOver on that line reads the sentence and the hint "Shows the categories the time came from".
   - Year tab → that month → Details: the carried-in time is one gray line at the top and can't be tapped. Ordinary entries still open.
   - Check the Danish hint text.
 - Plan 112 uses `CarriedInTime` on the Year page cards. If the wording changes, change it in `CarriedInTime.label()` so all three places stay the same.
