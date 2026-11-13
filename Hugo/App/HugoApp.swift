@@ -3,17 +3,30 @@ import SwiftUI
 
 @main
 struct HugoApp: App {
-    let modelContainer: ModelContainer
+    @State private var loader = ModelContainerLoader(makeContainer: HugoApp.makeContainer)
 
-    init() {
-        do {
-            modelContainer =
-                try Self.isRunningTests
-                ? ModelContainerFactory.makeInMemoryContainer()
-                : ModelContainerFactory.makeProductionContainer()
-        } catch {
-            fatalError("Could not create model container: \(error)")
+    var body: some Scene {
+        WindowGroup {
+            switch loader.state {
+            case .loaded(let container):
+                AppRootView()
+                    .tint(.primary)
+                    .modelContainer(container)
+            case .failed(let details):
+                StoreLoadFailureView(report: .current(errorDetails: details), retry: loader.retry)
+                    .tint(.primary)
+            }
         }
+    }
+
+    private static func makeContainer() throws -> ModelContainer {
+        if ProcessInfo.processInfo.arguments.contains("-HugoSimulateStoreLoadFailure") {
+            throw SimulatedStoreLoadFailure()
+        }
+        return
+            try isRunningTests
+            ? ModelContainerFactory.makeInMemoryContainer()
+            : ModelContainerFactory.makeProductionContainer()
     }
 
     private static var isRunningTests: Bool {
@@ -22,13 +35,5 @@ struct HugoApp: App {
             || environment["XCTestConfigurationFilePath"] != nil
             || environment["XCTestSessionIdentifier"] != nil
             || NSClassFromString("XCTestCase") != nil
-    }
-
-    var body: some Scene {
-        WindowGroup {
-            AppRootView()
-                .tint(.primary)
-                .modelContainer(modelContainer)
-        }
     }
 }
