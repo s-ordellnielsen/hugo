@@ -30,39 +30,29 @@ Hugo is free and has no accounts, purchases or server, so it doesn't need full c
 
 ## Current state
 
-After plan 105, `Hugo/Features/Settings/Screens/SettingsView.swift` has:
+After plan 105 (including its Revision 1), `Hugo/Features/Settings/Screens/SettingsView.swift` has:
 
 ```swift
-    /// A bundled Markdown page that the legal section opens in a sheet. The
-    /// raw value is the resource name under `Hugo/Resources/Markdown/Legal`.
-    private enum LegalPage: String, Identifiable {
+    /// A bundled Markdown page in the legal section. The raw value is the
+    /// resource name under `Hugo/Resources/Markdown/Legal`.
+    private enum LegalPage: String {
         case privacyPolicy = "PrivacyPolicy"
-
-        var id: String { rawValue }
     }
-
-    @State private var legalPage: LegalPage?
 ```
 
-a section right after the support email section:
+and a section right after the support email section:
 
 ```swift
                 Section {
-                    Button {
-                        legalPage = .privacyPolicy
+                    NavigationLink {
+                        HelpView(for: LegalPage.privacyPolicy.rawValue, presentation: .pushed)
                     } label: {
                         Label("settings.legal.privacyPolicy", systemImage: "hand.raised")
                     }
                 }
 ```
 
-and on the `List`:
-
-```swift
-            .sheet(item: $legalPage) { page in
-                HelpView(for: page.rawValue)
-            }
-```
+Settings pushes legal pages instead of opening a sheet. On iPhone, Settings is itself a sheet, and a second sheet on top of it makes its footers jump. Keep pushing.
 
 `HelpView` (`Hugo/Features/Help/Screens/HelpView.swift`) loads `<name>.md` from the app bundle in the user's language and renders it with MarkdownUI. Localized Markdown lives in `Base.lproj` (English) and `da.lproj` (Danish) folders. Plan 105 created `Hugo/Resources/Markdown/Legal/Base.lproj/PrivacyPolicy.md` and `.../da.lproj/PrivacyPolicy.md`. If plan 105 had to use its fallback, they are in `Hugo/Resources/Markdown/Help/<lproj>/` instead. Put the new files next to wherever `PrivacyPolicy.md` actually is.
 
@@ -79,7 +69,7 @@ and a `privacyPolicyNamesItsPublishedCopy` test.
 
 ```json
     "settings.legal.privacyPolicy" : {
-      "comment" : "A Settings button that opens Hugo's privacy policy in a sheet.",
+      "comment" : "A Settings row that opens Hugo's privacy policy.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -137,12 +127,12 @@ The legal Markdown must contain no images. MarkdownUI loads images over the netw
 Run:
 
 ```sh
-grep -n "enum LegalPage\|settings.legal.privacyPolicy" Hugo/Features/Settings/Screens/SettingsView.swift
+grep -n "enum LegalPage\|settings.legal.privacyPolicy\|presentation: .pushed" Hugo/Features/Settings/Screens/SettingsView.swift
 find Hugo/Resources/Markdown -name PrivacyPolicy.md
 ls HugoTests/Resources/BundledMarkdownTests.swift
 ```
 
-**Verify**: the grep shows both lines, `find` lists two files (Base and da), and `ls` finds the test file. Otherwise STOP.
+**Verify**: the grep shows all three lines (if `presentation: .pushed` is missing, plan 105 Revision 1 has not landed: STOP), `find` lists two files (Base and da), and `ls` finds the test file. Otherwise STOP.
 
 ### Step 1: Add the English terms
 
@@ -218,7 +208,7 @@ In `Hugo/Resources/Localizable.xcstrings`, insert directly after the `"settings.
 
 ```json
     "settings.legal.termsOfUse" : {
-      "comment" : "A Settings button that opens Hugo's terms of use in a sheet.",
+      "comment" : "A Settings row that opens Hugo's terms of use.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -248,17 +238,17 @@ In `SettingsView.swift`:
         case termsOfUse = "TermsOfUse"
 ```
 
-2. In the legal section, below the Privacy Policy button and inside the same `Section`, add:
+2. In the legal section, below the Privacy Policy link and inside the same `Section`, add:
 
 ```swift
-                    Button {
-                        legalPage = .termsOfUse
+                    NavigationLink {
+                        HelpView(for: LegalPage.termsOfUse.rawValue, presentation: .pushed)
                     } label: {
                         Label("settings.legal.termsOfUse", systemImage: "doc.plaintext")
                     }
 ```
 
-Also update the doc comment on `LegalPage` if it names only the privacy policy. The `.sheet(item:)` modifier needs no change.
+Do not add a sheet.
 
 **Verify**: `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0, and `grep -n "settings.legal" Hugo/Features/Settings/Screens/SettingsView.swift` shows the privacy row before the terms row.
 

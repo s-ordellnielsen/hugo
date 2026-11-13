@@ -22,6 +22,7 @@
 - **Category**: docs
 - **Planned at**: commit `3055ae6`, 2026-11-13
 - **Issue**: [SLN-53](https://linear.app/sebastianln/issue/SLN-53)
+- **Revision 1** (2026-11-13, after Steps 1-6 landed as `b75f66b`): on the owner's iPhone, closing the Privacy Policy sheet makes the multi-line footers in Settings (Share TestFlight, the debug disclaimer) jump before they settle. On iPhone, Settings is itself a sheet (`SettingsButton`), and iOS 26 shrinks a sheet while a second sheet sits on top of it, so the footers re-wrap twice. Settings' other rows push their pages, so the policy now pushes too. **Execute only Step 7**; Steps 1-6 are done.
 
 ## Why this matters
 
@@ -437,6 +438,124 @@ If the build fails with "Multiple commands produce" for a `Base.lproj` or `da.lp
 
 **Verify**: `git diff --check` exits 0, and `git status --short` shows only the in-scope files (plus the owner's untouched `Changelog/` changes, which you must not stage). Commit.
 
+### Step 7 (Revision 1): push the policy instead of opening a second sheet
+
+Only this step is left. Steps 1-6 are committed (`b75f66b`).
+
+**Current state.** `Hugo/Features/Settings/Screens/SettingsView.swift` has, near the top:
+
+```swift
+    /// A bundled Markdown page that the legal section opens in a sheet. The
+    /// raw value is the resource name under `Hugo/Resources/Markdown/Legal`.
+    private enum LegalPage: String, Identifiable {
+        case privacyPolicy = "PrivacyPolicy"
+
+        var id: String { rawValue }
+    }
+
+    @State private var legalPage: LegalPage?
+```
+
+the legal section after the support email section:
+
+```swift
+                Section {
+                    Button {
+                        legalPage = .privacyPolicy
+                    } label: {
+                        Label("settings.legal.privacyPolicy", systemImage: "hand.raised")
+                    }
+                }
+```
+
+and, after `.navigationBarTitleDisplayMode(.inline)`:
+
+```swift
+            .sheet(item: $legalPage) { page in
+                HelpView(for: page.rawValue)
+            }
+```
+
+`Hugo/Features/Help/Screens/HelpView.swift` always wraps its content in its own `NavigationStack` with a close button, so it can only be shown as a sheet. It is also used as a sheet by `ReportSettingsView.swift:54` and `SubmitReportView.swift:195`. Those must keep working exactly as they do.
+
+**1. Let `HelpView` be pushed.** In `HelpView.swift`:
+
+- Add, inside `struct HelpView`, above `@Environment(\.dismiss)`:
+
+  ```swift
+      /// How the page is shown. A sheet gets its own navigation bar with a
+      /// close button. A pushed page uses the navigation stack it is pushed
+      /// onto, so its back button closes it.
+      enum Presentation {
+          case sheet
+          case pushed
+      }
+  ```
+
+- Add a stored property `private let presentation: Presentation` next to `resourceName` and `bundle`, and an init parameter `presentation: Presentation = .sheet` after `bundle`, assigned in the init. The default keeps every existing call unchanged.
+- Move the current `Group { switch state { ... } }` with its `.background(Color(.systemGroupedBackground))` and the `.task(id: loadID) { await loadContent() }` into a new `private var page: some View`. Then make `body`:
+
+  ```swift
+      var body: some View {
+          switch presentation {
+          case .sheet:
+              NavigationStack {
+                  page
+                      .toolbar {
+                          ToolbarItem(placement: .topBarTrailing) {
+                              Button(role: .close) {
+                                  dismiss()
+                              }
+                          }
+                      }
+              }
+          case .pushed:
+              page
+                  .navigationBarTitleDisplayMode(.inline)
+          }
+      }
+  ```
+
+  Keep the `Group`'s three cases, the `ScrollView`/`Markdown` code and `loadContent()` exactly as they are. Only their position changes.
+
+**2. Push from Settings.** In `SettingsView.swift`:
+
+- Replace the `LegalPage` enum and `@State private var legalPage` with:
+
+  ```swift
+      /// A bundled Markdown page in the legal section. The raw value is the
+      /// resource name under `Hugo/Resources/Markdown/Legal`.
+      private enum LegalPage: String {
+          case privacyPolicy = "PrivacyPolicy"
+      }
+  ```
+
+- Replace the legal section's `Button { legalPage = .privacyPolicy } label: { ... }` with:
+
+  ```swift
+                      NavigationLink {
+                          HelpView(for: LegalPage.privacyPolicy.rawValue, presentation: .pushed)
+                      } label: {
+                          Label("settings.legal.privacyPolicy", systemImage: "hand.raised")
+                      }
+  ```
+
+- Delete the `.sheet(item: $legalPage) { page in HelpView(for: page.rawValue) }` modifier.
+
+**3. Catalog comment.** In `Hugo/Resources/Localizable.xcstrings`, change only the `comment` of `settings.legal.privacyPolicy` from `A Settings button that opens Hugo's privacy policy in a sheet.` to `A Settings row that opens Hugo's privacy policy.` Change nothing else in the catalog.
+
+**Verify**:
+
+- `grep -n "legalPage\|sheet(item" Hugo/Features/Settings/Screens/SettingsView.swift` prints nothing.
+- `grep -n "presentation: .pushed" Hugo/Features/Settings/Screens/SettingsView.swift` prints one line.
+- `grep -n "HelpView(for: \"RoundingRule\")" Hugo/Features/Settings/Screens/ReportSettingsView.swift Hugo/Features/Reports/Screens/SubmitReportView.swift` still prints two lines, unchanged.
+- `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0, the catalog JSON check exits 0, and `Scripts/verify.sh` exits 0.
+- `git diff --stat` lists only `HelpView.swift`, `SettingsView.swift` and `Localizable.xcstrings`.
+
+Commit those three files: `fix: push the privacy policy from Settings instead of stacking a second sheet`.
+
+**Owner check**: on the iPhone, open Settings from the Overview (a sheet), tap Privacy Policy, then go back. The page slides in and out like the other Settings rows, and the footers stay still. The Rounding help in Report settings and in Submit Report still opens as a sheet with a close button.
+
 ## Test plan
 
 - `HugoTests/Resources/BundledMarkdownTests.swift` (new) checks that `RoundingRule` and `PrivacyPolicy` ship in Base and Danish, start with a title, load no images, and that the policy names its web address and the support email.
@@ -477,4 +596,4 @@ If the build fails with "Multiple commands produce" for a `Base.lproj` or `da.lp
 - Hugo adds any analytics, crash SDK, web service or remote content. Update plan 104's manifest at the same time.
 - The way reports are sent changes (for example a share sheet or Mail in addition to Messages).
 
-**Layout.** If more bundled pages arrive (plan 106 adds Terms of Use next), they go in `Hugo/Resources/Markdown/Legal/` and get a case in `LegalPage`. If `HelpView` ends up showing more legal pages than help pages, consider renaming it to something like `MarkdownPageView` in its own small plan.
+**Layout.** If more bundled pages arrive (plan 106 adds Terms of Use next), they go in `Hugo/Resources/Markdown/Legal/`, get a case in `LegalPage`, and are pushed with `HelpView(for:presentation: .pushed)`. Don't open a sheet from Settings: on iPhone, Settings is itself a sheet, and a stacked sheet makes its footers jump (Revision 1). If `HelpView` ends up showing more legal pages than help pages, consider renaming it to something like `MarkdownPageView` in its own small plan.
