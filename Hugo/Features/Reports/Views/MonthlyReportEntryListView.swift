@@ -3,9 +3,14 @@ import SwiftUI
 struct MonthlyReportEntryListView: View {
     let month: ServiceMonth
 
+    private var entries: [Entry] { month.summary?.entries ?? [] }
+
     var body: some View {
         Section {
-            ForEach(month.summary?.entries ?? []) { entry in
+            if let carriedIn = CarriedInTime(entries: entries) {
+                carriedInRow(carriedIn)
+            }
+            ForEach(entries.filter { !$0.isCarriedIn }) { entry in
                 NavigationLink(destination: EntryDetailView(entry: entry)) {
                     Label {
                         HStack {
@@ -26,5 +31,20 @@ struct MonthlyReportEntryListView: View {
                 }
             }
         }
+    }
+
+    /// Carried-in entries are managed by the source month's report, so they
+    /// show as one line that can't be opened or edited.
+    private func carriedInRow(_ carriedIn: CarriedInTime) -> some View {
+        let label = Text(carriedIn.label())
+        return HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
+            Text(verbatim: "↘")
+                .accessibilityHidden(true)
+            label
+        }
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
     }
 }

@@ -49,8 +49,8 @@ struct OverviewListView: View {
                 } else if listStyle == .byDate {
                     OverviewDateList(entries: groups.regular, selectedEntry: $selectedEntry)
                 }
-                if !groups.carried.isEmpty {
-                    OverviewCarriedEntriesView(entries: groups.carried)
+                if let carriedIn = CarriedInTime(entries: groups.carried) {
+                    OverviewCarriedEntriesView(carriedIn: carriedIn)
                 }
             }
         }
@@ -231,30 +231,41 @@ struct OverviewDateList: View {
     }
 }
 
+/// The month's carried-in time as one line. Tapping it opens the Rounding
+/// help, which explains transfers.
 struct OverviewCarriedEntriesView: View {
-    var entries: [Entry]
+    let carriedIn: CarriedInTime
 
-    private var totalDuration: Duration {
-        entries.reduce(into: .zero) { total, entry in
-            total += .seconds(entry.duration)
-        }
-    }
+    @State private var showingHelp = false
 
     var body: some View {
-        HStack(spacing: HugoLayout.Spacing.tight) {
-            Text(
-                "overview.carried.summary.label"
-            )
-            Text(totalDuration.formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
-                .fontWeight(.semibold)
+        let label = Text(carriedIn.label())
+        Button {
+            showingHelp = true
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
+                Text(verbatim: "↘")
+                    .accessibilityHidden(true)
+                label
+                    .multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+                Image(systemName: "info.circle")
+                    .accessibilityHidden(true)
+            }
+            .font(.caption)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(Color(.systemGray5))
+            .foregroundStyle(.secondary)
+            .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+            .contentShape(.rect)
         }
-        .font(.caption)
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(.systemGray5))
-        .foregroundStyle(.secondary)
-        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
-        .accessibilityElement(children: .combine)
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityHint(Text("overview.carried.hint"))
+        .accessibilityAddTraits(.isButton)
+        .sheet(isPresented: $showingHelp) { HelpView(for: "RoundingRule") }
     }
 }
 
