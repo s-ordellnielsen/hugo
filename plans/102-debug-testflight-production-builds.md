@@ -67,7 +67,7 @@ Relevant settings:
 - Both targets use `PRODUCT_BUNDLE_IDENTIFIER = "com.ordellnielsen.Hugo$(HUGO_BUNDLE_ID_SUFFIX)";`, `CODE_SIGN_ENTITLEMENTS = Configuration/Hugo.entitlements;`, team `CAJA48GKTR`, automatic signing.
 - **Why the flags cannot simply go in the xcconfig files today:** a setting written in a pbxproj configuration block wins over the same setting in that block's base `.xcconfig`. The project Release block sets `SWIFT_ACTIVE_COMPILATION_CONDITIONS` without `$(inherited)`, so anything an xcconfig adds is thrown away. Step 2 deletes both pbxproj `SWIFT_ACTIVE_COMPILATION_CONDITIONS` lines, so the xcconfig files own the setting.
 - No Swift file reads `ENV_DEV`, `ENV_PROD` or `ENV_PREVIEW` (`grep -rn "ENV_" Hugo HugoTests` finds nothing). `HUGO_ENV` stays, because the Debug bundle ID suffix uses it, but no Swift code may ever check it.
-- `Preview` is used by no scheme, script or document. Its `Hugo` target block uses the App Store bundle ID with Debug compiler settings, which is a trap. Xcode's SwiftUI canvas builds the scheme's Run configuration (Debug) and turns previews on by itself, so nothing depends on `Preview`. This plan deletes it.
+- `Preview` is used by no scheme, script or document. Its `Hugo` target block uses the App Store bundle ID with Debug compiler settings, which is a trap. Xcode's SwiftUI canvas builds the scheme's Run configuration (Debug) and turns previews on by itself, so nothing depends on `Preview`. This plan deletes it. The owner confirmed deleting it (2026-11-13).
 
 ### Schemes (`Hugo.xcodeproj/xcshareddata/xcschemes/`)
 
