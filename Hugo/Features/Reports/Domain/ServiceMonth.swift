@@ -65,6 +65,20 @@ nonisolated struct ServiceMonth: Identifiable {
         )
     }
 
+    /// What rounding did to the month's submitted report, or nil when the
+    /// month isn't submitted, its report has no saved lines, or nothing was
+    /// rounded or transferred.
+    var adjustments: ReportAdjustments? {
+        guard isSubmitted, let report = submittedReport, !report.reportingLines.isEmpty else { return nil }
+        let adjustments = ReportAdjustments(lines: report.reportingLines)
+        return adjustments.isEmpty ? nil : adjustments
+    }
+
+    /// The month's carried-in time, or nil when it has none.
+    var carriedIn: CarriedInTime? {
+        CarriedInTime(entries: summary?.entries ?? [])
+    }
+
     static func make(
         _ month: YearMonth,
         entries: [Entry],

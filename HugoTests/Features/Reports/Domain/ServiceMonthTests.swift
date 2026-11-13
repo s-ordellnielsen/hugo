@@ -212,4 +212,65 @@ struct ServiceMonthTests {
         #expect(m.contribution.main == 5_400)
         #expect(m.contribution.separate == 0)
     }
+
+    @Test
+    func adjustmentsAreNilWhenNotSubmitted() {
+        let m = month([oldEntry(seconds: 38_400)], [])
+        #expect(m.adjustments == nil)
+    }
+
+    @Test
+    func adjustmentsAreNilForAPlaceholderReport() {
+        let placeholder = SubmittedReport(
+            year: 2026,
+            month: 6,
+            entriesClosedAt: date(2026, 6, 30),
+            reportingLines: [
+                .init(
+                    typeRaw: TrackerType.main.rawValue, typeName: "", durationInSeconds: 38_400,
+                    submittedHours: 11, roundingRaw: RoundingRule.up.rawValue)
+            ]
+        )
+        let m = month([oldEntry(seconds: 38_400)], [placeholder])
+        #expect(!m.isSubmitted)
+        #expect(m.adjustments == nil)
+    }
+
+    @Test
+    func adjustmentsComeFromTheSubmittedLines() {
+        let report = SubmittedReport(
+            year: 2026, month: 6,
+            firstSubmittedAt: date(2026, 7, 1), submittedAt: date(2026, 7, 1),
+            entriesClosedAt: date(2026, 6, 30, hour: 10),
+            reportingLines: [
+                .init(
+                    typeRaw: TrackerType.main.rawValue, typeName: "", durationInSeconds: 38_400,
+                    submittedHours: 11, roundingRaw: RoundingRule.up.rawValue),
+                .init(
+                    typeRaw: TrackerType.separate.rawValue, typeName: "Bethel", durationInSeconds: 4_500,
+                    submittedHours: 1, roundingRaw: RoundingRule.transfer.rawValue),
+            ]
+        )
+        let m = month([oldEntry(seconds: 42_900)], [report])
+        #expect(m.adjustments?.roundedUpSeconds == 1_200)
+        #expect(m.adjustments?.transferredSeconds == 900)
+        #expect(m.adjustments?.roundedDownSeconds == 0)
+    }
+
+    @Test
+    func adjustmentsAreNilWhenNothingWasRounded() {
+        let m = month([oldEntry(seconds: 7_200)], [comparableReport(mainSeconds: 7_200)])
+        #expect(m.isSubmitted)
+        #expect(m.adjustments == nil)
+    }
+
+    @Test
+    func carriedInComesFromTheMonthsCarriedInEntries() {
+        let carried = Entry(date: date(2026, 6, 1), duration: 1_800, tracker: nil)
+        carried.sourceReportYear = 2026
+        carried.sourceReportMonth = 5
+        let m = month([oldEntry(seconds: 3_600), carried], [])
+        #expect(m.carriedIn?.seconds == 1_800)
+        #expect(m.carriedIn?.sourceMonths == [YearMonth(year: 2026, month: 5)])
+    }
 }
