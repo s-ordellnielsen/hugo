@@ -20,6 +20,7 @@
 - **Category**: dx
 - **Planned at**: commit `3055ae6`, 2026-11-13
 - **Issue**: [SLN-194](https://linear.app/sebastianln/issue/SLN-194)
+- **Revision 1** (2026-11-13, after the first executor stopped at Step 4): the xcconfig files never applied. The project points at them through `baseConfigurationReferenceAnchor` on the synchronized `Hugo` folder plus a `../Configuration/...` path that leaves the folder, and Xcode ignores that silently (at `3055ae6`, `BUNDLE_IDENTIFIER`, which only the xcconfig sets, is missing from `-showBuildSettings`). The Step 2 script now also replaces those anchored references with normal file references (part 5), and Step 3 deletes the broken `INFOPLIST_KEY_TestFlightURL` lines. The advisor dry-ran the revised Steps 2-3 on a copy of `3055ae6` and got exactly Step 4's table.
 
 ## Why this matters
 
@@ -65,7 +66,16 @@ Relevant settings:
   `SWIFT_ACTIVE_COMPILATION_CONDITIONS = "ENV_$(HUGO_ENV)";`, `HUGO_ENV = PROD;`, `HUGO_BUNDLE_ID_SUFFIX = "";`.
 - `Hugo` target Debug sets `HUGO_BUNDLE_ID_SUFFIX = ".$(HUGO_ENV:lower)";` (so the bundle ID is `com.ordellnielsen.Hugo.dev`), `ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;`, display name "Hugo Dev". `Hugo` target Release has `AppIcon`, display name "Hugo", and the bundle ID `com.ordellnielsen.Hugo`.
 - Both targets use `PRODUCT_BUNDLE_IDENTIFIER = "com.ordellnielsen.Hugo$(HUGO_BUNDLE_ID_SUFFIX)";`, `CODE_SIGN_ENTITLEMENTS = Configuration/Hugo.entitlements;`, team `CAJA48GKTR`, automatic signing.
-- **Why the flags cannot simply go in the xcconfig files today:** a setting written in a pbxproj configuration block wins over the same setting in that block's base `.xcconfig`. The project Release block sets `SWIFT_ACTIVE_COMPILATION_CONDITIONS` without `$(inherited)`, so anything an xcconfig adds is thrown away. Step 2 deletes both pbxproj `SWIFT_ACTIVE_COMPILATION_CONDITIONS` lines, so the xcconfig files own the setting.
+- **The xcconfig files do not apply today.** The two project-level blocks reference them like this:
+
+  ```
+  baseConfigurationReferenceAnchor = E09054512E91E99900254125 /* Hugo */;
+  baseConfigurationReferenceRelativePath = ../Configuration/Debug.xcconfig;
+  ```
+
+  `E09054512E91E99900254125` is the synchronized `Hugo` folder (`path = Hugo`), and the relative path leaves that folder. Xcode ignores such a reference without a warning: at `3055ae6`, `xcodebuild -showBuildSettings` shows no `BUNDLE_IDENTIFIER`, although `Debug.xcconfig` sets it. Step 2 replaces both references with normal `PBXFileReference` entries (`baseConfigurationReference = <id>`), which Xcode does apply.
+- **`INFOPLIST_KEY_TestFlightURL` in the xcconfig files is broken.** In an xcconfig file `//` starts a comment, so `INFOPLIST_KEY_TestFlightURL = https://testflight.apple.com/...` sets the value `https:`. It did no harm because the files never applied. The real URL is in `Hugo/Info.plist` (`TestFlightURL`). Step 3 deletes the line and its comment from every xcconfig, so applying the files cannot change the link.
+- **Why the flags cannot simply go in the xcconfig files today (besides the reference problem):** a setting written in a pbxproj configuration block wins over the same setting in that block's base `.xcconfig`. The project Release block sets `SWIFT_ACTIVE_COMPILATION_CONDITIONS` without `$(inherited)`, so anything an xcconfig adds is thrown away. Step 2 deletes both pbxproj `SWIFT_ACTIVE_COMPILATION_CONDITIONS` lines, so the xcconfig files own the setting.
 - No Swift file reads `ENV_DEV`, `ENV_PROD` or `ENV_PREVIEW` (`grep -rn "ENV_" Hugo HugoTests` finds nothing). `HUGO_ENV` stays, because the Debug bundle ID suffix uses it, but no Swift code may ever check it.
 - `Preview` is used by no scheme, script or document. Its `Hugo` target block uses the App Store bundle ID with Debug compiler settings, which is a trap. Xcode's SwiftUI canvas builds the scheme's Run configuration (Debug) and turns previews on by itself, so nothing depends on `Preview`. This plan deletes it. The owner confirmed deleting it (2026-11-13).
 
@@ -260,7 +270,8 @@ Do not edit `project.pbxproj` by hand. Run this script from the repo root. It ch
 1. deletes the three `Preview` blocks and their list entries,
 2. renames `Release` to `Production` (block comments, `name =`, `defaultConfigurationName =`, and the xcconfig path),
 3. deletes the two `SWIFT_ACTIVE_COMPILATION_CONDITIONS` lines so the xcconfig files own that setting,
-4. adds a `TestFlight` copy of each `Production` block with a new ID and `../Configuration/TestFlight.xcconfig`, listed between Debug and Production.
+4. adds a `TestFlight` copy of each `Production` block with a new ID and `../Configuration/TestFlight.xcconfig`, listed between Debug and Production,
+5. replaces the three anchored xcconfig references (Debug, TestFlight, Production) with normal file references, so Xcode applies the files.
 
 ```sh
 python3 -I - <<'EOF'
@@ -340,6 +351,41 @@ expect(3, "name = TestFlight;", "TestFlight configurations")
 expect(3, "name = Production;", "Production configurations")
 expect(1, "../Configuration/TestFlight.xcconfig", "TestFlight xcconfig path")
 expect(1, "../Configuration/Production.xcconfig", "Production xcconfig path")
+
+# 5. Reference the xcconfig files with normal file references. Xcode ignores
+#    an anchored reference whose path leaves the synchronized Hugo folder.
+XCCONFIG_REFS = {
+    "Debug": "E0F1E5702EC6000000000011",
+    "TestFlight": "E0F1E5702EC6000000000012",
+    "Production": "E0F1E5702EC6000000000013",
+}
+for ref in XCCONFIG_REFS.values():
+    expect(0, ref, f"new ID {ref}")
+expect(3, "baseConfigurationReferenceAnchor", "anchored xcconfig references")
+section = "/* Begin PBXFileReference section */\n"
+expect(1, section, "file reference section")
+file_refs = "".join(
+    f'\t\t{ref} /* {name}.xcconfig */ = {{isa = PBXFileReference; lastKnownFileType = text.xcconfig; '
+    f'name = {name}.xcconfig; path = Configuration/{name}.xcconfig; sourceTree = "<group>"; }};\n'
+    for name, ref in XCCONFIG_REFS.items()
+)
+text = text.replace(section, section + file_refs)
+children = "\t\t\t\tE09054512E91E99900254125 /* Hugo */,\n\t\t\t\tE090548B2E951E2C00254125 /* HugoTests */,\n"
+expect(1, children, "main group children")
+text = text.replace(
+    children,
+    "".join(f"\t\t\t\t{ref} /* {name}.xcconfig */,\n" for name, ref in XCCONFIG_REFS.items()) + children,
+)
+for name, ref in XCCONFIG_REFS.items():
+    old = (
+        "\t\t\tbaseConfigurationReferenceAnchor = E09054512E91E99900254125 /* Hugo */;\n"
+        f"\t\t\tbaseConfigurationReferenceRelativePath = ../Configuration/{name}.xcconfig;\n"
+    )
+    expect(1, old, f"anchored reference to {name}.xcconfig")
+    text = text.replace(old, f"\t\t\tbaseConfigurationReference = {ref} /* {name}.xcconfig */;\n")
+expect(0, "baseConfigurationReferenceAnchor", "leftover anchored references")
+expect(0, "baseConfigurationReferenceRelativePath", "leftover relative paths")
+expect(3, "baseConfigurationReference = ", "xcconfig file references")
 path.write_text(text)
 print("project.pbxproj updated")
 EOF
@@ -349,6 +395,7 @@ EOF
 
 ### Step 3: Rename and add the xcconfig files and schemes
 
+0. In `Configuration/Debug.xcconfig` and `Configuration/Release.xcconfig`, delete the two lines `// TestFlight public invite link. Replace this value with the current invite URL.` and `INFOPLIST_KEY_TestFlightURL = https://testflight.apple.com/join/AdmsjW16` (see "Current state": `//` starts a comment, so the value is broken, and `Hugo/Info.plist` already holds the real URL). Delete the blank line before them too, if one is left at the end of the file.
 1. `git mv Configuration/Release.xcconfig Configuration/Production.xcconfig`. In it, change the header line `//  Release.xcconfig` to `//  Production.xcconfig`, and append at the end:
 
    ```
@@ -388,11 +435,12 @@ EOF
 - `grep -c 'buildConfiguration = "Production"' Hugo.xcodeproj/xcshareddata/xcschemes/Production.xcscheme` prints `5`.
 - `grep -c 'buildConfiguration = "TestFlight"' Hugo.xcodeproj/xcshareddata/xcschemes/TestFlight.xcscheme` prints `5`.
 - `grep -rn "Release" Hugo.xcodeproj/xcshareddata/xcschemes Configuration/*.xcconfig` prints nothing.
+- `grep -rn "INFOPLIST_KEY_TestFlightURL" Configuration` prints nothing.
 
 ### Step 4: Check that Xcode sees three builds and that the flags take effect
 
-1. `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -list -project Hugo.xcodeproj` lists exactly these Build Configurations, in this order: `Debug`, `TestFlight`, `Production`. Schemes: `Debug`, `Production`, `TestFlight`, plus `MarkdownUI` (the Swift package's own scheme, which was there before). The line about the default configuration names `Production`. (The advisor dry-ran the Step 2 script on a copy at `3055ae6`: `plutil` said OK and `xcodebuild -list` showed these three configurations.)
-2. Run the build-settings command from "Commands you will need" once per configuration. Expected (leading spaces and the order of lines may differ):
+1. `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -list -project Hugo.xcodeproj` lists exactly these Build Configurations, in this order: `Debug`, `TestFlight`, `Production`. Schemes: `Debug`, `Production`, `TestFlight`, plus `MarkdownUI` (the Swift package's own scheme, which was there before). The line about the default configuration names `Production`. (The advisor dry-ran the revised Step 2 script and Step 3's xcconfig edits on a copy at `3055ae6`: `plutil` said OK, `xcodebuild -list` showed these three configurations, and the build settings matched the table below.)
+2. Run the build-settings command from "Commands you will need" once per configuration, with `BUNDLE_IDENTIFIER` and `INFOPLIST_KEY_TestFlightURL` added to its `grep -E` list. Expected (leading spaces and the order of lines may differ):
 
 | Config | `SWIFT_ACTIVE_COMPILATION_CONDITIONS` | `PRODUCT_BUNDLE_IDENTIFIER` | `ASSETCATALOG_COMPILER_APPICON_NAME` |
 |---|---|---|---|
@@ -400,7 +448,9 @@ EOF
 | TestFlight | `SHOW_DEBUG_MENU SHOW_SHARE_TESTFLIGHT` | `com.ordellnielsen.Hugo` | `AppIcon` |
 | Production | `SHOW_JOIN_BETA` | `com.ordellnielsen.Hugo` | `AppIcon` |
 
-**Verify**: every value matches the table. No `ENV_` appears in any `SWIFT_ACTIVE_COMPILATION_CONDITIONS` value.
+Also: `BUNDLE_IDENTIFIER` appears for every configuration (`com.ordellnielsen.Hugo.dev` for Debug, `com.ordellnielsen.Hugo` for the others). That proves the xcconfig files now apply. `INFOPLIST_KEY_TestFlightURL` does not appear.
+
+**Verify**: every value matches. No `ENV_` appears in any `SWIFT_ACTIVE_COMPILATION_CONDITIONS` value. If `SWIFT_ACTIVE_COMPILATION_CONDITIONS` or `BUNDLE_IDENTIFIER` is missing, STOP.
 
 ### Step 5: Point the verify script and docs at the Debug scheme
 
@@ -763,6 +813,7 @@ Do not test `DiagnosticsCollector` (CloudKit and `UIDevice`).
 - [ ] Step 7's `strings` check: TestFlight has `DebugSettingsView` and `shareTestFlight` but not `joinBeta`; Production has `joinBeta` only
 - [ ] `grep -rn "ENV_\|#if PRODUCTION\|#if TESTFLIGHT" Hugo HugoTests Configuration` prints nothing
 - [ ] `grep -c "SWIFT_ACTIVE_COMPILATION_CONDITIONS" Hugo.xcodeproj/project.pbxproj` prints `0`
+- [ ] `grep -c "baseConfigurationReferenceAnchor" Hugo.xcodeproj/project.pbxproj` prints `0` and `grep -c "baseConfigurationReference = " Hugo.xcodeproj/project.pbxproj` prints `3`
 - [ ] `git log --oneline -3` shows the three commits from "Git workflow", and none of them contains `Changelog/`, `.claude/` or `plans/`
 - [ ] `plans/README.md` row for 102 updated
 
@@ -784,5 +835,6 @@ Do not test `DiagnosticsCollector` (CloudKit and `UIDevice`).
 - **Destructive debug actions** (wiping data, seeding sample data) do not belong under `SHOW_DEBUG_MENU`, because testers have that menu. Give them a new flag that is on in Debug only.
 - **String catalog**: after Xcode builds Production, it may mark `debug.*` and `settings.account.shareTestFlight*` keys as stale, because that build's code doesn't use them. Stale keys still ship and work. Do not delete them.
 - **Deferred**: a separate beta app icon for the TestFlight build (owner: maybe later). It is one line, `ASSETCATALOG_COMPILER_APPICON_NAME = AppIconBeta` in `Configuration/TestFlight.xcconfig`, plus the icon asset. Note that the `Hugo` target's pbxproj block sets `ASSETCATALOG_COMPILER_APPICON_NAME` too and wins over the xcconfig, so that line must be removed from the TestFlight block at the same time.
+- **xcconfig references**: keep the xcconfig files referenced through `baseConfigurationReference` to a `PBXFileReference`. Xcode silently ignores an anchored reference (`baseConfigurationReferenceAnchor`) whose path leaves the synchronized `Hugo` folder, which is why the files did nothing before this plan. If you set a build's base configuration again in Xcode, pick the file from the project's top level, not from inside the `Hugo` folder.
 - `HUGO_ENV` now only feeds the Debug bundle ID suffix. It must not come back as a Swift compilation condition.
-- Reviewers: check the pbxproj diff is only the Preview removal, the rename, the two deleted lines and three new TestFlight blocks with list entries; check that no `#if` in Swift names a build.
+- Reviewers: check the pbxproj diff is only the Preview removal, the rename, the two deleted lines, three new TestFlight blocks with list entries, and three xcconfig file references replacing the anchored ones; check that no `#if` in Swift names a build.
