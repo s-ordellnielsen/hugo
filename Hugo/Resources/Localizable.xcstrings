@@ -3181,6 +3181,40 @@
         }
       }
     },
+    "settings.account.joinBeta" : {
+      "comment" : "A link in Settings that opens the public TestFlight invitation. Shown only in the App Store build.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bliv betatester"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Join the Beta"
+          }
+        }
+      }
+    },
+    "settings.account.joinBeta.description" : {
+      "comment" : "Footer under the Join the Beta link in Settings.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vil du prøve nye funktioner, før de udkommer? Bliv betatester af Hugo via TestFlight, og hjælp med at finde fejl tidligt. Der er et begrænset antal pladser, så betaen kan være fyldt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Want to try new features before they come out? Join the Hugo beta on TestFlight and help find problems early. Seats are limited, so the beta might be full."
+          }
+        }
+      }
+    },
     "settings.account.shareTestFlight" : {
       "comment" : "A button that lets users share the Hugo TestFlight invitation link.",
       "localizations" : {

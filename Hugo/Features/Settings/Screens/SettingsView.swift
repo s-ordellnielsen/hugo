@@ -64,15 +64,29 @@ struct SettingsView: View {
                     }
                 }
 
-                if let testFlightURL = Self.testFlightURL {
-                    Section {
-                        ShareLink(item: testFlightURL) {
-                            Label("settings.account.shareTestFlight", systemImage: "person.crop.circle.badge.plus")
+                #if SHOW_SHARE_TESTFLIGHT
+                    if let testFlightURL = Self.testFlightURL {
+                        Section {
+                            ShareLink(item: testFlightURL) {
+                                Label("settings.account.shareTestFlight", systemImage: "person.crop.circle.badge.plus")
+                            }
+                        } footer: {
+                            Text("settings.account.shareTestFlight.description")
                         }
-                    } footer: {
-                        Text("settings.account.shareTestFlight.description")
                     }
-                }
+                #endif
+
+                #if SHOW_JOIN_BETA
+                    if let testFlightURL = Self.testFlightURL {
+                        Section {
+                            Link(destination: testFlightURL) {
+                                Label("settings.account.joinBeta", systemImage: "testtube.2")
+                            }
+                        } footer: {
+                            Text("settings.account.joinBeta.description")
+                        }
+                    }
+                #endif
 
                 if let supportEmailURL = Self.supportEmailURL {
                     Section {
@@ -84,14 +98,16 @@ struct SettingsView: View {
                     }
                 }
 
-                Section {
-                    NavigationLink(destination: DebugSettingsView()) {
-                        Label("debug.title", systemImage: "ant.fill")
-                            .foregroundStyle(.primary)
+                #if SHOW_DEBUG_MENU
+                    Section {
+                        NavigationLink(destination: DebugSettingsView()) {
+                            Label("debug.title", systemImage: "ant.fill")
+                                .foregroundStyle(.primary)
+                        }
+                    } footer: {
+                        Text("debug.disclaimer")
                     }
-                } footer: {
-                    Text("debug.disclaimer")
-                }
+                #endif
             }
             .navigationTitle("settings.title")
             .navigationBarTitleDisplayMode(.inline)

@@ -1,18 +1,21 @@
 import SwiftUI
 
-struct DebugSettingsView: View {
-    @AppStorage(UserDefaultsKeys.isOnboarding) var isOnboarding: Bool = true
+#if SHOW_DEBUG_MENU
 
-    var body: some View {
-        List {
-            Button("debug.action.reset-onboarding", systemImage: "arrow.counterclockwise") {
-                isOnboarding = true
+    struct DebugSettingsView: View {
+        @AppStorage(UserDefaultsKeys.isOnboarding) var isOnboarding: Bool = true
+
+        var body: some View {
+            List {
+                Button("debug.action.reset-onboarding", systemImage: "arrow.counterclockwise") {
+                    isOnboarding = true
+                }
             }
+            .navigationTitle("debug.title")
         }
-        .navigationTitle("debug.title")
     }
-}
 
-#Preview {
-    DebugSettingsView()
-}
+    #Preview {
+        DebugSettingsView()
+    }
+#endif
