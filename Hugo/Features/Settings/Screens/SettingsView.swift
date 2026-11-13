@@ -11,6 +11,7 @@ struct SettingsView: View {
     /// resource name under `Hugo/Resources/Markdown/Legal`.
     private enum LegalPage: String {
         case privacyPolicy = "PrivacyPolicy"
+        case termsOfUse = "TermsOfUse"
     }
 
     var showDismiss: Bool = false
@@ -108,6 +109,11 @@ struct SettingsView: View {
                         HelpView(for: LegalPage.privacyPolicy.rawValue, presentation: .pushed)
                     } label: {
                         Label("settings.legal.privacyPolicy", systemImage: "hand.raised")
+                    }
+                    NavigationLink {
+                        HelpView(for: LegalPage.termsOfUse.rawValue, presentation: .pushed)
+                    } label: {
+                        Label("settings.legal.termsOfUse", systemImage: "doc.plaintext")
                     }
                 }
 

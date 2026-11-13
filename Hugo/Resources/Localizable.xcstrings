@@ -3547,6 +3547,23 @@
         }
       }
     },
+    "settings.legal.termsOfUse" : {
+      "comment" : "A Settings row that opens Hugo's terms of use.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brugsvilkår"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Use"
+          }
+        }
+      }
+    },
     "settings.report.greeting" : {
       "comment" : "Label for the greeting template setting.",
       "localizations" : {
