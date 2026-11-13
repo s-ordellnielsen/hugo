@@ -3530,6 +3530,23 @@
         }
       }
     },
+    "settings.legal.privacyPolicy" : {
+      "comment" : "A Settings button that opens Hugo's privacy policy in a sheet.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privatlivspolitik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
     "settings.report.greeting" : {
       "comment" : "Label for the greeting template setting.",
       "localizations" : {
