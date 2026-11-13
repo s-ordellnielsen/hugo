@@ -50,7 +50,7 @@ struct OverviewListView: View {
                     OverviewDateList(entries: groups.regular, selectedEntry: $selectedEntry)
                 }
                 if let carriedIn = CarriedInTime(entries: groups.carried) {
-                    OverviewCarriedEntriesView(carriedIn: carriedIn)
+                    OverviewCarriedEntriesView(carriedIn: carriedIn, entries: groups.carried)
                 }
             }
         }
@@ -231,29 +231,28 @@ struct OverviewDateList: View {
     }
 }
 
-/// The month's carried-in time as one line. Tapping it opens the Rounding
-/// help, which explains transfers.
+/// The month's carried-in time as one line. Tapping it opens a breakdown by category.
 struct OverviewCarriedEntriesView: View {
     let carriedIn: CarriedInTime
+    let entries: [Entry]
 
-    @State private var showingHelp = false
+    @State private var showingBreakdown = false
 
     var body: some View {
         let label = Text(carriedIn.label())
         Button {
-            showingHelp = true
+            showingBreakdown = true
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
                 Text(verbatim: "↘")
                     .accessibilityHidden(true)
                 label
-                    .multilineTextAlignment(.leading)
-                Spacer(minLength: 0)
+                    .multilineTextAlignment(.center)
                 Image(systemName: "info.circle")
                     .accessibilityHidden(true)
             }
             .font(.caption)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity)
             .padding()
             .background(Color(.systemGray5))
             .foregroundStyle(.secondary)
@@ -265,7 +264,10 @@ struct OverviewCarriedEntriesView: View {
         .accessibilityLabel(label)
         .accessibilityHint(Text("overview.carried.hint"))
         .accessibilityAddTraits(.isButton)
-        .sheet(isPresented: $showingHelp) { HelpView(for: "RoundingRule") }
+        .sheet(isPresented: $showingBreakdown) {
+            CarriedInBreakdownSheet(carriedIn: carriedIn, entries: entries)
+                .presentationDetents([.medium])
+        }
     }
 }
 
