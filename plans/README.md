@@ -177,6 +177,7 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * 103 does not offer "reset and download again from iCloud", because Hugo can't tell which local changes haven't reached iCloud yet.
   * 107: owner decision (2026-11-13) that time without a category counts as main time everywhere. Only `MonthlyReportBuilder` got it wrong.
   * 108 before 109 and 112: 108 and 112 both edit `ServiceYearMonthRow.swift`, and 109 expects 108's hero text.
+  * Owner accepted the plans' defaults (2026-11-13): no reset button in 103; the policy names the owner as an independent developer with no country (105); the website copies of the Privacy Policy and Terms stay English only until the website gets localization, and the Danish texts ship in the app only (105, 106); totals of an hour or more keep showing whole hours (108); "transferred from" on the Year cards reads the carried-in entries (112); `Preview` is deleted (102).
   * 112 needs 111's `CarriedInTime`. No plan 110: SLN-232 was already built; the leftover largest-remainder split in `ReportingLineCalculator.categoryHours` only feeds write-only fields and belongs to SLN-290.
 
 ## Settings decisions for plans 091, 083 and 084 (2026-11-06)

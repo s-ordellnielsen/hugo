@@ -465,9 +465,9 @@ If the build fails with "Multiple commands produce" for a `Base.lproj` or `da.lp
 
 **Owner checks before submitting to the App Store:**
 
-1. Read both texts. Confirm the name under "Who we are", and set "Last updated" to the date you publish. Change the date in both files, in the app and on the web.
+1. Read both texts. The owner accepted the name under "Who we are" (2026-11-13), with no country. and set "Last updated" to the date you publish. Change the date in both files, in the app and on the web.
 2. Check the two iOS menu paths on an iOS 26 device, in English and in Danish: "Settings > Privacy & Security > Analytics & Improvements > Share With App Developers" and "Settings > [your name] > iCloud > Manage Account Storage" (Danish: "Anonymitet & sikkerhed > Analyse & forbedringer > Del med appudviklere" and "iCloud > Administrer kontolagring"). Fix any wording that differs in both the Markdown and on the web.
-3. Publish the English text at `https://hugo.ordellnielsen.com/privacy`. The Danish text can live at the same address with a language switch, or at a second address. The bundled files are the source, so copy from them.
+3. Publish the English text at `https://hugo.ordellnielsen.com/privacy`, copied from the bundled file. The website stays English only for now (owner decision, 2026-11-13); the Danish text ships in the app only, until the website gets localization.
 4. Enter `https://hugo.ordellnielsen.com/privacy` as the Privacy Policy URL in App Store Connect (App Information).
 5. On a device, open Settings > Privacy Policy in English and Danish. The sheet shows the policy, the email link opens Mail, and the close button works.
 

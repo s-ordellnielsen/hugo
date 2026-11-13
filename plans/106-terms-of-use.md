@@ -315,7 +315,7 @@ In `HugoTests/Resources/BundledMarkdownTests.swift`:
 **Owner checks:**
 
 1. Read both texts and set "Last updated" to the date you publish, in both files and on the web.
-2. Publish the text at `https://hugo.ordellnielsen.com/terms`, copied from the bundled files.
+2. Publish the English text at `https://hugo.ordellnielsen.com/terms`, copied from the bundled file. The website stays English only for now (owner decision, 2026-11-13); the Danish text ships in the app only.
 3. In App Store Connect, leave the License Agreement on Apple's standard EULA. Don't upload a custom one. Hugo has no subscriptions, so no Terms link is required in the metadata. You may still add the terms URL to the description if you want.
 4. On a device, open Settings > Terms of Use in English and Danish. The Apple link opens in Safari, the email link opens Mail, and the close button works.
 
