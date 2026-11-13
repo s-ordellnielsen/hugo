@@ -10,15 +10,14 @@ struct SettingsView: View {
     var showDismiss: Bool = false
 
     private static var supportEmailURL: URL? {
-        guard let email = Bundle.main.object(forInfoDictionaryKey: "SupportEmail") as? String,
-            !email.isEmpty
+        guard let email = Bundle.main.object(forInfoDictionaryKey: "SupportEmail") as? String
         else {
             return nil
         }
-        var components = URLComponents()
-        components.scheme = "mailto"
-        components.path = email
-        return components.url
+        let version = AppVersion.current
+        let subject = String(
+            localized: "settings.contact.email.subject.\(version.marketingVersion).\(version.buildNumber)")
+        return SupportEmailLink.url(address: email, subject: subject)
     }
 
     private static var testFlightURL: URL? {
