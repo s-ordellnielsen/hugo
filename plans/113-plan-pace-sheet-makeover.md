@@ -23,6 +23,7 @@
 - **Planned at**: commit `7dd6b4c`, 2026-11-14 (rewritten the same day after the owner chose the bar; nothing from the first version had run)
 - **Issue**: [SLN-311](https://linear.app/sebastianln/issue/SLN-311)
 - **Revision 1** (2026-11-14, after Steps 1-4 landed as `b008f5f` and `699cfd7`): the owner looked at it on their iPhone. More space above the heading. The bar's full length stays the month's plan, but the month's total is no longer written out: the right-hand number shows the time planned until today, labelled "So far". The marker label loses its amount and reads just "Planned until today". **Execute only Step 5**; Steps 1-4 are done.
+- **Revision 2** (2026-11-14, after Step 5 landed as `5e12a6a`): more space between the heading and the bar. Bring back the "breathing" status arrow for way ahead and way behind, on the Overview circle's status line and in the sheet's heading. It existed until `25bf09d` (plan 007, July 2026) as `.symbolEffect(.breathe, isActive: currentStatus.animation)` and was lost in that refactor. **Execute only Step 6**; Steps 1-5 are done.
 
 ## Why this matters
 
@@ -435,6 +436,155 @@ Commit: `feat: show time planned so far under the plan pace bar`.
 
 **STOP conditions for this step**: the live sheet differs from Step 2's code; the change seems to need `PlanPace.swift` or another file outside this step's scope.
 
+### Step 6 (Revision 2): more space under the heading, and a breathing arrow when way ahead or way behind
+
+Steps 1-5 are done. The live `PlanPaceSheet.swift` is Step 2's code with Step 5's three changes.
+
+**History.** Until commit `25bf09d` ("`007` – Refactor overview and monthly progress presentation", July 2026) the Overview's status text was `CurrentMonthProgressView.StatusText`:
+
+```swift
+            HStack {
+                Image(systemName: currentStatus.icon)
+                    .symbolEffect(.breathe, isActive: currentStatus.animation)
+                Text(currentStatus.label)
+            }
+```
+
+with
+
+```swift
+        var animation: Bool {
+            switch self {
+            case .wayBelowTarget, .wayAboveTarget:
+                true
+            default:
+                false
+            }
+        }
+```
+
+The refactor replaced it with `MonthlyProgressStatus` and `MonthlyProgressStatusView` and dropped the effect. The owner wants it back, with the same effect (`.breathe`) for the same two statuses.
+
+**Current code.**
+
+`Hugo/Features/Overview/Views/MonthlyProgressStatusView.swift` (whole file), used by `MonthlyProgressCard.swift:32` for the status line under the circle:
+
+```swift
+import SwiftUI
+
+struct MonthlyProgressStatusView: View {
+    let status: MonthlyProgressStatus
+    var body: some View {
+        HStack {
+            Image(systemName: status.icon)
+            Text(status.label)
+        }.fontWeight(.semibold)
+    }
+}
+```
+
+`Hugo/Features/Overview/Domain/MonthlyProgressStatus.swift` has `label` and `icon` but no animation flag. Its tests are `HugoTests/Features/Overview/Domain/MonthlyProgressStatusTests.swift` (`@MainActor struct MonthlyProgressStatusTests`, parameterized `@Test(arguments:)` style).
+
+The heading in `PlanPaceSheet.swift` is:
+
+```swift
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                Label(status.label, systemImage: status.icon)
+                    .font(.system(.title2, design: .serif, weight: .bold))
+                Text(pace.differenceSentence)
+                    .foregroundStyle(.secondary)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+```
+
+**Reduce Motion.** The arrow must stay still when Reduce Motion is on. Read `@Environment(\.accessibilityReduceMotion)` and pass `isActive: status.isEmphasized && !reduceMotion`, as other views in the project read that environment value (for example `Hugo/DesignSystem/Components/MarkedProgressBar.swift:12`).
+
+**Scope for this step** (the only files you may change):
+
+- `Hugo/Features/Overview/Domain/MonthlyProgressStatus.swift`
+- `HugoTests/Features/Overview/Domain/MonthlyProgressStatusTests.swift`
+- `Hugo/Features/Overview/Views/MonthlyProgressStatusView.swift`
+- `Hugo/Features/Overview/Screens/PlanPaceSheet.swift`
+
+No strings change.
+
+1. In `MonthlyProgressStatus.swift`, below `var icon`, add:
+
+```swift
+    /// Way ahead or way behind the plan. The status arrow breathes to draw
+    /// attention to it.
+    var isEmphasized: Bool {
+        switch self {
+        case .wayAboveTarget, .wayBelowTarget: true
+        case .aboveTarget, .onTarget, .belowTarget: false
+        }
+    }
+```
+
+2. In `MonthlyProgressStatusTests.swift`, add:
+
+```swift
+    @Test(arguments: [
+        (MonthlyProgressStatus.wayAboveTarget, true),
+        (MonthlyProgressStatus.aboveTarget, false),
+        (MonthlyProgressStatus.onTarget, false),
+        (MonthlyProgressStatus.belowTarget, false),
+        (MonthlyProgressStatus.wayBelowTarget, true),
+    ])
+    func onlyWayAheadOrWayBehindIsEmphasized(input: (MonthlyProgressStatus, Bool)) {
+        #expect(input.0.isEmphasized == input.1)
+    }
+```
+
+3. Replace `MonthlyProgressStatusView.swift` with:
+
+```swift
+import SwiftUI
+
+struct MonthlyProgressStatusView: View {
+    let status: MonthlyProgressStatus
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        HStack {
+            Image(systemName: status.icon)
+                .symbolEffect(.breathe, isActive: status.isEmphasized && !reduceMotion)
+            Text(status.label)
+        }
+        .fontWeight(.semibold)
+    }
+}
+```
+
+4. In `PlanPaceSheet.swift`:
+   - Add `@Environment(\.accessibilityReduceMotion) private var reduceMotion` below `let pace: PlanPace`.
+   - Replace `Label(status.label, systemImage: status.icon)` with:
+
+     ```swift
+                     Label {
+                         Text(status.label)
+                     } icon: {
+                         Image(systemName: status.icon)
+                             .symbolEffect(.breathe, isActive: status.isEmphasized && !reduceMotion)
+                     }
+     ```
+
+     Keep the `.font(.system(.title2, design: .serif, weight: .bold))` on the `Label`, and keep the sentence, the accessibility modifiers and everything else.
+   - More space between the heading and the bar: after the heading block's `.accessibilityAddTraits(.isHeader)`, add `.padding(.bottom, HugoLayout.Spacing.spacious)`.
+
+**Verify**:
+- `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0.
+- `grep -rn "symbolEffect(.breathe" Hugo` prints two lines (`MonthlyProgressStatusView.swift`, `PlanPaceSheet.swift`), both containing `isEmphasized && !reduceMotion`.
+- `grep -n "padding(.bottom, HugoLayout.Spacing.spacious)" Hugo/Features/Overview/Screens/PlanPaceSheet.swift` prints one line.
+- `Scripts/verify.sh` exits 0, with `onlyWayAheadOrWayBehindIsEmphasized` passing 5 cases. `git diff -- Hugo/Resources/Localizable.xcstrings` is empty after it.
+- `git status --short` lists only this step's four files (plus files the owner changed, which you must not stage). `git diff --check` exits 0.
+
+Commit: `feat: let the status arrow breathe when way ahead or way behind the plan`.
+
+**STOP conditions for this step**: `.symbolEffect(.breathe, isActive:)` does not compile; the live files differ from the excerpts; the change seems to need a file outside this step's scope.
+
 ## Test plan
 
 - 4 new `PlanPaceTests` cover the month's plan, both fractions, the cap at 1 and the fallback when `plannedSeconds` is unknown.
@@ -465,5 +615,6 @@ Commit: `feat: show time planned so far under the plan pace bar`.
   - The bar's fill stops before the marker. The marker label reads "Planned until today". Below the bar: the logged time on the left ("Logged"), the time planned until today on the right ("So far") (Revision 1).
   - Log more than planned so far: the fill passes the marker. Log more than the whole month's plan: the bar is full.
   - With VoiceOver: the heading is announced as a heading, then one sentence with the three amounts.
+  - Be more than 5 hours behind (or ahead of) the plan: the arrow breathes on the Overview's status line and in the sheet's heading. Between 2 and 5 hours it stays still. With Reduce Motion on, it never moves (Revision 2).
 - New small sheets on the Overview should follow this layout: heading at the top, medium detent, visible drag indicator, no navigation bar.
 - If the Planner header ever needs the same "where you should be today" marker, `PlanPace.expectedFraction` is ready for it.
