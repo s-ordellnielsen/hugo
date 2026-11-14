@@ -7,18 +7,26 @@ import SwiftUI
 struct PlanPaceSheet: View {
     let pace: PlanPace
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     private var status: MonthlyProgressStatus { .make(pace: pace) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: HugoLayout.Spacing.card) {
             VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-                Label(status.label, systemImage: status.icon)
-                    .font(.system(.title2, design: .serif, weight: .bold))
+                Label {
+                    Text(status.label)
+                } icon: {
+                    Image(systemName: status.icon)
+                        .symbolEffect(.breathe, isActive: status.isEmphasized && !reduceMotion)
+                }
+                .font(.system(.title2, design: .serif, weight: .bold))
                 Text(pace.differenceSentence)
                     .foregroundStyle(.secondary)
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
+            .padding(.bottom, HugoLayout.Spacing.spacious)
 
             VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
                 MarkedProgressBar(filled: pace.loggedFraction, marker: pace.expectedFraction) {

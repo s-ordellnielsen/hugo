@@ -38,4 +38,15 @@ struct MonthlyProgressStatusTests {
         let pace = PlanPace(expectedSeconds: 0, loggedSeconds: 4 * 3_600)
         #expect(MonthlyProgressStatus.make(pace: pace) == .onTarget)
     }
+
+    @Test(arguments: [
+        (MonthlyProgressStatus.wayAboveTarget, true),
+        (MonthlyProgressStatus.aboveTarget, false),
+        (MonthlyProgressStatus.onTarget, false),
+        (MonthlyProgressStatus.belowTarget, false),
+        (MonthlyProgressStatus.wayBelowTarget, true),
+    ])
+    func onlyWayAheadOrWayBehindIsEmphasized(input: (MonthlyProgressStatus, Bool)) {
+        #expect(input.0.isEmphasized == input.1)
+    }
 }

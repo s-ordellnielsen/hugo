@@ -30,6 +30,15 @@ nonisolated enum MonthlyProgressStatus: Equatable {
         case .belowTarget, .wayBelowTarget: "chevron.down.circle.fill"
         }
     }
+
+    /// Way ahead or way behind the plan. The status arrow breathes to draw
+    /// attention to it.
+    var isEmphasized: Bool {
+        switch self {
+        case .wayAboveTarget, .wayBelowTarget: true
+        case .aboveTarget, .onTarget, .belowTarget: false
+        }
+    }
 }
 
 extension MonthlyProgressStatus {
