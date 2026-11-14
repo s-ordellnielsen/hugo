@@ -77,6 +77,56 @@ struct PlanPaceTests {
         #expect(pace.differenceSeconds == 0)
     }
 
+    @Test
+    func plannedSecondsIsTheWholeMonthsPlan() throws {
+        let month = makeNovember(
+            items: [
+                item(CalendarDay(year: 2026, month: 11, day: 2), hours: 3),
+                item(CalendarDay(year: 2026, month: 11, day: 10), hours: 5),
+            ],
+            entries: [entry(date(2026, 11, 2, hour: 10), hours: 1)])
+
+        let pace = try #require(PlanPace.make(month: month))
+
+        #expect(pace.plannedSeconds == 8 * 3_600)
+        #expect(pace.expectedSeconds == 3 * 3_600)
+    }
+
+    @Test
+    func fractionsAreMeasuredAgainstTheMonthsPlan() throws {
+        let month = makeNovember(
+            items: [
+                item(CalendarDay(year: 2026, month: 11, day: 2), hours: 3),
+                item(CalendarDay(year: 2026, month: 11, day: 10), hours: 5),
+            ],
+            entries: [entry(date(2026, 11, 2, hour: 10), hours: 2)])
+
+        let pace = try #require(PlanPace.make(month: month))
+
+        #expect(pace.loggedFraction == 0.25)
+        #expect(pace.expectedFraction == 0.375)
+    }
+
+    @Test
+    func loggedFractionIsCappedAtTheMonthsPlan() throws {
+        let month = makeNovember(
+            items: [item(CalendarDay(year: 2026, month: 11, day: 2), hours: 2)],
+            entries: [entry(date(2026, 11, 2, hour: 10), hours: 5)])
+
+        let pace = try #require(PlanPace.make(month: month))
+
+        #expect(pace.loggedFraction == 1)
+        #expect(pace.expectedFraction == 1)
+    }
+
+    @Test
+    func fractionsFallBackWithoutAMonthPlan() {
+        let pace = PlanPace(expectedSeconds: 4 * 3_600, loggedSeconds: 2 * 3_600)
+
+        #expect(pace.expectedFraction == 1)
+        #expect(pace.loggedFraction == 0.5)
+    }
+
     private func makeNovember(items: [PlannedItem], entries: [Entry]) -> PlannerMonth {
         PlannerMonth.make(
             month: YearMonth(year: 2026, month: 11), items: items, entries: entries,
