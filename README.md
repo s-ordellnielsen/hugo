@@ -25,7 +25,7 @@ The local verification entry point is:
 Scripts/verify.sh
 ```
 
-It runs strict Swift-format lint, Debug tests, and static analysis. `DESTINATION` and `DERIVED_DATA` can be overridden.
+It runs strict Swift-format lint, Debug tests, and static analysis. The tests run on a simulator that only this script uses, `Hugo Verify iOS 26.5`, which the script creates the first time. Only one run happens at a time: a second run waits for the first. Don't point other test runs or Xcode at that simulator. `DESTINATION` and `DERIVED_DATA` can be overridden.
 
 ### Pre-commit format hook
 
