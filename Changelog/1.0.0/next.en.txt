@@ -1,0 +1,28 @@
+Hugo is back with a new update. Your categories get colors, your settings now follow you to all your devices, and transferred time is easier to understand. Let's dive in.
+
+OVERVIEW
+- Time transferred from last month now has its own line under your hours, for example "30 minutes transferred from October". Tap it to see which categories it came from.
+- Transferred time no longer shows up as an entry in the month's list.
+- Tap the line that says whether you are ahead of or behind your plan, and Hugo now shows your month's plan as a bar, with a marker for where you should be today and how much you have planned so far.
+- The arrow next to that line moves gently again when you are far ahead or far behind.
+
+CATEGORIES
+- Give each category a color. Pick one of six colors, or choose Custom Color and mix your own.
+- The Planner uses the color for the category, and so does its icon.
+- When you add an entry, the category you picked is shown in its color.
+
+YEAR
+- The month cards show how many minutes were rounded up, rounded down or transferred.
+- A month with less than an hour now shows its minutes instead of 0.
+
+SETTINGS
+- Your group overseer, your greeting and your settings under General now sync between your devices through iCloud. Set them up once, and your iPad or a new iPhone has them too.
+- The Privacy Policy and the Terms of Use are now in Settings.
+- When you write to us with Contact Us, the email now says which version of Hugo you use.
+- For testers: Debugging has a new Copy Diagnostics button. Paste the result into your feedback, so we can see which build and device you use. It never includes your entries or names.
+
+CHANGES
+- Time without a category now counts as main time everywhere, also toward your yearly goal
+- Text stays readable at the largest text sizes
+- If Hugo can't open your data, it now shows a screen with Retry and Contact Us instead of closing
+- General bug fixes and improvements

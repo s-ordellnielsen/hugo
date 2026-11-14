@@ -1,0 +1,28 @@
+Hugo er tilbage med en ny opdatering. Dine kategorier får farver, dine indstillinger følger nu med på alle dine enheder, og overført tid er lettere at forstå. Lad os dykke ned i det.
+
+OVERBLIK
+- Tid, der er overført fra sidste måned, har nu sin egen linje under dine timer, for eksempel "30 minutter overført fra oktober". Tryk på den for at se, hvilke kategorier den kom fra.
+- Overført tid vises ikke længere som en post i månedens liste.
+- Tryk på linjen, der viser, om du er foran eller bagud i forhold til din plan, så viser Hugo nu månedens plan som en bjælke med en markering af, hvor du burde være i dag, og hvor meget du har planlagt indtil nu.
+- Pilen ved linjen bevæger sig igen blødt, når du er langt foran eller langt bagud.
+
+KATEGORIER
+- Giv hver kategori en farve. Vælg en af seks farver, eller vælg Egen farve og bland din egen.
+- Planlæg bruger farven til kategorien, og det gør dens ikon også.
+- Når du tilføjer timer, vises den valgte kategori i sin farve.
+
+TJENESTEÅR
+- Månedskortene viser, hvor mange minutter der blev rundet op, rundet ned eller overført.
+- En måned med under en time viser nu sine minutter i stedet for 0.
+
+INDSTILLINGER
+- Din gruppetjener, din hilsen og dine indstillinger under Generelt synkroniseres nu mellem dine enheder via iCloud. Indstil dem én gang, så har din iPad eller en ny iPhone dem også.
+- Privatlivspolitik og Brugsvilkår ligger nu under Indstillinger.
+- Når du skriver til os med Kontakt os, står der nu i mailen, hvilken version af Hugo du bruger.
+- Til testere: Fejlfinding har en ny knap, Kopiér diagnostik. Sæt resultatet ind i din feedback, så vi kan se, hvilket build og hvilken enhed du bruger. Det indeholder aldrig dine registreringer eller navne.
+
+ÆNDRINGER
+- Tid uden kategori tæller nu som primær tid overalt, også mod dit årsmål
+- Teksten kan stadig læses ved de største tekststørrelser
+- Hvis Hugo ikke kan åbne dine data, vises nu en skærm med Prøv igen og Kontakt os i stedet for at appen lukker
+- Generelle fejlrettelser og forbedringer
