@@ -6,6 +6,9 @@ struct GreetingTemplateView: View {
     @AppStorage(UserDefaultsKeys.overseerFirstName) private var overseerFirstName = ""
     @AppStorage(UserDefaultsKeys.overseerLastName) private var overseerLastName = ""
 
+    /// Text shown above the screen's content, used when onboarding embeds it.
+    var introduction: LocalizedStringKey? = nil
+
     /// The effective template: the stored one, or a locale-aware default when
     /// the user hasn't customized it yet.
     private var effectiveTemplate: String {
@@ -25,6 +28,16 @@ struct GreetingTemplateView: View {
 
     var body: some View {
         List {
+            if let introduction {
+                Section {
+                } header: {
+                    Text(introduction)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .textCase(nil)
+                }
+            }
+
             Section {
                 TextField("report.greeting.default", text: $template, axis: .vertical)
             } header: {

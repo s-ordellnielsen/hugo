@@ -1241,6 +1241,91 @@
         }
       }
     },
+    "onboarding.action.continue" : {
+      "comment" : "Button that moves to the next onboarding page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsæt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        }
+      }
+    },
+    "onboarding.action.skip" : {
+      "comment" : "Button that leaves an onboarding step for later.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spring over"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip for Now"
+          }
+        }
+      }
+    },
+    "onboarding.greeting.introduction" : {
+      "comment" : "Explanation at the top of the greeting page in onboarding.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hver rapport, du sender, starter med denne hilsen. Behold forslaget, eller skriv din egen. Du kan ændre den senere under Indstillinger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every report you send starts with this greeting. Keep the suggestion or write your own. You can change it later in Settings."
+          }
+        }
+      }
+    },
+    "onboarding.overseer.introduction" : {
+      "comment" : "Explanation at the top of the group overseer page in onboarding.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo sender din månedsrapport til din gruppetjener. Vælg vedkommende blandt dine kontakter, eller spring over og gør det senere under Indstillinger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo sends your monthly report to your group overseer. Choose them from your contacts, or skip this and do it later in Settings."
+          }
+        }
+      }
+    },
+    "onboarding.step.%lld.%lld" : {
+      "comment" : "Step counter at the bottom of each onboarding page, for example \"Step 2 of 4\".",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trin %1$lld af %2$lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step %1$lld of %2$lld"
+          }
+        }
+      }
+    },
     "overview.carried.breakdown.header" : {
       "comment" : "Section header above the list of carried-in time per category.",
       "localizations" : {
