@@ -154,13 +154,11 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
 }
 
 enum TabPlacement {
-    case compactOnly
     case sidebarOnly
     case all
 
     func isVisible(compact: Bool) -> Bool {
         switch self {
-        case .compactOnly: compact
         case .sidebarOnly: !compact
         case .all: true
         }
