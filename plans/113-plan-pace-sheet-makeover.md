@@ -24,6 +24,7 @@
 - **Issue**: [SLN-311](https://linear.app/sebastianln/issue/SLN-311)
 - **Revision 1** (2026-11-14, after Steps 1-4 landed as `b008f5f` and `699cfd7`): the owner looked at it on their iPhone. More space above the heading. The bar's full length stays the month's plan, but the month's total is no longer written out: the right-hand number shows the time planned until today, labelled "So far". The marker label loses its amount and reads just "Planned until today". **Execute only Step 5**; Steps 1-4 are done.
 - **Revision 2** (2026-11-14, after Step 5 landed as `5e12a6a`): more space between the heading and the bar. Bring back the "breathing" status arrow for way ahead and way behind, on the Overview circle's status line and in the sheet's heading. It existed until `25bf09d` (plan 007, July 2026) as `.symbolEffect(.breathe, isActive: currentStatus.animation)` and was lost in that refactor. **Execute only Step 6**; Steps 1-5 are done.
+- **Revision 3** (2026-11-14, after Step 6 landed as `49e4cfd`): "So far" under the right-hand number is confusing. It reads "Planned so far" instead. **Execute only Step 7**; Steps 1-6 are done.
 
 ## Why this matters
 
@@ -585,6 +586,22 @@ Commit: `feat: let the status arrow breathe when way ahead or way behind the pla
 
 **STOP conditions for this step**: `.symbolEffect(.breathe, isActive:)` does not compile; the live files differ from the excerpts; the change seems to need a file outside this step's scope.
 
+### Step 7 (Revision 3): label the right-hand number "Planned so far"
+
+Steps 1-6 are done. **Scope**: `Hugo/Resources/Localizable.xcstrings` only. The key stays `overview.pace.soFar`, so no Swift file changes.
+
+1. In the `overview.pace.soFar` entry, change only the two values and the comment:
+   - English value: "So far" → "Planned so far"
+   - Danish value: "Indtil nu" → "Planlagt indtil nu"
+   - Comment: "Label under the time planned until today in the plan pace sheet." (unchanged wording is fine if it already reads so)
+
+**Verify**:
+- `python3 -I -c "import json; v=json.load(open('Hugo/Resources/Localizable.xcstrings'))['strings']['overview.pace.soFar']['localizations']; print(v['en']['stringUnit']['value'], '|', v['da']['stringUnit']['value'])"` prints `Planned so far | Planlagt indtil nu`.
+- `Scripts/verify.sh` exits 0. After it, `git diff -- Hugo/Resources/Localizable.xcstrings` shows only those two value lines.
+- `git status --short` lists only `Hugo/Resources/Localizable.xcstrings` (plus files the owner changed, which you must not stage). `git diff --check` exits 0.
+
+Commit: `fix: label the plan pace sheet's planned time "Planned so far"`.
+
 ## Test plan
 
 - 4 new `PlanPaceTests` cover the month's plan, both fractions, the cap at 1 and the fallback when `plannedSeconds` is unknown.
@@ -612,7 +629,7 @@ Commit: `feat: let the status arrow breathe when way ahead or way behind the pla
 
 - **Owner device check**, in English and Danish: plan some time on earlier days of this month and on later days, and log less than planned so far. Tap the status line under the Overview circle.
   - The sheet opens at half height with a drag indicator. The status heading sits at the top, unchanged in look. No title bar, no Done button, no footer.
-  - The bar's fill stops before the marker. The marker label reads "Planned until today". Below the bar: the logged time on the left ("Logged"), the time planned until today on the right ("So far") (Revision 1).
+  - The bar's fill stops before the marker. The marker label reads "Planned until today". Below the bar: the logged time on the left ("Logged"), the time planned until today on the right ("Planned so far") (Revisions 1 and 3).
   - Log more than planned so far: the fill passes the marker. Log more than the whole month's plan: the bar is full.
   - With VoiceOver: the heading is announced as a heading, then one sentence with the three amounts.
   - Be more than 5 hours behind (or ahead of) the plan: the arrow breathes on the Overview's status line and in the sheet's heading. Between 2 and 5 hours it stays still. With Reduce Motion on, it never moves (Revision 2).
