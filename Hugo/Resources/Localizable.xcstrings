@@ -1455,19 +1455,19 @@
         }
       }
     },
-    "overview.pace.marker.%@" : {
-      "comment" : "Label under the marker on the plan pace bar. The argument is a duration such as 15 hours.",
+    "overview.pace.marker" : {
+      "comment" : "Label under the marker on the plan pace bar, which shows the time planned until today.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ planlagt indtil i dag"
+            "value" : "Planlagt indtil i dag"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ planned until today"
+            "value" : "Planned until today"
           }
         }
       }
@@ -1489,19 +1489,19 @@
         }
       }
     },
-    "overview.pace.plannedMonth" : {
-      "comment" : "Label under the month's total planned time in the plan pace sheet.",
+    "overview.pace.soFar" : {
+      "comment" : "Label under the time planned until today in the plan pace sheet.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planlagt denne måned"
+            "value" : "Indtil nu"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planned this month"
+            "value" : "So far"
           }
         }
       }

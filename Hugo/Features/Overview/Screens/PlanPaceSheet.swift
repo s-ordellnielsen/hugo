@@ -22,14 +22,14 @@ struct PlanPaceSheet: View {
 
             VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
                 MarkedProgressBar(filled: pace.loggedFraction, marker: pace.expectedFraction) {
-                    Text("overview.pace.marker.\(hours(pace.expectedSeconds))")
+                    Text("overview.pace.marker")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
                 HStack(alignment: .firstTextBaseline) {
                     amount(hours(pace.loggedSeconds), label: "overview.pace.logged", alignment: .leading)
                     Spacer(minLength: HugoLayout.Spacing.regular)
-                    amount(hours(pace.plannedSeconds), label: "overview.pace.plannedMonth", alignment: .trailing)
+                    amount(hours(pace.expectedSeconds), label: "overview.pace.soFar", alignment: .trailing)
                 }
             }
             .accessibilityElement(children: .ignore)
@@ -39,6 +39,7 @@ struct PlanPaceSheet: View {
                 ))
         }
         .padding(HugoLayout.Spacing.card)
+        .padding(.top, HugoLayout.Spacing.spacious)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
