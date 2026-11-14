@@ -31,6 +31,8 @@ struct ServiceYearMonthRow: View {
                 submissionStatus(submittedAt)
             }
 
+            adjustmentNotes
+
             if let summary {
                 activityBreakdown(summary)
             }
@@ -182,6 +184,54 @@ extension ServiceYearMonthRow {
         }
         .font(.caption)
         .padding(.top, HugoLayout.Spacing.compact)
+    }
+}
+
+extension ServiceYearMonthRow {
+    /// Short notes explaining why reported hours differ from logged time:
+    /// time transferred in, then what rounding did to the submitted report.
+    @ViewBuilder
+    fileprivate var adjustmentNotes: some View {
+        let adjustments = month.adjustments
+        if month.carriedIn != nil || adjustments != nil {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                if let carriedIn = month.carriedIn {
+                    note(glyph: "↘", text: Text(carriedIn.label()))
+                }
+                if let adjustments {
+                    if adjustments.roundedUpSeconds > 0 {
+                        note(glyph: "⤒", text: Text("report.line.rounded-up.\(duration(adjustments.roundedUpSeconds))"))
+                    }
+                    if adjustments.roundedDownSeconds > 0 {
+                        note(
+                            glyph: "⤓",
+                            text: Text("report.line.rounded-down.\(duration(adjustments.roundedDownSeconds))"))
+                    }
+                    if adjustments.transferredSeconds > 0 {
+                        note(
+                            glyph: "↗",
+                            text: Text("report.line.transferred.\(duration(adjustments.transferredSeconds))"))
+                    }
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .padding(.top, HugoLayout.Spacing.compact)
+        }
+    }
+
+    private func duration(_ seconds: TimeInterval) -> String {
+        ServiceDurationFormatter.accessibilityString(from: seconds)
+    }
+
+    private func note(glyph: String, text: Text) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
+            Text(verbatim: glyph)
+                .accessibilityHidden(true)
+            text
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(text)
     }
 }
 
