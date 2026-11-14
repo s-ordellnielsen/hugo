@@ -1495,13 +1495,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indtil nu"
+            "value" : "Planlagt indtil nu"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "So far"
+            "value" : "Planned so far"
           }
         }
       }
