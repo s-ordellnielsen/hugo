@@ -30,6 +30,10 @@ nonisolated enum ReportComposer {
             .joined(separator: "\n")
     }
 
+    /// Builds the message sent to the group overseer. Every label, the unit
+    /// and the month name use `locale`'s language. Look strings up with
+    /// `LocalizedStringResource(_:locale:)`: `String(localized:locale:)`
+    /// takes its language from the app, not from `locale`.
     static func message(
         month: YearMonth,
         results: [ReportingLineResult],
@@ -40,7 +44,7 @@ nonisolated enum ReportComposer {
         locale: Locale = .current,
         calendar: Calendar = .current
     ) -> ReportMessageContent {
-        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
+        let hoursUnit = String(localized: LocalizedStringResource("report.hours.unit", locale: locale))
         let greeting = render(
             template: template,
             firstName: firstName,
@@ -53,14 +57,14 @@ nonisolated enum ReportComposer {
         for result in results {
             let label =
                 if result.line.type == .main {
-                    String(localized: "report.compose.field-service", locale: locale)
+                    String(localized: LocalizedStringResource("report.compose.field-service", locale: locale))
                 } else {
                     result.line.name
                 }
             lines.append("\(label): \(result.submittedHours) \(hoursUnit)")
         }
 
-        let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
+        let studiesLabel = String(localized: LocalizedStringResource("report.compose.bible-studies", locale: locale))
         lines.append("\(studiesLabel): \(bibleStudies)")
 
         return ReportMessageContent(recipient: nil, body: lines.joined(separator: "\n"))

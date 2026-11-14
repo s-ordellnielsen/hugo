@@ -34,10 +34,12 @@ struct SubmitReportFormModelTests {
 
     private func makeModel(
         now: Date? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        locale: Locale = Locale(identifier: "en_US")
     ) -> SubmitReportFormModel {
         let defaults = userDefaults ?? UserDefaults(suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)")!
-        return SubmitReportFormModel(month: month, calendar: calendar, now: now ?? self.now, userDefaults: defaults)
+        return SubmitReportFormModel(
+            month: month, calendar: calendar, now: now ?? self.now, locale: locale, userDefaults: defaults)
     }
 
     private func service(_ context: ModelContext) -> ReportSubmissionService {
@@ -374,6 +376,20 @@ struct SubmitReportFormModelTests {
         #expect(content?.body.contains("{first}") == false)
         #expect(content?.body.contains("{month}") == false)
         #expect(model.results.first?.submittedHours == 5)
+    }
+
+    @Test
+    func defaultGreetingAndLabelsFollowTheModelsLocale() {
+        let defaults = UserDefaults(suiteName: "SubmitReportFormModelTests-\(UUID().uuidString)")!
+        defaults.set("Jens", forKey: UserDefaultsKeys.overseerFirstName)
+
+        let model = makeModel(userDefaults: defaults, locale: Locale(identifier: "da_DK"))
+        model.load(entries: [entry(2026, 6, 5, seconds: 19_200)], submissions: [])
+        model.setRule(.down, for: mainLineID(in: model))
+
+        let lines = model.prepareSubmission()?.body.components(separatedBy: "\n")
+
+        #expect(lines == ["Hej Jens!", "Her er min rapport for juni.", "", "Timer: 5 t", "Bibelstudier: 0"])
     }
 
     @Test

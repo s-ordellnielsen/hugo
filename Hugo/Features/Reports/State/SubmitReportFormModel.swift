@@ -189,7 +189,7 @@ final class SubmitReportFormModel {
 
         return stored?.isEmpty == false
             ? stored!
-            : String(localized: "report.greeting.default", locale: locale)
+            : String(localized: LocalizedStringResource("report.greeting.default", locale: locale))
     }
 
     private var overseerFirstName: String {

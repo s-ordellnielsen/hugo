@@ -9,7 +9,7 @@ struct ReportComposerTests {
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!
         return calendar
     }()
-    private let locale = Locale(identifier: "en_US_POSIX")
+    private let locale = Locale(identifier: "en_US")
     private let month = YearMonth(year: 2026, month: 6)
 
     private func result(
@@ -107,17 +107,13 @@ struct ReportComposerTests {
             calendar: calendar
         )
 
-        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
-        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
-        let studiesLabel = String(localized: "report.compose.bible-studies", locale: locale)
-
         #expect(
             content.body.components(separatedBy: "\n") == [
                 "Hi John!",
                 "",
-                "\(fieldServiceLabel): 6 \(hoursUnit)",
-                "LDC: 0 \(hoursUnit)",
-                "\(studiesLabel): 3",
+                "Field Service: 6 h",
+                "LDC: 0 h",
+                "Bible studies: 3",
             ])
     }
 
@@ -135,12 +131,38 @@ struct ReportComposerTests {
         )
 
         let lines = content.body.components(separatedBy: "\n")
-        let hoursUnit = String(localized: "report.hours.unit", locale: locale)
-        let fieldServiceLabel = String(localized: "report.compose.field-service", locale: locale)
 
         #expect(lines[0] == "Hi Jens!")
         #expect(lines[1] == "Report for June 2026.")
         #expect(lines[2] == "")
-        #expect(lines[3] == "\(fieldServiceLabel): 5 \(hoursUnit)")
+        #expect(lines[3] == "Field Service: 5 h")
+    }
+
+    @Test
+    func messageUsesTheGivenLocaleForLabelsUnitAndMonth() {
+        let results = [
+            result(id: "", type: .main, name: "", seconds: 19_800, rule: .up),
+            result(id: "LDC", type: .separate, name: "LDC", seconds: 0, rule: nil),
+        ]
+
+        let content = ReportComposer.message(
+            month: month,
+            results: results,
+            bibleStudies: 3,
+            template: "Hej {first}! Rapport for {month}.",
+            firstName: "Jens",
+            lastName: "",
+            locale: Locale(identifier: "da_DK"),
+            calendar: calendar
+        )
+
+        #expect(
+            content.body.components(separatedBy: "\n") == [
+                "Hej Jens! Rapport for juni.",
+                "",
+                "Timer: 6 t",
+                "LDC: 0 t",
+                "Bibelstudier: 3",
+            ])
     }
 }
