@@ -135,7 +135,6 @@ struct SubmitReportFormModelTests {
         #expect(report.reportingLines.count == 1)
         #expect(report.reportingLines[0].roundingRaw == "transfer")
         #expect(report.reportingLines[0].submittedHours == 1)
-        #expect(report.carriedOutSeconds == 1_800)
         #expect(try context.fetchCount(FetchDescriptor<SubmittedReport>()) == 1)
 
         let generated = try #require(context.fetch(FetchDescriptor<Entry>()).first)

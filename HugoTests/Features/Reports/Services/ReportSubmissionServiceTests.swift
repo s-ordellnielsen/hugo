@@ -49,6 +49,29 @@ struct ReportSubmissionServiceTests {
     }
 
     @Test
+    func submissionWritesOnlyTheFieldsTheAppReads() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let (results, summary) = reportingResults([juneEntry(seconds: 5_400)], rule: .transfer)
+
+        let report = try ReportSubmissionService(context: context, calendar: calendar)
+            .submit(results, summary: summary, for: month, replacing: nil, at: now)
+
+        #expect(report.reportingLines.count == 1)
+        #expect(report.submittedHours == 1)
+        #expect(report.actualTotalSeconds == 5_400)
+        #expect(report.totalBibleStudies == 0)
+        // Read only by migrations from V9 and V10 stores, so no longer written.
+        #expect(report.roundingRuleRaw == "")
+        #expect(report.fieldServiceSeconds == 0)
+        #expect(report.carriedInSeconds == 0)
+        #expect(report.carriedOutSeconds == 0)
+        #expect(report.roundedUpSeconds == 0)
+        #expect(report.roundedDownSeconds == 0)
+        #expect(report.categories?.isEmpty == true)
+    }
+
+    @Test
     func resubmittingUpdatesTheExistingRowInPlace() throws {
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext
