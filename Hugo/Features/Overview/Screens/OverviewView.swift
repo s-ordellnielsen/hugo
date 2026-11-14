@@ -111,6 +111,7 @@ private struct OverviewDayView: View {
                 if let pace {
                     PlanPaceSheet(pace: pace)
                         .presentationDetents([.medium])
+                        .presentationDragIndicator(.visible)
                 }
             }
             .onChange(of: pace == nil) { _, hasNoPlans in

@@ -1387,6 +1387,23 @@
         }
       }
     },
+    "overview.pace.a11y.numbers.%@.%@.%@" : {
+      "comment" : "VoiceOver text for the bar and numbers in the plan pace sheet. Arguments: logged time, time planned until today, time planned this month, each spoken such as 11 hours, 30 minutes.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ udført. %2$@ planlagt indtil i dag. %3$@ planlagt denne måned."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ logged. %2$@ planned until today. %3$@ planned this month."
+          }
+        }
+      }
+    },
     "overview.pace.ahead" : {
       "comment" : "Plan pace sheet: logged time is ahead of the plan. The argument is a duration such as 3 hours.",
       "localizations" : {
@@ -1421,23 +1438,6 @@
         }
       }
     },
-    "overview.pace.footer" : {
-      "comment" : "Plan pace sheet footer explaining how today's plans count.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dagens planer tæller kun med, så langt du har udført dem. Derfor tæller i dag aldrig imod dig."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today's plans count only as far as you have logged them, so today never counts against you."
-          }
-        }
-      }
-    },
     "overview.pace.logged" : {
       "comment" : "Plan pace sheet row: time logged this month.",
       "localizations" : {
@@ -1451,6 +1451,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logged"
+          }
+        }
+      }
+    },
+    "overview.pace.marker.%@" : {
+      "comment" : "Label under the marker on the plan pace bar. The argument is a duration such as 15 hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ planlagt indtil i dag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ planned until today"
           }
         }
       }
@@ -1472,36 +1489,19 @@
         }
       }
     },
-    "overview.pace.planned" : {
-      "comment" : "Plan pace sheet row: time planned on the days up to today.",
+    "overview.pace.plannedMonth" : {
+      "comment" : "Label under the month's total planned time in the plan pace sheet.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planlagt indtil i dag"
+            "value" : "Planlagt denne måned"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planned until today"
-          }
-        }
-      }
-    },
-    "overview.pace.title" : {
-      "comment" : "Title of the plan pace sheet on the Overview.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Din plan"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your plan"
+            "value" : "Planned this month"
           }
         }
       }

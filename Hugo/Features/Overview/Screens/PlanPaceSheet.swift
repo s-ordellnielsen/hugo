@@ -1,53 +1,72 @@
 import SwiftUI
 
-/// The plan pace of the current month in numbers. Opened from the status line
-/// under the Overview circle.
+/// The plan pace of the current month: a status heading, then a bar whose
+/// track is the month's plan, filled with the logged time and marked where
+/// the plan expects the user to be today. Opened from the status line under
+/// the Overview circle.
 struct PlanPaceSheet: View {
     let pace: PlanPace
-
-    @Environment(\.dismiss) private var dismiss
 
     private var status: MonthlyProgressStatus { .make(pace: pace) }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-                        Label(status.label, systemImage: status.icon)
-                            .font(.system(.title2, design: .serif, weight: .bold))
-                        Text(pace.differenceSentence)
-                            .foregroundStyle(.secondary)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .listRowBackground(Color.clear)
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.card) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                Label(status.label, systemImage: status.icon)
+                    .font(.system(.title2, design: .serif, weight: .bold))
+                Text(pace.differenceSentence)
+                    .foregroundStyle(.secondary)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
+                MarkedProgressBar(filled: pace.loggedFraction, marker: pace.expectedFraction) {
+                    Text("overview.pace.marker.\(hours(pace.expectedSeconds))")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
-                Section {
-                    LabeledContent(
-                        "overview.pace.planned",
-                        value: ServiceDurationFormatter.hoursString(from: pace.expectedSeconds))
-                    LabeledContent(
-                        "overview.pace.logged",
-                        value: ServiceDurationFormatter.hoursString(from: pace.loggedSeconds))
-                } footer: {
-                    Text("overview.pace.footer")
+                HStack(alignment: .firstTextBaseline) {
+                    amount(hours(pace.loggedSeconds), label: "overview.pace.logged", alignment: .leading)
+                    Spacer(minLength: HugoLayout.Spacing.regular)
+                    amount(hours(pace.plannedSeconds), label: "overview.pace.plannedMonth", alignment: .trailing)
                 }
             }
-            .navigationTitle("overview.pace.title")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("navigation.done") { dismiss() }
-                }
-            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(
+                Text(
+                    "overview.pace.a11y.numbers.\(spoken(pace.loggedSeconds)).\(spoken(pace.expectedSeconds)).\(spoken(pace.plannedSeconds))"
+                ))
         }
+        .padding(HugoLayout.Spacing.card)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    private func amount(_ value: String, label: LocalizedStringKey, alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: HugoLayout.Spacing.tight) {
+            Text(value)
+                .font(.system(.title3, design: .serif, weight: .bold))
+                .monospacedDigit()
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func hours(_ seconds: TimeInterval) -> String {
+        ServiceDurationFormatter.hoursString(from: seconds)
+    }
+
+    private func spoken(_ seconds: TimeInterval) -> String {
+        ServiceDurationFormatter.accessibilityString(from: seconds)
     }
 }
 
 #Preview("Behind") {
-    PlanPaceSheet(pace: PlanPace(expectedSeconds: 15 * 3_600, loggedSeconds: 11 * 3_600 + 30 * 60))
+    PlanPaceSheet(
+        pace: PlanPace(expectedSeconds: 15 * 3_600, loggedSeconds: 11 * 3_600 + 30 * 60, plannedSeconds: 32 * 3_600))
 }
 
 #Preview("Ahead") {
-    PlanPaceSheet(pace: PlanPace(expectedSeconds: 8 * 3_600, loggedSeconds: 12 * 3_600))
+    PlanPaceSheet(pace: PlanPace(expectedSeconds: 8 * 3_600, loggedSeconds: 12 * 3_600, plannedSeconds: 30 * 3_600))
 }
