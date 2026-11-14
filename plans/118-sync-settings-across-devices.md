@@ -262,7 +262,7 @@ Create `Hugo/Features/Settings/Domain/SyncedSettings.swift`:
 /// `UserDefaultsKeys` stays on the device: the onboarding and setup flags,
 /// the publisher status (the planned status timeline moves it into synced
 /// data) and the Overview's list style.
-nonisolated enum SyncedSettings {
+enum SyncedSettings {
     static let keys: [String] = [
         UserDefaultsKeys.yearlyGoalPacing,
         UserDefaultsKeys.plannerTargetBase,
@@ -276,6 +276,8 @@ nonisolated enum SyncedSettings {
     ]
 }
 ```
+
+Keep the enum main-actor isolated (no `nonisolated`): `UserDefaultsKeys` is main-actor isolated under the project's default isolation, so a `nonisolated` enum can't use its keys in a stored default ("main actor-isolated default value in a nonisolated context"). Its only user, `SettingsSyncService`, is main-actor isolated too. (Revision 1, 2026-11-14.)
 
 **Verify**: `xcrun swift-format lint --strict Hugo/Features/Settings/Domain/SyncedSettings.swift` → exit 0.
 
@@ -588,7 +590,7 @@ Commit 2: `Hugo/Info.plist` and `Hugo/InfoPlist.xcstrings`, by path.
 - [ ] `Scripts/verify.sh` exits 0 after each commit
 - [ ] `grep -rn "NSUbiquitousKeyValueStore" Hugo --include='*.swift'` shows only `SettingsSyncService.swift` and `AppRootView.swift`
 - [ ] `grep -rn "NSContactsUsageDescription" Hugo` prints nothing
-- [ ] `git show --stat HEAD~1` lists the nine files of commit 1; `git show --stat HEAD` lists the two files of commit 2
+- [ ] `git show --stat HEAD~1` lists the eight files of commit 1; `git show --stat HEAD` lists the two files of commit 2
 - [ ] `git diff --stat 7e3c4e9..HEAD -- Hugo/Domain/UserDefaultsKeys.swift Configuration` prints nothing
 
 ## STOP conditions
