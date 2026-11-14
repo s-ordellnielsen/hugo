@@ -32,24 +32,6 @@
         }
       },
       "shouldTranslate" : false
-    },
-    "NSContactsUsageDescription" : {
-      "comment" : "Privacy - Contacts Usage Description",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo bruger dine kontakter til at udfylde gruppetjenerens navn og telefonnummer på månedsrapporten."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Hugo uses your contacts to fill in the group overseer's name and phone number for the monthly report."
-          }
-        }
-      }
     }
   },
   "version" : "1.2"
