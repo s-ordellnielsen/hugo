@@ -16,4 +16,7 @@ enum UserDefaultsKeys {
     static let overseerLastName = "overseerLastName"
 
     static let overviewListStyle = "overviewListStyle"
+
+    /// When this device last finished a sync with iCloud. Device-only.
+    static let cloudSyncLastSuccess = "cloudSyncLastSuccess"
 }

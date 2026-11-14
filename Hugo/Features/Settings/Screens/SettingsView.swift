@@ -6,6 +6,7 @@ struct SettingsView: View {
     @AppStorage(UserDefaultsKeys.publisherStatus) var publisherStatus = ""
 
     @Environment(\.openURL) private var openURL
+    @Environment(CloudSyncMonitor.self) private var syncMonitor: CloudSyncMonitor?
 
     /// A bundled Markdown page in the legal section. The raw value is the
     /// resource name under `Hugo/Resources/Markdown/Legal`.
@@ -42,6 +43,10 @@ struct SettingsView: View {
         AppStoreLinks(appleID: Bundle.main.object(forInfoDictionaryKey: "AppStoreID") as? String)
     }
 
+    private var syncStatus: CloudSyncStatus {
+        syncMonitor?.status ?? .upToDate(lastSync: nil)
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -71,6 +76,16 @@ struct SettingsView: View {
                     }
                     NavigationLink(destination: GeneralSettingsView()) {
                         Label("settings.group.settings.general", systemImage: "gearshape")
+                    }
+                }
+
+                Section {
+                    NavigationLink(destination: CloudSyncStatusView()) {
+                        LabeledContent {
+                            Text(syncStatus.title).foregroundStyle(.secondary)
+                        } label: {
+                            Label("settings.sync.title", systemImage: syncStatus.symbolName)
+                        }
                     }
                 }
 
@@ -152,6 +167,7 @@ struct SettingsView: View {
             }
             .navigationTitle("settings.title")
             .navigationBarTitleDisplayMode(.inline)
+            .task { await syncMonitor?.refreshAccount() }
             .toolbar {
                 if showDismiss {
                     ToolbarItem(placement: .cancellationAction) {

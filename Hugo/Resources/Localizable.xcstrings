@@ -3762,6 +3762,295 @@
         }
       }
     },
+    "settings.sync.title" : {
+      "comment" : "Settings row and screen title for the iCloud sync status.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "settings.sync.lastSync.%@" : {
+      "comment" : "Footer on the iCloud screen. The argument is a relative time such as \"2 minutes ago\".",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sidst synkroniseret %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last synced %@"
+          }
+        }
+      }
+    },
+    "settings.sync.lastSync.never" : {
+      "comment" : "Footer on the iCloud screen before the first successful sync.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne enhed har ikke synkroniseret med iCloud endnu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device hasn't synced with iCloud yet."
+          }
+        }
+      }
+    },
+    "settings.sync.status.upToDate" : {
+      "comment" : "iCloud sync status: the last sync worked.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opdateret"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to date"
+          }
+        }
+      }
+    },
+    "settings.sync.status.syncing" : {
+      "comment" : "iCloud sync status: a sync is running.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synkroniserer…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syncing…"
+          }
+        }
+      }
+    },
+    "settings.sync.status.signedOut" : {
+      "comment" : "iCloud sync status: no iCloud account on this device.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke logget ind"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not signed in"
+          }
+        }
+      }
+    },
+    "settings.sync.status.restricted" : {
+      "comment" : "iCloud sync status: Screen Time or a profile blocks iCloud.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke tilladt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not allowed"
+          }
+        }
+      }
+    },
+    "settings.sync.status.storageFull" : {
+      "comment" : "iCloud sync status: the user's iCloud storage is full.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-lageret er fuldt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is full"
+          }
+        }
+      }
+    },
+    "settings.sync.status.offline" : {
+      "comment" : "iCloud sync status: no network connection.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline"
+          }
+        }
+      }
+    },
+    "settings.sync.status.problem" : {
+      "comment" : "iCloud sync status: sync failed for another reason.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problem med synkronisering"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync problem"
+          }
+        }
+      }
+    },
+    "settings.sync.message.upToDate" : {
+      "comment" : "Explanation on the iCloud screen when sync works.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine registreringer, kategorier, planer, rapporter og indstillinger gemmes i din iCloud, så de er de samme på alle dine enheder."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your entries, categories, plans, reports and settings are saved in your iCloud, so they're the same on all your devices."
+          }
+        }
+      }
+    },
+    "settings.sync.message.syncing" : {
+      "comment" : "Explanation on the iCloud screen while a sync runs.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo udveksler ændringer med iCloud lige nu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo is exchanging changes with iCloud right now."
+          }
+        }
+      }
+    },
+    "settings.sync.message.signedOut" : {
+      "comment" : "Explanation on the iCloud screen when no iCloud account is signed in.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo gemmer kun dine data på denne enhed. Hvis du vil synkronisere med dine andre enheder, skal du åbne appen Indstillinger og logge ind med din Apple-konto øverst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo keeps your data on this device only. To sync with your other devices, open the Settings app and sign in with your Apple Account at the top."
+          }
+        }
+      }
+    },
+    "settings.sync.message.restricted" : {
+      "comment" : "Explanation on the iCloud screen when iCloud is restricted.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skærmtid eller en profil har slået iCloud fra på denne enhed. Hugo gemmer kun dine data på denne enhed."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screen Time or a profile has turned off iCloud on this device. Hugo keeps your data on this device only."
+          }
+        }
+      }
+    },
+    "settings.sync.message.storageFull" : {
+      "comment" : "Explanation on the iCloud screen when iCloud storage is full.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nye ændringer bliver på denne enhed, indtil der er plads i din iCloud. Du frigør plads ved at åbne appen Indstillinger, trykke på dit navn og derefter på iCloud."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New changes stay on this device until there's room in your iCloud. To free up space, open the Settings app, tap your name, then iCloud."
+          }
+        }
+      }
+    },
+    "settings.sync.message.offline" : {
+      "comment" : "Explanation on the iCloud screen when the device is offline.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine ændringer er gemt på denne enhed og synkroniseres, når du er online igen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your changes are saved on this device and sync when you're back online."
+          }
+        }
+      }
+    },
+    "settings.sync.message.problem" : {
+      "comment" : "Explanation on the iCloud screen when sync failed for another reason.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo kunne ikke synkronisere lige nu. Dine data er sikre på denne enhed, og Hugo prøver igen af sig selv. Hvis det bliver ved med at ske, så kontakt os."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo couldn't sync just now. Your data is safe on this device, and Hugo tries again by itself. If it keeps happening, contact us."
+          }
+        }
+      }
+    },
     "settings.title" : {
       "comment" : "The title of the settings screen.",
       "isCommentAutoGenerated" : true,

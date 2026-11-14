@@ -1,3 +1,4 @@
+import CloudKit
 import Combine
 import CoreData
 import SwiftData
@@ -15,6 +16,7 @@ struct AppRootView: View {
     @State private var yearResetToken = UUID()
     @State private var plannerResetToken = UUID()
     @State private var bootstrapErrorMessage: String?
+    @State private var syncMonitor = CloudSyncMonitor()
 
     /// Copies the synced settings to and from iCloud. `nil` in the unit-test
     /// host, so tests never touch the real iCloud store.
@@ -55,6 +57,7 @@ struct AppRootView: View {
                 regularLayout
             }
         }
+        .environment(syncMonitor)
         .task {
             settingsSync?.start()
             await bootstrapper.start(context: context)
@@ -70,9 +73,15 @@ struct AppRootView: View {
         ) { notification in
             guard
                 let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
-                    as? NSPersistentCloudKitContainer.Event,
-                event.type == .import, event.endDate != nil
+                    as? NSPersistentCloudKitContainer.Event
             else { return }
+            syncMonitor.record(
+                id: event.identifier,
+                endDate: event.endDate,
+                succeeded: event.succeeded,
+                errorCode: (event.error as? CKError)?.code.rawValue
+            )
+            guard event.type == .import, event.endDate != nil else { return }
             SyncDeduplicator(context: context).run()
         }
         .onReceive(
