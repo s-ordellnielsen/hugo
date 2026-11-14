@@ -26,12 +26,15 @@ struct SymbolDefinitionTests {
     }
 
     @Test
-    func commaSeparatedKeywordMatches() {
+    func commaSeparatedKeywordMatches() throws {
         let keywords = String(localized: symbol.keywordsKey)
             .split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        // Without the string catalog `String(localized:)` returns the key,
+        // which has no commas. Fail here instead of crashing the test host.
+        let secondKeyword = try #require(keywords.dropFirst().first)
 
-        #expect(symbol.matches(String(keywords[1]), nil))
+        #expect(symbol.matches(String(secondKeyword), nil))
     }
 
     @Test
