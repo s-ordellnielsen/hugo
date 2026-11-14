@@ -16,6 +16,14 @@ struct AppRootView: View {
     @State private var plannerResetToken = UUID()
     @State private var bootstrapErrorMessage: String?
 
+    /// Copies the synced settings to and from iCloud. `nil` in the unit-test
+    /// host, so tests never touch the real iCloud store.
+    private let settingsSync: SettingsSyncService?
+
+    init(settingsSync: SettingsSyncService? = nil) {
+        self.settingsSync = settingsSync
+    }
+
     private var isCompact: Bool { horizontalSizeClass == .compact }
 
     private var visibleTabs: [AppTab] {
@@ -48,6 +56,7 @@ struct AppRootView: View {
             }
         }
         .task {
+            settingsSync?.start()
             await bootstrapper.start(context: context)
             SyncDeduplicator(context: context).run()
         }
@@ -65,6 +74,20 @@ struct AppRootView: View {
                 event.type == .import, event.endDate != nil
             else { return }
             SyncDeduplicator(context: context).run()
+        }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
+                .receive(on: RunLoop.main)
+        ) { _ in
+            settingsSync?.pullFromCloud()
+        }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: UserDefaults.didChangeNotification)
+                .receive(on: RunLoop.main)
+        ) { _ in
+            settingsSync?.pushToCloud()
         }
         .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
         .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }

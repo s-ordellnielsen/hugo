@@ -1,6 +1,6 @@
 # Privatlivspolitik
 
-Senest opdateret: 13. november 2026
+Senest opdateret: 14. november 2026
 
 Hugo hjælper dig med at holde styr på din tid i tjenesten og sende din månedlige rapport. Denne politik forklarer, hvad der sker med de oplysninger, du skriver i Hugo.
 
@@ -26,7 +26,7 @@ Det hele gemmes på din enhed.
 
 Hvis du er logget ind på iCloud, og iCloud er slået til for Hugo, gemmes dine registreringer, kategorier, planer og indsendte rapporter også i din private iCloud-database, så de er de samme på alle dine enheder. Apple opbevarer disse data under din Apple-konto, og vi har ikke adgang til dem. Apples privatlivspolitik beskriver, hvordan Apple håndterer iCloud.
 
-Dine indstillinger, også din gruppetjeners navn og telefonnummer, bliver på den enhed, hvor du skrev dem.
+Hvis iCloud er slået til, gemmes de fleste af dine indstillinger også i din egen iCloud, så de er de samme på alle dine enheder: din gruppetjeners navn og telefonnummer, din hilsen og dine indstillinger under Generelt (Planlæg, Tjenesteår og minutinterval). Din forkynderstatus og visningen af listen i Overblik bliver på den enhed, hvor du valgte dem.
 
 ## Dine kontakter
 

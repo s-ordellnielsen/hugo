@@ -9,7 +9,7 @@ struct HugoApp: App {
         WindowGroup {
             switch loader.state {
             case .loaded(let container):
-                AppRootView()
+                AppRootView(settingsSync: Self.isRunningTests ? nil : SettingsSyncService())
                     .tint(.primary)
                     .modelContainer(container)
             case .failed(let details):

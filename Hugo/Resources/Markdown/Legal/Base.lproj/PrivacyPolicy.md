@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: November 13, 2026
+Last updated: November 14, 2026
 
 Hugo helps you keep track of your ministry time and send your monthly report. This policy explains what happens to the information you put into Hugo.
 
@@ -26,7 +26,7 @@ All of it is stored on your device.
 
 If you're signed in to iCloud and iCloud is turned on for Hugo, your entries, categories, plans and submitted reports are also saved in your private iCloud database, so they stay the same on all your devices. Apple keeps this data under your Apple Account, and we can't access it. Apple's privacy policy covers how Apple handles iCloud.
 
-Your settings, including your group overseer's name and phone number, stay on the device where you entered them.
+If iCloud is on, most of your settings are also saved in your own iCloud, so they're the same on all your devices: your group overseer's name and phone number, your greeting, and your settings under General (Planner, Service Year and the minute interval). Your publisher status and the way the Overview list is shown stay on the device where you chose them.
 
 ## Your contacts
 

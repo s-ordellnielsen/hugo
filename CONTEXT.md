@@ -168,6 +168,9 @@ _Avoid_: Conflict
 **Canonical report**:
 The one submitted report Hugo uses for a month when sync duplicates or placeholder reports leave more than one.
 
+**Synced setting**:
+A setting that stays the same on all of the user's devices through iCloud key-value storage, such as the group overseer or the Planner target. The publisher status and the onboarding flags are not synced settings.
+
 ## Flagged ambiguities
 
 - "Actual" has meant logged time in some places and year total in others. Say logged time, reported hours, year total or credited time instead.
