@@ -38,6 +38,10 @@ struct SettingsView: View {
         return url
     }
 
+    private static var appStoreLinks: AppStoreLinks? {
+        AppStoreLinks(appleID: Bundle.main.object(forInfoDictionaryKey: "AppStoreID") as? String)
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -90,6 +94,24 @@ struct SettingsView: View {
                             }
                         } footer: {
                             Text("settings.account.joinBeta.description")
+                        }
+                    }
+                #endif
+
+                #if SHOW_APP_STORE_LINKS
+                    if let appStoreLinks = Self.appStoreLinks {
+                        Section {
+                            Link(destination: appStoreLinks.reviewURL) {
+                                Label("settings.appStore.review", systemImage: "star")
+                            }
+                            ShareLink(
+                                item: appStoreLinks.productURL,
+                                message: Text("settings.appStore.recommend.message")
+                            ) {
+                                Label("settings.appStore.recommend", systemImage: "square.and.arrow.up")
+                            }
+                        } footer: {
+                            Text("settings.appStore.footer")
                         }
                     }
                 #endif

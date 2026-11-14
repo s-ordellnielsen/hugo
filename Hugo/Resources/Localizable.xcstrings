@@ -3455,6 +3455,74 @@
         }
       }
     },
+    "settings.appStore.footer" : {
+      "comment" : "Footer under the Write a Review and Recommend Hugo rows in Settings.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kan du lide Hugo? En anmeldelse i App Store hjælper andre forkyndere med at finde appen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you like Hugo? A review on the App Store helps other publishers find it."
+          }
+        }
+      }
+    },
+    "settings.appStore.recommend" : {
+      "comment" : "A button that opens the share sheet with a link to Hugo on the App Store.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anbefal Hugo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommend Hugo"
+          }
+        }
+      }
+    },
+    "settings.appStore.recommend.message" : {
+      "comment" : "Message shared together with the App Store link when the user recommends Hugo.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeg bruger Hugo til at holde styr på min tjenestetid og sende min månedsrapport."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I use Hugo to keep track of my ministry time and send my monthly report."
+          }
+        }
+      }
+    },
+    "settings.appStore.review" : {
+      "comment" : "A button that opens Hugo's review page on the App Store.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv en anmeldelse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Write a Review"
+          }
+        }
+      }
+    },
     "settings.contact.email" : {
       "comment" : "A button that opens a new email draft addressed to the developer for feedback.",
       "localizations" : {

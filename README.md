@@ -50,6 +50,7 @@ TestFlight and Production share the App Store bundle ID and iCloud container. Ea
 | `SHOW_DEBUG_MENU` | on | on | off |
 | `SHOW_SHARE_TESTFLIGHT` | on | on | off |
 | `SHOW_JOIN_BETA` | off | off | on |
+| `SHOW_APP_STORE_LINKS` | off | off | on |
 
 The App Store build must be its own Production archive. A TestFlight archive contains the debug menu and must not be sent to App Review.
 
