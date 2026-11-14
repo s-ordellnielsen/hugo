@@ -22,6 +22,7 @@
 - **Category**: direction (UI)
 - **Planned at**: commit `7dd6b4c`, 2026-11-14 (rewritten the same day after the owner chose the bar; nothing from the first version had run)
 - **Issue**: [SLN-311](https://linear.app/sebastianln/issue/SLN-311)
+- **Revision 1** (2026-11-14, after Steps 1-4 landed as `b008f5f` and `699cfd7`): the owner looked at it on their iPhone. More space above the heading. The bar's full length stays the month's plan, but the month's total is no longer written out: the right-hand number shows the time planned until today, labelled "So far". The marker label loses its amount and reads just "Planned until today". **Execute only Step 5**; Steps 1-4 are done.
 
 ## Why this matters
 
@@ -387,6 +388,53 @@ In `Hugo/Resources/Localizable.xcstrings` (keep the file's formatting: two-space
 
 Commit 2.
 
+### Step 5 (Revision 1): more space on top, "So far" on the right, a plain marker label
+
+Steps 1-4 are done. The live `PlanPaceSheet.swift` is exactly the code in Step 2.
+
+Target sketch:
+
+```
+ ⌄ Behind plan
+   You're 3 hours behind your plan
+
+   ████████████░░░░░│░░░░░░░░░░░░░░░
+                    Planned until today
+
+   11 hours, 30 min           15 hours
+   Logged                     So far
+```
+
+**Scope for this step** (the only files you may change):
+
+- `Hugo/Features/Overview/Screens/PlanPaceSheet.swift`
+- `Hugo/Resources/Localizable.xcstrings` (remove two keys, add two keys)
+
+`PlanPace` does not change: `loggedFraction` and `expectedFraction` still measure against the month's plan, so the bar's full length is still the whole month. The VoiceOver sentence (`overview.pace.a11y.numbers.%@.%@.%@`) also stays as it is, including the month's planned time, because VoiceOver users can't see the bar's length.
+
+1. In `PlanPaceSheet.swift`:
+   - Change the marker label from `Text("overview.pace.marker.\(hours(pace.expectedSeconds))")` to `Text("overview.pace.marker")`. Keep its `.font(.footnote)` and `.foregroundStyle(.secondary)`.
+   - Change the right-hand amount from `amount(hours(pace.plannedSeconds), label: "overview.pace.plannedMonth", alignment: .trailing)` to `amount(hours(pace.expectedSeconds), label: "overview.pace.soFar", alignment: .trailing)`.
+   - Add more space above the heading: directly after `.padding(HugoLayout.Spacing.card)` add `.padding(.top, HugoLayout.Spacing.spacious)`. Change nothing else in the file (heading, accessibility, previews stay).
+
+2. In `Hugo/Resources/Localizable.xcstrings` (keep the file's formatting, sorted keys, `"state" : "translated"` for both languages):
+   - Remove `overview.pace.marker.%@` and `overview.pace.plannedMonth`.
+   - Add `overview.pace.marker`: English "Planned until today", Danish "Planlagt indtil i dag". Comment: "Label under the marker on the plan pace bar, which shows the time planned until today."
+   - Add `overview.pace.soFar`: English "So far", Danish "Indtil nu". Comment: "Label under the time planned until today in the plan pace sheet."
+
+**Verify**:
+- `xcrun swift-format lint --strict --recursive Hugo HugoTests` exits 0.
+- `grep -n "plannedMonth\|overview.pace.marker\." Hugo/Features/Overview/Screens/PlanPaceSheet.swift` prints nothing.
+- `grep -c "plannedSeconds" Hugo/Features/Overview/Screens/PlanPaceSheet.swift` prints `3` (the VoiceOver label and the two previews).
+- `grep -n "padding(.top, HugoLayout.Spacing.spacious)" Hugo/Features/Overview/Screens/PlanPaceSheet.swift` prints one line.
+- `python3 -I -c "import json; d=json.load(open('Hugo/Resources/Localizable.xcstrings'))['strings']; print([k in d for k in ['overview.pace.marker','overview.pace.soFar','overview.pace.marker.%@','overview.pace.plannedMonth']])"` prints `[True, True, False, False]`.
+- `Scripts/verify.sh` exits 0. After it, `git diff -- Hugo/Resources/Localizable.xcstrings` shows only the two removed and two added keys.
+- `git status --short` lists only this step's two files (plus files the owner changed, which you must not stage). `git diff --check` exits 0.
+
+Commit: `feat: show time planned so far under the plan pace bar`.
+
+**STOP conditions for this step**: the live sheet differs from Step 2's code; the change seems to need `PlanPace.swift` or another file outside this step's scope.
+
 ## Test plan
 
 - 4 new `PlanPaceTests` cover the month's plan, both fractions, the cap at 1 and the fallback when `plannedSeconds` is unknown.
@@ -414,7 +462,7 @@ Commit 2.
 
 - **Owner device check**, in English and Danish: plan some time on earlier days of this month and on later days, and log less than planned so far. Tap the status line under the Overview circle.
   - The sheet opens at half height with a drag indicator. The status heading sits at the top, unchanged in look. No title bar, no Done button, no footer.
-  - The bar's fill stops before the marker. The marker label reads "15 hours planned until today" with the real amount. Below the bar: the logged time on the left, the month's planned time on the right.
+  - The bar's fill stops before the marker. The marker label reads "Planned until today". Below the bar: the logged time on the left ("Logged"), the time planned until today on the right ("So far") (Revision 1).
   - Log more than planned so far: the fill passes the marker. Log more than the whole month's plan: the bar is full.
   - With VoiceOver: the heading is announced as a heading, then one sentence with the three amounts.
 - New small sheets on the Overview should follow this layout: heading at the top, medium detent, visible drag indicator, no navigation bar.
