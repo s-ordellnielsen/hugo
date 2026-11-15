@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The first-run setup: one page per step, pushed in a navigation stack so
-/// the user can go back.
+/// The first-run setup: a welcome page, then one page per setting, pushed in
+/// a navigation stack so the user can go back.
 struct OnboardingView: View {
     let onComplete: () -> Void
 
@@ -9,6 +9,10 @@ struct OnboardingView: View {
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
 
     @State private var path: [OnboardingStep] = []
+    /// The steps whose setting the user changed during this onboarding. It
+    /// lives here, not in the pages, because going back and forward again
+    /// creates a page anew.
+    @State private var changedSteps: Set<OnboardingStep> = []
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -20,80 +24,52 @@ struct OnboardingView: View {
         .interactiveDismissDisabled(true)
     }
 
-    private func nextStep(after step: OnboardingStep) -> OnboardingStep? {
-        step.next
-    }
-
     private func advance(from step: OnboardingStep) {
-        if let next = nextStep(after: step) {
+        if let next = step.next {
             path.append(next)
         } else {
             onComplete()
         }
     }
 
+    private func markChanged(_ step: OnboardingStep) {
+        changedSteps.insert(step)
+    }
+
     @ViewBuilder
     private func page(for step: OnboardingStep) -> some View {
-        let isLast = nextStep(after: step) == nil
+        let isLast = step.next == nil
         switch step {
         case .welcome:
-            welcomePage
-                .safeAreaInset(edge: .bottom) {
-                    OnboardingStepBar(step: step, isLast: isLast) { advance(from: step) }
+            OnboardingWelcomePage()
+                .safeAreaBar(edge: .bottom) {
+                    OnboardingStepBar(isLast: isLast) { advance(from: step) }
                 }
         case .publisherStatus:
-            publisherStatusPage
-                .safeAreaInset(edge: .bottom) {
-                    OnboardingStepBar(step: step, isLast: isLast, canContinue: !currentStatus.isEmpty) {
-                        advance(from: step)
-                    }
+            OnboardingPublisherStatusPage(
+                showsCloudNote: step.showsCloudNote(hasValue: !currentStatus.isEmpty, changedSteps: changedSteps),
+                onChange: { markChanged(step) }
+            )
+            .safeAreaBar(edge: .bottom) {
+                OnboardingStepBar(isLast: isLast, canContinue: !currentStatus.isEmpty) {
+                    advance(from: step)
                 }
+            }
         case .overseer:
-            OverseerSettingsView(introduction: "onboarding.overseer.introduction")
-                .safeAreaInset(edge: .bottom) {
-                    OnboardingStepBar(
-                        step: step,
-                        isLast: isLast,
-                        canContinue: !overseerFullName.isEmpty,
-                        onSkip: overseerFullName.isEmpty ? { advance(from: step) } : nil
-                    ) {
-                        advance(from: step)
-                    }
+            OnboardingOverseerPage(
+                showsCloudNote: step.showsCloudNote(hasValue: !overseerFullName.isEmpty, changedSteps: changedSteps),
+                onChange: { markChanged(step) }
+            )
+            .safeAreaBar(edge: .bottom) {
+                OnboardingStepBar(
+                    isLast: isLast,
+                    canContinue: !overseerFullName.isEmpty,
+                    onSkip: overseerFullName.isEmpty ? { advance(from: step) } : nil
+                ) {
+                    advance(from: step)
                 }
-        }
-    }
-
-    private var welcomePage: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: HugoLayout.Spacing.spacious) {
-                Text("splash.subtitle")
-                    .font(.title3)
-                Text("splash.description.1")
-                Text("splash.description.2")
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle("splash.title")
-    }
-
-    private var publisherStatusPage: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-                Text("splash.section.publisherStatus.description")
-                    .padding(.horizontal, HugoLayout.Spacing.tight)
-
-                VStack(spacing: HugoLayout.Spacing.compact) {
-                    PublisherStatusOptionsView(selection: $currentStatus, rowStyle: .card)
-                }
-                .padding(.top, HugoLayout.Spacing.spacious)
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle("splash.section.publisherStatus.title")
     }
 }
 

@@ -1275,6 +1275,40 @@
         }
       }
     },
+    "onboarding.cloudNote" : {
+      "comment" : "Note on an onboarding setup page when its setting came from the user's other devices through iCloud.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udfyldt fra dine andre enheder via iCloud."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filled in from your other devices through iCloud."
+          }
+        }
+      }
+    },
+    "onboarding.overseer.change" : {
+      "comment" : "Button on the onboarding group overseer page that opens Contacts to choose a different overseer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg en anden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Someone Else"
+          }
+        }
+      }
+    },
     "onboarding.overseer.introduction" : {
       "comment" : "Explanation at the top of the group overseer page in onboarding.",
       "localizations" : {
@@ -1292,8 +1326,59 @@
         }
       }
     },
+    "onboarding.overseer.title" : {
+      "comment" : "Title of the group overseer page in onboarding.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din gruppetjener"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your group overseer"
+          }
+        }
+      }
+    },
+    "onboarding.publisherStatus.explanation" : {
+      "comment" : "Explanation under the title of the publisher status page in onboarding.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din status bestemmer dit timemål, hvis du har et. Vælg din status for at fortsætte. Du kan ændre den senere i Indstillinger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your status decides your hour goal, if you have one. Choose your status to continue. You can change it later in Settings."
+          }
+        }
+      }
+    },
+    "onboarding.publisherStatus.title" : {
+      "comment" : "Title of the publisher status page in onboarding.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din forkynderstatus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your publisher status"
+          }
+        }
+      }
+    },
     "onboarding.step.%lld.%lld" : {
-      "comment" : "Step counter at the bottom of each onboarding page, for example \"Step 2 of 4\".",
+      "comment" : "Step counter above the title of each onboarding setup page, for example \"Step 1 of 2\".",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -1305,6 +1390,159 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Step %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "onboarding.welcome.goal.detail" : {
+      "comment" : "Sentence under \"Follow your goal\" on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se, hvor tæt du er på dit mål, både for måneden og for hele året."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See how close you are to your goal, for the month and for the whole year."
+          }
+        }
+      }
+    },
+    "onboarding.welcome.goal.title" : {
+      "comment" : "Title of the row about goals on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Følg dit mål"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow your goal"
+          }
+        }
+      }
+    },
+    "onboarding.welcome.log.detail" : {
+      "comment" : "Sentence under \"Log your time\" on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilføj din tid i tjenesten med få tryk, sammen med dine bibelstudier."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add your time in service in a few taps, along with your Bible studies."
+          }
+        }
+      }
+    },
+    "onboarding.welcome.log.title" : {
+      "comment" : "Title of the row about logging time on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrer din tid"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log your time"
+          }
+        }
+      }
+    },
+    "onboarding.welcome.plan.detail" : {
+      "comment" : "Sentence under \"Plan your month\" on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg de dage, hvor du vil i tjenesten, og se, hvordan måneden går."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the days you want to go out, and see how the month is going."
+          }
+        }
+      }
+    },
+    "onboarding.welcome.plan.title" : {
+      "comment" : "Title of the row about the Planner on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planlæg din måned"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plan your month"
+          }
+        }
+      }
+    },
+    "onboarding.welcome.privacy" : {
+      "comment" : "Privacy line at the bottom of the onboarding welcome page. Matches the summary at the top of the privacy policy.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo indsamler ikke noget om dig. Det, du skriver, bliver på dine enheder og i din egen iCloud."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo doesn't collect anything about you. What you enter stays on your devices and in your own iCloud."
+          }
+        }
+      }
+    },
+    "onboarding.welcome.report.detail" : {
+      "comment" : "Sentence under \"Send your report\" on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Når måneden er slut, skriver Hugo din rapport, og du sender den til din gruppetjener."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When the month ends, Hugo writes your report, and you send it to your group overseer."
+          }
+        }
+      }
+    },
+    "onboarding.welcome.report.title" : {
+      "comment" : "Title of the row about sending the report on the onboarding welcome page.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send din rapport"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send your report"
           }
         }
       }
@@ -4394,78 +4632,6 @@
         }
       }
     },
-    "splash.description.1" : {
-      "comment" : "A description below the title of the first section in the onboarding view.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo hjælper dig med at holde styr på din rapport, så du kan fokusere på din tjeneste"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo helps you keep track of your report so you can focus on your field service."
-          }
-        }
-      }
-    },
-    "splash.description.2" : {
-      "comment" : "A paragraph of text displayed in the onboarding view.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Men før vi begynder, har vi brug for lidt informationer om dig"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "But before we begin, we need to know a bit about you"
-          }
-        }
-      }
-    },
-    "splash.section.publisherStatus.description" : {
-      "comment" : "A description of the publisher status section in the onboarding view.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vælg venligst din nuværende forkynderstatus herunder"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Please select your current publisher status below"
-          }
-        }
-      }
-    },
-    "splash.section.publisherStatus.title" : {
-      "comment" : "The title of the section that describes the publisher's status.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forkynderstatus"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Publisher Status"
-          }
-        }
-      }
-    },
     "splash.subtitle" : {
       "comment" : "A subtitle for the onboarding screen.",
       "isCommentAutoGenerated" : true,
@@ -4479,7 +4645,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The app that *”Helps U Go Out”*"
+            "value" : "The app that *\"Helps U Go Out\"*"
           }
         }
       }

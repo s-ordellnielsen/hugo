@@ -11,8 +11,20 @@ struct OnboardingStepTests {
     }
 
     @Test
-    func numbersCountFromOne() {
-        #expect(OnboardingStep.allCases.map(\.number) == [1, 2, 3])
-        #expect(OnboardingStep.count == 3)
+    func onlyTheSetupPagesAreNumbered() {
+        #expect(OnboardingStep.allCases.map(\.setupNumber) == [nil, 1, 2])
+        #expect(OnboardingStep.setupCount == 2)
+    }
+
+    @Test
+    func aFilledInSettingTheUserHasNotChangedShowsTheCloudNote() {
+        #expect(OnboardingStep.publisherStatus.showsCloudNote(hasValue: true, changedSteps: []))
+        #expect(OnboardingStep.overseer.showsCloudNote(hasValue: true, changedSteps: [.publisherStatus]))
+    }
+
+    @Test
+    func anEmptyOrChangedSettingShowsNoCloudNote() {
+        #expect(!OnboardingStep.publisherStatus.showsCloudNote(hasValue: false, changedSteps: []))
+        #expect(!OnboardingStep.overseer.showsCloudNote(hasValue: true, changedSteps: [.overseer]))
     }
 }

@@ -26,6 +26,9 @@ enum HugoLayout {
         static let categoryIcon: CGFloat = 48
         static let categoryIconTile: CGFloat = 128
         static let prominentSymbol: CGFloat = 64
+        /// Width of the symbol column in rows of a symbol, a title and a
+        /// sentence, so the text of stacked rows lines up.
+        static let rowSymbolWidth: CGFloat = 40
         static let labelReservedIconWidth: CGFloat = 24
         static let symbolPickerMinimumCellWidth: CGFloat = 70
         static let monthlyProgressDiameter: CGFloat = 360
