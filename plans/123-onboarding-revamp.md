@@ -1174,3 +1174,155 @@ The iCloud line also shows after the debug menu's "reset onboarding", because th
 - **An early pick can be replaced by iCloud.** If the user picks a status before the device's first iCloud download arrives, `SettingsSyncService` then writes the iCloud value over it (plan 118: iCloud wins at launch). This plan doesn't change that. The page shows the new value, without the iCloud line, because the user changed that step.
 - **Button contrast, app-wide.** White text on the mint `.glassProminent` button has low contrast in light mode. It is the same button the rest of the app uses, so this plan keeps it. Consider a separate issue if the owner wants to change the accent button for older users.
 - **What a reviewer should check:** every hunk matches a step; `AppRootView.swift` is untouched; the catalog diff adds the 14 keys, removes the 4 `splash.*` keys and changes only `onboarding.step.%lld.%lld`'s comment and the English `splash.subtitle`.
+
+## Revision 1 (2026-11-15, after the owner's device check)
+
+> **Execute only this revision.** Steps 0-8 are done (commit `8c4e95f`). Drift check for this revision:
+> `git diff --stat 8c4e95f..HEAD -- Hugo/Features/Onboarding HugoTests/Features/Onboarding`
+> Expected: no output. Otherwise STOP.
+
+### What the owner saw
+
+The four rows on the welcome page didn't animate in. They were already there when the sheet arrived.
+
+### Why (advisor, confirmed with a simulator recording)
+
+`.onAppear` runs when the sheet starts sliding up, not when it stops. The rows waited 0, 0.06, 0.12, 0.18 and 0.24 seconds, then faded in over 0.3 seconds, all while the sheet was still moving up the screen. Frame by frame (one frame every 0.05 s), every row was fully visible by the time the sheet stopped, so the sheet's own movement hid the animation. The code did what the plan said. The plan didn't allow for the sheet.
+
+### Decision (advisor default, checked in a second recording; the owner can tune the numbers)
+
+- The first row waits 0.45 s after the page appears, which is after the sheet has stopped. The rows then start 0.08 s apart (was 0.06 s).
+- Each row rises 20 pt (`HugoLayout.Spacing.roomy`, was 12 pt, `HugoLayout.Spacing.regular`) while it fades in, so the movement is visible.
+- Reduce Motion behaves as before. The `.motion` modifier swaps in its own short fade without the delay, so the rows appear together with the page and don't move.
+- In the recording of this version, the sheet slides up with only the title and the subtitle, stops, and about 0.2 s later the rows fade in and rise one after another. The cascade ends about 0.6 s after the sheet stops.
+
+### Scope of this revision
+
+- `Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` (the only file)
+
+Commit message:
+
+```
+fix: start the onboarding welcome rows' animation after the sheet has slid up
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Step R1: Replace the welcome page
+
+Replace the whole of `Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` with exactly this content. Read the file first, because the Write tool refuses to overwrite a file you haven't read.
+
+```swift
+import SwiftUI
+
+/// The first onboarding page: what Hugo does, in four rows, and that Hugo
+/// collects nothing. Once the sheet has slid up, the rows fade in and rise one
+/// after another. With Reduce Motion on, they fade in together as the page
+/// opens, without moving.
+struct OnboardingWelcomePage: View {
+    /// How long the rows wait after the page appears. The sheet slides up
+    /// during that time, and its movement would hide the rows' animation.
+    private static let firstRowDelay: Double = 0.45
+    /// The time between one row starting and the next.
+    private static let rowStagger: Double = 0.08
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isShowingRows = false
+
+    var body: some View {
+        OnboardingPageLayout(step: .welcome, title: "splash.title", explanation: "splash.subtitle") {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.roomy) {
+                appearing(0) {
+                    OnboardingFeatureRow(
+                        symbol: "clock",
+                        title: "onboarding.welcome.log.title",
+                        detail: "onboarding.welcome.log.detail"
+                    )
+                }
+                appearing(1) {
+                    OnboardingFeatureRow(
+                        symbol: "calendar",
+                        title: "onboarding.welcome.plan.title",
+                        detail: "onboarding.welcome.plan.detail"
+                    )
+                }
+                appearing(2) {
+                    OnboardingFeatureRow(
+                        symbol: "arrow.up.message",
+                        title: "onboarding.welcome.report.title",
+                        detail: "onboarding.welcome.report.detail"
+                    )
+                }
+                appearing(3) {
+                    OnboardingFeatureRow(
+                        symbol: "target",
+                        title: "onboarding.welcome.goal.title",
+                        detail: "onboarding.welcome.goal.detail"
+                    )
+                }
+                appearing(4) {
+                    Label("onboarding.welcome.privacy", systemImage: "lock.fill")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        // The setup pages start below their back button. This page has none,
+        // so it gets the same space above its title.
+        .contentMargins(.top, HugoLayout.Spacing.section, for: .scrollContent)
+        .onAppear { isShowingRows = true }
+    }
+
+    /// Fades a row in after the rows above it, and slides it up a little
+    /// unless Reduce Motion is on.
+    private func appearing<Row: View>(_ index: Int, @ViewBuilder row: () -> Row) -> some View {
+        row()
+            .opacity(isShowingRows ? 1 : 0)
+            .offset(y: isShowingRows || reduceMotion ? 0 : HugoLayout.Spacing.roomy)
+            .motion(
+                Motion.presence.delay(Self.firstRowDelay + Double(index) * Self.rowStagger),
+                value: isShowingRows
+            )
+    }
+}
+
+#Preview {
+    NavigationStack {
+        OnboardingWelcomePage()
+    }
+}
+```
+
+Compared with the version from Step 5, three things change: the type's doc comment, the two new constants `firstRowDelay` and `rowStagger`, and the `offset` and `motion` lines in `appearing`.
+
+**Verify**:
+
+- `git diff --shortstat Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` → `1 file changed, 14 insertions(+), 4 deletions(-)`.
+- `xcrun swift-format lint --strict Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` → exit 0.
+
+### Step R2: Run the gate and commit
+
+**Verify**: `Scripts/verify.sh > /tmp/verify123r1.log 2>&1; echo "exit $?"` → `exit 0` (about 5 minutes; use a 600000 ms timeout). `grep -E "Test run with" /tmp/verify123r1.log` → the test run passed.
+
+Commit only that file, by path:
+
+```sh
+git add Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift
+git commit -m "fix: start the onboarding welcome rows' animation after the sheet has slid up" -m "Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+**Verify**: `git show --stat --format= HEAD` lists only `Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift`. `git status --short` shows nothing, or only the owner's `Debug.xcscheme`.
+
+### STOP conditions for this revision
+
+- The drift check prints anything.
+- `git status --short` shows a modified file other than the owner's `Debug.xcscheme` before you start.
+- Lint fails twice, the compile inside `verify.sh` fails, or `verify.sh` fails twice. Report the error text or the failing test names.
+
+### Owner check for this revision
+
+On the iPhone, reset onboarding from the debug menu. The sheet slides up showing only "Welcome to Hugo" and the subtitle. Just after it stops, the four rows and the privacy line fade in and rise one after another. Go to step 1 and back: the rows stay where they are, because they animate only once. With Reduce Motion on, the rows appear with the page and don't move.
+
+### Maintenance note for this revision
+
+`firstRowDelay` (0.45 s) assumes the welcome page arrives in a sliding sheet. If onboarding is ever shown without one, shorten it, or the page sits half empty for a moment.
