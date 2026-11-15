@@ -5,7 +5,6 @@ struct CategoryPicker: View {
     @Environment(\.dismiss) private var dismiss
 
     @Binding var selection: Tracker?
-    var dismissOnSelection: Bool = false
 
     @Query private var trackers: [Tracker] = []
 
@@ -22,10 +21,7 @@ struct CategoryPicker: View {
                             ForEach(filtered, id: \.id) { tracker in
                                 Button {
                                     selection = tracker
-
-                                    if dismissOnSelection {
-                                        dismiss()
-                                    }
+                                    dismiss()
                                 } label: {
                                     HStack {
                                         Label {
@@ -55,6 +51,9 @@ struct CategoryPicker: View {
                     Button(role: .cancel) {
                         dismiss()
                     }
+                }
+                ToolbarItem(placement: .principal) {
+                    EditorialNavigationTitle(title: String(localized: "trackerPicker.title"))
                 }
                 ToolbarItem {
                     Button {

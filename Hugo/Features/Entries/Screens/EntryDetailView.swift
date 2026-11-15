@@ -93,8 +93,7 @@ struct EntryDetailView: View {
                             entry.tracker = newValue
                             entry.refreshStoredTracker()
                         }
-                    ),
-                    dismissOnSelection: true
+                    )
                 )
                 .presentationDetents([.medium, .large])
             }
