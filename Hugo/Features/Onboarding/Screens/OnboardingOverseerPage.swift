@@ -3,7 +3,7 @@ import SwiftUI
 /// Onboarding step 2 of 2: the group overseer, chosen from Contacts. It saves
 /// the same settings as Settings → Report → Group Overseer
 /// (`OverseerSettingsView`). `OnboardingView` offers Skip for Now while no
-/// overseer is chosen.
+/// overseer is chosen. Typing the details by hand is only offered in Settings.
 struct OnboardingOverseerPage: View {
     /// Whether to say that the overseer came from the user's other devices.
     let showsCloudNote: Bool
@@ -38,17 +38,19 @@ struct OnboardingOverseerPage: View {
             showsCloudNote: showsCloudNote
         ) {
             card
+            // Onboarding only offers Contacts. Users who would rather not use
+            // Contacts skip and type the details in `OverseerSettingsView`.
+            OnboardingNote(symbol: "hand.raised.fill", text: "onboarding.overseer.contactsNote")
         }
-        .sheet(isPresented: $isPickingContact) {
-            OverseerContactPicker { pickedFullName, pickedPhone, pickedFirst, pickedLast in
+        .background {
+            OverseerContactPicker(isPresented: $isPickingContact) {
+                pickedFullName, pickedPhone, pickedFirst, pickedLast in
                 fullName = pickedFullName
                 phoneNumber = pickedPhone
                 firstName = pickedFirst
                 lastName = pickedLast
-                isPickingContact = false
                 onChange()
             }
-            .ignoresSafeArea()
         }
     }
 

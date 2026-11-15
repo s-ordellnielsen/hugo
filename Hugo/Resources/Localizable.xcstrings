@@ -6437,6 +6437,210 @@
           }
         }
       }
+    },
+    "onboarding.overseer.contactsNote" : {
+      "comment" : "Note on the onboarding overseer page. The user can skip and type the overseer's details in Settings instead of using Contacts.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo ser kun den person, du vælger, og navn og nummer bliver hos dig. Hvis du hellere vil undgå at bruge kontakter, kan du springe over og skrive navn og nummer senere under Rapport i Indstillinger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo only sees the person you choose, and their name and number stay with you. If you'd rather not use Contacts, skip this step and type the name and number later in Settings under Report."
+          }
+        }
+      }
+    },
+    "overseer.contacts.choose" : {
+      "comment" : "Main button on the group overseer settings screen. Opens the contact picker.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg fra kontakter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose from Contacts"
+          }
+        }
+      }
+    },
+    "overseer.contacts.privacy" : {
+      "comment" : "Privacy note under the Choose from Contacts button on the group overseer settings screen. Matches the privacy policy.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo ser kun den person, du vælger, ikke dine andre kontakter. Navn og nummer bliver på dine enheder og i din egen iCloud. Hugo deler dem aldrig med nogen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo only sees the person you choose, not your other contacts. Their name and number stay on your devices and in your own iCloud. Hugo never shares them with anyone"
+          }
+        }
+      }
+    },
+    "overseer.field.firstName" : {
+      "comment" : "Placeholder for the group overseer's first name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fornavn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First Name"
+          }
+        }
+      }
+    },
+    "overseer.field.lastName" : {
+      "comment" : "Placeholder for the group overseer's last name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efternavn (valgfrit)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Name (Optional)"
+          }
+        }
+      }
+    },
+    "overseer.field.phoneNumber" : {
+      "comment" : "Placeholder for the group overseer's phone number.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
+          }
+        }
+      }
+    },
+    "overseer.header.empty" : {
+      "comment" : "Line under 'No group overseer selected' at the top of the group overseer settings screen.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo sender din månedsrapport til din gruppetjener som sms"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo sends your monthly report to your group overseer by text message"
+          }
+        }
+      }
+    },
+    "overseer.manual.add" : {
+      "comment" : "Button on the group overseer settings screen that opens a form for typing the overseer's name and phone number.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv navn og nummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type Name and Number"
+          }
+        }
+      }
+    },
+    "overseer.manual.edit" : {
+      "comment" : "Button on the group overseer settings screen that opens the form with the saved name and phone number.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rediger navn og nummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Name and Number"
+          }
+        }
+      }
+    },
+    "overseer.manual.footer" : {
+      "comment" : "Footer under the Type Name and Number button on the group overseer settings screen.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvis du hellere vil undgå at bruge kontakter, kan du selv skrive din gruppetjeners navn og telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you'd rather not use Contacts, type your group overseer's name and phone number yourself"
+          }
+        }
+      }
+    },
+    "overseer.section.name" : {
+      "comment" : "Section header above the name fields when typing the group overseer's details.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "overseer.section.phoneNumber" : {
+      "comment" : "Section header above the phone number field when typing the group overseer's details.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

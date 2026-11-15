@@ -88,7 +88,7 @@ A difference between a submitted month and its entries now: an entry added after
 The month whose report the Overview currently reminds the user to send.
 
 **Overseer**:
-The group overseer who receives the publisher's reports.
+The group overseer who receives the publisher's reports. The user chooses them from Contacts or types their name and phone number in Settings. Hugo saves the name and number, never a link to the contact.
 
 **Greeting template**:
 The user's own opening text that Hugo puts at the top of each report message.

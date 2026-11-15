@@ -32,6 +32,8 @@ Hvis iCloud er slået til, gemmes de fleste af dine indstillinger også i din eg
 
 Når du vælger din gruppetjener blandt dine kontakter, viser iOS dig din kontaktliste. Hugo modtager kun den kontakt, du vælger, og gemmer personens navn og telefonnummer på din enhed. Hugo kan ikke se dine andre kontakter.
 
+Hvis du hellere vil undgå at bruge dine kontakter, kan du selv skrive din gruppetjeners navn og telefonnummer under Rapport i Indstillinger. Så bruger Hugo slet ikke dine kontakter.
+
 ## Når du sender din rapport
 
 Når du sender din månedlige rapport, åbner Hugo Beskeder med rapporten udfyldt, og du sender den selv. Hvis Beskeder ikke er tilgængelig, kopierer Hugo rapporten, så du kan sætte den ind, hvor du vil. Din rapport går direkte fra dig til den, du sender den til. Den kommer aldrig forbi os.

@@ -32,6 +32,8 @@ If iCloud is on, most of your settings are also saved in your own iCloud, so the
 
 When you choose your group overseer from your contacts, iOS shows you your contact list. Hugo only receives the contact you pick, and saves that person's name and phone number on your device. Hugo can't see your other contacts.
 
+If you'd rather not use your contacts, you can type your group overseer's name and phone number yourself in Settings under Report. Hugo then doesn't use your contacts at all.
+
 ## Sending your report
 
 When you send your monthly report, Hugo opens Messages with the report filled in, and you send it yourself. If Messages isn't available, Hugo copies the report so you can paste it where you want. Your report goes straight from you to the person you send it to. It never passes through us.
