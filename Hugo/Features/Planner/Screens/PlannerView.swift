@@ -99,14 +99,10 @@ private struct PlannerPager: View {
             .scrollPosition(id: $scrollPosition)
             .scrollIndicators(.hidden)
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(activeMonth.monthYearString())
+            .editorialNavigationTitle(activeMonth.monthYearString())
             .navigationSubtitle("tab.planner")
-            .navigationBarTitleDisplayMode(.inline)
             .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    EditorialNavigationTitle(title: activeMonth.monthYearString())
-                }
                 ToolbarItem {
                     SettingsButton(sizeClass: .compact)
                 }

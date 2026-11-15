@@ -78,8 +78,7 @@ struct AddCategoryView: View {
                     Toggle("tracker.options.use-as-default", isOn: $isDefault)
                 }
             }
-            .navigationTitle("addTrackerSheet.title")
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle("addTrackerSheet.title")
             .onAppear {
                 guard !didSuggestColor else { return }
                 didSuggestColor = true

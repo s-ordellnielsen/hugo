@@ -32,13 +32,9 @@ struct MonthlyReportDetailView: View {
                 }
             }
         }
-        .navigationTitle(month.displayName)
+        .editorialNavigationTitle(month.displayName)
         .navigationSubtitle("report.title")
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .principal) {
-                EditorialNavigationTitle(title: month.displayName)
-            }
             ToolbarItem(placement: .topBarLeading) {
                 Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
             }

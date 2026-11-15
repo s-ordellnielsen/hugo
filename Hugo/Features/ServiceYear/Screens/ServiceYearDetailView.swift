@@ -16,14 +16,8 @@ struct ServiceYearDetailView: View {
                 monthsSection(progress)
             }
         }
-        .navigationTitle(report.year.displayName)
+        .editorialNavigationTitle(report.year.displayName)
         .navigationSubtitle("year.detail.subtitle")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                EditorialNavigationTitle(title: report.year.displayName)
-            }
-        }
     }
 
     private func goalSection(_ progress: YearlyGoalProgress) -> some View {

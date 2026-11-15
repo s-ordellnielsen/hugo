@@ -64,8 +64,7 @@ struct PlanFormView: View {
                     }
                 }
             }
-            .navigationTitle(plan == nil ? "planner.plan.add" : "planner.plan.edit")
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle(plan == nil ? "planner.plan.add" : "planner.plan.edit")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }

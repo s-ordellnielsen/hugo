@@ -44,16 +44,12 @@ struct CategoryPicker: View {
                     }
                 }
             }
-            .navigationTitle("trackerPicker.title")
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle("trackerPicker.title")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(role: .cancel) {
                         dismiss()
                     }
-                }
-                ToolbarItem(placement: .principal) {
-                    EditorialNavigationTitle(title: String(localized: "trackerPicker.title"))
                 }
                 ToolbarItem {
                     Button {

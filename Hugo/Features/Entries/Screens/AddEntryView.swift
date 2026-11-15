@@ -62,8 +62,7 @@ struct AddEntryView: View {
                     }
                 }
             }
-            .navigationTitle("entry.add.label")
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle("entry.add.label")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }

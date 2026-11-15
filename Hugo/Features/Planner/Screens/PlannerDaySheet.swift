@@ -46,8 +46,7 @@ struct PlannerDaySheet: View {
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(day.startDate().formatted(.dateTime.weekday(.wide).day().month(.wide)))
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle(day.startDate().formatted(.dateTime.weekday(.wide).day().month(.wide)))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }

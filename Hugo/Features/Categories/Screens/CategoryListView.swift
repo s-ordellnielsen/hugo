@@ -38,7 +38,7 @@ struct CategoryListView: View {
                 }
             }
         }
-        .navigationTitle("screen.category-list.title")
+        .editorialNavigationTitle("screen.category-list.title")
         .toolbar {
             ToolbarItem {
                 Button {

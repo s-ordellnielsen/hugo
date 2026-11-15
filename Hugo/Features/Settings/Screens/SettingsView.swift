@@ -165,8 +165,7 @@ struct SettingsView: View {
                     }
                 #endif
             }
-            .navigationTitle("settings.title")
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle("settings.title")
             .task { await syncMonitor?.refreshAccount() }
             .toolbar {
                 if showDismiss {
