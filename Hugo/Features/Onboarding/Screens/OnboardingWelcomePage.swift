@@ -7,16 +7,16 @@ import SwiftUI
 struct OnboardingWelcomePage: View {
     /// How long the rows wait after the page appears. The sheet slides up
     /// during that time, and its movement would hide the rows' animation.
-    private static let firstRowDelay: Double = 0.45
+    private static let firstRowDelay: Double = 0.6
     /// The time between one row starting and the next.
-    private static let rowStagger: Double = 0.08
+    private static let rowStagger: Double = 0.12
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isShowingRows = false
 
     var body: some View {
         OnboardingPageLayout(step: .welcome, title: "splash.title", explanation: "splash.subtitle") {
-            VStack(alignment: .leading, spacing: HugoLayout.Spacing.roomy) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
                 appearing(0) {
                     OnboardingFeatureRow(
                         symbol: "clock",
@@ -46,15 +46,13 @@ struct OnboardingWelcomePage: View {
                     )
                 }
                 appearing(4) {
-                    Label("onboarding.welcome.privacy", systemImage: "lock.fill")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    OnboardingNote(symbol: "lock.shield.fill", text: "onboarding.welcome.privacy")
                 }
             }
         }
         // The setup pages start below their back button. This page has none,
-        // so it gets the same space above its title.
-        .contentMargins(.top, HugoLayout.Spacing.section, for: .scrollContent)
+        // and its title gets more room above it than theirs.
+        .contentMargins(.top, HugoLayout.Spacing.section * 2, for: .scrollContent)
         .onAppear { isShowingRows = true }
     }
 

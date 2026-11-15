@@ -1502,13 +1502,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo indsamler ikke noget om dig. Det, du skriver, bliver på dine enheder og i din egen iCloud."
+            "value" : "**Hugo indsamler ikke noget om dig.** Det, du skriver, bliver på dine enheder og i din egen iCloud."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo doesn't collect anything about you. What you enter stays on your devices and in your own iCloud."
+            "value" : "**Hugo doesn't collect anything about you.** What you enter stays on your devices and in your own iCloud."
           }
         }
       }

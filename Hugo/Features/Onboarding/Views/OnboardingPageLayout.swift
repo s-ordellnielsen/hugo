@@ -11,6 +11,8 @@ struct OnboardingPageLayout<Content: View>: View {
     private let showsCloudNote: Bool
     private let content: Content
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     init(
         step: OnboardingStep,
         title: LocalizedStringKey,
@@ -25,9 +27,16 @@ struct OnboardingPageLayout<Content: View>: View {
         self.content = content()
     }
 
+    /// Wide side margins keep the text in a comfortable column. At
+    /// accessibility text sizes they narrow, so more words fit on a line.
+    /// `OnboardingStepBar` uses the same margins for its buttons.
+    private var sideMargin: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? HugoLayout.Spacing.spacious : HugoLayout.Spacing.section
+    }
+
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: HugoLayout.Spacing.card) {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
                     if let number = step.setupNumber {
                         Text("onboarding.step.\(number).\(OnboardingStep.setupCount)")
@@ -44,15 +53,14 @@ struct OnboardingPageLayout<Content: View>: View {
                 }
 
                 if showsCloudNote {
-                    Label("onboarding.cloudNote", systemImage: "icloud")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    OnboardingNote(symbol: "checkmark.icloud.fill", text: "onboarding.cloudNote")
                         .transition(.opacity)
                 }
 
                 content
             }
-            .padding()
+            .padding(.horizontal, sideMargin)
+            .padding(.vertical)
             .frame(maxWidth: .infinity, alignment: .leading)
             .motion(Motion.presence, value: showsCloudNote)
         }

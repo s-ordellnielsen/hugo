@@ -9,8 +9,16 @@ struct OnboardingStepBar: View {
     var onSkip: (() -> Void)? = nil
     let onContinue: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     private var continueTitle: LocalizedStringKey {
         isLast ? "splash.action.complete" : "onboarding.action.continue"
+    }
+
+    /// The same side margins as `OnboardingPageLayout`, so the buttons line up
+    /// with the text above them.
+    private var sideMargin: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? HugoLayout.Spacing.spacious : HugoLayout.Spacing.section
     }
 
     var body: some View {
@@ -29,7 +37,7 @@ struct OnboardingStepBar: View {
                     .frame(minHeight: HugoLayout.Size.minimumHitTarget)
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, sideMargin)
         .padding(.vertical, HugoLayout.Spacing.compact)
     }
 }
