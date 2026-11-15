@@ -651,3 +651,158 @@ On a device with the Debug build, in English and Danish:
 - A future "turn off iCloud sync" setting (SLN-57) belongs on this screen.
 - If Apple adds a public way to trigger a sync, a "Sync now" button can call it from `CloudSyncStatusView`.
 - `CloudSyncFailure` maps only the common CloudKit errors. A `partialFailure` that wraps `quotaExceeded` shows as "Sync problem". If testers report that, unwrap `CKErrorPartialErrorsByItemIDKey` in `AppRootView`.
+
+## Revision 1 (2026-11-15, after the owner's device check)
+
+> **Execute only this revision.** Steps 1-8 are done (commit `5b0d21f`). Drift check for this revision:
+> `git diff --stat c076cf9..HEAD -- Hugo/Features/Settings/Domain/CloudSyncStatus.swift Hugo/Features/Settings/State/CloudSyncMonitor.swift Hugo/App/AppRootView.swift HugoTests/Features/Settings`
+> Expected: no output. Otherwise STOP.
+
+### What the owner saw
+
+In Airplane Mode the iCloud row never showed "Offline". It kept saying "Syncing…".
+
+### Why
+
+The plan assumed CloudKit fails an export with `networkUnavailable` when the device is offline. In practice NSPersistentCloudKitContainer starts the export event and then waits for the network, so the event stays running (`endDate == nil`) for as long as the device is offline, and the status rule reports `.syncing`. The fix doesn't rely on CloudKit's errors: Hugo watches the network path itself (`NWPathMonitor`, Network framework) and shows "Offline" whenever there is no connection.
+
+### Scope of this revision
+
+- `Hugo/Features/Settings/Services/NetworkPathWatcher.swift` (create)
+- `Hugo/Features/Settings/Domain/CloudSyncStatus.swift` (`make` gains `isOnline`)
+- `Hugo/Features/Settings/State/CloudSyncMonitor.swift` (`isOnline`, `setOnline`, `startWatchingNetwork`)
+- `Hugo/App/AppRootView.swift` (one line in `.task`)
+- `HugoTests/Features/Settings/Domain/CloudSyncStatusTests.swift` and `HugoTests/Features/Settings/State/CloudSyncMonitorTests.swift` (one test each)
+
+No string changes: `settings.sync.status.offline` and `settings.sync.message.offline` already exist.
+
+Commit: `fix: show Offline in the iCloud row whenever the device has no network`
+
+### Step R1: Watch the network path (Services)
+
+Create `Hugo/Features/Settings/Services/NetworkPathWatcher.swift`:
+
+```swift
+import Foundation
+import Network
+
+/// Calls `onChange` with whether the device has a network connection, once at
+/// the start and again whenever it changes. It watches for as long as it
+/// exists. `NWPathMonitor` needs a queue of its own; the result is handed to
+/// the main actor.
+final class NetworkPathWatcher {
+    private let monitor = NWPathMonitor()
+
+    init(onChange: @escaping @MainActor @Sendable (Bool) -> Void) {
+        monitor.pathUpdateHandler = { path in
+            let isOnline = path.status == .satisfied
+            Task { @MainActor in onChange(isOnline) }
+        }
+        monitor.start(queue: DispatchQueue(label: "com.ordellnielsen.Hugo.network-path"))
+    }
+}
+```
+
+The `DispatchQueue` here is the queue `NWPathMonitor.start(queue:)` requires. It is not a `DispatchQueue.main.async` hop, which `AGENTS.md` forbids. If the compiler rejects a capture in `pathUpdateHandler` under strict concurrency, the smallest allowed fix is marking the class `nonisolated` or the closure `@Sendable`. Report it. Anything larger: STOP.
+
+**Verify**: `xcrun swift-format lint --strict Hugo/Features/Settings/Services/NetworkPathWatcher.swift` → exit 0.
+
+### Step R2: Put "no network" into the status rule
+
+In `CloudSyncStatus.make`, add a parameter `isOnline: Bool = true` between `account` and `isSyncing`, and insert the offline check right after the account `switch`:
+
+```swift
+    static func make(
+        account: CloudAccountState,
+        isOnline: Bool = true,
+        isSyncing: Bool,
+        failure: CloudSyncFailure?,
+        lastSuccess: Date?
+    ) -> CloudSyncStatus {
+        switch account {
+        case .noAccount: return .signedOut
+        case .restricted: return .restricted
+        case .available, .temporarilyUnavailable, .unknown: break
+        }
+        if !isOnline { return .offline }
+        switch failure {
+```
+
+(the rest of the function stays as it is). Update the doc comment above `make` to: `/// The account problems come first, then a missing network connection, then the last failure, then a sync in progress. A successful sync clears the failure (see `CloudSyncMonitor`).`
+
+The default `true` keeps the existing tests compiling unchanged.
+
+### Step R3: Let the monitor follow the network
+
+In `CloudSyncMonitor`:
+
+1. After `private(set) var failure: CloudSyncFailure?`, add `private(set) var isOnline = true`.
+2. After `private var running: Set<UUID> = []`, add `@ObservationIgnored private var networkWatcher: NetworkPathWatcher?`.
+3. In `status`, pass `isOnline: isOnline` to `CloudSyncStatus.make` (after `account:`).
+4. Add these two methods after `refreshAccount()`:
+
+```swift
+
+    func setOnline(_ isOnline: Bool) {
+        self.isOnline = isOnline
+    }
+
+    /// Starts following the network connection. Call once at launch; later
+    /// calls do nothing.
+    func startWatchingNetwork() {
+        guard networkWatcher == nil else { return }
+        networkWatcher = NetworkPathWatcher { [weak self] isOnline in
+            self?.setOnline(isOnline)
+        }
+    }
+```
+
+5. Update the type's doc comment: after "The app feeds it every sync event (`record`)", add ", starts it watching the network at launch (`startWatchingNetwork`)".
+
+### Step R4: Start watching at launch
+
+In `Hugo/App/AppRootView.swift`, in the `.task`, add `syncMonitor.startWatchingNetwork()` directly after `settingsSync?.start()`.
+
+**Verify**: `grep -c "startWatchingNetwork" Hugo/App/AppRootView.swift` → `1`.
+
+### Step R5: Tests
+
+1. In `CloudSyncStatusTests`, add:
+
+```swift
+    @Test
+    func noNetworkShowsOfflineEvenWhileAnExportWaits() {
+        #expect(
+            CloudSyncStatus.make(account: .available, isOnline: false, isSyncing: true, failure: nil, lastSuccess: date)
+                == .offline)
+        #expect(
+            CloudSyncStatus.make(account: .noAccount, isOnline: false, isSyncing: false, failure: nil, lastSuccess: nil)
+                == .signedOut)
+    }
+```
+
+2. In `CloudSyncMonitorTests`, add:
+
+```swift
+    @Test
+    func losingTheNetworkShowsOfflineAndComingBackShowsSyncingAgain() {
+        let monitor = monitor()
+        monitor.record(id: UUID(), endDate: nil, succeeded: false, errorCode: nil)
+
+        monitor.setOnline(false)
+        #expect(monitor.status == .offline)
+
+        monitor.setOnline(true)
+        #expect(monitor.status == .syncing)
+    }
+```
+
+If swift-format complains about line length in the tests, run `xcrun swift-format format --in-place` on that file and lint again.
+
+### Step R6: Run the gate and commit
+
+**Verify**: `xcrun swift-format lint --strict` on every changed Swift file → exit 0. `Scripts/verify.sh > /tmp/verify121r1.log 2>&1; echo "exit $?"` → `exit 0`, with the two new tests passing. Commit the six files by path.
+
+### Owner check for this revision
+
+Turn on Airplane Mode with Hugo open in Settings: the iCloud row changes to "Offline" within a second or two, with or without a pending change. Turn it off: the row goes to "Syncing…" or "Up to date".

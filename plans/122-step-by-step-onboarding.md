@@ -536,3 +536,86 @@ Use Settings → Debugging → reset onboarding on a device with the Debug build
 - To add a step, add a case to `OnboardingStep` in its place, give it a skip condition in `next` if it can already be set up, and add its page to `OnboardingView.page(for:)`. Update `numbersCountFromOne`.
 - The overseer and greeting pages are the Settings screens. A change to those screens changes onboarding too, which is the point.
 - If the report reminder (SLN-218) lands, its permission prompt doesn't belong in onboarding. The issue says to ask after the first submitted report.
+
+## Revision 1 (2026-11-15, after the owner's device check)
+
+> **Execute only this revision.** Steps 1-7 are done (commit `5a87ac7`). Drift check for this revision:
+> `git diff --stat c076cf9..HEAD -- Hugo/Features/Onboarding HugoTests/Features/Onboarding`
+> Expected: no output. Otherwise STOP.
+
+### What the owner saw
+
+The counter said there were 4 steps, but after the publisher status page the sheet closed. The owner never saw the overseer and greeting pages. Their phone already had both set, so `OnboardingStep.next` skipped both pages and finished, while the counter kept counting all four.
+
+### Decision (owner, 2026-11-15)
+
+**Always show all four pages. Never skip.** If the overseer or greeting already exists (for example from iCloud), its page shows it filled in, and Continue works straight away. That's simpler, and the counter is always right. This replaces the earlier "skip steps iCloud already filled in" decision.
+
+### Scope of this revision
+
+- `Hugo/Features/Onboarding/Domain/OnboardingStep.swift`
+- `Hugo/Features/Onboarding/Screens/OnboardingView.swift`
+- `HugoTests/Features/Onboarding/Domain/OnboardingStepTests.swift`
+
+Commit: `fix: always show all four onboarding steps`
+
+### Step R1: Drop the skipping rule
+
+In `OnboardingStep.swift`, replace the whole `next(hasOverseer:hasGreeting:)` function and its doc comment with:
+
+```swift
+    /// The page after this one, or nil after the last page.
+    var next: OnboardingStep? {
+        OnboardingStep(rawValue: rawValue + 1)
+    }
+```
+
+### Step R2: Use it in `OnboardingView`
+
+In `OnboardingView.swift`:
+
+1. Delete the line `@AppStorage(UserDefaultsKeys.overseerGreetingTemplate) private var greetingTemplate = ""`. Keep `overseerFullName`: the overseer page still uses it to turn Continue on and to show Skip for Now.
+2. Replace `nextStep(after:)` with:
+
+```swift
+    private func nextStep(after step: OnboardingStep) -> OnboardingStep? {
+        step.next
+    }
+```
+
+3. In the type's doc comment, delete the sentence `Steps whose setting already exists are skipped (see \`OnboardingStep.next\`).` and the line break it leaves. The comment then reads `/// The first-run setup: one page per step, pushed in a navigation stack so` / `/// the user can go back.`
+
+Nothing else in the view changes. The overseer page already enables Continue when an overseer exists, and shows Skip for Now only when none is set. The greeting page shows the stored greeting in its text field.
+
+### Step R3: Replace the tests
+
+Replace the body of `OnboardingStepTests` with:
+
+```swift
+    @Test
+    func everyStepFollowsTheOneBefore() {
+        #expect(OnboardingStep.welcome.next == .publisherStatus)
+        #expect(OnboardingStep.publisherStatus.next == .overseer)
+        #expect(OnboardingStep.overseer.next == .greeting)
+        #expect(OnboardingStep.greeting.next == nil)
+    }
+
+    @Test
+    func numbersCountFromOne() {
+        #expect(OnboardingStep.allCases.map(\.number) == [1, 2, 3, 4])
+        #expect(OnboardingStep.count == 4)
+    }
+```
+
+### Step R4: Run the gate and commit
+
+**Verify**:
+- `grep -rn "hasOverseer\|hasGreeting\|greetingTemplate" Hugo/Features/Onboarding HugoTests/Features/Onboarding` → no output.
+- `xcrun swift-format lint --strict` on the three files → exit 0.
+- `Scripts/verify.sh > /tmp/verify122r1.log 2>&1; echo "exit $?"` → `exit 0`, with both `OnboardingStepTests` tests passing.
+
+Commit the three files by path.
+
+### Owner check for this revision
+
+On your phone, which has an overseer and a greeting, reset onboarding. All four pages appear with "Step 1 of 4" … "Step 4 of 4". The overseer page shows your overseer with Continue on and no Skip for Now. The greeting page shows your greeting. The last button reads "Let's Get Started".
