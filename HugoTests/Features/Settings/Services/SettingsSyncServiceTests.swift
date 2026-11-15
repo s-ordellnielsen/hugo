@@ -57,15 +57,24 @@ struct SettingsSyncServiceTests {
 
     @Test
     func deviceOnlySettingsNeverSync() {
-        defaults.set("regular-pioneer", forKey: UserDefaultsKeys.publisherStatus)
         defaults.set(false, forKey: UserDefaultsKeys.isOnboarding)
         defaults.set(true, forKey: UserDefaultsKeys.hasRunInitialSetup)
         defaults.set("byCategory", forKey: UserDefaultsKeys.overviewListStyle)
-        cloud.values[UserDefaultsKeys.publisherStatus] = "publisher"
+        cloud.values[UserDefaultsKeys.overviewListStyle] = "byDate"
 
         service.start()
 
         #expect(cloud.values.count == 1)
+        #expect(defaults.string(forKey: UserDefaultsKeys.overviewListStyle) == "byCategory")
+    }
+
+    @Test
+    func publisherStatusFromAnotherDeviceWinsAtLaunch() {
+        defaults.set("publisher", forKey: UserDefaultsKeys.publisherStatus)
+        cloud.values[UserDefaultsKeys.publisherStatus] = "regular-pioneer"
+
+        service.start()
+
         #expect(defaults.string(forKey: UserDefaultsKeys.publisherStatus) == "regular-pioneer")
     }
 

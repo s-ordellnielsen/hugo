@@ -169,7 +169,7 @@ _Avoid_: Conflict
 The one submitted report Hugo uses for a month when sync duplicates or placeholder reports leave more than one.
 
 **Synced setting**:
-A setting that stays the same on all of the user's devices through iCloud key-value storage, such as the group overseer or the Planner target. The publisher status and the onboarding flags are not synced settings.
+A setting that stays the same on all of the user's devices through iCloud key-value storage, such as the publisher status, the group overseer or the Planner target. The onboarding flags and the Overview list style are not synced settings.
 
 ## Flagged ambiguities
 
