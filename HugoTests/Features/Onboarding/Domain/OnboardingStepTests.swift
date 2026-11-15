@@ -4,24 +4,11 @@ import Testing
 
 struct OnboardingStepTests {
     @Test
-    func aNewUserSeesEveryStepInOrder() {
-        #expect(OnboardingStep.welcome.next(hasOverseer: false, hasGreeting: false) == .publisherStatus)
-        #expect(OnboardingStep.publisherStatus.next(hasOverseer: false, hasGreeting: false) == .overseer)
-        #expect(OnboardingStep.overseer.next(hasOverseer: false, hasGreeting: false) == .greeting)
-        #expect(OnboardingStep.greeting.next(hasOverseer: false, hasGreeting: false) == nil)
-    }
-
-    @Test
-    func stepsThatAreAlreadySetUpAreSkipped() {
-        #expect(OnboardingStep.publisherStatus.next(hasOverseer: true, hasGreeting: false) == .greeting)
-        #expect(OnboardingStep.publisherStatus.next(hasOverseer: false, hasGreeting: true) == .overseer)
-        #expect(OnboardingStep.publisherStatus.next(hasOverseer: true, hasGreeting: true) == nil)
-        #expect(OnboardingStep.overseer.next(hasOverseer: true, hasGreeting: true) == nil)
-    }
-
-    @Test
-    func theWelcomeAndPublisherStatusAreNeverSkipped() {
-        #expect(OnboardingStep.welcome.next(hasOverseer: true, hasGreeting: true) == .publisherStatus)
+    func everyStepFollowsTheOneBefore() {
+        #expect(OnboardingStep.welcome.next == .publisherStatus)
+        #expect(OnboardingStep.publisherStatus.next == .overseer)
+        #expect(OnboardingStep.overseer.next == .greeting)
+        #expect(OnboardingStep.greeting.next == nil)
     }
 
     @Test

@@ -1,14 +1,12 @@
 import SwiftUI
 
 /// The first-run setup: one page per step, pushed in a navigation stack so
-/// the user can go back. Steps whose setting already exists are skipped
-/// (see `OnboardingStep.next`).
+/// the user can go back.
 struct OnboardingView: View {
     let onComplete: () -> Void
 
     @AppStorage(UserDefaultsKeys.publisherStatus) private var currentStatus = ""
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
-    @AppStorage(UserDefaultsKeys.overseerGreetingTemplate) private var greetingTemplate = ""
 
     @State private var path: [OnboardingStep] = []
 
@@ -23,7 +21,7 @@ struct OnboardingView: View {
     }
 
     private func nextStep(after step: OnboardingStep) -> OnboardingStep? {
-        step.next(hasOverseer: !overseerFullName.isEmpty, hasGreeting: !greetingTemplate.isEmpty)
+        step.next
     }
 
     private func advance(from step: OnboardingStep) {

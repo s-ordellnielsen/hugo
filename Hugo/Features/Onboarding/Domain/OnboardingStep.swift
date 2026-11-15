@@ -10,19 +10,8 @@ nonisolated enum OnboardingStep: Int, CaseIterable, Hashable {
 
     static var count: Int { allCases.count }
 
-    /// The page after this one. Pages for settings that already exist, for
-    /// example synced from the user's other devices, are skipped. Nil means
-    /// the setup is finished.
-    func next(hasOverseer: Bool, hasGreeting: Bool) -> OnboardingStep? {
-        var candidate = OnboardingStep(rawValue: rawValue + 1)
-        while let step = candidate {
-            switch step {
-            case .overseer where hasOverseer, .greeting where hasGreeting:
-                candidate = OnboardingStep(rawValue: step.rawValue + 1)
-            default:
-                return step
-            }
-        }
-        return nil
+    /// The page after this one, or nil after the last page.
+    var next: OnboardingStep? {
+        OnboardingStep(rawValue: rawValue + 1)
     }
 }
