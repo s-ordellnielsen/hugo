@@ -47,6 +47,16 @@ struct CloudSyncStatusTests {
     }
 
     @Test
+    func noNetworkShowsOfflineEvenWhileAnExportWaits() {
+        #expect(
+            CloudSyncStatus.make(account: .available, isOnline: false, isSyncing: true, failure: nil, lastSuccess: date)
+                == .offline)
+        #expect(
+            CloudSyncStatus.make(account: .noAccount, isOnline: false, isSyncing: false, failure: nil, lastSuccess: nil)
+                == .signedOut)
+    }
+
+    @Test
     func failuresComeFromCloudKitErrorCodes() {
         #expect(CloudSyncFailure(ckErrorCode: CKError.Code.notAuthenticated.rawValue) == .signedOut)
         #expect(CloudSyncFailure(ckErrorCode: CKError.Code.quotaExceeded.rawValue) == .storageFull)

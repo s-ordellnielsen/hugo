@@ -38,10 +38,12 @@ nonisolated enum CloudSyncStatus: Equatable {
     case offline
     case problem
 
-    /// The account problems come first, then the last failure, then a sync in
-    /// progress. A successful sync clears the failure (see `CloudSyncMonitor`).
+    /// The account problems come first, then a missing network connection, then
+    /// the last failure, then a sync in progress. A successful sync clears the
+    /// failure (see `CloudSyncMonitor`).
     static func make(
         account: CloudAccountState,
+        isOnline: Bool = true,
         isSyncing: Bool,
         failure: CloudSyncFailure?,
         lastSuccess: Date?
@@ -51,6 +53,7 @@ nonisolated enum CloudSyncStatus: Equatable {
         case .restricted: return .restricted
         case .available, .temporarilyUnavailable, .unknown: break
         }
+        if !isOnline { return .offline }
         switch failure {
         case .signedOut?: return .signedOut
         case .storageFull?: return .storageFull

@@ -60,6 +60,7 @@ struct AppRootView: View {
         .environment(syncMonitor)
         .task {
             settingsSync?.start()
+            syncMonitor.startWatchingNetwork()
             await bootstrapper.start(context: context)
             SyncDeduplicator(context: context).run()
         }

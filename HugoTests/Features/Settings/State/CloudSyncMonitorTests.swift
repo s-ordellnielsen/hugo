@@ -44,6 +44,18 @@ struct CloudSyncMonitorTests {
     }
 
     @Test
+    func losingTheNetworkShowsOfflineAndComingBackShowsSyncingAgain() {
+        let monitor = monitor()
+        monitor.record(id: UUID(), endDate: nil, succeeded: false, errorCode: nil)
+
+        monitor.setOnline(false)
+        #expect(monitor.status == .offline)
+
+        monitor.setOnline(true)
+        #expect(monitor.status == .syncing)
+    }
+
+    @Test
     func refreshingTheAccountCanShowSignedOut() async {
         let monitor = monitor(account: .noAccount)
 
