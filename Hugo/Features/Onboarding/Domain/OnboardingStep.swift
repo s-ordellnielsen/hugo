@@ -3,9 +3,8 @@ nonisolated enum OnboardingStep: Int, CaseIterable, Hashable {
     case welcome
     case publisherStatus
     case overseer
-    case greeting
 
-    /// The step's position for "Step 2 of 4", starting at 1.
+    /// The step's position for "Step 2 of 3", starting at 1.
     var number: Int { rawValue + 1 }
 
     static var count: Int { allCases.count }

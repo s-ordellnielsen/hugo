@@ -60,11 +60,6 @@ struct OnboardingView: View {
                         advance(from: step)
                     }
                 }
-        case .greeting:
-            GreetingTemplateView(introduction: "onboarding.greeting.introduction")
-                .safeAreaInset(edge: .bottom) {
-                    OnboardingStepBar(step: step, isLast: isLast) { advance(from: step) }
-                }
         }
     }
 

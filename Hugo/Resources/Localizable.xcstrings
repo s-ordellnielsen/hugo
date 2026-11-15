@@ -1275,36 +1275,19 @@
         }
       }
     },
-    "onboarding.greeting.introduction" : {
-      "comment" : "Explanation at the top of the greeting page in onboarding.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hver rapport, du sender, starter med denne hilsen. Behold forslaget, eller skriv din egen. Du kan ændre den senere under Indstillinger."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Every report you send starts with this greeting. Keep the suggestion or write your own. You can change it later in Settings."
-          }
-        }
-      }
-    },
     "onboarding.overseer.introduction" : {
       "comment" : "Explanation at the top of the group overseer page in onboarding.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo sender din månedsrapport til din gruppetjener. Vælg vedkommende blandt dine kontakter, eller spring over og gør det senere under Indstillinger."
+            "value" : "Hugo sender din månedsrapport til din gruppetjener og skriver vedkommendes navn i hilsenen øverst, for eksempel \"Hej Anna!\". Vælg vedkommende blandt dine kontakter, eller spring over indtil videre. Du kan ændre både gruppetjener og hilsen senere under Rapport i Indstillinger."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo sends your monthly report to your group overseer. Choose them from your contacts, or skip this and do it later in Settings."
+            "value" : "Hugo sends your monthly report to your group overseer and puts their name in the greeting at the top, such as \"Hi Anna!\". Choose them from your contacts, or skip this for now. You can change both the overseer and the greeting later in Settings under Report."
           }
         }
       }

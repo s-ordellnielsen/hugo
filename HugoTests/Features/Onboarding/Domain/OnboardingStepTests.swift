@@ -7,13 +7,12 @@ struct OnboardingStepTests {
     func everyStepFollowsTheOneBefore() {
         #expect(OnboardingStep.welcome.next == .publisherStatus)
         #expect(OnboardingStep.publisherStatus.next == .overseer)
-        #expect(OnboardingStep.overseer.next == .greeting)
-        #expect(OnboardingStep.greeting.next == nil)
+        #expect(OnboardingStep.overseer.next == nil)
     }
 
     @Test
     func numbersCountFromOne() {
-        #expect(OnboardingStep.allCases.map(\.number) == [1, 2, 3, 4])
-        #expect(OnboardingStep.count == 4)
+        #expect(OnboardingStep.allCases.map(\.number) == [1, 2, 3])
+        #expect(OnboardingStep.count == 3)
     }
 }
