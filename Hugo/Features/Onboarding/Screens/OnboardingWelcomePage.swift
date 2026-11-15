@@ -1,9 +1,16 @@
 import SwiftUI
 
 /// The first onboarding page: what Hugo does, in four rows, and that Hugo
-/// collects nothing. The rows fade in one after another when the page opens.
-/// With Reduce Motion on, they fade in together without moving.
+/// collects nothing. Once the sheet has slid up, the rows fade in and rise one
+/// after another. With Reduce Motion on, they fade in together as the page
+/// opens, without moving.
 struct OnboardingWelcomePage: View {
+    /// How long the rows wait after the page appears. The sheet slides up
+    /// during that time, and its movement would hide the rows' animation.
+    private static let firstRowDelay: Double = 0.45
+    /// The time between one row starting and the next.
+    private static let rowStagger: Double = 0.08
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isShowingRows = false
 
@@ -56,8 +63,11 @@ struct OnboardingWelcomePage: View {
     private func appearing<Row: View>(_ index: Int, @ViewBuilder row: () -> Row) -> some View {
         row()
             .opacity(isShowingRows ? 1 : 0)
-            .offset(y: isShowingRows || reduceMotion ? 0 : HugoLayout.Spacing.regular)
-            .motion(Motion.presence.delay(Double(index) * 0.06), value: isShowingRows)
+            .offset(y: isShowingRows || reduceMotion ? 0 : HugoLayout.Spacing.roomy)
+            .motion(
+                Motion.presence.delay(Self.firstRowDelay + Double(index) * Self.rowStagger),
+                value: isShowingRows
+            )
     }
 }
 
