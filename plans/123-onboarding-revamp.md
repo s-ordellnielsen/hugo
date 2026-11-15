@@ -1326,3 +1326,411 @@ On the iPhone, reset onboarding from the debug menu. The sheet slides up showing
 ### Maintenance note for this revision
 
 `firstRowDelay` (0.45 s) assumes the welcome page arrives in a sliding sheet. If onboarding is ever shown without one, shorten it, or the page sits half empty for a moment.
+
+## Revision 2 (2026-11-15, after the owner's second device check)
+
+> **Execute only this revision.** Steps 0-8 and Revision 1 are done (commits `8c4e95f` and `a300c43`). Drift check for this revision:
+> `git diff --stat a300c43..HEAD -- Hugo/Features/Onboarding HugoTests/Features/Onboarding Hugo/Resources/Localizable.xcstrings Hugo/DesignSystem`
+> Expected: no output. Otherwise STOP.
+
+### What the owner asked for
+
+- The rows should wait a little longer.
+- More spacing: the welcome page felt cramped against the top and too wide.
+- "A bit more love" for the privacy line and the iCloud line.
+
+### Decisions (advisor defaults, checked in simulator screenshots and a recording; the owner can tune the numbers)
+
+- **Timing.** The first row waits 0.6 s (was 0.45 s), and the rows start 0.12 s apart (was 0.08 s). In the recording, the sheet stops, about 0.3 s pass, then each row arrives on its own. The cascade ends about a second after the sheet stops.
+- **Top.** The welcome page has 64 pt above its title (`HugoLayout.Spacing.section * 2`, was 32 pt).
+- **Width.** Every onboarding page and its buttons get 32 pt side margins (`HugoLayout.Spacing.section`, was the default 16 pt). At accessibility text sizes the margins go back to 16 pt (`HugoLayout.Spacing.spacious`), so more words fit on a line. `OnboardingPageLayout` and `OnboardingStepBar` each carry the same small `sideMargin` rule.
+- **Spacing.** 32 pt between the welcome rows (was 20 pt), and 32 pt between a page's explanation, its note and its choices (was 24 pt).
+- **Notes.** A new view, `OnboardingNote`, shows the privacy promise and the iCloud line as a callout: a symbol in the accent color (`lock.shield.fill` for privacy, `checkmark.icloud.fill` for iCloud) beside the text, in the primary text color, on a soft gray rounded background (`Color(.tertiarySystemFill)`, corner radius `HugoLayout.CornerRadius.compactCard`). The gray sets the iCloud note apart from the white choice cards below it. With the note's padding, its text starts where the feature rows' text starts.
+- **Privacy wording.** The first sentence of the privacy promise is bold, in English and Danish, through Markdown in the string. The words stay the same.
+
+### Scope of this revision
+
+- `Hugo/Resources/Localizable.xcstrings` (two values, by the script in Step R2.1)
+- `Hugo/Features/Onboarding/Views/OnboardingNote.swift` (create)
+- `Hugo/Features/Onboarding/Views/OnboardingPageLayout.swift` (replace)
+- `Hugo/Features/Onboarding/Views/OnboardingStepBar.swift` (replace)
+- `Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` (replace)
+
+Commit message:
+
+```
+fix: give onboarding more room and show the privacy and iCloud notes as callouts
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Step R2.1: Make the privacy promise's first sentence bold
+
+Save this script to a file outside the repository, for example `/tmp/catalog123r2.py`:
+
+```python
+import json
+import sys
+
+PATH = sys.argv[1] if len(sys.argv) > 1 else "Hugo/Resources/Localizable.xcstrings"
+
+OLD = {
+    "en": "Hugo doesn't collect anything about you. What you enter stays on your devices and in your own iCloud.",
+    "da": "Hugo indsamler ikke noget om dig. Det, du skriver, bliver på dine enheder og i din egen iCloud.",
+}
+NEW = {
+    "en": "**Hugo doesn't collect anything about you.** What you enter stays on your devices and in your own iCloud.",
+    "da": "**Hugo indsamler ikke noget om dig.** Det, du skriver, bliver på dine enheder og i din egen iCloud.",
+}
+
+with open(PATH, encoding="utf-8") as f:
+    catalog = json.load(f)
+localizations = catalog["strings"]["onboarding.welcome.privacy"]["localizations"]
+current = {language: localizations[language]["stringUnit"]["value"] for language in OLD}
+if current != OLD:
+    sys.exit(f"STOP: onboarding.welcome.privacy differs from the plan: {current!r}")
+
+for language, value in NEW.items():
+    localizations[language]["stringUnit"]["value"] = value
+
+with open(PATH, "w", encoding="utf-8") as f:
+    f.write(json.dumps(catalog, indent=2, separators=(",", " : "), ensure_ascii=False))
+print("catalog updated: onboarding.welcome.privacy now starts with a bold sentence in en and da")
+```
+
+From the repository root, run `python3 -I /tmp/catalog123r2.py` once.
+
+- Expected output: `catalog updated: onboarding.welcome.privacy now starts with a bold sentence in en and da`.
+- A line starting with `STOP:` means the catalog has drifted. STOP and report it. The script checks before it writes, so the file is unchanged.
+- Don't run it a second time. A second run prints `STOP:` because the values already changed.
+
+**Verify**: `git diff --shortstat Hugo/Resources/Localizable.xcstrings` → `1 file changed, 2 insertions(+), 2 deletions(-)`.
+
+### Step R2.2: Add the note view
+
+Create `Hugo/Features/Onboarding/Views/OnboardingNote.swift` with exactly this content:
+
+```swift
+import SwiftUI
+
+/// A short note on an onboarding page, such as the privacy promise on the
+/// welcome page or the line saying a setting came from iCloud: a symbol in
+/// the accent color beside the text, on a soft rounded background that sets
+/// it apart from the choices on the page. With its padding, the text starts
+/// where the text of an `OnboardingFeatureRow` starts. VoiceOver reads it as
+/// one item.
+struct OnboardingNote: View {
+    let symbol: String
+    let text: LocalizedStringKey
+
+    @ScaledMetric(relativeTo: .title2) private var symbolWidth: CGFloat = HugoLayout.Size.labelReservedIconWidth
+
+    var body: some View {
+        HStack(alignment: .center, spacing: HugoLayout.Spacing.spacious) {
+            Image(systemName: symbol)
+                .font(.title2)
+                .foregroundStyle(.hugoAccent)
+                .frame(width: symbolWidth)
+                .accessibilityHidden(true)
+            Text(text)
+                .font(.subheadline)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(HugoLayout.Spacing.spacious)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.tertiarySystemFill), in: .rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+#Preview {
+    VStack(spacing: HugoLayout.Spacing.spacious) {
+        OnboardingNote(symbol: "lock.shield.fill", text: "onboarding.welcome.privacy")
+        OnboardingNote(symbol: "checkmark.icloud.fill", text: "onboarding.cloudNote")
+    }
+    .padding()
+    .background(Color(.systemGroupedBackground))
+}
+```
+
+**Verify**: `xcrun swift-format lint --strict Hugo/Features/Onboarding/Views/OnboardingNote.swift` → exit 0.
+
+### Step R2.3: Replace the page layout and the button bar
+
+Replace the whole of `Hugo/Features/Onboarding/Views/OnboardingPageLayout.swift` with exactly this content. Read it first, because the Write tool refuses to overwrite a file you haven't read.
+
+```swift
+import SwiftUI
+
+/// The layout every onboarding page shares: the step counter (setup pages
+/// only), a serif title, a short explanation, a note when the setting came
+/// from iCloud, then the page's own content. It scrolls, so the pages work at
+/// the largest text sizes. `OnboardingView` puts the buttons in a bar below it.
+struct OnboardingPageLayout<Content: View>: View {
+    private let step: OnboardingStep
+    private let title: LocalizedStringKey
+    private let explanation: LocalizedStringKey
+    private let showsCloudNote: Bool
+    private let content: Content
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    init(
+        step: OnboardingStep,
+        title: LocalizedStringKey,
+        explanation: LocalizedStringKey,
+        showsCloudNote: Bool = false,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.step = step
+        self.title = title
+        self.explanation = explanation
+        self.showsCloudNote = showsCloudNote
+        self.content = content()
+    }
+
+    /// Wide side margins keep the text in a comfortable column. At
+    /// accessibility text sizes they narrow, so more words fit on a line.
+    /// `OnboardingStepBar` uses the same margins for its buttons.
+    private var sideMargin: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? HugoLayout.Spacing.spacious : HugoLayout.Spacing.section
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                    if let number = step.setupNumber {
+                        Text("onboarding.step.\(number).\(OnboardingStep.setupCount)")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .textCase(.uppercase)
+                            .tracking(HugoLayout.Typography.eyebrowTracking)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(title)
+                        .font(.system(.largeTitle, design: .serif, weight: .bold))
+                        .accessibilityAddTraits(.isHeader)
+                    Text(explanation)
+                }
+
+                if showsCloudNote {
+                    OnboardingNote(symbol: "checkmark.icloud.fill", text: "onboarding.cloudNote")
+                        .transition(.opacity)
+                }
+
+                content
+            }
+            .padding(.horizontal, sideMargin)
+            .padding(.vertical)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .motion(Motion.presence, value: showsCloudNote)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        OnboardingPageLayout(
+            step: .publisherStatus,
+            title: "onboarding.publisherStatus.title",
+            explanation: "onboarding.publisherStatus.explanation",
+            showsCloudNote: true
+        ) {
+            Text(verbatim: "Content")
+        }
+    }
+}
+```
+
+Replace the whole of `Hugo/Features/Onboarding/Views/OnboardingStepBar.swift` with exactly this content (read it first):
+
+```swift
+import SwiftUI
+
+/// The buttons at the bottom of every onboarding page: the main button and,
+/// on optional steps, a skip button. `OnboardingView` puts it in a
+/// `safeAreaBar`, so the page scrolls under it.
+struct OnboardingStepBar: View {
+    let isLast: Bool
+    var canContinue = true
+    var onSkip: (() -> Void)? = nil
+    let onContinue: () -> Void
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var continueTitle: LocalizedStringKey {
+        isLast ? "splash.action.complete" : "onboarding.action.continue"
+    }
+
+    /// The same side margins as `OnboardingPageLayout`, so the buttons line up
+    /// with the text above them.
+    private var sideMargin: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? HugoLayout.Spacing.spacious : HugoLayout.Spacing.section
+    }
+
+    var body: some View {
+        VStack(spacing: HugoLayout.Spacing.compact) {
+            Button(action: onContinue) {
+                Text(continueTitle)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.glassProminent)
+            .tint(.hugoAccent)
+            .controlSize(.large)
+            .disabled(!canContinue)
+
+            if let onSkip {
+                Button("onboarding.action.skip", action: onSkip)
+                    .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+            }
+        }
+        .padding(.horizontal, sideMargin)
+        .padding(.vertical, HugoLayout.Spacing.compact)
+    }
+}
+
+#Preview {
+    VStack {
+        Spacer()
+        OnboardingStepBar(isLast: false, canContinue: false, onSkip: {}, onContinue: {})
+    }
+}
+```
+
+**Verify**:
+
+- `git diff --shortstat Hugo/Features/Onboarding/Views/OnboardingPageLayout.swift` → `1 file changed, 13 insertions(+), 5 deletions(-)`.
+- `git diff --shortstat Hugo/Features/Onboarding/Views/OnboardingStepBar.swift` → `1 file changed, 9 insertions(+), 1 deletion(-)`.
+- `xcrun swift-format lint --strict Hugo/Features/Onboarding/Views/OnboardingPageLayout.swift Hugo/Features/Onboarding/Views/OnboardingStepBar.swift` → exit 0.
+
+### Step R2.4: Replace the welcome page
+
+Replace the whole of `Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` with exactly this content (read it first):
+
+```swift
+import SwiftUI
+
+/// The first onboarding page: what Hugo does, in four rows, and that Hugo
+/// collects nothing. Once the sheet has slid up, the rows fade in and rise one
+/// after another. With Reduce Motion on, they fade in together as the page
+/// opens, without moving.
+struct OnboardingWelcomePage: View {
+    /// How long the rows wait after the page appears. The sheet slides up
+    /// during that time, and its movement would hide the rows' animation.
+    private static let firstRowDelay: Double = 0.6
+    /// The time between one row starting and the next.
+    private static let rowStagger: Double = 0.12
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isShowingRows = false
+
+    var body: some View {
+        OnboardingPageLayout(step: .welcome, title: "splash.title", explanation: "splash.subtitle") {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.section) {
+                appearing(0) {
+                    OnboardingFeatureRow(
+                        symbol: "clock",
+                        title: "onboarding.welcome.log.title",
+                        detail: "onboarding.welcome.log.detail"
+                    )
+                }
+                appearing(1) {
+                    OnboardingFeatureRow(
+                        symbol: "calendar",
+                        title: "onboarding.welcome.plan.title",
+                        detail: "onboarding.welcome.plan.detail"
+                    )
+                }
+                appearing(2) {
+                    OnboardingFeatureRow(
+                        symbol: "arrow.up.message",
+                        title: "onboarding.welcome.report.title",
+                        detail: "onboarding.welcome.report.detail"
+                    )
+                }
+                appearing(3) {
+                    OnboardingFeatureRow(
+                        symbol: "target",
+                        title: "onboarding.welcome.goal.title",
+                        detail: "onboarding.welcome.goal.detail"
+                    )
+                }
+                appearing(4) {
+                    OnboardingNote(symbol: "lock.shield.fill", text: "onboarding.welcome.privacy")
+                }
+            }
+        }
+        // The setup pages start below their back button. This page has none,
+        // and its title gets more room above it than theirs.
+        .contentMargins(.top, HugoLayout.Spacing.section * 2, for: .scrollContent)
+        .onAppear { isShowingRows = true }
+    }
+
+    /// Fades a row in after the rows above it, and slides it up a little
+    /// unless Reduce Motion is on.
+    private func appearing<Row: View>(_ index: Int, @ViewBuilder row: () -> Row) -> some View {
+        row()
+            .opacity(isShowingRows ? 1 : 0)
+            .offset(y: isShowingRows || reduceMotion ? 0 : HugoLayout.Spacing.roomy)
+            .motion(
+                Motion.presence.delay(Self.firstRowDelay + Double(index) * Self.rowStagger),
+                value: isShowingRows
+            )
+    }
+}
+
+#Preview {
+    NavigationStack {
+        OnboardingWelcomePage()
+    }
+}
+```
+
+**Verify**:
+
+- `git diff --shortstat Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` → `1 file changed, 6 insertions(+), 8 deletions(-)`.
+- `xcrun swift-format lint --strict Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift` → exit 0.
+- `grep -rn 'Label("onboarding' Hugo/Features/Onboarding` → no output (both old small labels are gone).
+- `Scripts/check-layout.sh` → exit 0, no output.
+
+### Step R2.5: Run the gate and commit
+
+**Verify**: `Scripts/verify.sh > /tmp/verify123r2.log 2>&1; echo "exit $?"` → `exit 0` (use a 600000 ms timeout). `grep -E "Test run with" /tmp/verify123r2.log` → the test run passed.
+
+Commit the five files by path:
+
+```sh
+git add Hugo/Resources/Localizable.xcstrings \
+    Hugo/Features/Onboarding/Views/OnboardingNote.swift \
+    Hugo/Features/Onboarding/Views/OnboardingPageLayout.swift \
+    Hugo/Features/Onboarding/Views/OnboardingStepBar.swift \
+    Hugo/Features/Onboarding/Screens/OnboardingWelcomePage.swift
+git commit -m "fix: give onboarding more room and show the privacy and iCloud notes as callouts" -m "Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+**Verify**: `git show --stat --format= HEAD` lists exactly those five files. `git status --short` shows nothing, or only the owner's `Debug.xcscheme`.
+
+### STOP conditions for this revision
+
+- The drift check prints anything.
+- `git status --short` shows a modified file other than the owner's `Debug.xcscheme` before you start.
+- The catalog script prints a line starting with `STOP:`.
+- Lint fails twice, the compile inside `verify.sh` fails, or `verify.sh` fails twice. Report the error text or the failing test names.
+
+### Owner check for this revision
+
+On the iPhone, reset onboarding from the debug menu.
+
+1. Welcome page: more space above the title, a narrower text column, more room between the rows, and a Continue button that lines up with the text. The rows wait a moment after the sheet stops, then arrive one by one.
+2. The privacy promise is a gray callout with a shield icon, and its first sentence is bold, in English and in Danish.
+3. Steps 1 and 2 have the same wider margins. On a device where iCloud filled in a setting (reinstall on the iPad), the iCloud line is a gray callout with a cloud-and-checkmark icon, clearly apart from the white cards.
+4. At the largest text size the margins narrow again, and nothing is cut off.
+5. In dark mode the callouts are dark gray and easy to read.
+
+### Maintenance notes for this revision
+
+- `sideMargin` is the same rule in `OnboardingPageLayout` and `OnboardingStepBar`. Change both together.
+- `OnboardingNote` names no feature type. If a second feature wants the same callout, move it to `Hugo/DesignSystem/Components` (the `AGENTS.md` admission rule: two or more features use it).
