@@ -10,10 +10,15 @@ import SwiftUI
 
 struct ServiceYearMonthRow: View {
     let month: ServiceMonth
+    /// The month's school credits.
+    var schoolCredits: [SchoolCredit] = []
 
+    @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @State private var isPresentingDetails = false
     @State private var isPresentingAddEntry = false
     @State private var isPresentingSubmitSheet = false
+    @State private var isPresentingAddSchoolCredit = false
+    @State private var editingSchoolCredit: SchoolCredit?
 
     private var summary: MonthlyReportSummary? {
         month.summary
@@ -21,6 +26,16 @@ struct ServiceYearMonthRow: View {
 
     private var totalSeconds: TimeInterval {
         summary?.totalSeconds ?? 0
+    }
+
+    /// The school offered first when adding credit, or nil when the status has none.
+    private var defaultSchool: School? {
+        School.available(forStatusID: statusID).first
+    }
+
+    /// No entries and no school credit: the headline is drawn faded.
+    private var isEmptyMonth: Bool {
+        summary == nil && schoolCredits.isEmpty
     }
 
     var body: some View {
@@ -32,6 +47,8 @@ struct ServiceYearMonthRow: View {
             }
 
             adjustmentNotes
+
+            schoolCreditNotes
 
             if let summary {
                 activityBreakdown(summary)
@@ -53,6 +70,55 @@ struct ServiceYearMonthRow: View {
             NavigationStack {
                 SubmitReportView(month: month.id)
             }
+        }
+        .sheet(isPresented: $isPresentingAddSchoolCredit) {
+            if let defaultSchool {
+                SchoolCreditFormView(month: month.id, defaultSchool: defaultSchool)
+            }
+        }
+        .sheet(item: $editingSchoolCredit) { credit in
+            SchoolCreditFormView(
+                month: month.id, credit: credit,
+                defaultSchool: School(rawValue: credit.schoolID) ?? .pioneerServiceSchool)
+        }
+    }
+}
+
+extension ServiceYearMonthRow {
+    /// One line per school credit. Credits of schools this build knows open
+    /// the form when tapped; others are shown as plain text.
+    @ViewBuilder
+    fileprivate var schoolCreditNotes: some View {
+        if !schoolCredits.isEmpty {
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                ForEach(schoolCredits) { credit in
+                    let text = Text(
+                        verbatim:
+                            "\(School.name(forID: credit.schoolID)): \(ServiceDurationFormatter.hoursString(from: TimeInterval(credit.hours) * 3_600))"
+                    )
+                    if School(rawValue: credit.schoolID) != nil {
+                        Button {
+                            editingSchoolCredit = credit
+                        } label: {
+                            Label {
+                                text
+                            } icon: {
+                                Image(systemName: "graduationcap")
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Label {
+                            text
+                        } icon: {
+                            Image(systemName: "graduationcap")
+                        }
+                    }
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .padding(.top, HugoLayout.Spacing.compact)
         }
     }
 }
@@ -84,10 +150,10 @@ extension ServiceYearMonthRow {
         HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
             Text(headline.value, format: .number)
                 .font(.system(.title, design: .serif, weight: .bold))
-                .foregroundStyle(summary == nil ? .tertiary : .primary)
+                .foregroundStyle(isEmptyMonth ? .tertiary : .primary)
             Text(unitLabel)
                 .font(.system(.title3, design: .serif, weight: .semibold))
-                .foregroundStyle(summary == nil ? .tertiary : .secondary)
+                .foregroundStyle(isEmptyMonth ? .tertiary : .secondary)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: headline.spokenText()))
@@ -127,6 +193,15 @@ extension ServiceYearMonthRow {
                         systemImage: "plus"
                     ) {
                         isPresentingAddEntry = true
+                    }
+                }
+
+                if !month.isFuture, defaultSchool != nil {
+                    Button(
+                        "schoolCredit.menu.add",
+                        systemImage: "graduationcap"
+                    ) {
+                        isPresentingAddSchoolCredit = true
                     }
                 }
 

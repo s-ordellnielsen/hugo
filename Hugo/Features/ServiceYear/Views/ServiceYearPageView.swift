@@ -61,8 +61,11 @@ struct ServiceYearPageView: View {
                 }
 
                 ForEach(report.months) { month in
-                    ServiceYearMonthRow(month: month)
-                        .id(month.id)
+                    ServiceYearMonthRow(
+                        month: month,
+                        schoolCredits: schoolCredits.filter { $0.yearMonth == month.id }
+                    )
+                    .id(month.id)
                 }
             }
             .padding()

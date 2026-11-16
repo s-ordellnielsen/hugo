@@ -3891,6 +3891,159 @@
         }
       }
     },
+    "schoolCredit.form.delete" : {
+      "comment" : "Destructive button in the school credit form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slet skolekredit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete School Credit"
+          }
+        }
+      }
+    },
+    "schoolCredit.form.delete.confirm" : {
+      "comment" : "Confirmation title before deleting a school credit.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vil du slette denne skolekredit?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete this school credit?"
+          }
+        }
+      }
+    },
+    "schoolCredit.form.footer.%lld" : {
+      "comment" : "Footer in the school credit form. The argument is the school's maximum number of hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skolen giver op til %lld timer. De tæller med mod dit årsmål ligesom almindelige timer og bliver sendt med denne måneds rapport. Hvis skolen strakte sig over to måneder, så tilføj kredit i hver måned."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This school gives up to %lld hours. They count toward your yearly goal like field service and are sent on this month's report. If the school ran over two months, add credit to each month."
+          }
+        }
+      }
+    },
+    "schoolCredit.form.hours" : {
+      "comment" : "Label of the hours stepper in the school credit form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hours"
+          }
+        }
+      }
+    },
+    "schoolCredit.form.save" : {
+      "comment" : "Save button in the school credit form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gem"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "schoolCredit.form.school" : {
+      "comment" : "Label of the school row in the school credit form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School"
+          }
+        }
+      }
+    },
+    "schoolCredit.form.title.add" : {
+      "comment" : "Title of the form that adds school credit to a month.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilføj skolekredit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add School Credit"
+          }
+        }
+      }
+    },
+    "schoolCredit.form.title.edit" : {
+      "comment" : "Title of the form that changes an existing school credit.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skolekredit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School Credit"
+          }
+        }
+      }
+    },
+    "schoolCredit.menu.add" : {
+      "comment" : "Menu item on a month card on the Year tab. Opens the school credit form.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilføj skolekredit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add School Credit"
+          }
+        }
+      }
+    },
     "schoolCredit.submit.footer" : {
       "comment" : "Note under the school credit rows on the submit report sheet. \"Year\" / \"Tjenesteår\" is the tab name (key tab.year).",
       "localizations" : {
@@ -6387,6 +6540,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Goal"
+          }
+        }
+      }
+    },
+    "year.detail.schoolCredit" : {
+      "comment" : "Row label in Totals on the year details screen: hours of school credit in the year.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skolekredit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School credit"
           }
         }
       }

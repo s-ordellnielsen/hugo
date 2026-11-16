@@ -49,6 +49,11 @@ struct ServiceYearDetailView: View {
             LabeledContent("monthlyReport.detail.largeTotal.separate.label") {
                 duration(report.separateDuration)
             }
+            if report.schoolCreditSeconds > 0 {
+                LabeledContent("year.detail.schoolCredit") {
+                    duration(report.schoolCreditSeconds)
+                }
+            }
             LabeledContent("monthlyReport.detail.largeTotal.total.label") {
                 duration(report.totalSeconds)
             }
