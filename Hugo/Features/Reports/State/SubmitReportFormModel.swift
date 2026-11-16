@@ -14,7 +14,8 @@ final class SubmitReportFormModel {
     private(set) var results: [ReportingLineResult] = []
     private var rules: [String: RoundingRule] = [:]
     private var didSeedRules = false
-    private var pendingLoad: (entries: [Entry], submissions: [SubmittedReport])?
+    private(set) var schoolCreditLines: [SchoolCreditLine] = []
+    private var pendingLoad: (entries: [Entry], submissions: [SubmittedReport], schoolCredits: [SchoolCredit])?
 
     /// The composed message ready to hand to Messages (or the pasteboard).
     /// Set by `prepareSubmission()`; cleared when the rule changes.
@@ -47,17 +48,18 @@ final class SubmitReportFormModel {
 
     /// Feeds the model its data. The view calls this on appear and whenever
     /// its queries change, keeping the model free of query concerns.
-    func load(entries: [Entry], submissions: [SubmittedReport]) {
+    func load(entries: [Entry], submissions: [SubmittedReport], schoolCredits: [SchoolCredit] = []) {
         // A prepared message is what the user is about to send. Keep the numbers
         // it was built from until the user sends or cancels it.
         guard preparedContent == nil else {
-            pendingLoad = (entries, submissions)
+            pendingLoad = (entries, submissions, schoolCredits)
             return
         }
         self.submissionsByMonth = SubmittedReportSelection.canonicalByMonth(submissions)
         self.monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
         self.summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
         self.lines = ReportingLineCalculator.lines(from: monthEntries, calendar: calendar)
+        self.schoolCreditLines = SchoolCreditLine.lines(from: schoolCredits, in: month)
 
         if !didSeedRules {
             for storedLine in existingSubmission?.reportingLines ?? [] {
@@ -75,7 +77,7 @@ final class SubmitReportFormModel {
         preparedContent = nil
         if let pending = pendingLoad {
             pendingLoad = nil
-            load(entries: pending.entries, submissions: pending.submissions)
+            load(entries: pending.entries, submissions: pending.submissions, schoolCredits: pending.schoolCredits)
         }
     }
 
@@ -152,6 +154,7 @@ final class SubmitReportFormModel {
         let content = ReportComposer.message(
             month: month,
             results: results,
+            schoolCredits: schoolCreditLines,
             bibleStudies: summary?.totalBibleStudies ?? 0,
             template: greetingTemplate,
             firstName: overseerFirstName,
@@ -173,6 +176,7 @@ final class SubmitReportFormModel {
         let report = try service.submit(
             results,
             summary: summary,
+            schoolCreditHours: SchoolCreditLine.totalHours(schoolCreditLines),
             for: month,
             replacing: existingSubmission,
             at: now

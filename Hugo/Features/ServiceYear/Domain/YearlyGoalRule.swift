@@ -12,4 +12,10 @@ nonisolated struct YearlyGoalRule: Equatable, Sendable {
         let room = max(0, monthlyGoalSeconds + separateAllowanceSeconds - main)
         return main + min(separate, room)
     }
+
+    /// Credited time of one month. School credit counts in full, like main time.
+    func creditedSeconds(for contribution: MonthContribution) -> TimeInterval {
+        let main = contribution.main + contribution.schoolCredit
+        return creditedSeconds(main: main, separate: contribution.separate)
+    }
 }

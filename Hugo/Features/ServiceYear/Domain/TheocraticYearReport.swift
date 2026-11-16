@@ -7,6 +7,7 @@ nonisolated struct TheocraticYearReport {
     let totalBibleStudies: Int
     let mainDuration: TimeInterval
     let separateDuration: TimeInterval
+    let schoolCreditSeconds: TimeInterval
 
     var hasEntries: Bool { months.contains { $0.summary != nil } }
 }

@@ -20,10 +20,12 @@ struct ReportSubmissionService {
     /// their defaults: only migrations from older schema versions read them,
     /// and the reporting lines hold the same information. Carried-in entries
     /// are created, updated or deleted to match the transferred lines.
+    /// `schoolCreditHours` is the month's school credit included in the message.
     @discardableResult
     func submit(
         _ results: [ReportingLineResult],
         summary: MonthlyReportSummary?,
+        schoolCreditHours: Int = 0,
         for month: YearMonth,
         replacing existing: SubmittedReport?,
         at now: Date
@@ -53,6 +55,7 @@ struct ReportSubmissionService {
         report.actualTotalSeconds = summary?.totalSeconds ?? 0
         report.submittedHours = submittedHours
         report.totalBibleStudies = summary?.totalBibleStudies ?? 0
+        report.schoolCreditHours = schoolCreditHours
         report.reportingLines = results.map(\.persisted)
 
         reconcileCarriedInEntries(for: report, results: results, month: month, now: now)

@@ -91,6 +91,7 @@ nonisolated enum PlannerTarget {
         entries: [Entry],
         submissions: [SubmittedReport],
         trackers: [Tracker],
+        schoolCredits: [SchoolCredit] = [],
         status: PublisherStatus?,
         now: Date = .now,
         calendar: Calendar = .current,
@@ -99,7 +100,7 @@ nonisolated enum PlannerTarget {
         guard let rule = status?.yearlyGoalRule else { return 0 }
         let report = TheocraticYearReportBuilder.report(
             for: TheocraticYear.containing(now, calendar: calendar),
-            entries: entries, submissions: submissions, trackers: trackers,
+            entries: entries, submissions: submissions, trackers: trackers, schoolCredits: schoolCredits,
             now: now, calendar: calendar, locale: locale)
         return creditedSeconds(before: now.yearMonth(using: calendar), in: report, rule: rule)
     }
@@ -111,7 +112,7 @@ nonisolated enum PlannerTarget {
     ) -> TimeInterval {
         report.months.filter { $0.id < month }.reduce(0) { total, serviceMonth in
             let contribution = serviceMonth.contribution
-            return total + rule.creditedSeconds(main: contribution.main, separate: contribution.separate)
+            return total + rule.creditedSeconds(for: contribution)
         }
     }
 }

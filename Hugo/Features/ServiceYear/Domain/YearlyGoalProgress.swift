@@ -53,7 +53,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
                 id: month.id,
                 displayName: month.displayName,
                 isFuture: month.isFuture,
-                creditedSeconds: rule.creditedSeconds(main: contribution.main, separate: contribution.separate),
+                creditedSeconds: rule.creditedSeconds(for: contribution),
                 totalSeconds: contribution.total)
         }
 

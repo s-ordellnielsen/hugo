@@ -27,8 +27,12 @@ struct ServiceMonthTests {
 
     private let june = YearMonth(year: 2026, month: 6)
 
-    private func month(_ entries: [Entry], _ submissions: [SubmittedReport]) -> ServiceMonth {
-        ServiceMonth.make(june, entries: entries, submissions: submissions, now: date(2026, 7, 15), calendar: calendar)
+    private func month(
+        _ entries: [Entry], _ submissions: [SubmittedReport], schoolCredits: [SchoolCredit] = []
+    ) -> ServiceMonth {
+        ServiceMonth.make(
+            june, entries: entries, submissions: submissions, schoolCredits: schoolCredits,
+            now: date(2026, 7, 15), calendar: calendar)
     }
 
     @Test
@@ -203,6 +207,33 @@ struct ServiceMonthTests {
         let m = month([oldEntry(seconds: 5_400)], [report])
         #expect(m.contribution.total == 7_200)
         #expect(m.contribution.main == 7_200)
+    }
+
+    @Test
+    func unsubmittedMonthCountsCurrentSchoolCredit() {
+        let credit = SchoolCredit(schoolID: "pioneer-service-school", month: june, hours: 30)
+        let m = month([], [], schoolCredits: [credit])
+        #expect(m.contribution.schoolCredit == 108_000)
+        #expect(m.contribution.total == 108_000)
+    }
+
+    @Test
+    func submittedMonthCountsTheReportedCredit() {
+        let report = comparableReport(mainSeconds: 3_600)
+        report.schoolCreditHours = 30
+        let credit = SchoolCredit(schoolID: "pioneer-service-school", month: june, hours: 30)
+        let m = month([oldEntry(seconds: 3_600)], [report], schoolCredits: [credit])
+        #expect(m.unreportedChange == nil)
+        #expect(m.contribution.total == 3_600 + 108_000)
+    }
+
+    @Test
+    func creditAddedAfterSubmittingIsAnUnreportedChange() {
+        let report = comparableReport(mainSeconds: 3_600)
+        let credit = SchoolCredit(schoolID: "pioneer-service-school", month: june, hours: 30)
+        let m = month([oldEntry(seconds: 3_600)], [report], schoolCredits: [credit])
+        #expect(m.unreportedChange == .changedTotals)
+        #expect(m.contribution.schoolCredit == 0)
     }
 
     @Test

@@ -11,6 +11,13 @@ struct YearlyGoalRuleTests {
     }
 
     @Test
+    func schoolCreditCountsInFullLikeMainTime() {
+        let contribution = MonthContribution(
+            total: 90 * 3_600, main: 40 * 3_600, separate: 20 * 3_600, bibleStudies: 0, schoolCredit: 30 * 3_600)
+        #expect(rule.creditedSeconds(for: contribution) / 3_600 == 70)
+    }
+
+    @Test
     func mainAboveTheGoalCountsInFull() {
         #expect(credited(main: 65, separate: 0) == 65)
     }

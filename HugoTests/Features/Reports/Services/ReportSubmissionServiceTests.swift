@@ -33,6 +33,18 @@ struct ReportSubmissionServiceTests {
     }
 
     @Test
+    func submissionStoresSchoolCreditHours() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let (results, summary) = reportingResults([juneEntry(seconds: 3_600)], rule: .up)
+
+        let report = try ReportSubmissionService(context: context, calendar: calendar)
+            .submit(results, summary: summary, schoolCreditHours: 30, for: month, replacing: nil, at: now)
+
+        #expect(report.schoolCreditHours == 30)
+    }
+
+    @Test
     func transferCreatesOneCarriedInEntryInTheNextMonth() throws {
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext

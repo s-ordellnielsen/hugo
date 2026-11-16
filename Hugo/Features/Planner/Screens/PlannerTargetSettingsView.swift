@@ -12,6 +12,7 @@ struct PlannerTargetSettingsView: View {
     @Query private var yearEntries: [Entry]
     @Query private var submissions: [SubmittedReport]
     @Query private var trackers: [Tracker]
+    @Query private var schoolCredits: [SchoolCredit]
 
     private let fixedNow: Date?
     private let calendar: Calendar
@@ -39,7 +40,7 @@ struct PlannerTargetSettingsView: View {
 
     private var creditedBeforeCurrentMonth: TimeInterval {
         PlannerTarget.creditedBeforeCurrentMonth(
-            entries: yearEntries, submissions: submissions, trackers: trackers,
+            entries: yearEntries, submissions: submissions, trackers: trackers, schoolCredits: schoolCredits,
             status: status, now: now, calendar: calendar, locale: locale)
     }
 

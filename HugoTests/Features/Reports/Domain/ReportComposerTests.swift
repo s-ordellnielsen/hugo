@@ -118,6 +118,27 @@ struct ReportComposerTests {
     }
 
     @Test
+    func messageListsSchoolCreditBeforeBibleStudies() {
+        let content = ReportComposer.message(
+            month: month,
+            results: [],
+            schoolCredits: [SchoolCreditLine(schoolID: "pioneer-service-school", hours: 30)],
+            bibleStudies: 3,
+            template: "Hi",
+            firstName: "",
+            lastName: "",
+            locale: Locale(identifier: "en"),
+            calendar: calendar
+        )
+
+        let lines = content.body.components(separatedBy: "\n")
+        let creditIndex = lines.firstIndex(of: "Pioneer Service School: 30 h")
+        let studiesIndex = lines.firstIndex(of: "Bible studies: 3")
+        #expect(creditIndex != nil)
+        #expect(creditIndex != nil && studiesIndex != nil && creditIndex! < studiesIndex!)
+    }
+
+    @Test
     func messageRendersMonthAndYearTagsInlineInTheGreeting() {
         let content = ReportComposer.message(
             month: month,

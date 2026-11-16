@@ -9,8 +9,8 @@ nonisolated struct ServiceMonth: Identifiable {
         /// At least one entry was created after the report was sent. Those
         /// entries answer true to `isUnreported(_:)`.
         case newEntries
-        /// No entry is newer than the report, but the month's line totals or
-        /// Bible studies no longer match it (an entry was edited or deleted).
+        /// No entry is newer than the report, but the month's line totals, Bible
+        /// studies or school credit no longer match it.
         case changedTotals
     }
 
@@ -22,6 +22,10 @@ nonisolated struct ServiceMonth: Identifiable {
     let submittedReport: SubmittedReport?
     /// Nil when the month was never submitted or still matches its report.
     let unreportedChange: UnreportedChange?
+    /// Whole hours of school credit the month has now, summed over its
+    /// school credits. A submitted month counts its report's
+    /// `schoolCreditHours` instead; a difference is an unreported change.
+    let schoolCreditHours: Int
 
     var isSubmitted: Bool {
         submittedReport.map(SubmittedReportSelection.isReal) ?? false
@@ -33,15 +37,17 @@ nonisolated struct ServiceMonth: Identifiable {
         return entry.createdAt > (submittedReport.entriesClosedAt ?? .distantPast)
     }
 
-    /// What this month adds to the year total: reported hours when submitted,
-    /// logged time otherwise.
+    /// What this month adds to the year total: reported hours and reported school
+    /// credit when submitted, logged time and current school credit otherwise.
     var contribution: MonthContribution {
         if let submission = submittedReport, SubmittedReportSelection.isReal(submission) {
             let studies = submission.totalBibleStudies ?? 0
+            let credit = TimeInterval(submission.schoolCreditHours ?? 0) * 3_600
 
             guard !submission.reportingLines.isEmpty else {
                 let main = TimeInterval(submission.submittedHours ?? 0) * 3_600
-                return MonthContribution(total: main, main: main, separate: 0, bibleStudies: studies)
+                return MonthContribution(
+                    total: main + credit, main: main, separate: 0, bibleStudies: studies, schoolCredit: credit)
             }
 
             let main = submission.reportingLines
@@ -50,18 +56,22 @@ nonisolated struct ServiceMonth: Identifiable {
             let separate = submission.reportingLines
                 .filter { $0.type == .separate }
                 .reduce(0) { $0 + TimeInterval($1.submittedHours) * 3_600 }
-            return MonthContribution(total: main + separate, main: main, separate: separate, bibleStudies: studies)
+            return MonthContribution(
+                total: main + separate + credit, main: main, separate: separate, bibleStudies: studies,
+                schoolCredit: credit)
         }
 
+        let credit = TimeInterval(schoolCreditHours) * 3_600
         guard let summary else {
-            return MonthContribution(total: 0, main: 0, separate: 0, bibleStudies: 0)
+            return MonthContribution(total: credit, main: 0, separate: 0, bibleStudies: 0, schoolCredit: credit)
         }
 
         return MonthContribution(
-            total: summary.totalSeconds,
+            total: summary.totalSeconds + credit,
             main: summary.mainDuration,
             separate: summary.separateDuration,
-            bibleStudies: summary.totalBibleStudies
+            bibleStudies: summary.totalBibleStudies,
+            schoolCredit: credit
         )
     }
 
@@ -84,6 +94,7 @@ nonisolated struct ServiceMonth: Identifiable {
         entries: [Entry],
         submissions: [SubmittedReport],
         trackers: [Tracker] = [],
+        schoolCredits: [SchoolCredit] = [],
         now: Date = .now,
         calendar: Calendar = .current,
         locale: Locale = .current
@@ -93,13 +104,17 @@ nonisolated struct ServiceMonth: Identifiable {
             from: monthEntries, calendar: calendar, locale: locale, trackers: trackers
         ).first
         let report = SubmittedReportSelection.canonical(for: month, in: submissions)
+        let schoolCreditHours = SchoolCreditLine.totalHours(
+            SchoolCreditLine.lines(from: schoolCredits, in: month))
         return ServiceMonth(
             id: month,
             displayName: summary?.displayName ?? month.monthYearString(locale: locale, calendar: calendar),
             summary: summary,
             isFuture: month > now.yearMonth(using: calendar),
             submittedReport: report,
-            unreportedChange: unreportedChange(report: report, monthEntries: monthEntries, calendar: calendar)
+            unreportedChange: unreportedChange(
+                report: report, monthEntries: monthEntries, schoolCreditHours: schoolCreditHours, calendar: calendar),
+            schoolCreditHours: schoolCreditHours
         )
     }
 
@@ -112,11 +127,12 @@ nonisolated struct ServiceMonth: Identifiable {
     /// up to their `actualTotalSeconds`; reports migrated from V10 may not, and
     /// keep the creation-time rule alone.
     private static func unreportedChange(
-        report: SubmittedReport?, monthEntries: [Entry], calendar: Calendar
+        report: SubmittedReport?, monthEntries: [Entry], schoolCreditHours: Int, calendar: Calendar
     ) -> UnreportedChange? {
         guard let report, SubmittedReportSelection.isReal(report) else { return nil }
         let cutoff = report.entriesClosedAt ?? .distantPast
         if monthEntries.contains(where: { $0.createdAt > cutoff }) { return .newEntries }
+        if (report.schoolCreditHours ?? 0) != schoolCreditHours { return .changedTotals }
         guard isComparable(report), hasChangedTotals(report: report, monthEntries: monthEntries, calendar: calendar)
         else { return nil }
         return .changedTotals
@@ -149,4 +165,7 @@ nonisolated struct MonthContribution: Equatable, Sendable {
     let main: TimeInterval
     let separate: TimeInterval
     let bibleStudies: Int
+    /// School credit in seconds. Counts toward the yearly goal like main time
+    /// and is part of `total`.
+    var schoolCredit: TimeInterval = 0
 }

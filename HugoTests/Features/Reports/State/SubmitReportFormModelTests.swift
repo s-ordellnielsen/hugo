@@ -125,6 +125,21 @@ struct SubmitReportFormModelTests {
     }
 
     @Test
+    func schoolCreditGoesIntoTheMessageAndTheSavedReport() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = container.mainContext
+        let model = makeModel()
+        let credit = SchoolCredit(schoolID: "pioneer-service-school", month: month, hours: 30)
+        model.load(entries: [entry(2026, 6, 5, seconds: 3_600)], submissions: [], schoolCredits: [credit])
+
+        let content = try #require(model.prepareSubmission())
+        #expect(content.body.contains("Pioneer Service School: 30 h"))
+
+        let report = try #require(try model.persistSubmission(using: service(context)))
+        #expect(report.schoolCreditHours == 30)
+    }
+
+    @Test
     func transferPersistsReportingLineAndLinkedNextMonthEntry() throws {
         let container = try InMemoryModelContainer.make()
         let context = container.mainContext

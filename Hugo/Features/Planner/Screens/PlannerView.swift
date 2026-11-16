@@ -41,6 +41,7 @@ private struct PlannerPager: View {
     @Query private var yearEntries: [Entry]
     @Query private var submissions: [SubmittedReport]
     @Query private var trackers: [Tracker]
+    @Query private var schoolCredits: [SchoolCredit]
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @AppStorage(UserDefaultsKeys.plannerTargetBase) private var targetBase: PlannerTargetBase = .monthlyGoal
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
@@ -73,7 +74,8 @@ private struct PlannerPager: View {
     private var creditedBeforeCurrentMonth: TimeInterval {
         guard targetBase == .yearlyGoalShare else { return 0 }
         return PlannerTarget.creditedBeforeCurrentMonth(
-            entries: yearEntries, submissions: submissions, trackers: trackers, status: status, now: today)
+            entries: yearEntries, submissions: submissions, trackers: trackers, schoolCredits: schoolCredits,
+            status: status, now: today)
     }
 
     var body: some View {

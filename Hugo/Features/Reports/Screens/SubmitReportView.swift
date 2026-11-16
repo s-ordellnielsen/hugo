@@ -8,6 +8,7 @@ struct SubmitReportView: View {
 
     @Query private var entries: [Entry]
     @Query private var submissions: [SubmittedReport]
+    @Query private var schoolCredits: [SchoolCredit]
 
     @State private var model: SubmitReportFormModel
     @State private var isComposingMessage = false
@@ -43,6 +44,9 @@ struct SubmitReportView: View {
                     || ($0.year == nextYear && $0.month == nextMonth)
             },
             sort: \SubmittedReport.year
+        )
+        _schoolCredits = Query(
+            filter: #Predicate<SchoolCredit> { $0.year == targetYear && $0.month == targetMonth }
         )
     }
 
@@ -89,6 +93,28 @@ struct SubmitReportView: View {
                     }
                     .font(.subheadline)
                     .padding(.top, HugoLayout.Spacing.compact)
+                }
+
+                if !model.schoolCreditLines.isEmpty {
+                    Spacer(minLength: HugoLayout.Spacing.section)
+
+                    ForEach(model.schoolCreditLines) { credit in
+                        HStack {
+                            Label(School.name(forID: credit.schoolID), systemImage: "graduationcap")
+                            Spacer()
+                            Text(ServiceDurationFormatter.hoursString(from: TimeInterval(credit.hours) * 3_600))
+                                .monospacedDigit()
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.compactCard))
+                    }
+
+                    Text("schoolCredit.submit.footer")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal)
                 }
 
                 Spacer(minLength: HugoLayout.Spacing.section)
@@ -196,6 +222,7 @@ struct SubmitReportView: View {
         .onAppear { syncModel() }
         .onChange(of: entries) { syncModel() }
         .onChange(of: submissions) { syncModel() }
+        .onChange(of: schoolCredits) { syncModel() }
         .onChange(of: overseerFullName) { syncModel() }
         .onChange(of: overseerPhoneNumber) { syncModel() }
         .sheet(isPresented: $isComposingMessage) {
@@ -258,7 +285,7 @@ struct SubmitReportView: View {
     }
 
     private func syncModel() {
-        model.load(entries: entries, submissions: submissions)
+        model.load(entries: entries, submissions: submissions, schoolCredits: schoolCredits)
     }
 
     private func sendViaMessages() {

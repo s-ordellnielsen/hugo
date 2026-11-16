@@ -8,6 +8,7 @@ struct ServiceYearPageView: View {
     @Query private var entries: [Entry]
     @Query private var submissions: [SubmittedReport]
     @Query private var trackers: [Tracker]
+    @Query private var schoolCredits: [SchoolCredit]
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @AppStorage(UserDefaultsKeys.yearlyGoalPacing) private var pacing: YearlyGoalPacing = .proRated
 
@@ -29,7 +30,8 @@ struct ServiceYearPageView: View {
             for: year,
             entries: entries,
             submissions: submissions,
-            trackers: trackers
+            trackers: trackers,
+            schoolCredits: schoolCredits
         )
     }
 

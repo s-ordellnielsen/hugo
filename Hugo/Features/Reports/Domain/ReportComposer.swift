@@ -37,6 +37,7 @@ nonisolated enum ReportComposer {
     static func message(
         month: YearMonth,
         results: [ReportingLineResult],
+        schoolCredits: [SchoolCreditLine] = [],
         bibleStudies: Int,
         template: String,
         firstName: String,
@@ -62,6 +63,10 @@ nonisolated enum ReportComposer {
                     result.line.name
                 }
             lines.append("\(label): \(result.submittedHours) \(hoursUnit)")
+        }
+
+        for credit in schoolCredits {
+            lines.append("\(School.name(forID: credit.schoolID, locale: locale)): \(credit.hours) \(hoursUnit)")
         }
 
         let studiesLabel = String(localized: LocalizedStringResource("report.compose.bible-studies", locale: locale))
