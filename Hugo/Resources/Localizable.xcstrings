@@ -1309,6 +1309,23 @@
         }
       }
     },
+    "onboarding.overseer.contactsNote" : {
+      "comment" : "Note on the onboarding overseer page. The user can skip and type the overseer's details in Settings instead of using Contacts.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo ser kun den person, du vælger, og navn og nummer bliver hos dig. Hvis du hellere vil undgå at bruge kontakter, kan du springe over og skrive navn og nummer senere under Rapport i Indstillinger."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo only sees the person you choose, and their name and number stay with you. If you'd rather not use Contacts, skip this step and type the name and number later in Settings under Report."
+          }
+        }
+      }
+    },
     "onboarding.overseer.introduction" : {
       "comment" : "Explanation at the top of the group overseer page in onboarding.",
       "localizations" : {
@@ -1543,6 +1560,193 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Send your report"
+          }
+        }
+      }
+    },
+    "overseer.contacts.choose" : {
+      "comment" : "Main button on the group overseer settings screen. Opens the contact picker.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg fra kontakter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose from Contacts"
+          }
+        }
+      }
+    },
+    "overseer.contacts.privacy" : {
+      "comment" : "Privacy note under the Choose from Contacts button on the group overseer settings screen. Matches the privacy policy.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo ser kun den person, du vælger, ikke dine andre kontakter. Navn og nummer bliver på dine enheder og i din egen iCloud. Hugo deler dem aldrig med nogen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo only sees the person you choose, not your other contacts. Their name and number stay on your devices and in your own iCloud. Hugo never shares them with anyone"
+          }
+        }
+      }
+    },
+    "overseer.field.firstName" : {
+      "comment" : "Placeholder for the group overseer's first name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fornavn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First Name"
+          }
+        }
+      }
+    },
+    "overseer.field.lastName" : {
+      "comment" : "Placeholder for the group overseer's last name.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efternavn (valgfrit)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Name (Optional)"
+          }
+        }
+      }
+    },
+    "overseer.field.phoneNumber" : {
+      "comment" : "Placeholder for the group overseer's phone number.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
+          }
+        }
+      }
+    },
+    "overseer.header.empty" : {
+      "comment" : "Line under 'No group overseer selected' at the top of the group overseer settings screen.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo sender din månedsrapport til din gruppetjener som sms"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo sends your monthly report to your group overseer by text message"
+          }
+        }
+      }
+    },
+    "overseer.manual.add" : {
+      "comment" : "Button on the group overseer settings screen that opens a form for typing the overseer's name and phone number.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv navn og nummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type Name and Number"
+          }
+        }
+      }
+    },
+    "overseer.manual.edit" : {
+      "comment" : "Button on the group overseer settings screen that opens the form with the saved name and phone number.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rediger navn og nummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Name and Number"
+          }
+        }
+      }
+    },
+    "overseer.manual.footer" : {
+      "comment" : "Footer under the Type Name and Number button on the group overseer settings screen.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvis du hellere vil undgå at bruge kontakter, kan du selv skrive din gruppetjeners navn og telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you'd rather not use Contacts, type your group overseer's name and phone number yourself"
+          }
+        }
+      }
+    },
+    "overseer.section.name" : {
+      "comment" : "Section header above the name fields when typing the group overseer's details.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navn"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "overseer.section.phoneNumber" : {
+      "comment" : "Section header above the phone number field when typing the group overseer's details.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
           }
         }
       }
@@ -3763,6 +3967,7 @@
     },
     "settings.appStore.footer" : {
       "comment" : "Footer under the Write a Review and Recommend Hugo rows in Settings.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3780,6 +3985,7 @@
     },
     "settings.appStore.recommend" : {
       "comment" : "A button that opens the share sheet with a link to Hugo on the App Store.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3797,6 +4003,7 @@
     },
     "settings.appStore.recommend.message" : {
       "comment" : "Message shared together with the App Store link when the user recommends Hugo.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3814,6 +4021,7 @@
     },
     "settings.appStore.review" : {
       "comment" : "A button that opens Hugo's review page on the App Store.",
+      "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -4068,23 +4276,6 @@
         }
       }
     },
-    "settings.sync.title" : {
-      "comment" : "Settings row and screen title for the iCloud sync status.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud"
-          }
-        }
-      }
-    },
     "settings.sync.lastSync.%@" : {
       "comment" : "Footer on the iCloud screen. The argument is a relative time such as \"2 minutes ago\".",
       "localizations" : {
@@ -4119,87 +4310,121 @@
         }
       }
     },
-    "settings.sync.status.upToDate" : {
-      "comment" : "iCloud sync status: the last sync worked.",
+    "settings.sync.message.offline" : {
+      "comment" : "Explanation on the iCloud screen when the device is offline.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opdateret"
+            "value" : "Dine ændringer er gemt på denne enhed og synkroniseres, når du er online igen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Up to date"
+            "value" : "Your changes are saved on this device and sync when you're back online."
           }
         }
       }
     },
-    "settings.sync.status.syncing" : {
-      "comment" : "iCloud sync status: a sync is running.",
+    "settings.sync.message.problem" : {
+      "comment" : "Explanation on the iCloud screen when sync failed for another reason.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synkroniserer…"
+            "value" : "Hugo kunne ikke synkronisere lige nu. Dine data er sikre på denne enhed, og Hugo prøver igen af sig selv. Hvis det bliver ved med at ske, så kontakt os."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Syncing…"
+            "value" : "Hugo couldn't sync just now. Your data is safe on this device, and Hugo tries again by itself. If it keeps happening, contact us."
           }
         }
       }
     },
-    "settings.sync.status.signedOut" : {
-      "comment" : "iCloud sync status: no iCloud account on this device.",
+    "settings.sync.message.restricted" : {
+      "comment" : "Explanation on the iCloud screen when iCloud is restricted.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke logget ind"
+            "value" : "Skærmtid eller en profil har slået iCloud fra på denne enhed. Hugo gemmer kun dine data på denne enhed."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not signed in"
+            "value" : "Screen Time or a profile has turned off iCloud on this device. Hugo keeps your data on this device only."
           }
         }
       }
     },
-    "settings.sync.status.restricted" : {
-      "comment" : "iCloud sync status: Screen Time or a profile blocks iCloud.",
+    "settings.sync.message.signedOut" : {
+      "comment" : "Explanation on the iCloud screen when no iCloud account is signed in.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke tilladt"
+            "value" : "Hugo gemmer kun dine data på denne enhed. Hvis du vil synkronisere med dine andre enheder, skal du åbne appen Indstillinger og logge ind med din Apple-konto øverst."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not allowed"
+            "value" : "Hugo keeps your data on this device only. To sync with your other devices, open the Settings app and sign in with your Apple Account at the top."
           }
         }
       }
     },
-    "settings.sync.status.storageFull" : {
-      "comment" : "iCloud sync status: the user's iCloud storage is full.",
+    "settings.sync.message.storageFull" : {
+      "comment" : "Explanation on the iCloud screen when iCloud storage is full.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud-lageret er fuldt"
+            "value" : "Nye ændringer bliver på denne enhed, indtil der er plads i din iCloud. Du frigør plads ved at åbne appen Indstillinger, trykke på dit navn og derefter på iCloud."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud is full"
+            "value" : "New changes stay on this device until there's room in your iCloud. To free up space, open the Settings app, tap your name, then iCloud."
+          }
+        }
+      }
+    },
+    "settings.sync.message.syncing" : {
+      "comment" : "Explanation on the iCloud screen while a sync runs.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo udveksler ændringer med iCloud lige nu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo is exchanging changes with iCloud right now."
+          }
+        }
+      }
+    },
+    "settings.sync.message.upToDate" : {
+      "comment" : "Explanation on the iCloud screen when sync works.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine registreringer, kategorier, planer, rapporter og indstillinger gemmes i din iCloud, så de er de samme på alle dine enheder."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your entries, categories, plans, reports and settings are saved in your iCloud, so they're the same on all your devices."
           }
         }
       }
@@ -4238,121 +4463,104 @@
         }
       }
     },
-    "settings.sync.message.upToDate" : {
-      "comment" : "Explanation on the iCloud screen when sync works.",
+    "settings.sync.status.restricted" : {
+      "comment" : "iCloud sync status: Screen Time or a profile blocks iCloud.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine registreringer, kategorier, planer, rapporter og indstillinger gemmes i din iCloud, så de er de samme på alle dine enheder."
+            "value" : "Ikke tilladt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your entries, categories, plans, reports and settings are saved in your iCloud, so they're the same on all your devices."
+            "value" : "Not allowed"
           }
         }
       }
     },
-    "settings.sync.message.syncing" : {
-      "comment" : "Explanation on the iCloud screen while a sync runs.",
+    "settings.sync.status.signedOut" : {
+      "comment" : "iCloud sync status: no iCloud account on this device.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo udveksler ændringer med iCloud lige nu."
+            "value" : "Ikke logget ind"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo is exchanging changes with iCloud right now."
+            "value" : "Not signed in"
           }
         }
       }
     },
-    "settings.sync.message.signedOut" : {
-      "comment" : "Explanation on the iCloud screen when no iCloud account is signed in.",
+    "settings.sync.status.storageFull" : {
+      "comment" : "iCloud sync status: the user's iCloud storage is full.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo gemmer kun dine data på denne enhed. Hvis du vil synkronisere med dine andre enheder, skal du åbne appen Indstillinger og logge ind med din Apple-konto øverst."
+            "value" : "iCloud-lageret er fuldt"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hugo keeps your data on this device only. To sync with your other devices, open the Settings app and sign in with your Apple Account at the top."
+            "value" : "iCloud is full"
           }
         }
       }
     },
-    "settings.sync.message.restricted" : {
-      "comment" : "Explanation on the iCloud screen when iCloud is restricted.",
+    "settings.sync.status.syncing" : {
+      "comment" : "iCloud sync status: a sync is running.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skærmtid eller en profil har slået iCloud fra på denne enhed. Hugo gemmer kun dine data på denne enhed."
+            "value" : "Synkroniserer…"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Screen Time or a profile has turned off iCloud on this device. Hugo keeps your data on this device only."
+            "value" : "Syncing…"
           }
         }
       }
     },
-    "settings.sync.message.storageFull" : {
-      "comment" : "Explanation on the iCloud screen when iCloud storage is full.",
+    "settings.sync.status.upToDate" : {
+      "comment" : "iCloud sync status: the last sync worked.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nye ændringer bliver på denne enhed, indtil der er plads i din iCloud. Du frigør plads ved at åbne appen Indstillinger, trykke på dit navn og derefter på iCloud."
+            "value" : "Opdateret"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New changes stay on this device until there's room in your iCloud. To free up space, open the Settings app, tap your name, then iCloud."
+            "value" : "Up to date"
           }
         }
       }
     },
-    "settings.sync.message.offline" : {
-      "comment" : "Explanation on the iCloud screen when the device is offline.",
+    "settings.sync.title" : {
+      "comment" : "Settings row and screen title for the iCloud sync status.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine ændringer er gemt på denne enhed og synkroniseres, når du er online igen."
+            "value" : "iCloud"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your changes are saved on this device and sync when you're back online."
-          }
-        }
-      }
-    },
-    "settings.sync.message.problem" : {
-      "comment" : "Explanation on the iCloud screen when sync failed for another reason.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo kunne ikke synkronisere lige nu. Dine data er sikre på denne enhed, og Hugo prøver igen af sig selv. Hvis det bliver ved med at ske, så kontakt os."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo couldn't sync just now. Your data is safe on this device, and Hugo tries again by itself. If it keeps happening, contact us."
+            "value" : "iCloud"
           }
         }
       }
@@ -6434,210 +6642,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Service Year"
-          }
-        }
-      }
-    },
-    "onboarding.overseer.contactsNote" : {
-      "comment" : "Note on the onboarding overseer page. The user can skip and type the overseer's details in Settings instead of using Contacts.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo ser kun den person, du vælger, og navn og nummer bliver hos dig. Hvis du hellere vil undgå at bruge kontakter, kan du springe over og skrive navn og nummer senere under Rapport i Indstillinger."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo only sees the person you choose, and their name and number stay with you. If you'd rather not use Contacts, skip this step and type the name and number later in Settings under Report."
-          }
-        }
-      }
-    },
-    "overseer.contacts.choose" : {
-      "comment" : "Main button on the group overseer settings screen. Opens the contact picker.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vælg fra kontakter"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose from Contacts"
-          }
-        }
-      }
-    },
-    "overseer.contacts.privacy" : {
-      "comment" : "Privacy note under the Choose from Contacts button on the group overseer settings screen. Matches the privacy policy.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo ser kun den person, du vælger, ikke dine andre kontakter. Navn og nummer bliver på dine enheder og i din egen iCloud. Hugo deler dem aldrig med nogen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo only sees the person you choose, not your other contacts. Their name and number stay on your devices and in your own iCloud. Hugo never shares them with anyone"
-          }
-        }
-      }
-    },
-    "overseer.field.firstName" : {
-      "comment" : "Placeholder for the group overseer's first name.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fornavn"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "First Name"
-          }
-        }
-      }
-    },
-    "overseer.field.lastName" : {
-      "comment" : "Placeholder for the group overseer's last name.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Efternavn (valgfrit)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last Name (Optional)"
-          }
-        }
-      }
-    },
-    "overseer.field.phoneNumber" : {
-      "comment" : "Placeholder for the group overseer's phone number.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Telefonnummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phone Number"
-          }
-        }
-      }
-    },
-    "overseer.header.empty" : {
-      "comment" : "Line under 'No group overseer selected' at the top of the group overseer settings screen.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo sender din månedsrapport til din gruppetjener som sms"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hugo sends your monthly report to your group overseer by text message"
-          }
-        }
-      }
-    },
-    "overseer.manual.add" : {
-      "comment" : "Button on the group overseer settings screen that opens a form for typing the overseer's name and phone number.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriv navn og nummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Type Name and Number"
-          }
-        }
-      }
-    },
-    "overseer.manual.edit" : {
-      "comment" : "Button on the group overseer settings screen that opens the form with the saved name and phone number.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rediger navn og nummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Name and Number"
-          }
-        }
-      }
-    },
-    "overseer.manual.footer" : {
-      "comment" : "Footer under the Type Name and Number button on the group overseer settings screen.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hvis du hellere vil undgå at bruge kontakter, kan du selv skrive din gruppetjeners navn og telefonnummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "If you'd rather not use Contacts, type your group overseer's name and phone number yourself"
-          }
-        }
-      }
-    },
-    "overseer.section.name" : {
-      "comment" : "Section header above the name fields when typing the group overseer's details.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Navn"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
-          }
-        }
-      }
-    },
-    "overseer.section.phoneNumber" : {
-      "comment" : "Section header above the phone number field when typing the group overseer's details.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Telefonnummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phone Number"
           }
         }
       }
