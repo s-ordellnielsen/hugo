@@ -1081,6 +1081,61 @@ struct SchemaMigrationTests {
     }
 
     @Test
+    func migratingV13StoreKeepsReportsAndStartsWithoutSchoolCredits() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+        let fieldService = SchemaV13.Tracker(
+            name: "Field Service", type: .main, isDefault: true, iconName: "figure.walk"
+        )
+        let entry = SchemaV13.Entry(date: Date(), duration: 3_600, tracker: fieldService)
+        let report = SchemaV13.SubmittedReport(
+            year: 2026,
+            month: 10,
+            submittedHours: 1,
+            totalBibleStudies: 2,
+            reportingLines: [.init(typeRaw: "main", typeName: "", durationInSeconds: 3_600, submittedHours: 1)]
+        )
+        try makeV13Store(at: store.storeURL, trackers: [fieldService], entries: [entry], reports: [report])
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let context = container.mainContext
+
+        let fetchedEntry = try #require(try context.fetch(FetchDescriptor<Entry>()).first)
+        #expect(fetchedEntry.tracker?.name == "Field Service")
+
+        let fetchedReport = try #require(try context.fetch(FetchDescriptor<SubmittedReport>()).first)
+        #expect(fetchedReport.reportingLines.count == 1)
+        #expect(fetchedReport.totalBibleStudies == 2)
+        #expect(fetchedReport.schoolCreditHours == nil)
+
+        #expect(try context.fetch(FetchDescriptor<SchoolCredit>()).isEmpty)
+    }
+
+    @Test
+    func currentStoreRoundTripsSchoolCreditsAndReportCreditHours() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+        let october = YearMonth(year: 2026, month: 10)
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let context = container.mainContext
+        context.insert(SchoolCredit(schoolID: "pioneer-service-school", month: october, hours: 30))
+        let report = SubmittedReport(year: 2026, month: 10)
+        report.schoolCreditHours = 30
+        context.insert(report)
+        try context.save()
+
+        let reopened = try makeCurrentStore(at: store.storeURL)
+        let credit = try #require(try reopened.mainContext.fetch(FetchDescriptor<SchoolCredit>()).first)
+        #expect(credit.schoolID == "pioneer-service-school")
+        #expect(credit.yearMonth == october)
+        #expect(credit.hours == 30)
+
+        let fetchedReport = try #require(try reopened.mainContext.fetch(FetchDescriptor<SubmittedReport>()).first)
+        #expect(fetchedReport.schoolCreditHours == 30)
+    }
+
+    @Test
     func migratesFullChainFromV1ToCurrentSchemaWithoutThrowing() throws {
         let store = try TemporaryStore()
         defer { store.remove() }
@@ -1220,6 +1275,22 @@ struct SchemaMigrationTests {
         let context = container.mainContext
         trackers.forEach(context.insert)
         entries.forEach(context.insert)
+        try context.save()
+    }
+
+    private func makeV13Store(
+        at url: URL,
+        trackers: [SchemaV13.Tracker] = [],
+        entries: [SchemaV13.Entry] = [],
+        reports: [SchemaV13.SubmittedReport] = []
+    ) throws {
+        let schema = Schema(versionedSchema: SchemaV13.self)
+        let configuration = ModelConfiguration(schema: schema, url: url, cloudKitDatabase: .none)
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        let context = container.mainContext
+        trackers.forEach(context.insert)
+        entries.forEach(context.insert)
+        reports.forEach(context.insert)
         try context.save()
     }
 

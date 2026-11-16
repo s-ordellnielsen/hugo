@@ -115,6 +115,13 @@ _Avoid_: Counted time
 **Separate allowance**:
 The hours of separate-category time that may count beyond the monthly goal in one month.
 
+**School**:
+A school whose attendance gives a fixed credit of hours toward the yearly goal, such as Pioneer Service School (30 hours, regular pioneers). Each school sets its quota and which publisher statuses may use it.
+
+**School credit**:
+Hours from a school, recorded for one month. It counts toward the yearly goal and the year total like main time, never goes through rounding, and is reported on its own line. A school that spans two months is entered as one school credit per month.
+_Avoid_: PSS hours, credit hours
+
 **Expected time**:
 The credited time the user should have by now to reach the yearly goal at an even pace.
 

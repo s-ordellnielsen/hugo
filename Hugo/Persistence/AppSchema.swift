@@ -141,7 +141,22 @@ enum SchemaV13: VersionedSchema {
     }
 }
 
-typealias CurrentSchema = SchemaV13
+/// Adds the synced `SchoolCredit` model and the optional
+/// `SubmittedReport.schoolCreditHours`. `SubmittedReport` changes, so `Entry`
+/// (which relates to it), `Tracker` (which relates to `Entry`) and `Plan`
+/// (whose initializer takes a `Tracker`) get V14 classes too. Their stored
+/// attributes are unchanged.
+enum SchemaV14: VersionedSchema {
+    static let versionIdentifier = Schema.Version(11, 0, 0)
+
+    typealias Report = SchemaV13.Report
+
+    static var models: [any PersistentModel.Type] {
+        [Entry.self, Tracker.self, Report.self, SubmittedReport.self, Plan.self, SchoolCredit.self]
+    }
+}
+
+typealias CurrentSchema = SchemaV14
 
 // SchemaV8/V9.Report remains as migration compatibility ballast until a tested
 // future schema version can remove it safely.
@@ -149,3 +164,4 @@ typealias Entry = CurrentSchema.Entry
 typealias Tracker = CurrentSchema.Tracker
 typealias SubmittedReport = CurrentSchema.SubmittedReport
 typealias Plan = CurrentSchema.Plan
+typealias SchoolCredit = CurrentSchema.SchoolCredit

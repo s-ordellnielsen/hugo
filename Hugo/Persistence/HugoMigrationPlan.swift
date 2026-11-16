@@ -17,7 +17,7 @@ enum MigrationPlan: SchemaMigrationPlan {
             SchemaV1.self, SchemaV2.self, SchemaV2_1.self, SchemaV3.self,
             SchemaV4.self, SchemaV5.self, SchemaV6.self, SchemaV7.self,
             SchemaV8.self, SchemaV9.self, SchemaV10.self, SchemaV11.self, SchemaV12.self,
-            SchemaV13.self,
+            SchemaV13.self, SchemaV14.self,
         ]
     }
 
@@ -26,7 +26,7 @@ enum MigrationPlan: SchemaMigrationPlan {
             migrateV1toV2, migrateV2ToV21, migrateV21ToV3, migrateV3toV4,
             migrateV4toV5, migrateV5toV6, migrateV6toV7, migrateV7toV8,
             migrateV8toV9, migrateV9toV10, migrateV10toV11, migrateV11toV12,
-            migrateV12toV13,
+            migrateV12toV13, migrateV13toV14,
         ]
     }
 
@@ -383,6 +383,14 @@ enum MigrationPlan: SchemaMigrationPlan {
     static let migrateV12toV13: MigrationStage = .lightweight(
         fromVersion: SchemaV12.self,
         toVersion: SchemaV13.self
+    )
+
+    /// Adds the `SchoolCredit` model and the optional
+    /// `SubmittedReport.schoolCreditHours`. Existing reports keep nil, which
+    /// reads as no school credit.
+    static let migrateV13toV14: MigrationStage = .lightweight(
+        fromVersion: SchemaV13.self,
+        toVersion: SchemaV14.self
     )
 
     private static func inferredRoundingRaw(
