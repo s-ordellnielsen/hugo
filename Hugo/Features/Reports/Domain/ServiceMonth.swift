@@ -31,6 +31,13 @@ nonisolated struct ServiceMonth: Identifiable {
         submittedReport.map(SubmittedReportSelection.isReal) ?? false
     }
 
+    /// The title of the action that sends this month's report: submit it,
+    /// submit an updated report after changes, or submit it again.
+    var submitActionTitle: LocalizedStringResource {
+        guard isSubmitted else { return "report.submit.button" }
+        return unreportedChange == nil ? "report.submit.again.button" : "report.submit.updated.button"
+    }
+
     /// True when the month was submitted and `entry` was created after the report was sent.
     func isUnreported(_ entry: Entry) -> Bool {
         guard isSubmitted, let submittedReport else { return false }

@@ -13,24 +13,12 @@ struct ServiceYearMonthRow: View {
     /// The month's school credits.
     var schoolCredits: [SchoolCredit] = []
 
-    @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
-    @State private var isPresentingDetails = false
+    @Namespace private var transition
     @State private var isPresentingAddEntry = false
     @State private var isPresentingSubmitSheet = false
-    @State private var isPresentingAddSchoolCredit = false
-    @State private var editingSchoolCredit: SchoolCredit?
 
     private var summary: MonthlyReportSummary? {
         month.summary
-    }
-
-    private var totalSeconds: TimeInterval {
-        summary?.totalSeconds ?? 0
-    }
-
-    /// The school offered first when adding credit, or nil when the status has none.
-    private var defaultSchool: School? {
-        School.available(forStatusID: statusID).first
     }
 
     /// No entries and no school credit: the headline is drawn faded.
@@ -39,28 +27,24 @@ struct ServiceYearMonthRow: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            header
-
-            if month.isSubmitted, let submittedAt = month.submittedReport?.submittedAt {
-                submissionStatus(submittedAt)
-            }
-
-            adjustmentNotes
-
-            schoolCreditNotes
-
-            if let summary {
-                activityBreakdown(summary)
-            }
-        }
-        .padding(HugoLayout.Spacing.card)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
-        .sheet(isPresented: $isPresentingDetails) {
-            NavigationStack {
-                MonthlyReportDetailView(month: month)
+        Group {
+            if month.isFuture {
+                card
+            } else {
+                NavigationLink {
+                    MonthDetailView(month: month, schoolCredits: schoolCredits)
+                        .navigationTransition(.zoom(sourceID: month.id, in: transition))
+                } label: {
+                    card
+                        .matchedTransitionSource(id: month.id, in: transition) { source in
+                            source.clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+                        }
+                }
+                .buttonStyle(.card)
+                .contentShape(.contextMenuPreview, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+                .contextMenu {
+                    quickActions
+                }
             }
         }
         .sheet(isPresented: $isPresentingAddEntry) {
@@ -71,54 +55,42 @@ struct ServiceYearMonthRow: View {
                 SubmitReportView(month: month.id)
             }
         }
-        .sheet(isPresented: $isPresentingAddSchoolCredit) {
-            if let defaultSchool {
-                SchoolCreditFormView(month: month.id, defaultSchool: defaultSchool)
-            }
-        }
-        .sheet(item: $editingSchoolCredit) { credit in
-            SchoolCreditFormView(
-                month: month.id, credit: credit,
-                defaultSchool: School(rawValue: credit.schoolID) ?? .pioneerServiceSchool)
-        }
     }
-}
 
-extension ServiceYearMonthRow {
-    /// One line per school credit. Credits of schools this build knows open
-    /// the form when tapped; others are shown as plain text.
-    @ViewBuilder
-    fileprivate var schoolCreditNotes: some View {
-        if !schoolCredits.isEmpty {
-            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-                ForEach(schoolCredits) { credit in
-                    let text = Text(
-                        verbatim:
-                            "\(School.name(forID: credit.schoolID)): \(ServiceDurationFormatter.hoursString(from: TimeInterval(credit.hours) * 3_600))"
-                    )
-                    if School(rawValue: credit.schoolID) != nil {
-                        Button {
-                            editingSchoolCredit = credit
-                        } label: {
-                            Label {
-                                text
-                            } icon: {
-                                Image(systemName: "graduationcap")
-                            }
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        Label {
-                            text
-                        } icon: {
-                            Image(systemName: "graduationcap")
-                        }
-                    }
-                }
+    private var card: some View {
+        VStack(alignment: .leading) {
+            header
+
+            if month.isSubmitted, let submittedAt = month.submittedReport?.submittedAt {
+                submissionStatus(submittedAt)
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .padding(.top, HugoLayout.Spacing.compact)
+
+            adjustmentNotes
+
+            if summary != nil || !schoolCreditLines.isEmpty {
+                activityBreakdown
+            }
+        }
+        .padding(HugoLayout.Spacing.card)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
+    }
+
+    /// The everyday actions on long-press. Everything else is on the detail page.
+    @ViewBuilder
+    private var quickActions: some View {
+        Button("entry.add.label", systemImage: "plus") {
+            isPresentingAddEntry = true
+        }
+        Button {
+            isPresentingSubmitSheet = true
+        } label: {
+            Label {
+                Text(month.submitActionTitle)
+            } icon: {
+                Image(systemName: "doc.badge.arrow.up")
+            }
         }
     }
 }
@@ -133,7 +105,12 @@ extension ServiceYearMonthRow {
 
             Spacer(minLength: HugoLayout.Spacing.regular)
 
-            moreMenu
+            if !month.isFuture {
+                Image(systemName: "chevron.forward")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
         }
     }
 
@@ -147,88 +124,7 @@ extension ServiceYearMonthRow {
     }
 
     private var duration: some View {
-        HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
-            Text(headline.value, format: .number)
-                .font(.system(.title, design: .serif, weight: .bold))
-                .foregroundStyle(isEmptyMonth ? .tertiary : .primary)
-            Text(unitLabel)
-                .font(.system(.title3, design: .serif, weight: .semibold))
-                .foregroundStyle(isEmptyMonth ? .tertiary : .secondary)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: headline.spokenText()))
-    }
-
-    private var headline: HeadlineDuration {
-        HeadlineDuration(seconds: month.contribution.total)
-    }
-
-    private var unitLabel: LocalizedStringKey {
-        switch headline {
-        case .minutes: "duration.minutesUnit"
-        case .hours(1): "service_year.month.hour"
-        case .hours: "service_year.month.hours"
-        }
-    }
-}
-
-extension ServiceYearMonthRow {
-    fileprivate var moreMenu: some View {
-        Menu {
-            if !month.isFuture {
-                Section {
-                    Button(
-                        "report.submit.button",
-                        systemImage: "doc.badge.arrow.up"
-                    ) {
-                        isPresentingSubmitSheet = true
-                    }
-                }
-            }
-
-            Section {
-                if !month.isFuture {
-                    Button(
-                        "entry.add.label",
-                        systemImage: "plus"
-                    ) {
-                        isPresentingAddEntry = true
-                    }
-                }
-
-                if !month.isFuture, defaultSchool != nil {
-                    Button(
-                        "schoolCredit.menu.add",
-                        systemImage: "graduationcap"
-                    ) {
-                        isPresentingAddSchoolCredit = true
-                    }
-                }
-
-                if summary != nil {
-                    Button(
-                        "report.row.menu.details",
-                        systemImage: "doc.text.magnifyingglass"
-                    ) {
-                        isPresentingDetails = true
-                    }
-                }
-            }
-        } label: {
-            Label("common.more", systemImage: "ellipsis.circle.fill")
-                .foregroundStyle(.secondary)
-                .labelStyle(.iconOnly)
-                .font(.title2)
-                .frame(
-                    minWidth: HugoLayout.Size.minimumHitTarget,
-                    minHeight: HugoLayout.Size.minimumHitTarget
-                )
-                .contentShape(Rectangle())
-                .symbolRenderingMode(.hierarchical)
-        }
-        .contentShape(.hoverEffect, Circle())
-        .hoverEffect(.highlight)
-        .padding(.trailing, -HugoLayout.Spacing.regular)
+        MonthHeadline(seconds: month.contribution.total, isFaded: isEmptyMonth)
     }
 }
 
@@ -311,46 +207,66 @@ extension ServiceYearMonthRow {
 }
 
 extension ServiceYearMonthRow {
+    /// The month's school credit, one line per school.
+    private var schoolCreditLines: [SchoolCreditLine] {
+        SchoolCreditLine.lines(from: schoolCredits, in: month.id)
+    }
+
+    /// Categories, then school credit, then Bible studies, each group split
+    /// from the next by a divider.
     @ViewBuilder
-    fileprivate func activityBreakdown(_ summary: MonthlyReportSummary) -> some View {
+    fileprivate var activityBreakdown: some View {
+        let categories = summary?.categories ?? []
+        let schoolLines = schoolCreditLines
+
         Divider()
 
         VStack(spacing: HugoLayout.Spacing.regular) {
-            ForEach(summary.categories) { category in
+            ForEach(categories) { category in
                 categoryRow(category)
             }
 
-            Divider()
-                .padding(.vertical, HugoLayout.Spacing.compact)
+            if !schoolLines.isEmpty {
+                if !categories.isEmpty {
+                    sectionDivider
+                }
 
-            bibleStudiesRow(summary.totalBibleStudies)
+                ForEach(schoolLines) { line in
+                    schoolCreditRow(line)
+                }
+            }
+
+            sectionDivider
+
+            bibleStudiesRow(summary?.totalBibleStudies ?? 0)
         }
         .padding(.top, HugoLayout.Spacing.regular)
         .labelReservedIconWidth(HugoLayout.Size.labelReservedIconWidth)
     }
 
     fileprivate func categoryRow(_ category: MonthlyCategorySummary) -> some View {
-        HStack {
-            Label(category.name, systemImage: category.iconName)
+        MonthBreakdownRow(
+            title: Text(category.name),
+            systemImage: category.iconName,
+            value: ServiceDurationFormatter.hoursString(from: category.duration)
+        )
+    }
 
-            Spacer()
+    private var sectionDivider: some View {
+        Divider()
+            .padding(.vertical, HugoLayout.Spacing.compact)
+    }
 
-            Text(ServiceDurationFormatter.hoursString(from: category.duration))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-        }
+    fileprivate func schoolCreditRow(_ line: SchoolCreditLine) -> some View {
+        MonthBreakdownRow(
+            title: Text(School.name(forID: line.schoolID)),
+            systemImage: "graduationcap",
+            value: ServiceDurationFormatter.hoursString(from: TimeInterval(line.hours) * 3_600)
+        )
     }
 
     fileprivate func bibleStudiesRow(_ count: Int) -> some View {
-        HStack {
-            Label("report.bible-studies", systemImage: "book")
-
-            Spacer()
-
-            Text(String(count))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-        }
+        MonthBreakdownRow(title: Text("report.bible-studies"), systemImage: "book", value: String(count))
     }
 }
 
