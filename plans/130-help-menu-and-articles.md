@@ -485,9 +485,7 @@ You are a regular pioneer. In March you have 45 hours of Field Service and 15 ho
 
 Hours from a school, such as Pioneer Service School, are credit too. You add them to a month on the Year tab, not with a category. They count in full toward your yearly goal and are sent on a line of their own.
 
-## Which type should I choose?
-
-If you are not sure whether an activity may be reported as credit, ask the elders in your congregation.
+## Changing a category's type
 
 You can change a category's type later in Settings > Categories. Hugo then counts all of its time the new way, also in months you have already reported. Those months may then show that they changed since you sent the report.
 ```
@@ -523,9 +521,7 @@ Du er almindelig pioner. I marts har du 45 timer i forkyndelse og 15 timer i LDC
 
 Timer fra en skole, fx Pionerskole, er også godtgørelse. Du tilføjer dem til en måned under Tjenesteår, ikke med en kategori. De tæller fuldt ud med mod dit årsmål og bliver sendt på deres egen linje.
 
-## Hvilken type skal jeg vælge?
-
-Hvis du er i tvivl om, hvorvidt en aktivitet må rapporteres som godtgørelse, så spørg de ældste i din menighed.
+## Skift en kategoris type
 
 Du kan ændre en kategoris type senere under Indstillinger > Kategorier. Så tæller Hugo al kategoriens tid på den nye måde, også i måneder, du allerede har rapporteret. De måneder kan så vise, at de er ændret, siden du sendte rapporten.
 ```
@@ -621,7 +617,7 @@ Owner checks on a device (record results in the plan's status row):
 3. Settings > Report: a question mark at the top right with "Rounding rules"; the old row is gone. Also open Report settings from Submit Report's settings sheet.
 4. Settings > Categories and Add Category: a question mark with "Field Service and Credit".
 5. VoiceOver says "Help, button" (Danish "Hjælp") on the question mark.
-6. Danish: read both new articles in Danish and confirm the wording, especially "Godtgørelse", "Pionerskole" and "spørg de ældste i din menighed".
+6. Danish: read both new articles in Danish and confirm the wording, especially "Godtgørelse" and "Pionerskole".
 
 ## Done criteria
 
