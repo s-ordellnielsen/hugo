@@ -123,10 +123,7 @@ Hours from a school, recorded for one month. It counts toward the yearly goal an
 _Avoid_: PSS hours, credit hours
 
 **Expected time**:
-The credited time the user should have by now to reach the yearly goal at an even pace.
-
-**Current month calculation**:
-How expected time is worked out for the current month: in proportion to the inclusive day fraction, counting only completed months, or counting the whole current month. Settings calls this "Current Month Calculation" / "Beregning af nuværende måned". It changes expected time, not credited or logged time. Persisted code names remain `YearlyGoalPacing`.
+The credited time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none.
 
 ## Planning
 

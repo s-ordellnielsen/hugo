@@ -10,7 +10,6 @@ struct ServiceYearPageView: View {
     @Query private var trackers: [Tracker]
     @Query private var schoolCredits: [SchoolCredit]
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
-    @AppStorage(UserDefaultsKeys.yearlyGoalPacing) private var pacing: YearlyGoalPacing = .proRated
 
     init(year: TheocraticYear, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.year = year
@@ -41,7 +40,7 @@ struct ServiceYearPageView: View {
 
     private func progress(for report: TheocraticYearReport) -> YearlyGoalProgress? {
         guard let status else { return nil }
-        return YearlyGoalProgress.make(report: report, status: status, pacing: pacing)
+        return YearlyGoalProgress.make(report: report, status: status)
     }
 
     var body: some View {

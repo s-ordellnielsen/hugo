@@ -97,7 +97,7 @@ struct ServiceYearDetailView: View {
 #Preview {
     let report = ReportPreviewFixtures.yearReport
     let progress = PublisherStatus.status(for: "regular-pioneer").flatMap {
-        YearlyGoalProgress.make(report: report, status: $0, pacing: .proRated)
+        YearlyGoalProgress.make(report: report, status: $0)
     }
     NavigationStack {
         ServiceYearDetailView(report: report, progress: progress)

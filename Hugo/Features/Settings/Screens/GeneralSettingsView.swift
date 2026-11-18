@@ -2,7 +2,6 @@ import SwiftUI
 
 struct GeneralSettingsView: View {
     @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
-    @AppStorage(UserDefaultsKeys.yearlyGoalPacing) private var pacing: YearlyGoalPacing = .proRated
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @AppStorage(UserDefaultsKeys.plannerTargetBase) private var base: PlannerTargetBase = .monthlyGoal
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
@@ -25,20 +24,6 @@ struct GeneralSettingsView: View {
                 }
             } header: {
                 Text("tab.planner")
-            }
-
-            if status?.yearlyGoalRule != nil {
-                Section {
-                    NavigationLink(destination: YearlyGoalPacingSettingsView()) {
-                        LabeledContent {
-                            Text(pacing.label).foregroundStyle(.secondary)
-                        } label: {
-                            Label("settings.yearlyGoal.pacing", systemImage: "chart.line.uptrend.xyaxis")
-                        }
-                    }
-                } header: {
-                    Text("year.subtitle")
-                }
             }
 
             Section {

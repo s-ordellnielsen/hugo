@@ -4,7 +4,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     let creditedSeconds: TimeInterval
     /// The year total: reported hours of submitted months plus logged time of the rest.
     let yearTotalSeconds: TimeInterval
-    /// Seconds the user should have by now. Nil when the year has not started.
+    /// Seconds the user should have by now: the monthly goal for each month that is over, plus the current month's goal spread by day. Nil when the year has not started.
     let expectedSeconds: TimeInterval?
     let yearlyGoalSeconds: TimeInterval
     let monthlyGoalSeconds: TimeInterval
@@ -42,7 +42,6 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     static func make(
         report: TheocraticYearReport,
         status: PublisherStatus,
-        pacing: YearlyGoalPacing,
         now: Date = .now,
         calendar: Calendar = .current
     ) -> YearlyGoalProgress? {
@@ -67,7 +66,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
                     return total + rule.monthlyGoalSeconds
                 }
                 guard month.id == current else { return total }
-                return total + rule.monthlyGoalSeconds * pacing.currentMonthFraction(now: now, calendar: calendar)
+                return total + rule.monthlyGoalSeconds * currentMonthFraction(now: now, calendar: calendar)
             }
         }
 
@@ -78,6 +77,14 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
             yearlyGoalSeconds: TimeInterval(status.yearlyGoal) * 3_600,
             monthlyGoalSeconds: rule.monthlyGoalSeconds,
             months: months)
+    }
+
+    /// How much of the current month's goal is expected by `now`: today's day
+    /// number divided by the number of days in the month. Today counts as a
+    /// whole day, so November 1 gives 1/30 and November 15 gives 15/30.
+    static func currentMonthFraction(now: Date, calendar: Calendar) -> Double {
+        let day = calendar.component(.day, from: now)
+        return Double(day) / Double(now.yearMonth(using: calendar).lastDay(calendar: calendar))
     }
 }
 

@@ -8,7 +8,6 @@
 enum SyncedSettings {
     static let keys: [String] = [
         UserDefaultsKeys.publisherStatus,
-        UserDefaultsKeys.yearlyGoalPacing,
         UserDefaultsKeys.plannerTargetBase,
         UserDefaultsKeys.plannerExtraHours,
         UserDefaultsKeys.durationMinuteInterval,

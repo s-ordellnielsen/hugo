@@ -101,7 +101,7 @@ struct TheocraticYearTotalsView: View {
 #Preview("Yearly goal") {
     let report = ReportPreviewFixtures.yearReport
     let progress = PublisherStatus.status(for: "regular-pioneer").flatMap {
-        YearlyGoalProgress.make(report: report, status: $0, pacing: .proRated)
+        YearlyGoalProgress.make(report: report, status: $0)
     }
     TheocraticYearTotalsView(report: report, progress: progress)
         .padding()

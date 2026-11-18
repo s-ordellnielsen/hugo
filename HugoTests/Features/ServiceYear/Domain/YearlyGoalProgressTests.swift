@@ -31,18 +31,25 @@ struct YearlyGoalProgressTests {
         #expect(abs(fraction - -0.1) < 1e-9)
     }
 
-    @Test
-    func completedMonthsPacingIgnoresTheCurrentMonth() {
-        let progress = makeProgress(
-            entries: septemberAndOctober(), pacing: .completedMonths, now: date(2026, 11, 3, hour: 12))
-        #expect(progress.expectedSeconds == TimeInterval(100 * 3_600))
+    @Test(arguments: [
+        (2026, 11, 3, 0.1),
+        (2026, 11, 1, 1.0 / 30.0),
+        (2026, 11, 30, 1.0),
+        (2028, 2, 29, 1.0),
+        (2027, 2, 1, 1.0 / 28.0),
+    ])
+    func currentMonthFractionCountsTodayAsAWholeDay(argument: (Int, Int, Int, Double)) {
+        let actual = YearlyGoalProgress.currentMonthFraction(
+            now: date(argument.0, argument.1, argument.2), calendar: calendar)
+        #expect(abs(actual - argument.3) < 1e-9)
     }
 
+    /// The example in the "Your target this month" help article: a regular
+    /// pioneer (50 hours a month) on November 15 expects 2 x 50 + 50 x 15/30 = 125 hours.
     @Test
-    func includeCurrentMonthPacingExpectsTheWholeMonth() {
-        let progress = makeProgress(
-            entries: septemberAndOctober(), pacing: .includeCurrentMonth, now: date(2026, 11, 3, hour: 12))
-        #expect(progress.expectedSeconds == TimeInterval(150 * 3_600))
+    func midNovemberExpectsOneHundredTwentyFiveHours() {
+        let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 11, 15, hour: 12))
+        #expect(progress.expectedSeconds == TimeInterval(125 * 3_600))
     }
 
     @Test
@@ -135,7 +142,6 @@ struct YearlyGoalProgressTests {
         let progress = YearlyGoalProgress.make(
             report: report,
             status: PublisherStatus.status(for: "auxiliary-pioneer")!,
-            pacing: .proRated,
             now: date(2026, 10, 15),
             calendar: calendar
         )
@@ -167,7 +173,6 @@ struct YearlyGoalProgressTests {
     private func makeProgress(
         entries: [Entry],
         submissions: [SubmittedReport] = [],
-        pacing: YearlyGoalPacing = .proRated,
         now: Date
     ) -> YearlyGoalProgress {
         let report = TheocraticYearReportBuilder.report(
@@ -181,7 +186,6 @@ struct YearlyGoalProgressTests {
         return YearlyGoalProgress.make(
             report: report,
             status: status,
-            pacing: pacing,
             now: now,
             calendar: calendar
         )!
