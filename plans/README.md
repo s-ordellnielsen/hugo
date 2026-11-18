@@ -107,11 +107,11 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 124 | Add a synced `SchoolCredit` model and a school catalog in schema V14 | P2 | M | — | DONE (committed on main as 7a0bc9e; full `Scripts/verify.sh` passed, 529 tests; CloudKit deploy pending with 126) | [SLN-156](https://linear.app/sebastianln/issue/SLN-156) |
 | 125 | Count school credit toward the year and send it on the month's report | P2 | M | 124 | DONE (committed on main as fb8eff6; full `Scripts/verify.sh` passed) | [SLN-156](https://linear.app/sebastianln/issue/SLN-156) |
 | 126 | Let regular pioneers add school credit to a month on the Year tab | P2 | M + owner | 124, 125 | DONE (committed on main as 51c2523; full `Scripts/verify.sh` passed, 539 tests; owner device checks and CloudKit Production deploy pending) | [SLN-156](https://linear.app/sebastianln/issue/SLN-156) |
-| 127 | Remove the "Current Month Calculation" setting and always spread the target across the month | P2 | M | — | TODO | pending |
-| 128 | Allow Bible studies in main categories only, and remove the "Can add Bible Studies" toggle | P2 | S | — | TODO | pending |
-| 129 | Call the category kinds Field Service and Credit, and pick the kind on two cards that explain it | P2 | L + owner | 128 | TODO | pending |
-| 130 | Put help in a toolbar Help menu and add the "Your target this month" and "Field Service and Credit" articles | P2 | M + owner | 127, 129 | TODO | pending |
-| 131 | Replace the Year tab's centered gauge with a goal bar that marks today's target | P2 | M + owner | 127 | TODO | pending |
+| 127 | Remove the "Current Month Calculation" setting and always spread the target across the month | P2 | M | — | DONE (committed on main as ad1e512; full `Scripts/verify.sh` passed) | pending |
+| 128 | Allow Bible studies in main categories only, and remove the "Can add Bible Studies" toggle | P2 | S | — | DONE (committed on main as fff1d0b; full `Scripts/verify.sh` passed) | pending |
+| 129 | Call the category kinds Field Service and Credit, and pick the kind on two cards that explain it | P2 | L + owner | 128 | DONE (committed on main as eee2f1b; full `Scripts/verify.sh` passed; owner checks pending: both kind pickers on a device in English and Danish, largest text size, VoiceOver, Danish wording) | pending |
+| 130 | Put help in a toolbar Help menu and add the "Your target this month" and "Field Service and Credit" articles | P2 | M + owner | 127, 129 | DONE (committed on main as c783369; full `Scripts/verify.sh` passed; owner checks pending: the help menu on all six screens, the sheet from the Submit Report sheet, VoiceOver, Danish article wording) | pending |
+| 131 | Replace the Year tab's centered gauge with a goal bar that marks today's target | P2 | M + owner | 127 | DONE (committed on main as 9b3e193; full `Scripts/verify.sh` passed on the combined main; owner checks pending: the bar in English and Danish, largest text, VoiceOver, dark mode, the tester's reaction) | pending |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
