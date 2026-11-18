@@ -6674,6 +6674,57 @@
         }
       }
     },
+    "year.goalBar.marker" : {
+      "comment" : "Label of the marker on the Year tab's goal bar: the time expected by today.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål i dag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target today"
+          }
+        }
+      }
+    },
+    "year.goalBar.scaleEnd.%@.%@" : {
+      "comment" : "Caption under the Year tab's goal bar. The first argument is the goal at the end of the month, such as 150 hours; the second is the month's name, such as November.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mål ved udgangen af %2$@: %1$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal by the end of %2$@: %1$@"
+          }
+        }
+      }
+    },
+    "year.header.a11y.goalBar" : {
+      "comment" : "Spoken summary of the year header with its goal bar. Arguments: the counted time, the goal by the end of the month, the month's name, and whether the user is ahead, behind or on pace.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tæller med mod årsmålet: %1$@ af %2$@ ved udgangen af %3$@. %4$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counted toward yearly goal: %1$@ of %2$@ by the end of %3$@. %4$@"
+          }
+        }
+      }
+    },
     "year.header.a11y.hint" : {
       "comment" : "Accessibility hint for the year header, which opens the year details.",
       "localizations" : {

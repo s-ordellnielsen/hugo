@@ -20,15 +20,12 @@ struct YearlyGoalProgressTests {
         #expect(progress.expectedSeconds == TimeInterval(100 * 3_600))
         #expect(progress.differenceSeconds == 0)
         #expect(progress.isOnTrack)
-        #expect(progress.barFraction == 0)
     }
 
     @Test
-    func proRatedExpectationGrowsWithTheDayOfTheMonth() throws {
+    func proRatedExpectationGrowsWithTheDayOfTheMonth() {
         let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 11, 3, hour: 12))
         #expect(progress.expectedSeconds == TimeInterval(105 * 3_600))
-        let fraction = try #require(progress.barFraction)
-        #expect(abs(fraction - -0.1) < 1e-9)
     }
 
     @Test(arguments: [
@@ -50,17 +47,6 @@ struct YearlyGoalProgressTests {
     func midNovemberExpectsOneHundredTwentyFiveHours() {
         let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 11, 15, hour: 12))
         #expect(progress.expectedSeconds == TimeInterval(125 * 3_600))
-    }
-
-    @Test
-    func barFractionClampsAtBothEnds() {
-        let ahead = makeProgress(
-            entries: [Entry(date: date(2026, 9, 1), duration: 300 * 3_600, tracker: main)],
-            now: date(2026, 10, 31, hour: 12))
-        #expect(ahead.barFraction == 1)
-
-        let behind = makeProgress(entries: [], now: date(2026, 10, 31, hour: 12))
-        #expect(behind.barFraction == -1)
     }
 
     @Test
@@ -102,7 +88,63 @@ struct YearlyGoalProgressTests {
     func aFutureYearHasNoExpectationAndNoBar() {
         let progress = makeProgress(entries: [], now: date(2026, 8, 15))
         #expect(progress.expectedSeconds == nil)
-        #expect(progress.barFraction == nil)
+        #expect(progress.scaleEndSeconds == nil)
+        #expect(progress.scaleEndMonth == nil)
+        #expect(progress.fillFraction == nil)
+        #expect(progress.markerFraction == nil)
+    }
+
+    @Test
+    func firstMonthScaleIsOneMonthlyGoal() throws {
+        let progress = makeProgress(entries: [], now: date(2026, 9, 10, hour: 12))
+        #expect(progress.scaleEndSeconds == TimeInterval(50 * 3_600))
+        #expect(progress.scaleEndMonth == YearMonth(year: 2026, month: 9))
+        let marker = try #require(progress.markerFraction)
+        #expect(abs(marker - 10.0 / 30.0) < 1e-9)
+    }
+
+    @Test
+    func midNovemberScaleEndsAtThreeMonthlyGoals() throws {
+        let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 11, 15, hour: 12))
+        #expect(progress.scaleEndSeconds == TimeInterval(150 * 3_600))
+        #expect(progress.scaleEndMonth == YearMonth(year: 2026, month: 11))
+        let fill = try #require(progress.fillFraction)
+        #expect(abs(fill - 100.0 / 150.0) < 1e-9)
+        let marker = try #require(progress.markerFraction)
+        #expect(abs(marker - 125.0 / 150.0) < 1e-9)
+    }
+
+    @Test
+    func onTheLastDayTheMarkerReachesTheEnd() {
+        let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 11, 30, hour: 12))
+        #expect(progress.markerFraction == 1)
+    }
+
+    @Test
+    func aMonthWithoutCountedTimeLeavesTheBarEmpty() {
+        let progress = makeProgress(entries: [], now: date(2026, 11, 15, hour: 12))
+        #expect(progress.fillFraction == 0)
+        #expect(progress.markerFraction != nil)
+    }
+
+    @Test
+    func countedTimeAboveTheScaleFillsTheBar() {
+        let progress = makeProgress(
+            entries: [Entry(date: date(2026, 9, 1), duration: 300 * 3_600, tracker: main)],
+            now: date(2026, 10, 31, hour: 12))
+        #expect(progress.scaleEndSeconds == TimeInterval(100 * 3_600))
+        #expect(progress.fillFraction == 1)
+    }
+
+    @Test
+    func aPastYearScaleIsTheYearlyGoalWithoutAMarker() throws {
+        let progress = makeProgress(entries: septemberAndOctober(), now: date(2028, 1, 15))
+        #expect(progress.isYearOver)
+        #expect(progress.scaleEndSeconds == TimeInterval(600 * 3_600))
+        #expect(progress.scaleEndMonth == YearMonth(year: 2027, month: 8))
+        #expect(progress.markerFraction == nil)
+        let fill = try #require(progress.fillFraction)
+        #expect(abs(fill - 100.0 / 600.0) < 1e-9)
     }
 
     @Test

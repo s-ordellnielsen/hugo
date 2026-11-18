@@ -36,7 +36,6 @@ enum HugoLayout {
         static let durationPickerHeight: CGFloat = 216
         static let addEntryCompactSheetHeight: CGFloat = 300
         static let goalTrackHeight: CGFloat = 12
-        static let goalKnobDiameter: CGFloat = 36
         static let calendarDayNumber: CGFloat = 32
         static let calendarDayMinHeight: CGFloat = 64
         static let calendarBarHeight: CGFloat = 6

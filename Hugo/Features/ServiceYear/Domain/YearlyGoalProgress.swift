@@ -9,6 +9,15 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     let yearlyGoalSeconds: TimeInterval
     let monthlyGoalSeconds: TimeInterval
     let months: [Month]
+    /// The end of the goal bar: the monthly goal times the months of the
+    /// theocratic year up to and including the current month. The whole
+    /// yearly goal once the year is over. Nil before the year starts.
+    let scaleEndSeconds: TimeInterval?
+    /// The last month the scale covers: the current month, or August once
+    /// the year is over. Nil before the year starts.
+    let scaleEndMonth: YearMonth?
+    /// True once the year's last month is over.
+    let isYearOver: Bool
 
     /// One month on the year detail screen.
     struct Month: Identifiable, Equatable, Sendable {
@@ -30,10 +39,18 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     /// Credited minus expected. Nil when there is no expectation.
     var differenceSeconds: TimeInterval? { expectedSeconds.map { creditedSeconds - $0 } }
 
-    /// The knob position from -1 (a monthly goal behind) to 1 (a monthly goal ahead).
-    var barFraction: Double? {
-        guard let differenceSeconds, monthlyGoalSeconds > 0 else { return nil }
-        return min(1, max(-1, differenceSeconds / monthlyGoalSeconds))
+    /// Counted time as a share of the scale, from 0 to 1. Time above the
+    /// scale fills the bar. Nil before the year starts.
+    var fillFraction: Double? {
+        guard let scaleEndSeconds, scaleEndSeconds > 0 else { return nil }
+        return min(max(creditedSeconds / scaleEndSeconds, 0), 1)
+    }
+
+    /// Where "Target today" sits on the scale, from 0 to 1. Nil before the
+    /// year starts and once it is over, because a finished year has no today.
+    var markerFraction: Double? {
+        guard !isYearOver, let expectedSeconds, let scaleEndSeconds, scaleEndSeconds > 0 else { return nil }
+        return min(max(expectedSeconds / scaleEndSeconds, 0), 1)
     }
 
     var isOnTrack: Bool { abs(differenceSeconds ?? 0) < Self.differenceThreshold }
@@ -70,13 +87,21 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
             }
         }
 
+        let monthsSoFar = report.months.filter { $0.id <= current }
+        let scaleEndMonth = monthsSoFar.last?.id
+        let scaleEndSeconds = scaleEndMonth.map { _ in rule.monthlyGoalSeconds * Double(monthsSoFar.count) }
+        let isYearOver = report.months.last.map { $0.id < current } ?? false
+
         return YearlyGoalProgress(
             creditedSeconds: months.reduce(0) { $0 + $1.creditedSeconds },
             yearTotalSeconds: report.totalSeconds,
             expectedSeconds: expectedSeconds,
             yearlyGoalSeconds: TimeInterval(status.yearlyGoal) * 3_600,
             monthlyGoalSeconds: rule.monthlyGoalSeconds,
-            months: months)
+            months: months,
+            scaleEndSeconds: scaleEndSeconds,
+            scaleEndMonth: scaleEndMonth,
+            isYearOver: isYearOver)
     }
 
     /// How much of the current month's goal is expected by `now`: today's day

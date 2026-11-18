@@ -44,17 +44,28 @@ struct TheocraticYearTotalsView: View {
                 .foregroundStyle(.secondary)
             }
 
-            if let fraction = progress?.barFraction, let paceSentence = progress?.paceSentence {
-                Text(paceSentence)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .padding(.top, HugoLayout.Spacing.compact)
-
-                CenteredProgressBar(
-                    fraction: fraction,
-                    accessibilityLabel: "year.header.counted.label",
-                    accessibilityValue: paceSentence
-                )
+            if let progress, let fillFraction = progress.fillFraction,
+                let scaleEndSeconds = progress.scaleEndSeconds, let scaleEndMonth = progress.scaleEndMonth
+            {
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                    MarkedProgressBar(filled: fillFraction, marker: progress.markerFraction) {
+                        Text("year.goalBar.marker")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    if let paceSentence = progress.paceSentence {
+                        Text(paceSentence)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                    }
+                    Text(
+                        "year.goalBar.scaleEnd.\(ServiceDurationFormatter.hoursString(from: scaleEndSeconds)).\(scaleEndMonth.monthName())"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.top, HugoLayout.Spacing.compact)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -89,6 +100,17 @@ struct TheocraticYearTotalsView: View {
     private var accessibilityLabelText: String {
         let spoken = ServiceDurationFormatter.hoursString(from: primarySeconds)
         guard let progress else { return spoken }
+        if let scaleEndSeconds = progress.scaleEndSeconds, let scaleEndMonth = progress.scaleEndMonth {
+            let goal = ServiceDurationFormatter.hoursString(from: scaleEndSeconds)
+            let month = scaleEndMonth.monthName()
+            let pace = progress.paceSentence ?? ""
+            return String(
+                localized: "year.header.a11y.goalBar",
+                defaultValue: "Counted toward yearly goal: \(spoken) of \(goal) by the end of \(month). \(pace)",
+                comment:
+                    "Spoken summary of the year header with its goal bar. Arguments: the counted time, the goal by the end of the month, the month's name, and whether the user is ahead, behind or on pace."
+            )
+        }
         return String(
             localized: "year.header.a11y.label",
             defaultValue: "Counted toward yearly goal: \(spoken). \(progress.paceSentence ?? "")",
@@ -111,5 +133,28 @@ struct TheocraticYearTotalsView: View {
 #Preview("No yearly goal") {
     TheocraticYearTotalsView(report: ReportPreviewFixtures.yearReport, progress: nil)
         .padding()
+        .modelContainer(.preview)
+}
+
+#Preview("Yearly goal, dark, largest text") {
+    let report = ReportPreviewFixtures.yearReport
+    let progress = PublisherStatus.status(for: "regular-pioneer").flatMap {
+        YearlyGoalProgress.make(report: report, status: $0)
+    }
+    TheocraticYearTotalsView(report: report, progress: progress)
+        .padding()
+        .preferredColorScheme(.dark)
+        .dynamicTypeSize(.accessibility3)
+        .modelContainer(.preview)
+}
+
+#Preview("Yearly goal, Danish") {
+    let report = ReportPreviewFixtures.yearReport
+    let progress = PublisherStatus.status(for: "regular-pioneer").flatMap {
+        YearlyGoalProgress.make(report: report, status: $0)
+    }
+    TheocraticYearTotalsView(report: report, progress: progress)
+        .padding()
+        .environment(\.locale, Locale(identifier: "da_DK"))
         .modelContainer(.preview)
 }
