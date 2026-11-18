@@ -18,6 +18,11 @@ struct ServiceYearDetailView: View {
         }
         .editorialNavigationTitle(report.year.displayName)
         .navigationSubtitle("year.detail.subtitle")
+        .toolbar {
+            ToolbarItem {
+                HelpMenu(articles: HelpArticle.year)
+            }
+        }
     }
 
     private func goalSection(_ progress: YearlyGoalProgress) -> some View {

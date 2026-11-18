@@ -80,6 +80,10 @@ struct AddCategoryView: View {
             }
             .toolbar {
                 ToolbarItem {
+                    HelpMenu(articles: HelpArticle.categories)
+                }
+                ToolbarSpacer(.fixed)
+                ToolbarItem {
                     Button(role: .confirm, action: submit) {
                         Label("common.done", systemImage: "checkmark")
                     }

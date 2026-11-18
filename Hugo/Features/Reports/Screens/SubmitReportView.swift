@@ -15,7 +15,6 @@ struct SubmitReportView: View {
     @State private var showingCopiedNotice = false
     @State private var saveErrorMessage: String?
     @State private var showingSettings = false
-    @State private var showingRoundingHelp = false
     @State private var pendingSend: (() -> Void)?
 
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
@@ -85,14 +84,6 @@ struct SubmitReportView: View {
                         ),
                         monthName: { $0.monthName() }
                     )
-                }
-
-                if model.results.contains(where: { $0.line.needsRule }) {
-                    Button("report.rounding.help.link", systemImage: "questionmark.circle") {
-                        showingRoundingHelp = true
-                    }
-                    .font(.subheadline)
-                    .padding(.top, HugoLayout.Spacing.compact)
                 }
 
                 if !model.schoolCreditLines.isEmpty {
@@ -166,6 +157,10 @@ struct SubmitReportView: View {
                 Button(role: .cancel) { dismiss() }
             }
             ToolbarItem(placement: .topBarTrailing) {
+                HelpMenu(articles: HelpArticle.submitReport)
+            }
+            ToolbarSpacer(.fixed, placement: .topBarTrailing)
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("report.submit.send-message", systemImage: "arrow.up.message.fill") {
                     confirmIfNeeded(sendViaMessages)
                 }
@@ -218,7 +213,6 @@ struct SubmitReportView: View {
             }
             .presentationDetents([.large])
         }
-        .sheet(isPresented: $showingRoundingHelp) { HelpView(for: "RoundingRule") }
         .onAppear { syncModel() }
         .onChange(of: entries) { syncModel() }
         .onChange(of: submissions) { syncModel() }

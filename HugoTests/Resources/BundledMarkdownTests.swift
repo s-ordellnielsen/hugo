@@ -1,10 +1,12 @@
 import Foundation
 import Testing
 
+@testable import Hugo
+
 /// Every Markdown page that `HelpView` shows must ship in English (Base) and
 /// Danish. A missing file makes the sheet show "Unavailable".
 struct BundledMarkdownTests {
-    @Test(arguments: ["RoundingRule", "PrivacyPolicy", "TermsOfUse"])
+    @Test(arguments: HelpArticle.allCases.map(\.resourceName) + ["PrivacyPolicy", "TermsOfUse"])
     func pageShipsInEnglishAndDanish(name: String) throws {
         for localization in ["Base", "da"] {
             let url = try #require(

@@ -11,8 +11,6 @@ struct ReportSettingsView: View {
     @AppStorage(UserDefaultsKeys.overseerFullName) private var overseerFullName = ""
     @AppStorage(UserDefaultsKeys.overseerGreetingTemplate) private var greetingTemplate = ""
 
-    @State private var showingHelp = false
-
     var body: some View {
         List {
             Section {
@@ -44,15 +42,13 @@ struct ReportSettingsView: View {
             } header: {
                 Text("settings.screen.report.section.content.label")
             }
-
-            Section {
-                Button("report.rounding.help.link", systemImage: "questionmark.circle") {
-                    showingHelp = true
-                }
+        }
+        .navigationTitle("settings.group.settings.report")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HelpMenu(articles: HelpArticle.reportSettings)
             }
         }
-        .sheet(isPresented: $showingHelp) { HelpView(for: "RoundingRule") }
-        .navigationTitle("settings.group.settings.report")
     }
 
 }

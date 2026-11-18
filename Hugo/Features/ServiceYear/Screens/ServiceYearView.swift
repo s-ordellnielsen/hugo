@@ -131,6 +131,10 @@ struct ServiceYearView: View {
                     }
                 }
                 ToolbarItem {
+                    HelpMenu(articles: HelpArticle.year)
+                }
+                ToolbarSpacer(.fixed)
+                ToolbarItem {
                     SettingsButton(sizeClass: .compact)
                 }
             }

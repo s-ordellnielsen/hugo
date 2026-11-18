@@ -41,6 +41,10 @@ struct CategoryListView: View {
         .editorialNavigationTitle("screen.category-list.title")
         .toolbar {
             ToolbarItem {
+                HelpMenu(articles: HelpArticle.categories)
+            }
+            ToolbarSpacer(.fixed)
+            ToolbarItem {
                 Button {
                     addTrackerSheetIsPresented = true
                 } label: {
