@@ -54,7 +54,7 @@ struct ReportingLineCard: View {
     @ViewBuilder
     private var lineTitle: some View {
         if result.line.type == .main {
-            Text("category.default.label")
+            Text("monthlyReport.detail.largeTotal.main.label")
         } else {
             Text(verbatim: result.line.name)
         }

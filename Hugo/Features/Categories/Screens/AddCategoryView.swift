@@ -59,17 +59,10 @@ struct AddCategoryView: View {
                 }
 
                 Section {
-                    Picker("tracker.type.label.long", selection: $type) {
-                        ForEach(TrackerType.allCases) { trackerType in
-                            Text(trackerType.label).tag(trackerType)
-                        }
-                    }
-                    .pickerStyle(.inline)
-                    .labelsHidden()
+                    CategoryKindPicker(kind: $type)
+                        .categoryKindRow()
                 } header: {
                     Text("tracker.type.label.long")
-                } footer: {
-                    Text(type.description)
                 }
 
                 Section("tracker.options.label") {

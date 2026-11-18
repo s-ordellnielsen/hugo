@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// A category's kind. `main` is a Field Service category and `separate` a
+/// Credit category; the UI and CONTEXT.md use those names. The case names
+/// are stored in SwiftData and CloudKit, so they never change.
 nonisolated enum TrackerType: String, Codable, Comparable, Identifiable, CaseIterable {
     case main
     case separate

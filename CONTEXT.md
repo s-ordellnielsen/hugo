@@ -9,19 +9,26 @@ One piece of logged ministry time: a date, a duration, a category and optionally
 _Avoid_: Record, log, session
 
 **Category**:
-What an entry's time counts as, such as Field Service or Bethel. Every category is either a main category or a separate category.
+What an entry's time counts as, such as Field Service or Bethel. Every category has a kind: it is either a Field Service category or a Credit category.
 _Avoid_: Tracker, type
 
-**Main category**:
-A category whose time is reported together on the Field Service line. Its entries can have Bible studies.
-_Avoid_: Primary category
+**Category kind**:
+Whether a category is a Field Service category or a Credit category. The user picks it on two cards when adding or editing a category; the screens label the choice "Category Type" / "Type". Stored as `TrackerType`, whose cases stay `main` (Field Service) and `separate` (Credit).
+_Avoid_: Output type, main, separate (in text users read)
 
-**Separate category**:
-A category whose time is reported on its own line, apart from Field Service, such as Bethel or LDC. New entries in it get no Bible studies; an entry that already has some keeps them. Whether a category allows Bible studies follows from its kind; the old per-category setting (`Tracker.allowBibleStudies`) is no longer read.
-_Avoid_: Other, secondary category
+**Field Service category**:
+A category for time spent preaching and teaching. Its time is reported together on the Field Service line, counts in full toward the yearly goal, and its entries can have Bible studies. Danish: "Forkyndelse". Code: `TrackerType.main`.
+_Avoid_: Main category, primary category
+
+**Credit category**:
+A category for hours a publisher may report as credit, such as Bethel or LDC. Each Credit category is reported on its own line, and its time counts toward the yearly goal only up to the credit allowance. New entries in it get no Bible studies; an entry that already has some keeps them. Danish: "Godtgørelse". Code: `TrackerType.separate`.
+_Avoid_: Separate category, other, secondary category
+
+**Credit**:
+Hours reported for approved work other than field service: the time in Credit categories and school credit. Each is reported on a line of its own. Credit-category time counts toward the yearly goal only up to the credit allowance; school credit counts in full.
 
 **Default category**:
-The main category that new entries use unless the user picks another. A new install starts with one, named Field Service.
+The Field Service category that new entries use unless the user picks another. A new install starts with one, named Field Service ("Forkyndelse").
 
 **Category snapshot**:
 The name, icon and kind of an entry's category, copied onto the entry so the entry keeps its category if the category is renamed or deleted.
@@ -31,7 +38,7 @@ The color a category is drawn in: Automatic (the app's accent color) or a hue an
 _Avoid_: Tint, theme color
 
 **Untracked entry**:
-An entry that has neither a category nor a category snapshot. Its time counts as main time everywhere: on the Field Service line, in the month's main total and toward the yearly goal.
+An entry that has neither a category nor a category snapshot. Its time counts as Field Service time everywhere: on the Field Service line, in the month's Field Service total and toward the yearly goal.
 
 **Logged time**:
 The sum of entry durations, before any rounding.
@@ -61,7 +68,7 @@ A saved report for a month that was never actually sent, left behind when older 
 _Avoid_: Sentinel, backfill
 
 **Reporting line**:
-One line of a report: Field Service, which holds all main time, or one separate category. Each line is rounded on its own.
+One line of a report: the Field Service line, which holds all Field Service time, or one Credit category. Each line is rounded on its own. School credit is sent on lines of its own but is not a reporting line.
 
 **Remainder**:
 The minutes on a reporting line beyond its whole hours.
@@ -108,22 +115,23 @@ The hours the publisher status expects in one theocratic year. Only statuses wit
 For one theocratic year: the reported hours of every submitted month plus the logged time of every month not yet submitted.
 _Avoid_: Actual total
 
-**Credited time**:
-The part of a month's time that counts toward the yearly goal: all main time, plus separate time until the month reaches its monthly goal plus the separate allowance. The app shows it as "Counted toward goal".
-_Avoid_: Counted time
+**Counted time**:
+The part of a month's time that counts toward the yearly goal: all Field Service time and school credit, plus Credit-category time until the month reaches its monthly goal plus the credit allowance. The app shows it as "Counted toward goal" / "Tæller med mod målet". Code names remain `creditedSeconds`.
+_Avoid_: Credited time (it sounds like time in Credit categories)
 
-**Separate allowance**:
-The hours of separate-category time that may count beyond the monthly goal in one month.
+**Credit allowance**:
+The hours of Credit-category time that may count beyond the monthly goal in one month: 5 for a regular pioneer. Code names remain `separateAllowanceHours` and `separateAllowanceSeconds`.
+_Avoid_: Separate allowance
 
 **School**:
 A school whose attendance gives a fixed credit of hours toward the yearly goal, such as Pioneer Service School (30 hours, regular pioneers). Each school sets its quota and which publisher statuses may use it.
 
 **School credit**:
-Hours from a school, recorded for one month. It counts toward the yearly goal and the year total like main time, never goes through rounding, and is reported on its own line. A school that spans two months is entered as one school credit per month.
+Hours from a school, recorded for one month. It counts in full toward the yearly goal and the year total, like Field Service time, never goes through rounding, and is reported on its own line. It is credit, but not a Credit category. A school that spans two months is entered as one school credit per month.
 _Avoid_: PSS hours, credit hours
 
 **Expected time**:
-The credited time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none.
+The counted time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none.
 
 ## Planning
 
@@ -146,7 +154,7 @@ The hours the Planner aims at for one month: the monthly goal, or an adjusted ye
 _Avoid_: Goal (the goal comes from the publisher status)
 
 **Adjusted target**:
-The remaining yearly goal divided over the months left in the theocratic year, including the current month, rounded up to whole hours and based on credited time before the current month. The Settings label is "Adjusted to yearly goal" / "Tilpasset årsmålet". The Settings explanation names the remaining goal and month count. The persisted case remains `yearlyGoalShare`.
+The remaining yearly goal divided over the months left in the theocratic year, including the current month, rounded up to whole hours and based on counted time before the current month. The Settings label is "Adjusted to yearly goal" / "Tilpasset årsmålet". The Settings explanation names the remaining goal and month count. The persisted case remains `yearlyGoalShare`.
 
 **Buffer**:
 The nonnegative hours added to the base monthly target. Without a publisher-status goal, the same preference sets the whole personal monthly target. Settings calls it "Buffer" / "Buffer". Historical storage and API names remain `plannerExtraHours` / `extraHours`. The Planner bar draws the base as a solid fill and Buffer as a separate faded extension.
@@ -155,7 +163,7 @@ The nonnegative hours added to the base monthly target. Without a publisher-stat
 How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.
 
 **Covered time**:
-The part of a category's planned time on a day that logged time accounts for: first time in that category, then other time of the same kind (main or separate). Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar.
+The part of a category's planned time on a day that logged time accounts for: first time in that category, then other time of the same kind (Field Service or Credit). Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar.
 
 **Unplanned time**:
 Logged time in a category that has no plan on that day and that no plan of the same kind took. It gets its own bar.
@@ -177,5 +185,6 @@ A setting that stays the same on all of the user's devices through iCloud key-va
 
 ## Flagged ambiguities
 
-- "Actual" has meant logged time in some places and year total in others. Say logged time, reported hours, year total or credited time instead.
-- "Field Service" names both the default category and the reporting line that holds all main time. Say "the Field Service line" for the line.
+- "Actual" has meant logged time in some places and year total in others. Say logged time, reported hours, year total or counted time instead.
+- "Field Service" names a category kind, the default category and the reporting line that holds all Field Service time. Say "a Field Service category" for any category of that kind, "the default category" for the one a new install creates, and "the Field Service line" for the line. In Danish the kind, the default category and the app's line label are all "Forkyndelse", but the report message calls the line "Timer", the word on the congregation's report form.
+- "Credit" names a category kind, school credit and both together. Say "Credit category" for the kind, "school credit" for school hours, and "credit" only for both together. Never say "credited time"; say "counted time".

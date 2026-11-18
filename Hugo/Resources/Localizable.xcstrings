@@ -286,6 +286,159 @@
         }
       }
     },
+    "category.kind.change.footer" : {
+      "comment" : "Footer under the category type cards on the category detail screen.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvis du ændrer typen, ændrer det, hvordan al tid i kategorien tæller. Måneder, du allerede har rapporteret, kan så vise, at de er ændret."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changing the type changes how all of this category's time counts. Months you have already reported may then show that they changed."
+          }
+        }
+      }
+    },
+    "category.kind.fact.main.goal" : {
+      "comment" : "Category type picker, Field Service: how the time counts toward the yearly goal.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tæller fuldt ud med mod dit årsmål."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counts in full toward your yearly goal."
+          }
+        }
+      }
+    },
+    "category.kind.fact.main.report" : {
+      "comment" : "Category type picker, Field Service: where the time goes on the report.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lægges sammen og sendes som dine timer i rapporten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added together and sent as one line on your report."
+          }
+        }
+      }
+    },
+    "category.kind.fact.main.studies" : {
+      "comment" : "Category type picker, Field Service: Bible studies are allowed.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan tilføje bibelstudier til registreringer i denne kategori."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can add Bible studies to entries in this category."
+          }
+        }
+      }
+    },
+    "category.kind.fact.separate.goal" : {
+      "comment" : "Category type picker, Credit: how the time counts toward the yearly goal. The first argument is the monthly goal plus the credit allowance, such as 55 hours; the second is the allowance, such as 5 hours.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tæller med mod dit årsmål, indtil måneden når %1$@: dit månedsmål plus %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counts toward your yearly goal until the month reaches %1$@: your monthly goal plus %2$@."
+          }
+        }
+      }
+    },
+    "category.kind.fact.separate.report" : {
+      "comment" : "Category type picker, Credit: where the time goes on the report.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes på sin egen linje i rapporten med kategoriens navn."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent on its own line on your report, with the category's name."
+          }
+        }
+      }
+    },
+    "category.kind.fact.separate.studies" : {
+      "comment" : "Category type picker, Credit: Bible studies are not allowed.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du kan ikke tilføje bibelstudier til registreringer i denne kategori."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can't add Bible studies to entries in this category."
+          }
+        }
+      }
+    },
+    "category.kind.main.example" : {
+      "comment" : "Example line on the Field Service card in the category type picker.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fx fra hus til hus, genbesøg og offentlig forkyndelse."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For example house to house, return visits and public witnessing."
+          }
+        }
+      }
+    },
+    "category.kind.separate.example" : {
+      "comment" : "Example line on the Credit card in the category type picker.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fx LDC eller betel."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For example LDC or Bethel."
+          }
+        }
+      }
+    },
     "Change values" : {
       "comment" : "A button that triggers a change in the values of a `MarkedProgressBar`.",
       "isCommentAutoGenerated" : true
@@ -1184,13 +1337,12 @@
       }
     },
     "monthlyReport.detail.largeTotal.main.label" : {
-      "comment" : "A label describing the main portion of the total time.",
-      "isCommentAutoGenerated" : true,
+      "comment" : "Label of the Field Service line: on Submit Report, and the Field Service total on the year details screen.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tjeneste"
+            "value" : "Forkyndelse"
           }
         },
         "en" : {
@@ -1202,19 +1354,18 @@
       }
     },
     "monthlyReport.detail.largeTotal.separate.label" : {
-      "comment" : "A label describing the duration of time spent on a separate activity.",
-      "isCommentAutoGenerated" : true,
+      "comment" : "Year details, Totals: the time in Credit categories.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Andet"
+            "value" : "Godtgørelse"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Other"
+            "value" : "Credit"
           }
         }
       }
@@ -2334,18 +2485,18 @@
       }
     },
     "planner.header.uncounted" : {
-      "comment" : "Separate-category time beyond the allowance. The argument is a duration.",
+      "comment" : "Credit-category time beyond the credit allowance. The argument is a duration.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ i andre kategorier tæller ikke med mod dit årsmål"
+            "value" : "%@ godtgørelse tæller ikke med mod dit årsmål"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ in other categories won't count toward your goal"
+            "value" : "%@ of credit won't count toward your goal"
           }
         }
       }
@@ -4017,13 +4168,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skolen giver op til %lld timer. De tæller med mod dit årsmål ligesom almindelige timer og bliver sendt med denne måneds rapport. Hvis skolen strakte sig over to måneder, så log timer i hver måned."
+            "value" : "Skolen giver op til %lld timer. De tæller fuldt ud med mod dit årsmål ligesom forkyndelse og bliver sendt med denne måneds rapport. Hvis skolen strakte sig over to måneder, så log timer i hver måned."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This school gives up to %lld hours. They count toward your yearly goal like field service and are sent on this month's report. If the school ran over two months, add credit to each month."
+            "value" : "This school gives up to %lld hours. They count in full toward your yearly goal, like Field Service time, and are sent on this month's report. If the school ran over two months, add credit to each month."
           }
         }
       }
@@ -6148,73 +6299,71 @@
       }
     },
     "tracker.outputtype.main.description" : {
-      "comment" : "Description of the \"Main\" option in the tracker output type picker.",
+      "comment" : "One sentence on the Field Service card in the category type picker.",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All primære kategorier vil blive sammenlagt til ét felt i din rapport: Tjeneste"
+            "value" : "Tid, du bruger på at forkynde og undervise."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All main categories will be combined into one single metric in the report: Field Service"
+            "value" : "Time you spend preaching and teaching."
           }
         }
       }
     },
     "tracker.outputtype.main.label" : {
-      "comment" : "Label for the \"Main\" option in the tracker output type selection.",
-      "isCommentAutoGenerated" : true,
+      "comment" : "Name of the Field Service category type (code: TrackerType.main). Card title in the type picker and section header in category lists.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Primær"
+            "value" : "Forkyndelse"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Main"
+            "value" : "Field Service"
           }
         }
       }
     },
     "tracker.outputtype.separate.description" : {
-      "comment" : "Description of the \"Separate\" tracker output type.",
+      "comment" : "One sentence on the Credit card in the category type picker.",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separate kategorier bliver føjet til din rapport separat fra “Tjeneste” og kan bruges til at holde styr på andre aspekter af din tjeneste, fx betel eller LDC"
+            "value" : "Timer, du må rapportere som godtgørelse for andet godkendt arbejde."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separate categories will be added to the report separate from Field Service and can be used to track other aspects of our ministry like Bethel or LDC"
+            "value" : "Hours you may report as credit for other approved work."
           }
         }
       }
     },
     "tracker.outputtype.separate.label" : {
-      "comment" : "Label text for the \"Separate\" option in the tracker output type picker.",
-      "isCommentAutoGenerated" : true,
+      "comment" : "Name of the Credit category type (code: TrackerType.separate), such as LDC or Bethel. Card title in the type picker and section header in category lists.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separat"
+            "value" : "Godtgørelse"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separate"
+            "value" : "Credit"
           }
         }
       }

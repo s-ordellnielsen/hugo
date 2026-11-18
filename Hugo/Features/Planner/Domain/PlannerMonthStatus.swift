@@ -93,7 +93,7 @@ extension PlannerMonthStatus {
         let amount = ServiceDurationFormatter.hoursString(from: uncountedSeconds)
         return String(
             localized: "planner.header.uncounted",
-            defaultValue: "\(amount) in other categories won't count toward your goal",
-            comment: "Separate-category time beyond the allowance. The argument is a duration.")
+            defaultValue: "\(amount) of credit won't count toward your goal",
+            comment: "Credit-category time beyond the credit allowance. The argument is a duration.")
     }
 }
