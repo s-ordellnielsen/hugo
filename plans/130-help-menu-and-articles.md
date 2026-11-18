@@ -509,7 +509,7 @@ Brug Forkyndelse til den tid, du bruger på at forkynde og undervise, fx fra hus
 
 ## Godtgørelse
 
-Brug Godtgørelse til timer, du må rapportere som godtgørelse for andet godkendt arbejde, fx LDC eller Betel.
+Brug Godtgørelse til timer, du må rapportere som godtgørelse for andet godkendt arbejde, fx LDC eller betel.
 
 - Hver kategori med godtgørelse bliver sendt på sin egen linje med kategoriens navn.
 - Godtgørelse tæller med mod dit årsmål, indtil måneden når dit månedsmål plus nogle få ekstra timer. For en almindelig pioner er det 50 + 5 = **55 timer**.
@@ -521,7 +521,7 @@ Du er almindelig pioner. I marts har du 45 timer i forkyndelse og 15 timer i LDC
 
 ## Timer fra skoler
 
-Timer fra en skole, fx Pionerskolen, er også godtgørelse. Du tilføjer dem til en måned under Tjenesteår, ikke med en kategori. De tæller fuldt ud med mod dit årsmål og bliver sendt på deres egen linje.
+Timer fra en skole, fx Pionerskole, er også godtgørelse. Du tilføjer dem til en måned under Tjenesteår, ikke med en kategori. De tæller fuldt ud med mod dit årsmål og bliver sendt på deres egen linje.
 
 ## Hvilken type skal jeg vælge?
 
@@ -621,7 +621,7 @@ Owner checks on a device (record results in the plan's status row):
 3. Settings > Report: a question mark at the top right with "Rounding rules"; the old row is gone. Also open Report settings from Submit Report's settings sheet.
 4. Settings > Categories and Add Category: a question mark with "Field Service and Credit".
 5. VoiceOver says "Help, button" (Danish "Hjælp") on the question mark.
-6. Danish: read both new articles in Danish and confirm the wording, especially "Godtgørelse", "Pionerskolen" and "spørg de ældste i din menighed".
+6. Danish: read both new articles in Danish and confirm the wording, especially "Godtgørelse", "Pionerskole" and "spørg de ældste i din menighed".
 
 ## Done criteria
 

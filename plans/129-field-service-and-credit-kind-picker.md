@@ -629,7 +629,7 @@ For the two `monthlyReport.detail.largeTotal.*` keys and the two `tracker.output
 | Key | English | Danish | Comment |
 |---|---|---|---|
 | `category.kind.main.example` | For example house to house, return visits and public witnessing. | Fx fra hus til hus, genbesøg og offentlig forkyndelse. | Example line on the Field Service card in the category type picker. |
-| `category.kind.separate.example` | For example LDC or Bethel. | Fx LDC eller Betel. | Example line on the Credit card in the category type picker. |
+| `category.kind.separate.example` | For example LDC or Bethel. | Fx LDC eller betel. | Example line on the Credit card in the category type picker. |
 | `category.kind.fact.main.report` | Added together and sent as one line on your report. | Lægges sammen og sendes som dine timer i rapporten. | Category type picker, Field Service: where the time goes on the report. |
 | `category.kind.fact.separate.report` | Sent on its own line on your report, with the category's name. | Sendes på sin egen linje i rapporten med kategoriens navn. | Category type picker, Credit: where the time goes on the report. |
 | `category.kind.fact.main.goal` | Counts in full toward your yearly goal. | Tæller fuldt ud med mod dit årsmål. | Category type picker, Field Service: how the time counts toward the yearly goal. |
@@ -700,7 +700,7 @@ struct CategoryKindFactTests {
         let report = try #require(
             CategoryKindFact.facts(for: .separate, status: regularPioneer, locale: danish).first)
         #expect(report.text == "Sendes på sin egen linje i rapporten med kategoriens navn.")
-        #expect(CategoryKindFact.example(for: .separate, locale: danish) == "Fx LDC eller Betel.")
+        #expect(CategoryKindFact.example(for: .separate, locale: danish) == "Fx LDC eller betel.")
     }
 
     @Test
