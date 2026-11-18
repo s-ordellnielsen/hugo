@@ -107,6 +107,11 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 124 | Add a synced `SchoolCredit` model and a school catalog in schema V14 | P2 | M | — | DONE (committed on main as 7a0bc9e; full `Scripts/verify.sh` passed, 529 tests; CloudKit deploy pending with 126) | [SLN-156](https://linear.app/sebastianln/issue/SLN-156) |
 | 125 | Count school credit toward the year and send it on the month's report | P2 | M | 124 | DONE (committed on main as fb8eff6; full `Scripts/verify.sh` passed) | [SLN-156](https://linear.app/sebastianln/issue/SLN-156) |
 | 126 | Let regular pioneers add school credit to a month on the Year tab | P2 | M + owner | 124, 125 | DONE (committed on main as 51c2523; full `Scripts/verify.sh` passed, 539 tests; owner device checks and CloudKit Production deploy pending) | [SLN-156](https://linear.app/sebastianln/issue/SLN-156) |
+| 127 | Remove the "Current Month Calculation" setting and always spread the target across the month | P2 | M | — | TODO | pending |
+| 128 | Allow Bible studies in main categories only, and remove the "Can add Bible Studies" toggle | P2 | S | — | TODO | pending |
+| 129 | Call the category kinds Field Service and Credit, and pick the kind on two cards that explain it | P2 | L + owner | 128 | TODO | pending |
+| 130 | Put help in a toolbar Help menu and add the "Your target this month" and "Field Service and Credit" articles | P2 | M + owner | 127, 129 | TODO | pending |
+| 131 | Replace the Year tab's centered gauge with a goal bar that marks today's target | P2 | M + owner | 127 | TODO | pending |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -216,6 +221,13 @@ Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJE
   * Advisor defaults (the owner can change them): pages still push in a navigation stack; the counter counts only the two setup pages and sits above the title; the buttons use the app's `.glassProminent` style in a `safeAreaBar`; the welcome rows fade in one after another, without movement under Reduce Motion; the four `splash.*` strings nothing uses any more are deleted, and the English subtitle's mismatched opening quote is fixed.
   * Before writing it, the advisor compiled the plan's code in a scratch copy, ran its four tests and checked simulator screenshots in English, Danish and at the largest text size.
 
+* Plans 127–131 (2026-11-18, planned at `c918888`) come from the owner's talk with a tester. The owner's decisions are fixed in each plan. Linear issues do not exist yet; create them and fill the Issue column. Recommended order: **127, 128, 129, 130, 131**. 131 can run any time after 127.
+  * 127 first: 130's target article and 131's bar describe the only expected-time rule left, and 131 is written against `YearlyGoalProgress.make` without its `pacing:` parameter.
+  * 128 before 129: the Bible studies toggle must be gone before the new kind picker explains the rule.
+  * 129 before 130: the "Field Service and Credit" article and its menu title use 129's names. 129 also renames `CONTEXT.md` terms ("Credited time" becomes "Counted time", "Separate allowance" becomes "Credit allowance"); 130 and 131 use the new words.
+  * All five edit `Localizable.xcstrings`. Each plan deletes or adds only its own keys and checks the line counts with `git diff --numstat`. Run them one at a time.
+  * Owner decisions to confirm, raised while planning: snapshots and untracked entries keep allowing Bible studies even though a snapshot stores its kind (128); the Danish in-app Field Service line label changes from "Tjeneste" to "Forkyndelse" while the report message keeps "Timer" (129); `category.default.label` keeps "Tjeneste" because carried-in entries store it as a name (129); the Credit card's symbol is `hammer` (129); the privacy policy still lists "Service Year" under General after 127.
+
 ## Settings decisions for plans 091, 083 and 084 (2026-11-06)
 
 * Execute **091 → 083 → 084**, not numeric order. These are implementation handoffs; this revision does not implement the app or create commits.
@@ -257,6 +269,10 @@ Found while planning 060–066 (2026-11-03), not planned:
 
 ## Findings considered and rejected
 
+* **Help as a submenu of Submit Report's More menu** (2026-11-18): older users would not find the rounding help behind the ellipsis. Plan 130 puts a separate question mark next to the send button instead.
+* **Help in each month card's menu** (2026-11-18): it would repeat on twelve cards. The Year tab's toolbar menu covers the page (plan 130).
+* **"0" and "150 hours" labels at the ends of the Year tab's goal bar** (2026-11-18): a bare "0" says nothing. Plan 131 uses one caption, "Goal by the end of November: 150 hours".
+* **Changing the Danish value of `category.default.label`** (2026-11-18): carried-in entries store it as their snapshot name, so new ones would group apart from old ones. Plan 129 shows another key as the Field Service line title instead.
 * **Saving school credit as an extra reporting line** (2026-11-16): older builds decode an unknown line type as `.main`, which gives it the Field Service line's id and shows a false unreported change. Plan 124 adds `SubmittedReport.schoolCreditHours` instead.
 * **Modeling school credit as a separate category of entries** (2026-11-16): it would pass through rounding and the 5-hour separate allowance, but the credit counts in full like main time.
 * **SLN-194 (Debug page in Release builds) for the 080–090 build** (2026-11-05): the owner left it out, so testers keep the Debug page. It stays with the App Store launch work (SLN-284).
