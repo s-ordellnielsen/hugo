@@ -13,11 +13,11 @@ What an entry's time counts as, such as Field Service or Bethel. Every category 
 _Avoid_: Tracker, type
 
 **Main category**:
-A category whose time is reported together on the Field Service line.
+A category whose time is reported together on the Field Service line. Its entries can have Bible studies.
 _Avoid_: Primary category
 
 **Separate category**:
-A category whose time is reported on its own line, apart from Field Service, such as Bethel or LDC.
+A category whose time is reported on its own line, apart from Field Service, such as Bethel or LDC. New entries in it get no Bible studies; an entry that already has some keeps them. Whether a category allows Bible studies follows from its kind; the old per-category setting (`Tracker.allowBibleStudies`) is no longer read.
 _Avoid_: Other, secondary category
 
 **Default category**:

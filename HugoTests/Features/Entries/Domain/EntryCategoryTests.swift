@@ -48,10 +48,28 @@ struct EntryCategoryTests {
     }
 
     @Test
-    func liveTrackerCarriesItsBibleStudiesSetting() {
-        let tracker = Tracker(name: "LDC", type: .separate, allowBibleStudies: false)
-        let entry = Entry(date: .now, duration: 1_800, tracker: tracker)
+    func liveSeparateCategoryDoesNotAllowBibleStudies() {
+        let entry = Entry(date: .now, duration: 1_800, tracker: Tracker(name: "LDC", type: .separate))
         #expect(entry.resolvedCategory().allowsBibleStudies == false)
+    }
+
+    /// Existing data: a main category whose old toggle was off now allows Bible studies.
+    @Test
+    func liveMainCategoryAllowsBibleStudiesWhateverTheOldToggleSaid() {
+        let tracker = Tracker(name: "Field Service", type: .main, allowBibleStudies: false)
+        let entry = Entry(date: .now, duration: 1_800, tracker: tracker)
+        #expect(entry.resolvedCategory().allowsBibleStudies)
+    }
+
+    /// Existing data: an entry in a separate category keeps the studies it already has.
+    @Test
+    func separateCategoryEntryKeepsItsExistingBibleStudies() {
+        let entry = Entry(date: .now, duration: 1_800, tracker: Tracker(name: "Bethel", type: .separate))
+        entry.bibleStudies = 2
+        let category = entry.resolvedCategory()
+        #expect(
+            BibleStudiesRule.showsControl(categoryAllows: category.allowsBibleStudies, count: entry.bibleStudies))
+        #expect(entry.bibleStudies == 2)
     }
 
     @Test

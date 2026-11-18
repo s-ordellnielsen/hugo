@@ -73,12 +73,6 @@ struct CategoryDetailView: View {
             } footer: {
                 Text(tracker.type.description)
             }
-
-            Section {
-                NavigationLink(destination: CategoryAdvancedOptionsView(tracker: tracker)) {
-                    Text("tracker.settings.advancedOptions.label")
-                }
-            }
         }
         .onAppear {
             if originalName == nil { originalName = tracker.name }

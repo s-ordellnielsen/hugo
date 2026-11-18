@@ -49,6 +49,20 @@ struct MonthlyReportBuilderTests {
         #expect(summary.categories.map(\.duration) == [5_400, 900])
     }
 
+    /// Bible studies already saved on a separate-category entry still count on the report.
+    @Test
+    func bibleStudiesFromBothKindsAddUp() throws {
+        let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
+        let separate = Tracker(name: "Bethel", type: .separate, iconName: "building")
+        let entries = [
+            Entry(date: date(2026, 1, 1), duration: 3_600, tracker: main, bibleStudies: 1),
+            Entry(date: date(2026, 1, 2), duration: 1_800, tracker: separate, bibleStudies: 2),
+        ]
+        let summary = try #require(
+            MonthlyReportBuilder.summaries(from: entries, calendar: calendar, locale: locale).first)
+        #expect(summary.totalBibleStudies == 3)
+    }
+
     @Test
     @MainActor
     func usesStoredTrackerWhenLiveTrackerWasDeleted() throws {

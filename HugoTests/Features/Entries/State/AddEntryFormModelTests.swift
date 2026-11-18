@@ -69,28 +69,36 @@ struct AddEntryFormModelTests {
         model.incrementBibleStudies()
         model.incrementBibleStudies()
 
-        model.selectedTracker = Tracker(name: "LDC", type: .separate, allowBibleStudies: false)
+        model.selectedTracker = Tracker(name: "LDC", type: .separate)
 
         #expect(model.bibleStudies == 0)
         #expect(model.showsBibleStudies == false)
     }
 
     @Test
-    func categoryWithBibleStudiesKeepsTheCount() {
+    func switchingBetweenMainCategoriesKeepsTheCount() {
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
         model.selectedTracker = Tracker(name: "Field Service")
         model.incrementBibleStudies()
 
-        model.selectedTracker = Tracker(name: "Bethel", type: .separate)
+        model.selectedTracker = Tracker(name: "Public Witnessing", type: .main)
 
         #expect(model.bibleStudies == 1)
         #expect(model.showsBibleStudies)
     }
 
     @Test
+    func mainCategoryAllowsBibleStudiesEvenIfTheOldToggleWasOff() {
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
+        model.selectedTracker = Tracker(name: "Field Service", type: .main, allowBibleStudies: false)
+        #expect(model.categoryAllowsBibleStudies)
+        #expect(model.showsBibleStudies)
+    }
+
+    @Test
     func draftSavesNoBibleStudiesForACategoryWithoutThem() throws {
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
-        model.selectedTracker = Tracker(name: "LDC", type: .separate, allowBibleStudies: false)
+        model.selectedTracker = Tracker(name: "LDC", type: .separate)
         model.durationInSeconds = 3_600
         model.incrementBibleStudies()
 

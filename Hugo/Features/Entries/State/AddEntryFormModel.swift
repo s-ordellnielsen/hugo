@@ -55,9 +55,10 @@ final class AddEntryFormModel {
         durationInSeconds == 0 || selectedTracker == nil
     }
 
-    /// False when the chosen category turned Bible studies off.
+    /// True unless the chosen category is a separate category. Bible studies
+    /// belong to main (field service) time.
     var categoryAllowsBibleStudies: Bool {
-        selectedTracker?.allowBibleStudies ?? true
+        (selectedTracker?.type ?? .main) == .main
     }
 
     var showsBibleStudies: Bool {

@@ -17,8 +17,9 @@ nonisolated struct EntryCategory: Hashable {
     var countsAs: TrackerType { type ?? .main }
     /// Set only when the live tracker is attached.
     let trackerID: UUID?
-    /// False only when the live category turned Bible studies off. A
-    /// category snapshot and an untracked entry allow them.
+    /// True for a main category. A separate category doesn't take new Bible
+    /// studies. A category snapshot and an untracked entry count as main and
+    /// allow them. `Tracker.allowBibleStudies` is no longer read.
     let allowsBibleStudies: Bool
 }
 
@@ -27,7 +28,7 @@ extension Entry {
         if let tracker {
             return EntryCategory(
                 key: tracker.id.uuidString, name: tracker.name, iconName: tracker.iconName,
-                type: tracker.type, trackerID: tracker.id, allowsBibleStudies: tracker.allowBibleStudies)
+                type: tracker.type, trackerID: tracker.id, allowsBibleStudies: tracker.type == .main)
         }
         if let snapshot = storedTracker {
             return EntryCategory(

@@ -12,7 +12,6 @@ struct AddCategoryView: View {
 
     @State private var name = ""
     @State private var type: TrackerType = .main
-    @State private var allowBibleStudies = true
     @State private var isDefault = false
     @State private var iconName = "tag.fill"
     @State private var color: CategoryColor?
@@ -74,7 +73,6 @@ struct AddCategoryView: View {
                 }
 
                 Section("tracker.options.label") {
-                    Toggle("tracker.options.allow-bible-studies", isOn: $allowBibleStudies)
                     Toggle("tracker.options.use-as-default", isOn: $isDefault)
                 }
             }
@@ -106,7 +104,6 @@ struct AddCategoryView: View {
         let tracker = Tracker(
             name: trimmedName,
             type: type,
-            allowBibleStudies: allowBibleStudies,
             isDefault: false,
             iconName: iconName
         )
