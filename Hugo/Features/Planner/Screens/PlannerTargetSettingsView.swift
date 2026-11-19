@@ -90,7 +90,8 @@ struct PlannerTargetSettingsView: View {
 
                 if extraHours > 0 {
                     NavigationLink {
-                        BufferScopeSettingsView()
+                        BufferScopeSettingsView(
+                            includeInOverview: $includeInOverview, includeInYear: $includeInYear)
                     } label: {
                         LabeledContent(
                             "planner.target.countsIn",

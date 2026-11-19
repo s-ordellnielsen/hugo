@@ -2,8 +2,10 @@ import SwiftUI
 
 /// Where the Buffer counts besides the Planner, which always counts it.
 struct BufferScopeSettingsView: View {
-    @AppStorage(UserDefaultsKeys.bufferInOverview) private var includeInOverview = false
-    @AppStorage(UserDefaultsKeys.bufferInYear) private var includeInYear = false
+    // The parent owns these two settings. Do not declare @AppStorage for them
+    // here: when this page did, opening it froze the app (plan 132, revision 3).
+    @Binding var includeInOverview: Bool
+    @Binding var includeInYear: Bool
 
     var body: some View {
         List {
@@ -25,21 +27,18 @@ struct BufferScopeSettingsView: View {
 }
 
 #Preview("Count Buffer in") {
-    let defaults = UserDefaults(suiteName: "BufferScopePreview")!
-    defaults.set(false, forKey: UserDefaultsKeys.bufferInOverview)
-    defaults.set(true, forKey: UserDefaultsKeys.bufferInYear)
-    return NavigationStack {
-        BufferScopeSettingsView()
+    @Previewable @State var overview = false
+    @Previewable @State var year = true
+    NavigationStack {
+        BufferScopeSettingsView(includeInOverview: $overview, includeInYear: $year)
     }
-    .defaultAppStorage(defaults)
 }
 
 #Preview("Count Buffer in, large text") {
-    let defaults = UserDefaults(suiteName: "BufferScopeLargeTextPreview")!
-    defaults.set(true, forKey: UserDefaultsKeys.bufferInOverview)
-    return NavigationStack {
-        BufferScopeSettingsView()
+    @Previewable @State var overview = true
+    @Previewable @State var year = false
+    NavigationStack {
+        BufferScopeSettingsView(includeInOverview: $overview, includeInYear: $year)
     }
-    .defaultAppStorage(defaults)
     .dynamicTypeSize(.accessibility5)
 }
