@@ -711,7 +711,7 @@ struct BufferScopeSettingsView: View {
    - Animate the row in and out: add `.motion(Motion.presence, value: extraHours > 0)` to that `Section`. If this does not compile or the row does not animate, drop the animation line and say so in NOTES. The animation is optional; the hiding is not.
    - Do not touch the stepper, its labels or its footer.
 
-4. **Strings** (`Localizable.xcstrings`). Keep `planner.target.includeBuffer.overview` and `planner.target.includeBuffer.year` exactly as they are (they are now VoiceOver labels; update only their `comment` to say "Spoken label of the Overview switch on the Count Buffer in page." and the same for Year). Add these six entries, alphabetically after `planner.target.base...`/before `planner.target.extra` as the sort order requires (`planner.target.countsIn*` sorts between `planner.target.base.yearlyGoalShare.description` and `planner.target.extra`), each with a `comment`:
+4. **Strings** (`Localizable.xcstrings`). Keep `planner.target.includeBuffer.overview` and `planner.target.includeBuffer.year` exactly as they are (they are now VoiceOver labels; update only their `comment` to say "Spoken label of the Overview switch on the Count Buffer in page." and the same for Year). Add these seven entries, alphabetically after `planner.target.base...`/before `planner.target.extra` as the sort order requires (`planner.target.countsIn*` sorts between `planner.target.base.yearlyGoalShare.description` and `planner.target.extra`), each with a `comment`:
 
 | Key | Comment | en | da |
 |---|---|---|---|
@@ -723,7 +723,7 @@ struct BufferScopeSettingsView: View {
 | `planner.target.countsIn.plannerYear` | Summary on the Counts in row when the Planner and the Year tab count the Buffer. | Planner, Year | Planlæg, Tjenesteår |
 | `planner.target.countsIn.all` | Summary on the Counts in row when the Planner, Overview and the Year tab count the Buffer. | Planner, Overview, Year | Planlæg, Overblik, Tjenesteår |
 
-   (That is seven entries; add all seven.) Do not add or change any other entry. `tab.planner`, `tab.overview` and `tab.year` already exist.
+   Do not add or change any other entry. `tab.planner`, `tab.overview` and `tab.year` already exist.
 
 5. **Help article** (`Base.lproj/TargetThisMonth.md`, `da.lproj/TargetThisMonth.md`). In the "If you set a Buffer" / "Hvis du sætter en buffer" section, replace the sentence that begins `You can also turn on "Include Buffer in Overview", ...` with: `Tap "Counts in" to also use it in Overview, in Year, or in both. A month's goal there then grows by your Buffer.` Danish: `Tryk på "Tæller i" for også at bruge den i Overblik, i Tjenesteår eller i begge. Månedens mål bliver så større med din buffer dér.` Leave the other paragraphs as they are.
 
