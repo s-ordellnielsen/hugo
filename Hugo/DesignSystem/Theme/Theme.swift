@@ -62,6 +62,15 @@ extension Color {
     /// Hugo's signature opt-in accent color (currently System Teal).
     /// Enables: `.tint(.hugoAccent)`, `Color.hugoAccent`.
     nonisolated static var hugoAccent: Color { .mint }
+
+    /// Progress track background that is white in light mode and the system's
+    /// default fill in dark mode, for tracks that sit on a grouped background.
+    nonisolated static var hugoLightTrack: Color {
+        Color(
+            uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark ? .quaternarySystemFill : .white
+            })
+    }
 }
 
 extension ShapeStyle where Self == Color {

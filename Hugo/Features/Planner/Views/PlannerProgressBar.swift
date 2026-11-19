@@ -15,7 +15,7 @@ struct PlannerProgressBar: View {
             filled: loggedSeconds / scale,
             extended: projectedSeconds / scale,
             marker: projectedSeconds > targetSeconds ? targetSeconds / scale : nil,
-            trackColor: .white
+            trackColor: .hugoLightTrack
         )
     }
 }

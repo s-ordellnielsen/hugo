@@ -51,7 +51,7 @@ struct TheocraticYearTotalsView: View {
                     MarkedProgressBar(
                         filled: fillFraction,
                         marker: progress.markerFraction,
-                        trackColor: .white
+                        trackColor: .hugoLightTrack
                     ) {
                         Text("year.goalBar.marker")
                             .font(.footnote)
