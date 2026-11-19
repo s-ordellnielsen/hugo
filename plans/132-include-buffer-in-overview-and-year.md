@@ -751,3 +751,96 @@ struct BufferScopeSettingsView: View {
 ### Revision STOP conditions
 
 Stop and report if any of the files listed as unchanged would need to change, if the strings diff shows any other deleted or reordered line, if the new file needs a folder other than `Screens`, or if a verification fails twice.
+
+---
+
+## Revision 3 (2026-11-19): stop the freeze when opening the "Count Buffer in" page
+
+> **Executor instructions for this revision**: Plans 132 Revision 1 and 2 are
+> already committed (`0bc313a`, `c778c5e`, `49049ba`). Apply only the change
+> below. The "Git workflow" and "STOP conditions" sections above still apply
+> (work on `main`, stage by explicit path, never stage `Debug.xcscheme`, do not
+> push, skip `plans/README.md`).
+>
+> **Drift check (run first)**: `git diff --stat 49049ba..HEAD -- Hugo HugoTests CONTEXT.md` prints nothing, and
+> `grep -n "@AppStorage" Hugo/Features/Planner/Screens/BufferScopeSettingsView.swift` matches the two lines declaring `bufferInOverview` and `bufferInYear`. If not, STOP.
+
+### What was found
+
+On the owner's iPhone, tapping the "Counts in" row froze the app (main thread at
+100% CPU for over 30 seconds). A time profile showed
+`PlannerTargetSettingsView.body` re-running in a loop. Each run is expensive,
+because the body rebuilds the whole year's report to compute the target
+preview. The cause was isolated with test builds that each changed one thing:
+
+| Pushed page | Result |
+|---|---|
+| A bare `Text` | works |
+| A bare `Text` with the navigation title | works |
+| A bare `Text` that only declares `@AppStorage(bufferInOverview)` and `@AppStorage(bufferInYear)` | **freezes** |
+| The real page with local `@State` switches but the two `@AppStorage` declarations kept | **freezes** |
+| The real page without `LabeledContent`, or without the VoiceOver labels, or without the animation on the parent | **freezes** |
+| The real page with no `@AppStorage` at all, getting the two values as `Binding<Bool>` from the parent | **works** |
+
+So the freeze comes from the pushed page declaring its own `@AppStorage` for the
+same two keys that `PlannerTargetSettingsView` (its parent in the navigation
+stack) already declares. The underlying SwiftUI reason is not known. The fix does
+not depend on it.
+
+### The change
+
+1. `Hugo/Features/Planner/Screens/BufferScopeSettingsView.swift`: remove the two `@AppStorage` properties and take the values as bindings instead:
+
+```swift
+struct BufferScopeSettingsView: View {
+    // The parent owns these two settings. Do not declare @AppStorage for them
+    // here: when this page did, opening it froze the app (plan 132, revision 3).
+    @Binding var includeInOverview: Bool
+    @Binding var includeInYear: Bool
+```
+
+   The `body` stays exactly as it is (it already uses `$includeInOverview` and `$includeInYear`). Replace the two `#Preview`s so they pass bindings, using `@Previewable @State`:
+
+```swift
+#Preview("Count Buffer in") {
+    @Previewable @State var overview = false
+    @Previewable @State var year = true
+    NavigationStack {
+        BufferScopeSettingsView(includeInOverview: $overview, includeInYear: $year)
+    }
+}
+
+#Preview("Count Buffer in, large text") {
+    @Previewable @State var overview = true
+    @Previewable @State var year = false
+    NavigationStack {
+        BufferScopeSettingsView(includeInOverview: $overview, includeInYear: $year)
+    }
+    .dynamicTypeSize(.accessibility5)
+}
+```
+
+2. `Hugo/Features/Planner/Screens/PlannerTargetSettingsView.swift`: in the "Counts in" `NavigationLink`, change the destination from `BufferScopeSettingsView()` to:
+
+```swift
+                        BufferScopeSettingsView(
+                            includeInOverview: $includeInOverview, includeInYear: $includeInYear)
+```
+
+   Change nothing else in that file. In particular keep the `.motion(Motion.presence, value: extraHours > 0)` line and the `if extraHours > 0` condition: they were ruled out as causes.
+
+### Verify and finish
+
+- `grep -n "@AppStorage" Hugo/Features/Planner/Screens/BufferScopeSettingsView.swift` → no output.
+- `xcrun swift-format lint --strict` on both changed files → exit 0.
+- `Scripts/verify.sh` → exit 0, with its output redirected to a file under `/private/tmp/claude-501/-Users-sebastiannielsen-Documents-Areas-Personal-Apps-Hugo/aac047fd-971a-4205-b00b-3f151b982d7b/scratchpad/` (for example `verify-132r3.log`), and the exit code taken from the script itself.
+- One commit with only those two files: `fix: pass the Buffer switches to their page as bindings to stop a freeze`. Do not push.
+
+There is no regression test: the loop happens in SwiftUI's view graph on a pushed page, and no unit-test seam in this codebase reaches it. Say so in NOTES.
+
+### Done criteria and STOP conditions
+
+- [ ] Only `BufferScopeSettingsView.swift` and `PlannerTargetSettingsView.swift` changed.
+- [ ] `Scripts/verify.sh` exits 0.
+
+Stop and report if a call site other than the one `NavigationLink` constructs `BufferScopeSettingsView()` (`grep -rn "BufferScopeSettingsView(" Hugo` should match only that call and the two previews), or if `@Previewable` does not compile.
