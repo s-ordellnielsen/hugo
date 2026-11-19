@@ -844,3 +844,199 @@ There is no regression test: the loop happens in SwiftUI's view graph on a pushe
 - [ ] `Scripts/verify.sh` exits 0.
 
 Stop and report if a call site other than the one `NavigationLink` constructs `BufferScopeSettingsView()` (`grep -rn "BufferScopeSettingsView(" Hugo` should match only that call and the two previews), or if `@Previewable` does not compile.
+
+---
+
+## Revision 4 (2026-11-19): clearer Monthly Target screen, consistent Buffer page, accent switches
+
+> **Executor instructions for this revision**: Plan 132 Revisions 1 to 3 and plan 133 are
+> already committed. Apply only the changes below. The "Git workflow" and "STOP
+> conditions" sections above still apply (work on `main`, stage by explicit path,
+> never stage `Debug.xcscheme`, do not push, skip `plans/README.md`).
+>
+> **Drift check (run first)**:
+> `git diff --stat 565b857..HEAD -- Hugo HugoTests CONTEXT.md` prints nothing, and
+> `git status --short` shows only
+> `M Hugo.xcodeproj/xcshareddata/xcschemes/Debug.xcscheme`. If not, STOP.
+
+### Why
+
+The owner tried the screens on the phone and asked for five changes (decisions
+made 2026-11-19, do not reopen them):
+
+1. **Confusion.** The base choice ("Monthly goal" / "Adjusted to yearly goal") only affects the Planner, but the screen no longer sits under a Planner section in Settings. The base choices get a section header "Planner" and a short footer saying so.
+2. **Consistency.** On the "Count Buffer in" page the Planner row shows the text "Always", which breaks the look of the other rows. It becomes a real switch that is on and disabled.
+3. **Colors.** Switches use the accent color (`Color.hugoAccent`), app-wide. The app's root tint is `.primary`, so today they are black or white.
+4. **Graphic labels.** In the target preview, the "Base target" line changed value with the chosen option. It now always shows the monthly goal, and a new line below it, "Adjusted", shows the signed change (for example "+3 hours" or "−2 hours") only while the adjusted option is chosen.
+5. **Option text.** The adjusted option's description loses the calculation ("Remaining yearly goal: ... Months remaining: ...") and "rounded up to whole hours". It becomes one short sentence.
+
+The bar's marker keeps a short label, "Monthly goal" without the number, so the tick still says what it is, and the number lives on the "Base target" line.
+
+### Current state (verify before editing)
+
+- `Hugo/Features/Planner/Domain/PlannerTargetPreview.swift` builds every label of the preview. Today `baseLabel` shows the selected base (`selectedBaseSeconds`), `goalLabel` is "Monthly goal: X" (the marker label), `monthlyBaseDescription` and `adjustedDescription` are the option descriptions (the second one names the remaining goal and months), and the two accessibility descriptions are built from `planner.target.preview.accessibility` and `...accessibility.noGoal`.
+- `Hugo/Features/Planner/Views/PlannerTargetPreviewView.swift` draws the big total, a `MarkedProgressBar` whose marker label is `Text(preview.goalLabel).font(.caption)`, and under it `Text(preview.baseLabel)` and `Text(preview.bufferLabel).foregroundStyle(.secondary)`.
+- `Hugo/Features/Planner/Screens/PlannerTargetSettingsView.swift`: the base `Section` has no header or footer. Its two `SelectableOptionRow`s use `description: Text(preview.monthlyBaseDescription)` and `description: Text(preview.adjustedDescription)`.
+- `Hugo/Features/Planner/Screens/BufferScopeSettingsView.swift`: the first row of the list is
+  ```swift
+                LabeledContent {
+                    Text("planner.target.countsIn.always")
+                } label: {
+                    Text("tab.planner")
+                }
+  ```
+- `Hugo/App/HugoApp.swift` wraps `AppRootView(...)` in `.tint(.primary)` and `.modelContainer(container)`.
+- There are four `Toggle`s in the app: three in `BufferScopeSettingsView` (after this revision) and one in `AddCategoryView.swift` ("Use as default").
+- `Hugo/DesignSystem/Styles/` holds `CardButtonStyle.swift`, the home for style types. `Color.hugoAccent` is defined in `Hugo/DesignSystem/Theme/Theme.swift`.
+- **Existing bug you will fix on the way**: the catalog value of `planner.target.preview.accessibility` has six placeholders (`%1$@. Monthly goal: %2$@. %3$: %4$@. Buffer: %5$@. Target: %6$@.`) but the code passes five arguments, and `planner.target.preview.accessibility.noGoal` has two placeholders (`%1$@. Monthly target: %2$@.`) but the code passes one. Both are rewritten below so catalog and code agree.
+
+### Changes
+
+1. **A switch style** (new file `Hugo/DesignSystem/Styles/HugoToggleStyle.swift`):
+
+```swift
+import SwiftUI
+
+/// Draws every switch in the app's accent color. The app's root tint is
+/// monochrome, so switches would otherwise be black or white.
+struct HugoToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Toggle(isOn: configuration.$isOn) { configuration.label }
+            .toggleStyle(.switch)
+            .tint(.hugoAccent)
+    }
+}
+```
+
+   The inner `.toggleStyle(.switch)` is required: without it the style would call itself. In `HugoApp.swift`, add `.toggleStyle(HugoToggleStyle())` on the `AppRootView(...)` chain, right after `.tint(.primary)`. Do not add it to the failure branch (`StoreLoadFailureView`), which has no switches. Do not change `AddCategoryView.swift`: it inherits the style from the root.
+
+2. **The Planner row on the Buffer page** (`BufferScopeSettingsView.swift`). Replace the `LabeledContent { ... } label: { ... }` block with:
+
+```swift
+                Toggle(isOn: .constant(true)) { Text("tab.planner") }
+                    .disabled(true)
+                    .accessibilityHint("planner.target.countsIn.always")
+```
+
+   Keep the two other toggles, the title and everything else as they are.
+
+3. **The preview model** (`PlannerTargetPreview.swift`).
+   - Remove the fields `goalLabel`, `monthlyBaseDescription` and `adjustedDescription`. Add `let adjustedLabel: String?`.
+   - In `make`, delete the now unused locals: `currentYear`, `goalText`, `goalLabel`, `monthlyBaseDescription`, `remainingSeconds`, `remainingMonths`, `remainingDuration`, `monthCount`, `adjustedDescription`, `selectedBaseLabel` and `accessibleGoal`. Keep `goalSeconds` (it is a stored field and drives `scaleSeconds`).
+   - `baseText` now uses the monthly base: `ServiceDurationFormatter.hoursString(from: monthlyBaseSeconds, locale: locale)`. The `baseLabel` key and `defaultValue` are unchanged. `selectedBaseSeconds` is still used for `solidFraction`; do not touch the fractions.
+   - Add, after `bufferText`:
+
+```swift
+        // The signed change from the monthly goal, only while the adjusted
+        // option is chosen and the status has a yearly goal.
+        let adjustedAmount: String? = {
+            guard base == .yearlyGoalShare, status?.yearlyGoalRule != nil else { return nil }
+            let change = adjustedBaseSeconds - monthlyBaseSeconds
+            if change == 0 {
+                return String(localized: LocalizedStringResource("planner.target.preview.adjusted.noChange", locale: locale))
+            }
+            let amount = ServiceDurationFormatter.hoursString(from: abs(change), locale: locale)
+            return (change > 0 ? "+" : "\u{2212}") + amount
+        }()
+        let adjustedLabel = adjustedAmount.map { amount in
+            String(
+                localized: LocalizedStringResource(
+                    "planner.target.preview.adjusted", defaultValue: "Adjusted: \(amount)", locale: locale))
+        }
+```
+
+   - `accessibleBase` now uses `monthlyBaseSeconds`. Build `accessibilityDescription` as:
+
+```swift
+        let accessibilityDescription: String
+        if let adjustedAmount {
+            accessibilityDescription = String(
+                localized: LocalizedStringResource(
+                    "planner.target.preview.accessibility.adjusted",
+                    defaultValue:
+                        "Base target: \(accessibleBase). Adjusted: \(adjustedAmount). Buffer: \(accessibleBuffer). Target: \(accessibleTotal).",
+                    locale: locale))
+        } else {
+            accessibilityDescription = String(
+                localized: LocalizedStringResource(
+                    "planner.target.preview.accessibility",
+                    defaultValue:
+                        "Base target: \(accessibleBase). Buffer: \(accessibleBuffer). Target: \(accessibleTotal).",
+                    locale: locale))
+        }
+```
+
+   - `accessibilityDescriptionWithoutGoal` stays as it is in code (one argument).
+   - Update the `PlannerTargetPreview(...)` initializer call at the end for the removed and added fields.
+
+4. **The preview view** (`PlannerTargetPreviewView.swift`).
+   - The marker label becomes `Text("planner.target.base.monthlyGoal").font(.caption)`.
+   - The lines below the bar become:
+
+```swift
+                VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
+                    Text(preview.baseLabel)
+                    if let adjustedLabel = preview.adjustedLabel {
+                        Text(adjustedLabel)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(preview.bufferLabel)
+                        .foregroundStyle(.secondary)
+                }
+```
+
+5. **The settings screen** (`PlannerTargetSettingsView.swift`). In the base `Section`: use `description: Text("planner.target.base.monthlyGoal.description")` and `description: Text("planner.target.base.yearlyGoalShare.description")` (the model no longer has those fields), and give the section a header and footer:
+
+```swift
+                } header: {
+                    Text("tab.planner")
+                } footer: {
+                    Text("planner.target.base.footer")
+                }
+```
+
+   Do not change the Buffer section, the "Counts in" row or anything else.
+
+6. **Strings** (`Hugo/Resources/Localizable.xcstrings`). Edit by text insertion and replacement, never by re-dumping the JSON. Keep the file's style and alphabetical key order. For the first five, replace the `comment` and both values; for the next three, add new entries; delete the last.
+
+| Key | Comment | en | da |
+|---|---|---|---|
+| `planner.target.base.footer` (change) | Footer under the Planner section that chooses what the monthly target starts from. | This only changes how the Planner calculates and shows your target. | Det ændrer kun, hvordan Planlæg beregner og viser dit mål. |
+| `planner.target.base.yearlyGoalShare.description` (change) | Explanation for the Adjusted to yearly goal option. | Spreads the rest of your yearly goal over the months left. | Fordeler resten af årsmålet over de resterende måneder. |
+| `planner.target.countsIn.always` (change) | Spoken hint on the Planner switch of the Count Buffer in page, which is always on. | Always on | Altid slået til |
+| `planner.target.preview.accessibility` (change) | Accessible summary of the target preview: base target, buffer and target. The arguments are durations. | Base target: %1$@. Buffer: %2$@. Target: %3$@. | Udgangspunkt: %1$@. Buffer: %2$@. Mål: %3$@. |
+| `planner.target.preview.accessibility.noGoal` (change) | Accessible summary for a publisher status without a monthly goal. The argument is a duration. | Monthly target: %1$@. | Mål for måneden: %1$@. |
+| `planner.target.preview.accessibility.adjusted` (new) | Accessible summary of the target preview with an adjustment: base target, adjustment, buffer and target. | Base target: %1$@. Adjusted: %2$@. Buffer: %3$@. Target: %4$@. | Udgangspunkt: %1$@. Tilpasset: %2$@. Buffer: %3$@. Mål: %4$@. |
+| `planner.target.preview.adjusted` (new) | Line under the base target in the preview. The argument is the signed change, such as +3 hours, or "no change". | Adjusted: %1$@ | Tilpasset: %1$@ |
+| `planner.target.preview.adjusted.noChange` (new) | The amount shown on the Adjusted line when the adjusted target equals the monthly goal. | no change | ingen ændring |
+| `planner.target.preview.goal` (delete the whole entry) | | | |
+
+   The new keys sort as `planner.target.preview.accessibility`, `...accessibility.adjusted`, `...accessibility.noGoal`, `...adjusted`, `...adjusted.noChange`, then `planner.target.preview.base`.
+
+7. **CONTEXT.md.** In **Adjusted target**, replace the sentence `The Settings explanation names the remaining goal and month count.` with: `The Settings explanation is one short sentence. The target preview shows the adjustment on its own line under the base target as a signed change, for example "Adjusted: +3 hours" / "Tilpasset: +3 timer", only while this option is chosen. The base target line always shows the monthly goal.` Change nothing else.
+
+8. **Tests** in `HugoTests/Features/Planner/Domain/PlannerTargetPreviewTests.swift`, using the existing `preview(base:credited:status:extra:)` helper (now is November 3, a regular pioneer, 50 hours a month, so `credited` of 95, 100 and 110 hours gives an adjusted base of 51, 50 and 49 hours):
+   - `baseLabelIsAlwaysTheMonthlyGoal`: `preview(base: .monthlyGoal, credited: 95 * 3_600).baseLabel == preview(base: .yearlyGoalShare, credited: 95 * 3_600).baseLabel`, and that label `contains("50")`.
+   - `adjustedLineShowsTheSignedChange`: credited 95 hours → `adjustedLabel?.contains("+1") == true`; credited 110 hours → `adjustedLabel?.contains("\u{2212}1") == true`; credited 100 hours → `adjustedLabel != nil` and it contains neither "+" nor "\u{2212}".
+   - `adjustedLineIsHiddenForTheMonthlyGoalAndWithoutAYearlyGoal`: `preview(base: .monthlyGoal, credited: 95 * 3_600).adjustedLabel == nil`, and `preview(base: .yearlyGoalShare, credited: 0, status: auxiliary).adjustedLabel == nil`.
+   No existing test reads the removed fields; if one does, update it to the new fields and say so in NOTES.
+
+### Verify and finish
+
+- `grep -rn "monthlyBaseDescription\|adjustedDescription\|goalLabel" Hugo HugoTests` → no output.
+- `grep -c "planner.target.preview.goal\"" Hugo/Resources/Localizable.xcstrings` → `0`.
+- `python3 -c "import json; json.load(open('Hugo/Resources/Localizable.xcstrings'))"` → exit 0.
+- `git diff -U0 Hugo/Resources/Localizable.xcstrings | grep '^[-+] *"planner'` → exactly one removed key line (`planner.target.preview.goal`) and three added key lines (`...accessibility.adjusted`, `...adjusted`, `...adjusted.noChange`). The five changed entries change only their `comment` and `value` lines.
+- `xcrun swift-format lint --strict` on every Swift file you changed or created → exit 0.
+- `Scripts/verify.sh` → exit 0, with its output redirected to a file under `/private/tmp/claude-501/-Users-sebastiannielsen-Documents-Areas-Personal-Apps-Hugo/aac047fd-971a-4205-b00b-3f151b982d7b/scratchpad/` (for example `verify-132r4.log`), and the exit code taken from the script itself. The log must contain `** TEST SUCCEEDED **`.
+- One commit: `feat: make the Monthly Target screen clearer and the Buffer page consistent`. Do not push.
+
+### Done criteria
+
+- [ ] `Scripts/verify.sh` exits 0 and the three new tests pass.
+- [ ] Only these files changed: `HugoToggleStyle.swift` (new), `HugoApp.swift`, `BufferScopeSettingsView.swift`, `PlannerTargetSettingsView.swift`, `PlannerTargetPreviewView.swift`, `PlannerTargetPreview.swift`, `Localizable.xcstrings`, `CONTEXT.md`, `PlannerTargetPreviewTests.swift`.
+- [ ] `AddCategoryView.swift`, `PlannerTarget.swift`, `MarkedProgressBar.swift` and every file about the Buffer's maths are unchanged.
+
+### Revision STOP conditions
+
+Stop and report if `MarkedProgressBar` would need to change, if a catalog edit would require re-dumping the JSON, if a removed field is still used somewhere outside the files listed, if `HugoToggleStyle` causes a compile error or recursion warning, or if a verification fails twice.
