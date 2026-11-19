@@ -131,7 +131,7 @@ Hours from a school, recorded for one month. It counts in full toward the yearly
 _Avoid_: PSS hours, credit hours
 
 **Expected time**:
-The counted time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none. The Year tab's goal bar marks it as "Target today" / "Mål i dag", on a scale that ends at the monthly goal times the months so far. With the Buffer switch on, each month's goal in this sum, and in the scale, is the monthly goal plus Buffer (current theocratic year only).
+The counted time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none. The Year tab's goal bar marks it as "Target today" / "Mål i dag", on a scale that ends at the monthly goal times the months so far. With the Year switch on, each month's goal in this sum, and in the scale, is the monthly goal plus Buffer (current theocratic year only).
 
 ## Planning
 
@@ -157,7 +157,7 @@ _Avoid_: Goal (the goal comes from the publisher status)
 The remaining yearly goal divided over the months left in the theocratic year, including the current month, rounded up to whole hours and based on counted time before the current month. The Settings label is "Adjusted to yearly goal" / "Tilpasset årsmålet". The Settings explanation names the remaining goal and month count. The persisted case remains `yearlyGoalShare`.
 
 **Buffer**:
-The nonnegative hours added to the base monthly target. Without a publisher-status goal, the same preference sets the whole personal monthly target. Settings calls it "Buffer" / "Buffer". Historical storage and API names remain `plannerExtraHours` / `extraHours`. The Planner bar draws the base as a solid fill and Buffer as a separate faded extension. The Planner always counts it. Overview and the Year tab count it only when the user turns on "Include Buffer in Overview and Year" / "Medregn buffer i Overblik og Tjenesteår" (`bufferInOverviewAndYear`, off by default, synced). The Year tab adds it only in the current theocratic year, and never adds the adjusted target.
+The nonnegative hours added to the base monthly target. Without a publisher-status goal, the same preference sets the whole personal monthly target. Settings calls it "Buffer" / "Buffer". Historical storage and API names remain `plannerExtraHours` / `extraHours`. The Planner bar draws the base as a solid fill and Buffer as a separate faded extension. The Planner always counts it. Overview and the Year tab each count it only when the user turns on their own switch, "Include Buffer in Overview" / "Medregn buffer i Overblik" (`bufferInOverview`) and "Include Buffer in Year" / "Medregn buffer i Tjenesteår" (`bufferInYear`), both off by default and synced. The Year tab adds it only in the current theocratic year, and never adds the adjusted target.
 
 **Plan pace**:
 How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.
@@ -181,7 +181,7 @@ _Avoid_: Conflict
 The one submitted report Hugo uses for a month when sync duplicates or placeholder reports leave more than one.
 
 **Synced setting**:
-A setting that stays the same on all of the user's devices through iCloud key-value storage, such as the publisher status, the group overseer, the Planner target or the Buffer switch. The onboarding flags and the Overview list style are not synced settings.
+A setting that stays the same on all of the user's devices through iCloud key-value storage, such as the publisher status, the group overseer, the Planner target or the Buffer switches. The onboarding flags and the Overview list style are not synced settings.
 
 ## Flagged ambiguities
 

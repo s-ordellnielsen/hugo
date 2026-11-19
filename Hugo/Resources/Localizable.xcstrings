@@ -3030,36 +3030,36 @@
         }
       }
     },
-    "planner.target.includeBuffer" : {
-      "comment" : "Label of the switch that makes Overview and the Year tab count the Buffer.",
+    "planner.target.includeBuffer.overview" : {
+      "comment" : "Label of the switch that makes Overview count the Buffer.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Medregn buffer i Overblik og Tjenesteår"
+            "value" : "Medregn buffer i Overblik"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Include Buffer in Overview and Year"
+            "value" : "Include Buffer in Overview"
           }
         }
       }
     },
-    "planner.target.includeBuffer.footer" : {
-      "comment" : "Footer under the switch that makes Overview and the Year tab count the Buffer.",
+    "planner.target.includeBuffer.year" : {
+      "comment" : "Label of the switch that makes the Year tab count the Buffer.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Overblik og Tjenesteår lægger din buffer til det mål, de viser. Slå fra for kun at se dit mål."
+            "value" : "Medregn buffer i Tjenesteår"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Overview and Year add your Buffer to the goal they show. Turn off to see your goal alone."
+            "value" : "Include Buffer in Year"
           }
         }
       }

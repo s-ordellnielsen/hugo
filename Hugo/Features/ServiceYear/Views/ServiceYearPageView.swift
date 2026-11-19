@@ -11,7 +11,7 @@ struct ServiceYearPageView: View {
     @Query private var schoolCredits: [SchoolCredit]
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
-    @AppStorage(UserDefaultsKeys.bufferInOverviewAndYear) private var includeBuffer = false
+    @AppStorage(UserDefaultsKeys.bufferInYear) private var includeBuffer = false
 
     init(year: TheocraticYear, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.year = year

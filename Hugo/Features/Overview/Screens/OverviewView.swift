@@ -38,7 +38,7 @@ private struct OverviewDayView: View {
 
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
-    @AppStorage(UserDefaultsKeys.bufferInOverviewAndYear) private var includeBuffer = false
+    @AppStorage(UserDefaultsKeys.bufferInOverview) private var includeBuffer = false
 
     @State private var showingAddEntry = false
     @State private var showingPlanPace = false

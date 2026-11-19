@@ -6,7 +6,8 @@ import UIKit
 struct PlannerTargetSettingsView: View {
     @AppStorage(UserDefaultsKeys.plannerTargetBase) private var base: PlannerTargetBase = .monthlyGoal
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
-    @AppStorage(UserDefaultsKeys.bufferInOverviewAndYear) private var includeBuffer = false
+    @AppStorage(UserDefaultsKeys.bufferInOverview) private var includeInOverview = false
+    @AppStorage(UserDefaultsKeys.bufferInYear) private var includeInYear = false
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
     @Environment(\.scenePhase) private var scenePhase
     @State private var refreshedToday: Date = .now
@@ -94,9 +95,8 @@ struct PlannerTargetSettingsView: View {
             }
 
             Section {
-                Toggle("planner.target.includeBuffer", isOn: $includeBuffer)
-            } footer: {
-                Text("planner.target.includeBuffer.footer")
+                Toggle("planner.target.includeBuffer.overview", isOn: $includeInOverview)
+                Toggle("planner.target.includeBuffer.year", isOn: $includeInYear)
             }
         }
         .navigationTitle("planner.target.title")
