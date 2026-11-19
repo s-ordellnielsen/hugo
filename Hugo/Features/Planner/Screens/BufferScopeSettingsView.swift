@@ -10,11 +10,9 @@ struct BufferScopeSettingsView: View {
     var body: some View {
         List {
             Section {
-                LabeledContent {
-                    Text("planner.target.countsIn.always")
-                } label: {
-                    Text("tab.planner")
-                }
+                Toggle(isOn: .constant(true)) { Text("tab.planner") }
+                    .disabled(true)
+                    .accessibilityHint("planner.target.countsIn.always")
                 Toggle(isOn: $includeInOverview) { Text("tab.overview") }
                     .accessibilityLabel("planner.target.includeBuffer.overview")
                 Toggle(isOn: $includeInYear) { Text("tab.year") }

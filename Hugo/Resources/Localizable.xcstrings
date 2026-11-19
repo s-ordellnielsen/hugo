@@ -2894,19 +2894,19 @@
       }
     },
     "planner.target.base.footer" : {
-      "comment" : "Footer that explains the 'Share of what's left' option.",
+      "comment" : "Footer under the Planner section that chooses what the monthly target starts from.",
       "extractionState" : "stale",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det tilpassede mål fordeler resten af årsmålet over de resterende måneder, rundet op til hele timer."
+            "value" : "Det ændrer kun, hvordan Planlæg beregner og viser dit mål."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The adjusted target spreads the remaining yearly goal over the remaining months, rounded up to whole hours."
+            "value" : "This only changes how the Planner calculates and shows your target."
           }
         }
       }
@@ -2963,18 +2963,18 @@
       }
     },
     "planner.target.base.yearlyGoalShare.description" : {
-      "comment" : "Remaining yearly goal and remaining month count for the adjusted target option.",
+      "comment" : "Explanation for the Adjusted to yearly goal option.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det tilpassede mål fordeler resten af årsmålet over de resterende måneder, rundet op til hele timer. Tilbage af årsmålet: %1$@. Resterende måneder: %2$@."
+            "value" : "Fordeler resten af årsmålet over de resterende måneder."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The adjusted target spreads the remaining yearly goal over the remaining months, rounded up to whole hours. Remaining yearly goal: %1$@. Months remaining: %2$@."
+            "value" : "Spreads the rest of your yearly goal over the months left."
           }
         }
       }
@@ -3014,18 +3014,18 @@
       }
     },
     "planner.target.countsIn.always" : {
-      "comment" : "Value shown for the Planner row, which always counts the Buffer.",
+      "comment" : "Spoken hint on the Planner switch of the Count Buffer in page, which is always on.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Altid"
+            "value" : "Altid slået til"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Always"
+            "value" : "Always on"
           }
         }
       }
@@ -3201,35 +3201,86 @@
       }
     },
     "planner.target.preview.accessibility" : {
-      "comment" : "Accessible summary: month, monthly goal, selected base and amount, buffer, and target.",
+      "comment" : "Accessible summary of the target preview: base target, buffer and target. The arguments are durations.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@. Månedligt mål: %2$@. %3$: %4$@. Buffer: %5$@. Mål: %6$@."
+            "value" : "Udgangspunkt: %1$@. Buffer: %2$@. Mål: %3$@."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@. Monthly goal: %2$@. %3$: %4$@. Buffer: %5$@. Target: %6$@."
+            "value" : "Base target: %1$@. Buffer: %2$@. Target: %3$@."
+          }
+        }
+      }
+    },
+    "planner.target.preview.accessibility.adjusted" : {
+      "comment" : "Accessible summary of the target preview with an adjustment: base target, adjustment, buffer and target.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udgangspunkt: %1$@. Tilpasset: %2$@. Buffer: %3$@. Mål: %4$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base target: %1$@. Adjusted: %2$@. Buffer: %3$@. Target: %4$@."
           }
         }
       }
     },
     "planner.target.preview.accessibility.noGoal" : {
-      "comment" : "Accessible summary for a publisher status without a monthly goal.",
+      "comment" : "Accessible summary for a publisher status without a monthly goal. The argument is a duration.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@. Mål for måneden: %2$@."
+            "value" : "Mål for måneden: %1$@."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@. Monthly target: %2$@."
+            "value" : "Monthly target: %1$@."
+          }
+        }
+      }
+    },
+    "planner.target.preview.adjusted" : {
+      "comment" : "Line under the base target in the preview. The argument is the signed change, such as +3 hours, or no change.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpasset: %1$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adjusted: %1$@"
+          }
+        }
+      }
+    },
+    "planner.target.preview.adjusted.noChange" : {
+      "comment" : "The amount shown on the Adjusted line when the adjusted target equals the monthly goal.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ingen ændring"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no change"
           }
         }
       }
@@ -3264,23 +3315,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buffer: %1$@"
-          }
-        }
-      }
-    },
-    "planner.target.preview.goal" : {
-      "comment" : "Factual monthly goal marker label and duration.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Månedligt mål: %1$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Monthly goal: %1$@"
           }
         }
       }

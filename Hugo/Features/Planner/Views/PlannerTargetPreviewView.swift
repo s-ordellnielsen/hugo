@@ -19,12 +19,16 @@ struct PlannerTargetPreviewView: View {
                 let marker = preview.markerFraction
             {
                 MarkedProgressBar(filled: solid, extended: extended, marker: marker) {
-                    Text(preview.goalLabel)
+                    Text("planner.target.base.monthlyGoal")
                         .font(.caption)
                 }
 
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
                     Text(preview.baseLabel)
+                    if let adjustedLabel = preview.adjustedLabel {
+                        Text(adjustedLabel)
+                            .foregroundStyle(.secondary)
+                    }
                     Text(preview.bufferLabel)
                         .foregroundStyle(.secondary)
                 }

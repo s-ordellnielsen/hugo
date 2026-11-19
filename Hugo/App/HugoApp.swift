@@ -11,6 +11,7 @@ struct HugoApp: App {
             case .loaded(let container):
                 AppRootView(settingsSync: Self.isRunningTests ? nil : SettingsSyncService())
                     .tint(.primary)
+                    .toggleStyle(HugoToggleStyle())
                     .modelContainer(container)
             case .failed(let details):
                 StoreLoadFailureView(report: .current(errorDetails: details), retry: loader.retry)

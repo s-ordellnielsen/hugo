@@ -65,18 +65,22 @@ struct PlannerTargetSettingsView: View {
                 Section {
                     SelectableOptionRow(
                         title: Text("planner.target.base.monthlyGoal"),
-                        description: Text(preview.monthlyBaseDescription),
+                        description: Text("planner.target.base.monthlyGoal.description"),
                         isSelected: base == .monthlyGoal
                     ) {
                         base = .monthlyGoal
                     }
                     SelectableOptionRow(
                         title: Text("planner.target.base.yearlyGoalShare"),
-                        description: Text(preview.adjustedDescription),
+                        description: Text("planner.target.base.yearlyGoalShare.description"),
                         isSelected: base == .yearlyGoalShare
                     ) {
                         base = .yearlyGoalShare
                     }
+                } header: {
+                    Text("tab.planner")
+                } footer: {
+                    Text("planner.target.base.footer")
                 }
             }
 

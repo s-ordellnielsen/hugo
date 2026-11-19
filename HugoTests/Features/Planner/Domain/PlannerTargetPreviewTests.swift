@@ -94,6 +94,31 @@ struct PlannerTargetPreviewTests {
         }
     }
 
+    @Test
+    func baseLabelIsAlwaysTheMonthlyGoal() {
+        let monthly = preview(base: .monthlyGoal, credited: 95 * 3_600)
+        let adjusted = preview(base: .yearlyGoalShare, credited: 95 * 3_600)
+
+        #expect(monthly.baseLabel == adjusted.baseLabel)
+        #expect(monthly.baseLabel.contains("50"))
+    }
+
+    @Test
+    func adjustedLineShowsTheSignedChange() {
+        #expect(preview(base: .yearlyGoalShare, credited: 95 * 3_600).adjustedLabel?.contains("+1") == true)
+        #expect(preview(base: .yearlyGoalShare, credited: 110 * 3_600).adjustedLabel?.contains("\u{2212}1") == true)
+        let unchanged = preview(base: .yearlyGoalShare, credited: 100 * 3_600).adjustedLabel
+        #expect(unchanged != nil)
+        #expect(unchanged?.contains("+") == false)
+        #expect(unchanged?.contains("\u{2212}") == false)
+    }
+
+    @Test
+    func adjustedLineIsHiddenForTheMonthlyGoalAndWithoutAYearlyGoal() {
+        #expect(preview(base: .monthlyGoal, credited: 95 * 3_600).adjustedLabel == nil)
+        #expect(preview(base: .yearlyGoalShare, credited: 0, status: auxiliary).adjustedLabel == nil)
+    }
+
     private func preview(
         base: PlannerTargetBase,
         credited: TimeInterval,

@@ -10,12 +10,10 @@ nonisolated struct PlannerTargetPreview: Equatable, Sendable {
     let solidFraction: Double?
     let extendedFraction: Double?
     let markerFraction: Double?
-    let monthlyBaseDescription: String
-    let adjustedDescription: String
     let accessibilityDescription: String
     let accessibilityDescriptionWithoutGoal: String
-    let goalLabel: String
     let baseLabel: String
+    let adjustedLabel: String?
     let bufferLabel: String
     let totalLabel: String
 
@@ -29,7 +27,6 @@ nonisolated struct PlannerTargetPreview: Equatable, Sendable {
         locale: Locale = .current
     ) -> PlannerTargetPreview {
         let month = now.yearMonth(using: calendar)
-        let currentYear = TheocraticYear.containing(now, calendar: calendar)
         let monthlyGoalSeconds = TimeInterval(status?.monthlyGoal ?? 0) * 3_600
         let goalSeconds = monthlyGoalSeconds > 0 ? monthlyGoalSeconds : nil
         let monthlyBaseSeconds =
@@ -54,47 +51,52 @@ nonisolated struct PlannerTargetPreview: Equatable, Sendable {
         let totalText =
             totalSeconds.map { ServiceDurationFormatter.hoursString(from: $0, locale: locale) }
             ?? String(localized: LocalizedStringResource("planner.target.none", locale: locale))
-        let goalText = goalSeconds.map { ServiceDurationFormatter.hoursString(from: $0, locale: locale) } ?? ""
-        let baseText = ServiceDurationFormatter.hoursString(from: selectedBaseSeconds, locale: locale)
+        let baseText = ServiceDurationFormatter.hoursString(from: monthlyBaseSeconds, locale: locale)
         let bufferText = ServiceDurationFormatter.hoursString(from: bufferSeconds, locale: locale)
-        let goalLabel = String(
-            localized: LocalizedStringResource(
-                "planner.target.preview.goal", defaultValue: "Monthly goal: \(goalText)", locale: locale))
         let baseLabel = String(
             localized: LocalizedStringResource(
                 "planner.target.preview.base", defaultValue: "Base target: \(baseText)", locale: locale))
         let bufferLabel = String(
             localized: LocalizedStringResource(
                 "planner.target.preview.buffer", defaultValue: "Buffer: \(bufferText)", locale: locale))
-        let monthlyBaseDescription = String(
-            localized: LocalizedStringResource(
-                "planner.target.base.monthlyGoal.description",
-                defaultValue: "Uses the monthly goal for your publisher status.", locale: locale))
-        let remainingSeconds = max(0, TimeInterval(status?.yearlyGoal ?? 0) * 3_600 - creditedBeforeCurrentMonth)
-        let remainingMonths = currentYear.months.filter { $0 >= month }.count
-        let remainingDuration = ServiceDurationFormatter.hoursString(from: remainingSeconds, locale: locale)
-        let monthCount = remainingMonths.formatted(.number.locale(locale))
-        let adjustedDescription = String(
-            localized: LocalizedStringResource(
-                "planner.target.base.yearlyGoalShare.description",
-                defaultValue: "Remaining yearly goal: \(remainingDuration). Months remaining: \(monthCount).",
-                locale: locale))
-        let accessibleGoal = ServiceDurationFormatter.accessibilityString(from: goalSeconds ?? 0, locale: locale)
-        let accessibleBase = ServiceDurationFormatter.accessibilityString(from: selectedBaseSeconds, locale: locale)
+        // The signed change from the monthly goal, only while the adjusted
+        // option is chosen and the status has a yearly goal.
+        let adjustedAmount: String? = {
+            guard base == .yearlyGoalShare, status?.yearlyGoalRule != nil else { return nil }
+            let change = adjustedBaseSeconds - monthlyBaseSeconds
+            if change == 0 {
+                return String(
+                    localized: LocalizedStringResource("planner.target.preview.adjusted.noChange", locale: locale))
+            }
+            let amount = ServiceDurationFormatter.hoursString(from: abs(change), locale: locale)
+            return (change > 0 ? "+" : "\u{2212}") + amount
+        }()
+        let adjustedLabel = adjustedAmount.map { amount in
+            String(
+                localized: LocalizedStringResource(
+                    "planner.target.preview.adjusted", defaultValue: "Adjusted: \(amount)", locale: locale))
+        }
+        let accessibleBase = ServiceDurationFormatter.accessibilityString(from: monthlyBaseSeconds, locale: locale)
         let accessibleBuffer = ServiceDurationFormatter.accessibilityString(from: bufferSeconds, locale: locale)
         let accessibleTotal =
             totalSeconds.map { ServiceDurationFormatter.accessibilityString(from: $0, locale: locale) }
             ?? String(localized: LocalizedStringResource("planner.target.none", locale: locale))
-        let selectedBaseLabel = String(
-            localized: LocalizedStringResource(
-                base == .monthlyGoal ? "planner.target.base.monthlyGoal" : "planner.target.base.yearlyGoalShare",
-                locale: locale))
-        let accessibilityDescription = String(
-            localized: LocalizedStringResource(
-                "planner.target.preview.accessibility",
-                defaultValue:
-                    "Monthly goal: \(accessibleGoal). \(selectedBaseLabel): \(accessibleBase). Buffer: \(accessibleBuffer). Target: \(accessibleTotal).",
-                locale: locale))
+        let accessibilityDescription: String
+        if let adjustedAmount {
+            accessibilityDescription = String(
+                localized: LocalizedStringResource(
+                    "planner.target.preview.accessibility.adjusted",
+                    defaultValue:
+                        "Base target: \(accessibleBase). Adjusted: \(adjustedAmount). Buffer: \(accessibleBuffer). Target: \(accessibleTotal).",
+                    locale: locale))
+        } else {
+            accessibilityDescription = String(
+                localized: LocalizedStringResource(
+                    "planner.target.preview.accessibility",
+                    defaultValue:
+                        "Base target: \(accessibleBase). Buffer: \(accessibleBuffer). Target: \(accessibleTotal).",
+                    locale: locale))
+        }
         let accessibilityDescriptionWithoutGoal = String(
             localized: LocalizedStringResource(
                 "planner.target.preview.accessibility.noGoal",
@@ -105,9 +107,8 @@ nonisolated struct PlannerTargetPreview: Equatable, Sendable {
             monthlyBaseSeconds: monthlyBaseSeconds, adjustedBaseSeconds: adjustedBaseSeconds,
             bufferSeconds: bufferSeconds,
             totalSeconds: totalSeconds, solidFraction: solidFraction, extendedFraction: extendedFraction,
-            markerFraction: markerFraction, monthlyBaseDescription: monthlyBaseDescription,
-            adjustedDescription: adjustedDescription, accessibilityDescription: accessibilityDescription,
+            markerFraction: markerFraction, accessibilityDescription: accessibilityDescription,
             accessibilityDescriptionWithoutGoal: accessibilityDescriptionWithoutGoal,
-            goalLabel: goalLabel, baseLabel: baseLabel, bufferLabel: bufferLabel, totalLabel: totalText)
+            baseLabel: baseLabel, adjustedLabel: adjustedLabel, bufferLabel: bufferLabel, totalLabel: totalText)
     }
 }
