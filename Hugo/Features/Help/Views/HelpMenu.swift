@@ -25,7 +25,7 @@ struct HelpMenu: View {
             Label {
                 Text("help.menu.label")
             } icon: {
-                Image(systemName: "questionmark.circle")
+                Image(systemName: "questionmark")
             }
         }
         .sheet(item: $presentedArticle) { article in
