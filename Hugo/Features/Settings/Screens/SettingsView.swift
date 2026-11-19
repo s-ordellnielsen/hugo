@@ -77,6 +77,8 @@ struct SettingsView: View {
                     NavigationLink(destination: GeneralSettingsView()) {
                         Label("settings.group.settings.general", systemImage: "gearshape")
                     }
+                } header: {
+                    Text("settings.title")
                 }
 
                 Section {
