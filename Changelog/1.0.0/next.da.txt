@@ -1,0 +1,37 @@
+Hugo er tilbage med en ny opdatering. Timer fra skoler, en ny velkomst og et tydeligere overblik over dit årsmål. Lad os dykke ned i det.
+
+VELKOMST
+- En ny velkomst viser, hvad Hugo kan, efterfulgt af korte indstillingssider til din gruppetjener og dine indstillinger.
+- Skriv selv din gruppetjeners navn og nummer i stedet for at vælge en kontakt.
+- Opsætningen viser altid alle fire trin, og noterne om privatliv og iCloud er lettere at få øje på.
+
+KATEGORIER
+- Hver kategori er nu enten Forkyndelse eller Godtgørelse. To kort forklarer forskellen, når du opretter en kategori.
+- Du kan kun tilføje bibelstudier til registreringer i kategorier med forkyndelse.
+- Kategorilisten lukker, når du trykker på en kategori.
+
+TJENESTEÅR
+- Dit årsmål vises nu som en bjælke med en markering af, hvor du burde være i dag.
+- Tilføj timer fra skoler, fx Pionerskole, til en måned under Tjenesteår. De tæller med mod dit årsmål og bliver sendt med din rapport.
+- Tryk på en måneds kort for at åbne dens detaljer.
+- Dit mål for den nuværende måned vokser nu lidt hver dag.
+
+HJÆLP
+- Hjælp er nu en menu i værktøjslinjen, vist som et spørgsmålstegn.
+- To nye artikler forklarer, hvordan Hugo regner dit mål i denne måned ud, og forskellen på forkyndelse og godtgørelse.
+
+INDSTILLINGER
+- Indstillinger har nu en overskrift øverst.
+- iCloud viser, om synkronisering virker, og står som Offline, når enheden ikke har netværk.
+- Din forkynderstatus synkroniseres nu mellem dine enheder.
+- Skærmen Månedsmål er tydeligere.
+- På siden Buffer kan du vælge, hvor bufferen tæller med: i Overblik, i Tjenesteår eller begge steder. Planlæg medregner den altid.
+- Skriv en anmeldelse og Anbefal Hugo ligger nu under Indstillinger.
+
+ÆNDRINGER
+- Titler på indholdsskærme, hovedfaner og ark bruger serifskrift
+- Indsend-knappen på månedssiden bruger din accentfarve
+- Statuslinjerne i Planlæg og Tjenesteår har et hvidt spor
+- Rettet en fastfrysning, når siden Buffer blev åbnet
+- Rettet manglende tekst på trinnet med gruppetjeneren
+- Generelle fejlrettelser og forbedringer

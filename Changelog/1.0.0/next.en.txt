@@ -1,0 +1,37 @@
+Hugo is back with a new update. School hours, a new welcome, and a clearer view of your yearly goal. Let's dive in.
+
+WELCOME
+- A new welcome shows what Hugo does, followed by short setup pages for your group overseer and your settings.
+- Type your group overseer's name and number yourself instead of choosing a contact.
+- The setup always shows all four steps, and the privacy and iCloud notes are easier to spot.
+
+CATEGORIES
+- Every category is now either Field Service or Credit. Two cards explain the difference when you create a category.
+- You can only add Bible studies to entries in Field Service categories.
+- The category list closes when you tap a category.
+
+YEAR
+- Your yearly goal is now a bar, with a marker for where you should be today.
+- Add school hours, such as Pioneer School, to a month from the Year tab. They count toward your yearly goal and are sent with your report.
+- Tap a month's card to open its details.
+- Your target for the current month now grows a little each day.
+
+HELP
+- Help is now a menu in the toolbar, shown as a question mark.
+- Two new articles explain how Hugo works out your target this month, and the difference between Field Service and Credit.
+
+SETTINGS
+- Settings now has a header at the top.
+- iCloud shows whether sync is working, and says Offline when your device has no network.
+- Your publisher status now syncs between your devices.
+- The Monthly Target screen is clearer.
+- On the Buffer page, choose where the Buffer counts: in Overview, in the Year tab, or both. Planner always includes it.
+- Write a Review and Recommend Hugo are now in Settings.
+
+CHANGES
+- Titles on content screens, tab roots and sheets use the serif font
+- The submit button on the month page uses your accent color
+- The progress bars in Planner and Year have a white track
+- Fixed a freeze when opening the Buffer page
+- Fixed missing text on the group overseer step
+- General bug fixes and improvements
