@@ -521,3 +521,91 @@ Stop and report back (do not improvise) if:
 - If a per-month Buffer history is ever wanted, "past months use today's Buffer" is the approximation to revisit.
 - A reviewer should check that the rule "current year only" lives in `make` and not in the views, and that a Buffer of 0 gives identical output (test 3).
 - Deferred on purpose: adding the adjusted-target base to the Year tab (it would feed the user's own progress back into their pace), and showing the Buffer as a faded extension on the Year bar or Overview circle.
+
+---
+
+## Revision 1 (2026-11-19): two switches instead of one, and no footer under them
+
+> **Executor instructions for this revision**: Plan 132 is already committed
+> as `8ce2448`. Apply only the changes below on top of it. Everything above
+> still describes the code you start from. Follow "Git workflow" (work on
+> `main`, stage by explicit path, never stage `Debug.xcscheme`, do not push)
+> and the "STOP conditions". Skip `plans/README.md`; the reviewer maintains it.
+>
+> **Drift check (run first)**: `git log --oneline -3` shows `8ce2448` (or a
+> later commit on top of it) and `git status --short` shows only
+> `M Hugo.xcodeproj/xcshareddata/xcschemes/Debug.xcscheme`. Also
+> `grep -rn "bufferInOverviewAndYear" Hugo HugoTests CONTEXT.md` must match
+> the files listed in "Done criteria" above. If not, STOP.
+
+### Why
+
+The owner tried the single switch and wants to choose Overview and the Year
+tab separately, and wants less explanatory text on the settings screen. The
+Buffer is a nonnegative whole number, and each screen already takes it as a
+plain value, so only the settings, the two call sites, the strings and the
+docs change. `YearlyGoalProgress.make` and `OverviewMetrics.make` stay as they
+are.
+
+The single-switch key has only ever been installed on the owner's own
+devices (a Debug build), so it is renamed without a migration. A leftover value
+under the old key is never read.
+
+### Changes
+
+1. **Keys** (`Hugo/Domain/UserDefaultsKeys.swift`). Replace `bufferInOverviewAndYear` with two keys, each with a one-line doc comment, both off by default:
+
+```swift
+    /// Whether Overview adds the Buffer to the monthly goal it shows. Off by default.
+    static let bufferInOverview = "bufferInOverview"
+    /// Whether the Year tab adds the Buffer to the monthly goal it uses. Off by default.
+    static let bufferInYear = "bufferInYear"
+```
+
+2. **Synced list** (`SyncedSettings.swift`). Replace the one entry with `UserDefaultsKeys.bufferInOverview,` and `UserDefaultsKeys.bufferInYear,` in that order, still right after `plannerExtraHours`.
+
+3. **Settings screen** (`PlannerTargetSettingsView.swift`). Replace the `includeBuffer` property with `includeInOverview` (`@AppStorage(UserDefaultsKeys.bufferInOverview)`) and `includeInYear` (`@AppStorage(UserDefaultsKeys.bufferInYear)`), both `= false`. Replace the switch section with one section that has no header and **no footer**:
+
+```swift
+            Section {
+                Toggle("planner.target.includeBuffer.overview", isOn: $includeInOverview)
+                Toggle("planner.target.includeBuffer.year", isOn: $includeInYear)
+            }
+```
+
+   Leave the Buffer stepper section and its existing footer exactly as they are.
+
+4. **Call sites.** `OverviewView.swift` (`OverviewDayView`) reads `UserDefaultsKeys.bufferInOverview` into `includeBuffer` and keeps passing `bufferHours: includeBuffer ? extraHours : 0`. `ServiceYearPageView.swift` reads `UserDefaultsKeys.bufferInYear` into `includeBuffer` and keeps passing `bufferSeconds: includeBuffer ? TimeInterval(extraHours) * 3_600 : 0`. Only the key changes in each file.
+
+5. **Strings** (`Localizable.xcstrings`). Delete the two entries `planner.target.includeBuffer` and `planner.target.includeBuffer.footer`. Add, in the same place (between `planner.target.extra.footer.noGoal` and `planner.target.none`, alphabetical), with a `comment` each:
+
+| Key | Comment | en | da |
+|---|---|---|---|
+| `planner.target.includeBuffer.overview` | Label of the switch that makes Overview count the Buffer. | Include Buffer in Overview | Medregn buffer i Overblik |
+| `planner.target.includeBuffer.year` | Label of the switch that makes the Year tab count the Buffer. | Include Buffer in Year | Medregn buffer i Tjenesteår |
+
+6. **Help article** (`Base.lproj/TargetThisMonth.md` and `da.lproj/TargetThisMonth.md`). In the "If you set a Buffer" / "Hvis du sætter en buffer" section, change the second sentence of the first paragraph so it names both switches. English: `You can also turn on "Include Buffer in Overview", "Include Buffer in Year", or both. A month's goal there then grows by your Buffer.` Danish: `Du kan også slå "Medregn buffer i Overblik" og "Medregn buffer i Tjenesteår" til, en af dem eller begge. Månedens mål bliver så større med din buffer dér.` In the second paragraph, start the sentence with `With the Year switch on, a regular pioneer ...` / `Med Tjenesteår-kontakten slået til har en almindelig pioner ...` (it describes the Year tab's "target today"). Leave the example numbers and the third paragraph as they are.
+
+7. **CONTEXT.md.** In **Buffer**, replace the sentence beginning `Overview and the Year tab count it only when the user turns on ...` with: `Overview and the Year tab each count it only when the user turns on their own switch, "Include Buffer in Overview" / "Medregn buffer i Overblik" (`bufferInOverview`) and "Include Buffer in Year" / "Medregn buffer i Tjenesteår" (`bufferInYear`), both off by default and synced. The Year tab adds it only in the current theocratic year, and never adds the adjusted target.` In **Expected time**, change `With the Buffer switch on,` to `With the Year switch on,`. In **Synced setting**, change `the Buffer switch` to `the Buffer switches`.
+
+8. **Tests** (`SettingsSyncServiceTests.swift`). Replace the two tests added in Step 1 with: one that pulls `bufferInOverview = true` and `bufferInYear = true` from `cloud.values` and expects `defaults.bool(forKey:)` to be true for each, and one asserting `SyncedSettings.keys` contains both keys. No other test changes: `YearlyGoalProgressTests` and `OverviewMetricsTests` do not touch the keys.
+
+### Verify and finish
+
+- `grep -rn "bufferInOverviewAndYear" Hugo HugoTests CONTEXT.md` → no output.
+- `grep -rn "includeBuffer.footer" Hugo` → no output.
+- `python3 -c "import json; json.load(open('Hugo/Resources/Localizable.xcstrings'))"` → exit 0, and `git diff --stat Hugo/Resources/Localizable.xcstrings` shows only the two removed and two added entries.
+- `xcrun swift-format lint --strict` on each Swift file you changed → exit 0.
+- `Scripts/verify.sh` → exit 0. Keep the full output in a file under `/private/tmp/claude-501/-Users-sebastiannielsen-Documents-Areas-Personal-Apps-Hugo/aac047fd-971a-4205-b00b-3f151b982d7b/scratchpad/` and report the exit code from the file, not from a wrapper.
+- One commit: `feat: choose Overview and the Year tab separately for the Buffer`. Do not push.
+
+### Done criteria
+
+- [ ] `Scripts/verify.sh` exits 0 and the two new sync tests pass.
+- [ ] `grep -rn "bufferInOverview\b" Hugo` matches `UserDefaultsKeys.swift`, `SyncedSettings.swift`, `OverviewView.swift`, `PlannerTargetSettingsView.swift`; `grep -rn "bufferInYear\b" Hugo` matches `UserDefaultsKeys.swift`, `SyncedSettings.swift`, `ServiceYearPageView.swift`, `PlannerTargetSettingsView.swift`.
+- [ ] The settings screen has no footer under the two switches, and the Buffer stepper's footer is unchanged.
+- [ ] Only these files changed: `UserDefaultsKeys.swift`, `SyncedSettings.swift`, `PlannerTargetSettingsView.swift`, `OverviewView.swift`, `ServiceYearPageView.swift`, `Localizable.xcstrings`, both `TargetThisMonth.md`, `CONTEXT.md`, `SettingsSyncServiceTests.swift`.
+
+### Revision STOP conditions
+
+Stop and report if `YearlyGoalProgress.make` or `OverviewMetrics.make` would need to change, if the strings diff shows any other deleted or reordered line, or if a verification fails twice.
