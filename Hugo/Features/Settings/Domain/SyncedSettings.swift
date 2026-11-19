@@ -10,6 +10,7 @@ enum SyncedSettings {
         UserDefaultsKeys.publisherStatus,
         UserDefaultsKeys.plannerTargetBase,
         UserDefaultsKeys.plannerExtraHours,
+        UserDefaultsKeys.bufferInOverviewAndYear,
         UserDefaultsKeys.durationMinuteInterval,
         UserDefaultsKeys.overseerFullName,
         UserDefaultsKeys.overseerPhoneNumber,

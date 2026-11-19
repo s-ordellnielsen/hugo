@@ -9,9 +9,12 @@ struct OverviewMetrics {
 
     var progress: Double { max(totalHours, 0) }
 
-    static func make(entries: [Entry], status: PublisherStatus?, now: Date, calendar: Calendar) -> OverviewMetrics {
+    /// `bufferHours` is the Buffer to add to the goal, or 0. Without a status goal it is the whole goal.
+    static func make(
+        entries: [Entry], status: PublisherStatus?, bufferHours: Int = 0, now: Date, calendar: Calendar
+    ) -> OverviewMetrics {
         let totalHours = entries.reduce(0) { $0 + max($1.duration, 0) } / 3600
-        let goal = Double(status?.monthlyGoal ?? 0)
+        let goal = Double((status?.monthlyGoal ?? 0) + max(0, bufferHours))
         let days = Double(calendar.range(of: .day, in: .month, for: now)?.count ?? 0)
         let day = Double(calendar.component(.day, from: now))
         let expected = days > 0 ? day / days * goal : 0

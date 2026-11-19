@@ -3030,6 +3030,40 @@
         }
       }
     },
+    "planner.target.includeBuffer" : {
+      "comment" : "Label of the switch that makes Overview and the Year tab count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medregn buffer i Overblik og Tjenesteår"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Include Buffer in Overview and Year"
+          }
+        }
+      }
+    },
+    "planner.target.includeBuffer.footer" : {
+      "comment" : "Footer under the switch that makes Overview and the Year tab count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overblik og Tjenesteår lægger din buffer til det mål, de viser. Slå fra for kun at se dit mål."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overview and Year add your Buffer to the goal they show. Turn off to see your goal alone."
+          }
+        }
+      }
+    },
     "planner.target.none" : {
       "comment" : "Settings summary when the publisher status has no goal and no extra hours are set.",
       "localizations" : {

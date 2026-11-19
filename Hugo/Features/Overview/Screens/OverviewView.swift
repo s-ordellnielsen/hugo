@@ -37,6 +37,8 @@ private struct OverviewDayView: View {
     @Query private var submissions: [SubmittedReport]
 
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
+    @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
+    @AppStorage(UserDefaultsKeys.bufferInOverviewAndYear) private var includeBuffer = false
 
     @State private var showingAddEntry = false
     @State private var showingPlanPace = false
@@ -53,7 +55,8 @@ private struct OverviewDayView: View {
 
     private var metrics: OverviewMetrics {
         OverviewMetrics.make(
-            entries: entries, status: PublisherStatus.status(for: statusID), now: .now, calendar: .current)
+            entries: entries, status: PublisherStatus.status(for: statusID),
+            bufferHours: includeBuffer ? extraHours : 0, now: .now, calendar: .current)
     }
 
     /// The current month in Planner terms: its plans and logged time per day.

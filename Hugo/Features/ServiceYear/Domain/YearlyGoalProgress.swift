@@ -4,14 +4,15 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     let creditedSeconds: TimeInterval
     /// The year total: reported hours of submitted months plus logged time of the rest.
     let yearTotalSeconds: TimeInterval
-    /// Seconds the user should have by now: the monthly goal for each month that is over, plus the current month's goal spread by day. Nil when the year has not started.
+    /// Seconds the user should have by now: the monthly goal for each month that is over, plus the current month's goal spread by day. The monthly goal here includes the Buffer when one is passed. Nil when the year has not started.
     let expectedSeconds: TimeInterval?
     let yearlyGoalSeconds: TimeInterval
     let monthlyGoalSeconds: TimeInterval
     let months: [Month]
-    /// The end of the goal bar: the monthly goal times the months of the
-    /// theocratic year up to and including the current month. The whole
-    /// yearly goal once the year is over. Nil before the year starts.
+    /// The end of the goal bar: the monthly goal, plus the Buffer when one is
+    /// passed, times the months of the theocratic year up to and including the
+    /// current month. The whole yearly goal once the year is over. Nil before
+    /// the year starts.
     let scaleEndSeconds: TimeInterval?
     /// The last month the scale covers: the current month, or August once
     /// the year is over. Nil before the year starts.
@@ -59,6 +60,7 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
     static func make(
         report: TheocraticYearReport,
         status: PublisherStatus,
+        bufferSeconds: TimeInterval = 0,
         now: Date = .now,
         calendar: Calendar = .current
     ) -> YearlyGoalProgress? {
@@ -74,23 +76,26 @@ nonisolated struct YearlyGoalProgress: Equatable, Sendable {
         }
 
         let current = now.yearMonth(using: calendar)
+        let isYearOver = report.months.last.map { $0.id < current } ?? false
+        // The Buffer is today's preference, so it applies to the current
+        // theocratic year only. A finished year keeps its original goal.
+        let monthlyTargetSeconds = rule.monthlyGoalSeconds + (isYearOver ? 0 : max(0, bufferSeconds))
         let expectedSeconds: TimeInterval?
         if let first = report.months.first, first.id > current {
             expectedSeconds = nil
         } else {
             expectedSeconds = report.months.reduce(0) { total, month in
                 if month.id < current {
-                    return total + rule.monthlyGoalSeconds
+                    return total + monthlyTargetSeconds
                 }
                 guard month.id == current else { return total }
-                return total + rule.monthlyGoalSeconds * currentMonthFraction(now: now, calendar: calendar)
+                return total + monthlyTargetSeconds * currentMonthFraction(now: now, calendar: calendar)
             }
         }
 
         let monthsSoFar = report.months.filter { $0.id <= current }
         let scaleEndMonth = monthsSoFar.last?.id
-        let scaleEndSeconds = scaleEndMonth.map { _ in rule.monthlyGoalSeconds * Double(monthsSoFar.count) }
-        let isYearOver = report.months.last.map { $0.id < current } ?? false
+        let scaleEndSeconds = scaleEndMonth.map { _ in monthlyTargetSeconds * Double(monthsSoFar.count) }
 
         return YearlyGoalProgress(
             creditedSeconds: months.reduce(0) { $0 + $1.creditedSeconds },

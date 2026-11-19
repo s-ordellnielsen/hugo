@@ -115,6 +115,69 @@ struct YearlyGoalProgressTests {
     }
 
     @Test
+    func bufferAddsToEveryMonthsGoal() {
+        let progress = makeProgress(
+            entries: septemberAndOctober(), now: date(2026, 11, 15, hour: 12), bufferSeconds: 5 * 3_600)
+        #expect(progress.expectedSeconds == 137.5 * 3_600)
+        #expect(progress.scaleEndSeconds == TimeInterval(165 * 3_600))
+        #expect(progress.differenceSeconds == -37.5 * 3_600)
+    }
+
+    @Test
+    func bufferMovesTheMarkerAndNotTheFill() throws {
+        let progress = makeProgress(
+            entries: septemberAndOctober(), now: date(2026, 11, 15, hour: 12), bufferSeconds: 5 * 3_600)
+        let fill = try #require(progress.fillFraction)
+        #expect(abs(fill - 100.0 / 165.0) < 1e-9)
+        let marker = try #require(progress.markerFraction)
+        #expect(abs(marker - 137.5 / 165.0) < 1e-9)
+    }
+
+    @Test
+    func aZeroBufferChangesNothing() {
+        let now = date(2026, 11, 15, hour: 12)
+        #expect(
+            makeProgress(entries: septemberAndOctober(), now: now, bufferSeconds: 0)
+                == makeProgress(entries: septemberAndOctober(), now: now))
+    }
+
+    @Test
+    func bufferDoesNotChangeCountedTime() {
+        let now = date(2026, 11, 15, hour: 12)
+        let without = makeProgress(entries: septemberAndOctober(), now: now)
+        let buffered = makeProgress(entries: septemberAndOctober(), now: now, bufferSeconds: 5 * 3_600)
+        #expect(buffered.creditedSeconds == without.creditedSeconds)
+        #expect(buffered.yearTotalSeconds == without.yearTotalSeconds)
+        #expect(buffered.yearlyGoalSeconds == without.yearlyGoalSeconds)
+        #expect(buffered.monthlyGoalSeconds == without.monthlyGoalSeconds)
+    }
+
+    @Test
+    func aNegativeBufferIsIgnored() {
+        let now = date(2026, 11, 15, hour: 12)
+        #expect(
+            makeProgress(entries: septemberAndOctober(), now: now, bufferSeconds: -3_600)
+                == makeProgress(entries: septemberAndOctober(), now: now))
+    }
+
+    @Test
+    func aFinishedYearIgnoresTheBuffer() {
+        let now = date(2028, 1, 15)
+        let buffered = makeProgress(entries: septemberAndOctober(), now: now, bufferSeconds: 5 * 3_600)
+        #expect(buffered.scaleEndSeconds == TimeInterval(600 * 3_600))
+        #expect(buffered.markerFraction == nil)
+        #expect(buffered == makeProgress(entries: septemberAndOctober(), now: now))
+    }
+
+    @Test
+    func bufferShiftsTheFirstMonthScale() throws {
+        let progress = makeProgress(entries: [], now: date(2026, 9, 10, hour: 12), bufferSeconds: 5 * 3_600)
+        #expect(progress.scaleEndSeconds == TimeInterval(55 * 3_600))
+        let marker = try #require(progress.markerFraction)
+        #expect(abs(marker - 1.0 / 3.0) < 1e-9)
+    }
+
+    @Test
     func onTheLastDayTheMarkerReachesTheEnd() {
         let progress = makeProgress(entries: septemberAndOctober(), now: date(2026, 11, 30, hour: 12))
         #expect(progress.markerFraction == 1)
@@ -215,7 +278,8 @@ struct YearlyGoalProgressTests {
     private func makeProgress(
         entries: [Entry],
         submissions: [SubmittedReport] = [],
-        now: Date
+        now: Date,
+        bufferSeconds: TimeInterval = 0
     ) -> YearlyGoalProgress {
         let report = TheocraticYearReportBuilder.report(
             for: TheocraticYear(startYear: 2026),
@@ -228,6 +292,7 @@ struct YearlyGoalProgressTests {
         return YearlyGoalProgress.make(
             report: report,
             status: status,
+            bufferSeconds: bufferSeconds,
             now: now,
             calendar: calendar
         )!

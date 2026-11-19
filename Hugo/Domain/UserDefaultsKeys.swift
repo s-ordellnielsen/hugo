@@ -5,6 +5,8 @@ enum UserDefaultsKeys {
     static let publisherStatus = "publisherStatus"
     static let plannerTargetBase = "plannerTargetBase"
     static let plannerExtraHours = "plannerExtraHours"
+    /// Whether Overview and the Year tab add the Buffer to the goal they show. Off by default.
+    static let bufferInOverviewAndYear = "bufferInOverviewAndYear"
 
     static let durationMinuteInterval = "durationMinuteInterval"
 

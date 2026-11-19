@@ -23,6 +23,38 @@ struct OverviewMetricsTests {
     }
 
     @Test
+    func bufferAddsToTheMonthlyGoal() {
+        let status = PublisherStatus.status(for: "auxiliary-pioneer")
+        let metrics = OverviewMetrics.make(
+            entries: [], status: status, bufferHours: 5, now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.monthlyGoal == 35)
+        #expect(abs(metrics.expectedProgress - (15.0 / 31.0 * 35.0)) < 0.0001)
+    }
+
+    @Test
+    func bufferIsTheWholeGoalWithoutAStatus() {
+        let metrics = OverviewMetrics.make(
+            entries: [], status: nil, bufferHours: 5, now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.monthlyGoal == 5)
+    }
+
+    @Test
+    func aNegativeBufferIsIgnored() {
+        let status = PublisherStatus.status(for: "auxiliary-pioneer")
+        let metrics = OverviewMetrics.make(
+            entries: [], status: status, bufferHours: -2, now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.monthlyGoal == 30)
+    }
+
+    @Test
+    func aZeroBufferChangesNothing() {
+        let status = PublisherStatus.status(for: "auxiliary-pioneer")
+        let metrics = OverviewMetrics.make(
+            entries: [], status: status, bufferHours: 0, now: date(2026, 1, 15), calendar: calendar)
+        #expect(metrics.monthlyGoal == 30)
+    }
+
+    @Test
     func missingStatusAndNegativeDurationsAreSafe() {
         let metrics = OverviewMetrics.make(
             entries: [Entry(date: date(2026, 1, 1), duration: -100, tracker: nil)], status: nil, now: date(2026, 1, 1),

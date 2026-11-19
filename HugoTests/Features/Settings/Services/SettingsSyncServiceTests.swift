@@ -99,6 +99,21 @@ struct SettingsSyncServiceTests {
     }
 
     @Test
+    func theBufferSwitchFromAnotherDeviceIsWrittenToUserDefaults() {
+        service.start()
+        cloud.values[UserDefaultsKeys.bufferInOverviewAndYear] = true
+
+        service.pullFromCloud()
+
+        #expect(defaults.bool(forKey: UserDefaultsKeys.bufferInOverviewAndYear))
+    }
+
+    @Test
+    func theBufferSwitchIsASyncedSetting() {
+        #expect(SyncedSettings.keys.contains(UserDefaultsKeys.bufferInOverviewAndYear))
+    }
+
+    @Test
     func equalValuesAreNotWrittenAgain() {
         defaults.set("Jens", forKey: UserDefaultsKeys.overseerFirstName)
         cloud.values[UserDefaultsKeys.overseerFirstName] = "Jens"

@@ -22,8 +22,6 @@ struct GeneralSettingsView: View {
                         Label("planner.target.title", systemImage: "calendar")
                     }
                 }
-            } header: {
-                Text("tab.planner")
             }
 
             Section {

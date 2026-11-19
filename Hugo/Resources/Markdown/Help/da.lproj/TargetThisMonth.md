@@ -26,3 +26,11 @@ Hvis 130 timer tæller med mod målet, er du 5 timer foran. Hvis 120 timer tæll
 Al din tid i forkyndelse og dine timer fra skoler tæller med. Godtgørelse tæller med op til en grænse hver måned. Læs mere i "Forkyndelse og godtgørelse".
 
 Når tjenesteåret er slut, er dit mål hele årsmålet.
+
+## Hvis du sætter en buffer
+
+Under Indstillinger > Generelt > Mål for måneden kan du sætte en buffer, ekstra timer oven på dit mål. Planlæg medregner den altid. Du kan også slå "Medregn buffer i Overblik og Tjenesteår" til. Hver måneds mål bliver så større med din buffer.
+
+En almindelig pioner med 5 timers buffer har et mål på 55 timer om måneden. Den 15. november er målet i dag 2 × 55 + 55 × 15 ÷ 30 = **137 timer og 30 minutter**. De timer, der tæller med mod målet, ændrer sig ikke, kun målet.
+
+Bufferen gælder kun for det nuværende tjenesteår. Et afsluttet år beholder sit oprindelige mål.

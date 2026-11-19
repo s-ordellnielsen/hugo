@@ -10,6 +10,8 @@ struct ServiceYearPageView: View {
     @Query private var trackers: [Tracker]
     @Query private var schoolCredits: [SchoolCredit]
     @AppStorage(UserDefaultsKeys.publisherStatus) private var statusID = ""
+    @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
+    @AppStorage(UserDefaultsKeys.bufferInOverviewAndYear) private var includeBuffer = false
 
     init(year: TheocraticYear, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.year = year
@@ -40,7 +42,9 @@ struct ServiceYearPageView: View {
 
     private func progress(for report: TheocraticYearReport) -> YearlyGoalProgress? {
         guard let status else { return nil }
-        return YearlyGoalProgress.make(report: report, status: status)
+        return YearlyGoalProgress.make(
+            report: report, status: status,
+            bufferSeconds: includeBuffer ? TimeInterval(extraHours) * 3_600 : 0)
     }
 
     var body: some View {
