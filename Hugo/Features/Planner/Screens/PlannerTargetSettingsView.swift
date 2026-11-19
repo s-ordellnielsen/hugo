@@ -46,7 +46,7 @@ struct PlannerTargetSettingsView: View {
             status: status, now: now, calendar: calendar, locale: locale)
     }
 
-    private var preview: PlannerTargetPreview {
+    private func makePreview() -> PlannerTargetPreview {
         PlannerTargetPreview.make(
             base: base, extraHours: extraHours, status: status,
             creditedBeforeCurrentMonth: creditedBeforeCurrentMonth,
@@ -54,6 +54,7 @@ struct PlannerTargetSettingsView: View {
     }
 
     var body: some View {
+        let preview = makePreview()
         List {
             Section {
                 PlannerTargetPreviewView(preview: preview, hasGoal: hasGoal)
