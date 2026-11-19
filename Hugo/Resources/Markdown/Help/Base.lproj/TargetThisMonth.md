@@ -29,7 +29,7 @@ When the theocratic year is over, your target is the whole yearly goal.
 
 ## If you set a Buffer
 
-Under Settings > General > Monthly Target you can set a Buffer, extra hours on top of your goal. The Planner always counts it. You can also turn on "Include Buffer in Overview", "Include Buffer in Year", or both. A month's goal there then grows by your Buffer.
+Under Settings > General > Monthly Target you can set a Buffer, extra hours on top of your goal. The Planner always counts it. Tap "Counts in" to also use it in Overview, in Year, or in both. A month's goal there then grows by your Buffer.
 
 With the Year switch on, a regular pioneer with a 5 hour Buffer has a target of 55 hours a month. On November 15, the target today is 2 × 55 + 55 × 15 ÷ 30 = **137 hours and 30 minutes**. The hours that count toward your goal do not change, only the target.
 

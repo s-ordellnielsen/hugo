@@ -110,6 +110,20 @@ struct PlannerTargetTests {
     }
 
     @Test
+    func bufferScopeSummaryNamesEveryCombinationOfSwitches() {
+        #expect(
+            PlannerTarget.bufferScopeSummary(inOverview: false, inYear: false, locale: locale) == "Planner")
+        #expect(
+            PlannerTarget.bufferScopeSummary(inOverview: true, inYear: false, locale: locale)
+                == "Planner, Overview")
+        #expect(
+            PlannerTarget.bufferScopeSummary(inOverview: false, inYear: true, locale: locale) == "Planner, Year")
+        #expect(
+            PlannerTarget.bufferScopeSummary(inOverview: true, inYear: true, locale: locale)
+                == "Planner, Overview, Year")
+    }
+
+    @Test
     func sharedCreditHelperUsesSubmittedSnapshotsAndIgnoresRawEntryTime() {
         let submission = SubmittedReport(
             year: 2026,

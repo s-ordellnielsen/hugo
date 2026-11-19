@@ -29,7 +29,7 @@ Når tjenesteåret er slut, er dit mål hele årsmålet.
 
 ## Hvis du sætter en buffer
 
-Under Indstillinger > Generelt > Mål for måneden kan du sætte en buffer, ekstra timer oven på dit mål. Planlæg medregner den altid. Du kan også slå "Medregn buffer i Overblik" og "Medregn buffer i Tjenesteår" til, en af dem eller begge. Månedens mål bliver så større med din buffer dér.
+Under Indstillinger > Generelt > Mål for måneden kan du sætte en buffer, ekstra timer oven på dit mål. Planlæg medregner den altid. Tryk på "Tæller i" for også at bruge den i Overblik, i Tjenesteår eller i begge. Månedens mål bliver så større med din buffer dér.
 
 Med Tjenesteår-kontakten slået til har en almindelig pioner med 5 timers buffer et mål på 55 timer om måneden. Den 15. november er målet i dag 2 × 55 + 55 × 15 ÷ 30 = **137 timer og 30 minutter**. De timer, der tæller med mod målet, ændrer sig ikke, kun målet.
 

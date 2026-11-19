@@ -2979,6 +2979,125 @@
         }
       }
     },
+    "planner.target.countsIn" : {
+      "comment" : "Label of the row that opens the page choosing which screens count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tæller i"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Counts in"
+          }
+        }
+      }
+    },
+    "planner.target.countsIn.title" : {
+      "comment" : "Title of the page where the user chooses which screens count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medregn buffer i"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Count Buffer in"
+          }
+        }
+      }
+    },
+    "planner.target.countsIn.always" : {
+      "comment" : "Value shown for the Planner row, which always counts the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altid"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always"
+          }
+        }
+      }
+    },
+    "planner.target.countsIn.plannerOnly" : {
+      "comment" : "Summary on the Counts in row when only the Planner counts the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planlæg"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planner"
+          }
+        }
+      }
+    },
+    "planner.target.countsIn.plannerOverview" : {
+      "comment" : "Summary on the Counts in row when the Planner and Overview count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planlæg, Overblik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planner, Overview"
+          }
+        }
+      }
+    },
+    "planner.target.countsIn.plannerYear" : {
+      "comment" : "Summary on the Counts in row when the Planner and the Year tab count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planlæg, Tjenesteår"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planner, Year"
+          }
+        }
+      }
+    },
+    "planner.target.countsIn.all" : {
+      "comment" : "Summary on the Counts in row when the Planner, Overview and the Year tab count the Buffer.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planlæg, Overblik, Tjenesteår"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planner, Overview, Year"
+          }
+        }
+      }
+    },
     "planner.target.extra" : {
       "comment" : "Label of the stepper for extra hours added to the monthly target.",
       "localizations" : {
@@ -3031,7 +3150,7 @@
       }
     },
     "planner.target.includeBuffer.overview" : {
-      "comment" : "Label of the switch that makes Overview count the Buffer.",
+      "comment" : "Spoken label of the Overview switch on the Count Buffer in page.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3048,7 +3167,7 @@
       }
     },
     "planner.target.includeBuffer.year" : {
-      "comment" : "Label of the switch that makes the Year tab count the Buffer.",
+      "comment" : "Spoken label of the Year switch on the Count Buffer in page.",
       "localizations" : {
         "da" : {
           "stringUnit" : {

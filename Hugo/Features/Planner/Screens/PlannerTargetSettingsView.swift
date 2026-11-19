@@ -87,17 +87,24 @@ struct PlannerTargetSettingsView: View {
                         value: ServiceDurationFormatter.hoursString(
                             from: TimeInterval(extraHours) * 3_600, locale: locale))
                 }
+
+                if extraHours > 0 {
+                    NavigationLink {
+                        BufferScopeSettingsView()
+                    } label: {
+                        LabeledContent(
+                            "planner.target.countsIn",
+                            value: PlannerTarget.bufferScopeSummary(
+                                inOverview: includeInOverview, inYear: includeInYear, locale: locale))
+                    }
+                }
             } footer: {
                 Text(
                     hasGoal
                         ? LocalizedStringKey("planner.target.extra.footer")
                         : LocalizedStringKey("planner.target.extra.footer.noGoal"))
             }
-
-            Section {
-                Toggle("planner.target.includeBuffer.overview", isOn: $includeInOverview)
-                Toggle("planner.target.includeBuffer.year", isOn: $includeInYear)
-            }
+            .motion(Motion.presence, value: extraHours > 0)
         }
         .navigationTitle("planner.target.title")
         .navigationBarTitleDisplayMode(.inline)

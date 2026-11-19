@@ -52,6 +52,23 @@ nonisolated enum PlannerTarget {
         return String(localized: summary)
     }
 
+    /// The screens that count the Buffer, as shown on the "Counts in" row.
+    /// The Planner always counts it.
+    static func bufferScopeSummary(
+        inOverview: Bool, inYear: Bool, locale: Locale = .current
+    ) -> String {
+        switch (inOverview, inYear) {
+        case (false, false):
+            return String(localized: "planner.target.countsIn.plannerOnly", locale: locale)
+        case (true, false):
+            return String(localized: "planner.target.countsIn.plannerOverview", locale: locale)
+        case (false, true):
+            return String(localized: "planner.target.countsIn.plannerYear", locale: locale)
+        case (true, true):
+            return String(localized: "planner.target.countsIn.all", locale: locale)
+        }
+    }
+
     /// The monthly target for `month` in seconds, or nil when it would be zero.
     /// `extraHours` is the nonnegative Buffer added to the base. Without a
     /// status goal, that Buffer is the whole personal monthly target.
