@@ -609,3 +609,145 @@ under the old key is never read.
 ### Revision STOP conditions
 
 Stop and report if `YearlyGoalProgress.make` or `OverviewMetrics.make` would need to change, if the strings diff shows any other deleted or reordered line, or if a verification fails twice.
+
+---
+
+## Revision 2 (2026-11-19): one "Counts in" row that opens a page with the choices
+
+> **Executor instructions for this revision**: Plan 132 and Revision 1 are
+> already committed (`8ce2448`, `0bc313a`). Apply only the changes below on top
+> of them. The earlier text still describes the code you start from, and the
+> "Git workflow" and "STOP conditions" sections still apply (work on `main`,
+> stage by explicit path, never stage `Debug.xcscheme`, do not push, skip
+> `plans/README.md`).
+>
+> **Drift check (run first)**: `git log --oneline -3` shows `0bc313a` (or a
+> later commit on top of it), `git status --short` shows only
+> `M Hugo.xcodeproj/xcshareddata/xcschemes/Debug.xcscheme`, and
+> `grep -n "bufferInOverview\|bufferInYear" Hugo/Features/Planner/Screens/PlannerTargetSettingsView.swift` matches the two `@AppStorage` lines and the two `Toggle` lines. If not, STOP.
+
+### Why
+
+After Revision 1 the Monthly Target screen shows the Buffer stepper and then a
+separate section with two switches whose labels repeat "Include Buffer in". The
+owner wants the Buffer and where it counts to read as one section, without the
+repeated wording. The agreed design (Option A) is:
+
+- The Buffer section holds the stepper and one navigation row, "Counts in",
+  that shows the current choice on the right and opens a page.
+- The page, titled "Count Buffer in" / "Medregn buffer i", lists three rows
+  named after the tabs: Planner (a fixed "Always" with no switch), Overview and
+  Year (switches). The title carries the context, so the rows are just names.
+- The "Counts in" row appears only while the Buffer is above 0 hours, because
+  the switches do nothing at 0.
+- No footer on the new page. The existing footer under the stepper stays.
+
+The two keys, the call sites and all the maths stay exactly as they are.
+
+### Changes
+
+1. **A summary function** in `Hugo/Features/Planner/Domain/PlannerTarget.swift`, next to `settingSummary`. Follow how `settingSummary` builds localized strings with a `locale` parameter (the `planner.target.none` and `planner.target.summary.withExtra` code there):
+
+```swift
+    /// The screens that count the Buffer, as shown on the "Counts in" row.
+    /// The Planner always counts it.
+    static func bufferScopeSummary(
+        inOverview: Bool, inYear: Bool, locale: Locale = .current
+    ) -> String
+```
+
+   It returns one of four whole strings (never built from parts, so Danish stays correct): Planner only, Planner and Overview, Planner and Year, all three. See the string keys in change 4.
+
+2. **A new screen** `Hugo/Features/Planner/Screens/BufferScopeSettingsView.swift` (it belongs to the same feature as `PlannerTargetSettingsView`; `Screens` is the right role folder). Code shape:
+
+```swift
+import SwiftUI
+
+/// Where the Buffer counts besides the Planner, which always counts it.
+struct BufferScopeSettingsView: View {
+    @AppStorage(UserDefaultsKeys.bufferInOverview) private var includeInOverview = false
+    @AppStorage(UserDefaultsKeys.bufferInYear) private var includeInYear = false
+
+    var body: some View {
+        List {
+            Section {
+                LabeledContent {
+                    Text("planner.target.countsIn.always")
+                } label: {
+                    Text("tab.planner")
+                }
+                Toggle(isOn: $includeInOverview) { Text("tab.overview") }
+                    .accessibilityLabel("planner.target.includeBuffer.overview")
+                Toggle(isOn: $includeInYear) { Text("tab.year") }
+                    .accessibilityLabel("planner.target.includeBuffer.year")
+            }
+        }
+        .navigationTitle("planner.target.countsIn.title")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+```
+
+   The `accessibilityLabel` calls keep VoiceOver reading the full "Include Buffer in Overview" even though the visible label is just "Overview". Add two previews following the pattern at the bottom of `PlannerTargetSettingsView.swift` (a `UserDefaults(suiteName:)` with `.defaultAppStorage`): one default, one with `.dynamicTypeSize(.accessibility5)`. Put each in a `NavigationStack`.
+
+3. **The settings screen** (`PlannerTargetSettingsView.swift`).
+   - Remove the `includeInOverview` and `includeInYear` properties and the whole second section (the two `Toggle`s).
+   - Add the two `@AppStorage` properties back under the same names only if the new row needs them for its summary. It does, so keep them, but read-only: `@AppStorage(UserDefaultsKeys.bufferInOverview) private var includeInOverview = false` and the same for the year.
+   - Inside the existing Buffer `Section` (the one with the `Stepper` and the footer), after the `Stepper`, add:
+
+```swift
+                if extraHours > 0 {
+                    NavigationLink {
+                        BufferScopeSettingsView()
+                    } label: {
+                        LabeledContent(
+                            "planner.target.countsIn",
+                            value: PlannerTarget.bufferScopeSummary(
+                                inOverview: includeInOverview, inYear: includeInYear, locale: locale))
+                    }
+                }
+```
+
+   - Animate the row in and out: add `.motion(Motion.presence, value: extraHours > 0)` to that `Section`. If this does not compile or the row does not animate, drop the animation line and say so in NOTES. The animation is optional; the hiding is not.
+   - Do not touch the stepper, its labels or its footer.
+
+4. **Strings** (`Localizable.xcstrings`). Keep `planner.target.includeBuffer.overview` and `planner.target.includeBuffer.year` exactly as they are (they are now VoiceOver labels; update only their `comment` to say "Spoken label of the Overview switch on the Count Buffer in page." and the same for Year). Add these six entries, alphabetically after `planner.target.base...`/before `planner.target.extra` as the sort order requires (`planner.target.countsIn*` sorts between `planner.target.base.yearlyGoalShare.description` and `planner.target.extra`), each with a `comment`:
+
+| Key | Comment | en | da |
+|---|---|---|---|
+| `planner.target.countsIn` | Label of the row that opens the page choosing which screens count the Buffer. | Counts in | Tæller i |
+| `planner.target.countsIn.title` | Title of the page where the user chooses which screens count the Buffer. | Count Buffer in | Medregn buffer i |
+| `planner.target.countsIn.always` | Value shown for the Planner row, which always counts the Buffer. | Always | Altid |
+| `planner.target.countsIn.plannerOnly` | Summary on the Counts in row when only the Planner counts the Buffer. | Planner | Planlæg |
+| `planner.target.countsIn.plannerOverview` | Summary on the Counts in row when the Planner and Overview count the Buffer. | Planner, Overview | Planlæg, Overblik |
+| `planner.target.countsIn.plannerYear` | Summary on the Counts in row when the Planner and the Year tab count the Buffer. | Planner, Year | Planlæg, Tjenesteår |
+| `planner.target.countsIn.all` | Summary on the Counts in row when the Planner, Overview and the Year tab count the Buffer. | Planner, Overview, Year | Planlæg, Overblik, Tjenesteår |
+
+   (That is seven entries; add all seven.) Do not add or change any other entry. `tab.planner`, `tab.overview` and `tab.year` already exist.
+
+5. **Help article** (`Base.lproj/TargetThisMonth.md`, `da.lproj/TargetThisMonth.md`). In the "If you set a Buffer" / "Hvis du sætter en buffer" section, replace the sentence that begins `You can also turn on "Include Buffer in Overview", ...` with: `Tap "Counts in" to also use it in Overview, in Year, or in both. A month's goal there then grows by your Buffer.` Danish: `Tryk på "Tæller i" for også at bruge den i Overblik, i Tjenesteår eller i begge. Månedens mål bliver så større med din buffer dér.` Leave the other paragraphs as they are.
+
+6. **CONTEXT.md.** In **Buffer**, replace the sentence beginning `Overview and the Year tab each count it only when ...` with: `Overview and the Year tab each count it only when the user turns on their own switch (`bufferInOverview` and `bufferInYear`, both off by default and synced). The switches live on a page titled "Count Buffer in" / "Medregn buffer i", opened from the "Counts in" / "Tæller i" row under the Buffer stepper, which shows only while the Buffer is above 0 hours. The Planner always counts it. The Year tab adds it only in the current theocratic year, and never adds the adjusted target.` Do not change the other entries.
+
+7. **Tests** in `HugoTests/Features/Planner/Domain/PlannerTargetTests.swift`, modeled on the `settingSummary...` tests there (same `locale`): one test with the four combinations of `(inOverview, inYear)` expecting exactly `"Planner"`, `"Planner, Overview"`, `"Planner, Year"` and `"Planner, Overview, Year"`.
+
+### Verify and finish
+
+- `grep -rn "Toggle(\"planner.target.includeBuffer" Hugo` → no output.
+- `grep -c "planner.target.countsIn" Hugo/Resources/Localizable.xcstrings` → `7`.
+- `python3 -c "import json; json.load(open('Hugo/Resources/Localizable.xcstrings'))"` → exit 0, and `git diff --stat Hugo/Resources/Localizable.xcstrings` shows added lines plus only the two changed `comment` lines.
+- `xcrun swift-format lint --strict` on every Swift file you changed or created → exit 0.
+- `Scripts/verify.sh` → exit 0. Redirect its full output to a file under `/private/tmp/claude-501/-Users-sebastiannielsen-Documents-Areas-Personal-Apps-Hugo/aac047fd-971a-4205-b00b-3f151b982d7b/scratchpad/` (for example `verify-132r2.log`), take the exit code from the script itself, and confirm `** TEST SUCCEEDED **`.
+- One commit: `feat: choose where the Buffer counts on its own page`. Do not push.
+
+### Done criteria
+
+- [ ] `Scripts/verify.sh` exits 0 and the new summary test passes.
+- [ ] The Monthly Target screen has one section for the Buffer (stepper plus the "Counts in" row when the Buffer is above 0) and no separate switch section.
+- [ ] `BufferScopeSettingsView.swift` exists in `Hugo/Features/Planner/Screens/` and no other new file was added except the two previews it contains.
+- [ ] Only these files changed: `PlannerTarget.swift`, `PlannerTargetSettingsView.swift`, `BufferScopeSettingsView.swift` (new), `Localizable.xcstrings`, both `TargetThisMonth.md`, `CONTEXT.md`, `PlannerTargetTests.swift`.
+- [ ] `YearlyGoalProgress.swift`, `OverviewMetrics.swift`, `OverviewView.swift`, `ServiceYearPageView.swift`, `UserDefaultsKeys.swift` and `SyncedSettings.swift` are unchanged.
+
+### Revision STOP conditions
+
+Stop and report if any of the files listed as unchanged would need to change, if the strings diff shows any other deleted or reordered line, if the new file needs a folder other than `Screens`, or if a verification fails twice.
