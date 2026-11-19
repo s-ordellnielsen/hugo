@@ -48,7 +48,11 @@ struct TheocraticYearTotalsView: View {
                 let scaleEndSeconds = progress.scaleEndSeconds, let scaleEndMonth = progress.scaleEndMonth
             {
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
-                    MarkedProgressBar(filled: fillFraction, marker: progress.markerFraction) {
+                    MarkedProgressBar(
+                        filled: fillFraction,
+                        marker: progress.markerFraction,
+                        trackColor: .white
+                    ) {
                         Text("year.goalBar.marker")
                             .font(.footnote)
                             .foregroundStyle(.secondary)

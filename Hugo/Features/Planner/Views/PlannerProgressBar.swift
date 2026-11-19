@@ -14,7 +14,8 @@ struct PlannerProgressBar: View {
         MarkedProgressBar(
             filled: loggedSeconds / scale,
             extended: projectedSeconds / scale,
-            marker: projectedSeconds > targetSeconds ? targetSeconds / scale : nil
+            marker: projectedSeconds > targetSeconds ? targetSeconds / scale : nil,
+            trackColor: .white
         )
     }
 }

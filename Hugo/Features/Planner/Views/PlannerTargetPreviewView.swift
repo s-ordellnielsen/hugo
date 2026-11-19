@@ -18,7 +18,7 @@ struct PlannerTargetPreviewView: View {
             if hasGoal, let solid = preview.solidFraction, let extended = preview.extendedFraction,
                 let marker = preview.markerFraction
             {
-                MarkedProgressBar(filled: solid, extended: extended, marker: marker) {
+                MarkedProgressBar(filled: solid, extended: extended, marker: marker, trackColor: .white) {
                     Text("planner.target.base.monthlyGoal")
                         .font(.caption)
                 }

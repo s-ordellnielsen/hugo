@@ -1,12 +1,14 @@
 import SwiftUI
 
 /// A normalized progress track with an optional faded extension and marker.
+/// `trackColor` replaces the default quaternary track background.
 /// Callers must expose equivalent semantic information because this view hides
 /// its drawing and marker label from VoiceOver.
 struct MarkedProgressBar<MarkerLabel: View>: View {
     private let filled: Double
     private let extended: Double
     private let marker: Double?
+    private let trackColor: Color?
     private let markerLabel: MarkerLabel
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -16,11 +18,13 @@ struct MarkedProgressBar<MarkerLabel: View>: View {
         filled: Double,
         extended: Double? = nil,
         marker: Double? = nil,
+        trackColor: Color? = nil,
         @ViewBuilder markerLabel: () -> MarkerLabel
     ) {
         self.filled = Self.normalized(filled)
         self.extended = max(self.filled, Self.normalized(extended ?? filled))
         self.marker = marker.map(Self.normalized)
+        self.trackColor = trackColor
         self.markerLabel = markerLabel()
     }
 
@@ -34,8 +38,13 @@ struct MarkedProgressBar<MarkerLabel: View>: View {
             labelGap: HugoLayout.Spacing.tight
         ) {
             ZStack(alignment: .leading) {
-                ProgressTrack(filled: filled, extended: extended, layoutDirection: layoutDirection)
-                    .frame(height: HugoLayout.Size.goalTrackHeight)
+                ProgressTrack(
+                    filled: filled,
+                    extended: extended,
+                    trackColor: trackColor,
+                    layoutDirection: layoutDirection
+                )
+                .frame(height: HugoLayout.Size.goalTrackHeight)
                 if let marker {
                     ProgressMarker(
                         fraction: marker,
@@ -78,8 +87,13 @@ struct MarkedProgressBar<MarkerLabel: View>: View {
 }
 
 extension MarkedProgressBar where MarkerLabel == EmptyView {
-    init(filled: Double, extended: Double? = nil, marker: Double? = nil) {
-        self.init(filled: filled, extended: extended, marker: marker) {
+    init(
+        filled: Double,
+        extended: Double? = nil,
+        marker: Double? = nil,
+        trackColor: Color? = nil
+    ) {
+        self.init(filled: filled, extended: extended, marker: marker, trackColor: trackColor) {
             EmptyView()
         }
     }
@@ -94,6 +108,7 @@ private struct MarkedProgressBarValues: Equatable {
 private struct ProgressTrack: View {
     let filled: Double
     let extended: Double
+    let trackColor: Color?
     let layoutDirection: LayoutDirection
 
     var body: some View {
@@ -106,7 +121,11 @@ private struct ProgressTrack: View {
                 isRightToLeft: layoutDirection == .rightToLeft
             )
             ZStack(alignment: .leading) {
-                Capsule().fill(.quaternary)
+                if let trackColor {
+                    Capsule().fill(trackColor)
+                } else {
+                    Capsule().fill(.quaternary)
+                }
                 FillCapsuleShape(
                     filled: geometry.filled,
                     extended: geometry.extended,
