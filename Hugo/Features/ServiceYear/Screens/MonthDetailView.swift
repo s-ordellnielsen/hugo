@@ -149,7 +149,9 @@ extension MonthDetailView {
         if month.isSubmitted, month.unreportedChange == nil {
             button.buttonStyle(.glass)
         } else {
-            button.buttonStyle(.glassProminent)
+            button
+                .buttonStyle(.glassProminent)
+                .tint(.hugoAccent)
         }
     }
 
