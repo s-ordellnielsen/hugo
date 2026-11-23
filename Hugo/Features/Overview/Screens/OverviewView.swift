@@ -76,6 +76,7 @@ private struct OverviewDayView: View {
         let month = plannerMonth
         let pace = PlanPace.make(month: month)
         let metrics = self.metrics
+        let reminderMonth = self.reminderMonth
         let fill = MonthlyCircleFill.make(
             monthlyGoalHours: metrics.monthlyGoal, loggedSeconds: metrics.progress * 3_600,
             plannedSeconds: month.planned.total, hasOwnEntries: metrics.hasOwnEntries)
