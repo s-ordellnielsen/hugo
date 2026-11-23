@@ -183,6 +183,12 @@ The `HugoUITests` target exists (created in Xcode by the owner), and the build s
 - A bundle with no test file has no executable and `xcodebuild test` fails to load it. So `HugoUITests/UITargetPlaceholderTests.swift` (one empty test) is committed to keep `Scripts/verify.sh` green. **Delete it with `git rm` in Step 4, in the same commit that adds the first real UI test file**, and never leave the target without a test file between commits.
 - The folder `HugoUITests/` exists and holds only that placeholder.
 
+### Update (2026-11-23, owner decision after the first execution attempt)
+
+The first run of Step 6 showed that `performAccessibilityAudit()` is not stable for contrast and Dynamic Type: the reported element labels changed between runs with no code change, and one unmatched contrast error stayed even when every printed issue was in the known list. The seven tree assertion tests (button traits, labels, selected state, progress value, Bible-study count) passed in every run. No missing-description, wrong-trait or wrong-parent issue appeared in any run.
+
+Decision (owner): keep the audits, but run them without `.contrast` and `.dynamicType`: `.all.subtracting([.contrast, .dynamicType])`. This replaces "Honest expectations" rules 1 to 4 for those two types only. Contrast and Dynamic Type findings are not a gate. They become follow-up issues, listed in the executor's report (seen so far: "November", "Total" and "1:00 AM" on Overview, "Counted toward goal" and "Target today" on the Year totals card, and the capped Year title for Dynamic Type). `KnownAuditIssues.list` starts empty; the matching mechanism stays for future use. Rule 5 still holds in full: a `.sufficientElementDescription`, `.trait` or `.parentChild` issue is a real bug and is never allowlisted. Before committing, the audit tests must pass three runs in a row.
+
 ### Step 0: The owner creates the UI test target in Xcode (RISKIEST STEP, NOT AN EXECUTOR STEP)
 
 Hand-editing `project.pbxproj` for a new target (a `PBXNativeTarget` of type `com.apple.product-type.bundle.ui-testing`, its `PBXFileSystemSynchronizedRootGroup`, three build phases, a `PBXContainerItemProxy` and `PBXTargetDependency`, product reference, three build configurations and `TargetAttributes`) is fragile, and a mistake can corrupt the project. The owner does this once in Xcode:
