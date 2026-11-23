@@ -17,7 +17,7 @@ struct DefaultCategoryButton: View {
         } label: {
             Label("tracker.options.use-as-default", systemImage: isDefault ? "star.fill" : "star")
                 .labelStyle(.iconOnly)
-                .foregroundStyle(isDefault ? .hugoAccent : .primary)
+                .foregroundStyle(isDefault ? .yellow : .primary)
                 .contentTransition(.symbolEffect(.replace))
                 .motion(Motion.feedback, value: isDefault)
         }

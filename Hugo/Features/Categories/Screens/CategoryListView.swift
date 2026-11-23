@@ -30,7 +30,7 @@ struct CategoryListView: View {
                                     if tracker.id == defaultID {
                                         Image(systemName: "star.fill")
                                             .font(.callout)
-                                            .foregroundStyle(.hugoAccent)
+                                            .foregroundStyle(.yellow)
                                     }
                                 }
                             }
