@@ -13,6 +13,8 @@
 > and (after the owner's Step 0) the new `HugoUITests/` folder and the
 > `Hugo.xcodeproj` changes Xcode made when the owner created the target.
 
+> **REJECTED (2026-11-23).** The owner removed the UI tests completely after a partial run: seven tree assertions passed in every run, but `performAccessibilityAudit()` was unstable for contrast, Dynamic Type and text clipping, and a full gate would have added 2 to 4 minutes for a narrow net. The `HugoUITests` target, its scheme entries, the `UITestSeed` seeder and its unit test were removed. Do not restart this plan without a new decision. The findings the audit produced are tracked in SLN-320. Lesson worth keeping: a test that the iPhone tab bar shows exactly Overview, Planner and Year would have caught the Settings-tab bug after plan 140, and needs no audit.
+
 ## Status
 
 - **Priority**: P3 (Medium)

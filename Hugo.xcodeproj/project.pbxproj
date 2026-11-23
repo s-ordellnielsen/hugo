@@ -19,13 +19,6 @@
 			remoteGlobalIDString = E090544E2E91E99900254125;
 			remoteInfo = Hugo;
 		};
-		E0CC409030B4470300AF7971 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E09054472E91E99900254125 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E090544E2E91E99900254125;
-			remoteInfo = Hugo;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -34,7 +27,6 @@
 		E090548A2E951E2C00254125 /* HugoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HugoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A7569B3017877900828739 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E0A7569D30178DCB00828739 /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
-		E0CC408C30B4470300AF7971 /* HugoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HugoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0F1E5702EC6000000000011 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Configuration/Debug.xcconfig; sourceTree = "<group>"; };
 		E0F1E5702EC6000000000012 /* TestFlight.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = TestFlight.xcconfig; path = Configuration/TestFlight.xcconfig; sourceTree = "<group>"; };
 		E0F1E5702EC6000000000013 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Production.xcconfig; path = Configuration/Production.xcconfig; sourceTree = "<group>"; };
@@ -64,11 +56,6 @@
 			path = HugoTests;
 			sourceTree = "<group>";
 		};
-		E0CC408D30B4470300AF7971 /* HugoUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = HugoUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,13 +68,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E09054872E951E2C00254125 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E0CC408930B4470300AF7971 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -108,7 +88,6 @@
 				E0F1E5702EC6000000000013 /* Production.xcconfig */,
 				E09054512E91E99900254125 /* Hugo */,
 				E090548B2E951E2C00254125 /* HugoTests */,
-				E0CC408D30B4470300AF7971 /* HugoUITests */,
 				E09054502E91E99900254125 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -118,7 +97,6 @@
 			children = (
 				E090544F2E91E99900254125 /* Hugo.app */,
 				E090548A2E951E2C00254125 /* HugoTests.xctest */,
-				E0CC408C30B4470300AF7971 /* HugoUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -172,29 +150,6 @@
 			productReference = E090548A2E951E2C00254125 /* HugoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E0CC408B30B4470300AF7971 /* HugoUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E0CC409230B4470300AF7971 /* Build configuration list for PBXNativeTarget "HugoUITests" */;
-			buildPhases = (
-				E0CC408830B4470300AF7971 /* Sources */,
-				E0CC408930B4470300AF7971 /* Frameworks */,
-				E0CC408A30B4470300AF7971 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E0CC409130B4470300AF7971 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E0CC408D30B4470300AF7971 /* HugoUITests */,
-			);
-			name = HugoUITests;
-			packageProductDependencies = (
-			);
-			productName = HugoUITests;
-			productReference = E0CC408C30B4470300AF7971 /* HugoUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -202,7 +157,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2720;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					E090544E2E91E99900254125 = {
@@ -210,10 +165,6 @@
 					};
 					E09054892E951E2C00254125 = {
 						CreatedOnToolsVersion = 26.0.1;
-						TestTargetID = E090544E2E91E99900254125;
-					};
-					E0CC408B30B4470300AF7971 = {
-						CreatedOnToolsVersion = 27.2;
 						TestTargetID = E090544E2E91E99900254125;
 					};
 				};
@@ -238,7 +189,6 @@
 			targets = (
 				E090544E2E91E99900254125 /* Hugo */,
 				E09054892E951E2C00254125 /* HugoTests */,
-				E0CC408B30B4470300AF7971 /* HugoUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -253,13 +203,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E09054882E951E2C00254125 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E0CC408A30B4470300AF7971 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -283,13 +226,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0CC408830B4470300AF7971 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -297,11 +233,6 @@
 			isa = PBXTargetDependency;
 			target = E090544E2E91E99900254125 /* Hugo */;
 			targetProxy = E090548E2E951E2C00254125 /* PBXContainerItemProxy */;
-		};
-		E0CC409130B4470300AF7971 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E090544E2E91E99900254125 /* Hugo */;
-			targetProxy = E0CC409030B4470300AF7971 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -569,168 +500,6 @@
 			};
 			name = Production;
 		};
-		E0CC409330B4470300AF7971 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CAJA48GKTR;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ordellnielsen.HugoUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Hugo;
-			};
-			name = Debug;
-		};
-		E0CC409430B4470300AF7971 /* TestFlight */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = CAJA48GKTR;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ordellnielsen.HugoUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Hugo;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = TestFlight;
-		};
-		E0CC409530B4470300AF7971 /* Production */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = CAJA48GKTR;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ordellnielsen.HugoUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Hugo;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Production;
-		};
 		E0F1E5702EC6000000000001 /* TestFlight */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E0F1E5702EC6000000000012 /* TestFlight.xcconfig */;
@@ -888,16 +657,6 @@
 				E09054912E951E2C00254125 /* Debug */,
 				E0F1E5702EC6000000000003 /* TestFlight */,
 				E09054922E951E2C00254125 /* Production */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Production;
-		};
-		E0CC409230B4470300AF7971 /* Build configuration list for PBXNativeTarget "HugoUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E0CC409330B4470300AF7971 /* Debug */,
-				E0CC409430B4470300AF7971 /* TestFlight */,
-				E0CC409530B4470300AF7971 /* Production */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Production;
