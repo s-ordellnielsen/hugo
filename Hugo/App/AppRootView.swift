@@ -12,9 +12,7 @@ struct AppRootView: View {
     @AppStorage(UserDefaultsKeys.isOnboarding) private var needsOnboarding = true
 
     @State private var bootstrapper = AppBootstrapper()
-    @State private var selectedTab: AppTab = .overview
-    @State private var yearResetToken = UUID()
-    @State private var plannerResetToken = UUID()
+    @State private var navigation = AppNavigationState()
     @State private var bootstrapErrorMessage: String?
     @State private var syncMonitor = CloudSyncMonitor()
     @State private var deduplication = SyncDeduplicationScheduler()
@@ -33,20 +31,10 @@ struct AppRootView: View {
         AppTab.allCases.filter { $0.placement.isVisible(compact: isCompact) }
     }
 
-    private func select(_ tab: AppTab) {
-        if tab == .year && selectedTab == .year {
-            yearResetToken = UUID()
-        }
-        if tab == .planner && selectedTab == .planner {
-            plannerResetToken = UUID()
-        }
-        selectedTab = tab
-    }
-
     private var tabSelection: Binding<AppTab> {
         Binding(
-            get: { selectedTab },
-            set: { select($0) }
+            get: { navigation.selectedTab },
+            set: { navigation.select($0) }
         )
     }
 
@@ -104,7 +92,10 @@ struct AppRootView: View {
             ForEach(visibleTabs) { tab in
                 Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
                     NavigationStack {
-                        tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
+                        tabDestination(
+                            for: tab,
+                            yearResetToken: navigation.yearResetToken,
+                            plannerResetToken: navigation.plannerResetToken)
                     }
                 }
                 .defaultVisibility(tab.placement.showsInTabBar ? .automatic : .hidden, for: .tabBar)
@@ -112,9 +103,7 @@ struct AppRootView: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .onChange(of: isCompact) { _, compact in
-            if compact && !selectedTab.placement.isVisible(compact: true) {
-                selectedTab = .overview
-            }
+            navigation.ensureSelectionVisible(compact: compact)
         }
     }
 }
