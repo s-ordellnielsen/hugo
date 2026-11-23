@@ -135,7 +135,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 152 | Full iPad sidebar that keeps each tab's position | P2 | L | — | TODO | [SLN-333](https://linear.app/sebastianln/issue/SLN-333) |
 | 153 | Show details in an inspector on iPad and in a sheet on iPhone | P2 | L | 152 | TODO | [SLN-334](https://linear.app/sebastianln/issue/SLN-334) |
 | 154 | Two columns for the Planner and the Service Year on iPad | P2 | L | 152 | TODO | [SLN-336](https://linear.app/sebastianln/issue/SLN-336) |
-| 155 | Make the default star button yellow and stop it from clearing the default | P2 | S | — | TODO | [SLN-325](https://linear.app/sebastianln/issue/SLN-325) |
+| 155 | Make the default star button yellow and stop it from clearing the default | P2 | S | — | DONE (committed on main as 7b5b2c2; full `Scripts/verify.sh` passed, 640 tests (reviewer re-ran it); the tap on the default star is now a no-op, and the toolbar star takes its color from `.tint`, which nobody has seen on a screen yet; owner check pending on a device: the toolbar star is filled and yellow on the default category and tapping it changes nothing, on another category it is an outline in the primary color and tapping it makes that category the default; if it is still not yellow, try `Image(systemName:).foregroundStyle(.yellow)` as the label content) | [SLN-325](https://linear.app/sebastianln/issue/SLN-325) |
 | 156 | Show the entry detail title in the content, not in a clipped toolbar item | P2 | S | — | TODO | [SLN-327](https://linear.app/sebastianln/issue/SLN-327) |
 | 157 | Make the unit next to the month total more prominent | P3 | S | — | TODO | [SLN-329](https://linear.app/sebastianln/issue/SLN-329) |
 
