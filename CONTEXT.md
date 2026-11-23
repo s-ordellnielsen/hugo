@@ -28,7 +28,7 @@ _Avoid_: Separate category, other, secondary category
 Hours reported for approved work other than field service: the time in Credit categories and school credit. Each is reported on a line of its own. Credit-category time counts toward the yearly goal only up to the credit allowance; school credit counts in full.
 
 **Default category**:
-The Field Service category that new entries use unless the user picks another. A new install starts with one, named Field Service ("Forkyndelse").
+The Field Service category that new entries use unless the user picks another. A new install starts with one, named Field Service ("Forkyndelse"). There is only one. The app stores its id as a synced setting, and when that id is unset or its category is gone, the first Field Service category is the default.
 
 **Category snapshot**:
 The name, icon and kind of an entry's category, copied onto the entry so the entry keeps its category if the category is renamed or deleted.
