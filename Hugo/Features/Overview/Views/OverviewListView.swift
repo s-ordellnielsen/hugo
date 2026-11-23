@@ -224,6 +224,13 @@ struct OverviewDateList: View {
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
                     Text(category.name)
+                        .padding(.leading, HugoLayout.Spacing.regular)
+                        .overlay(alignment: .leading) {
+                            Capsule()
+                                .fill(CategoryColorStyle(category.color))
+                                .frame(width: HugoLayout.Size.categoryPillWidth)
+                                .accessibilityHidden(true)
+                        }
                     Spacer()
                     if entry.bibleStudies != 0 {
                         HStack(spacing: HugoLayout.Spacing.tight) {
