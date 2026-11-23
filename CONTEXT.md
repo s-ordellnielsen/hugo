@@ -48,8 +48,8 @@ _Avoid_: Actual time, raw time
 One calendar month. A report always covers exactly one month.
 
 **Theocratic year**:
-The year from September 1 to August 31, written as both calendar years, for example 2026/2027.
-_Avoid_: Service year, school year
+The year from September 1 to August 31, written as both calendar years, for example 2026/2027. The tab that shows it is named Service Year ("Tjenesteår"). In sentences about the calendar, say theocratic year.
+_Avoid_: School year
 
 ## Reports
 
@@ -131,7 +131,7 @@ Hours from a school, recorded for one month. It counts in full toward the yearly
 _Avoid_: PSS hours, credit hours
 
 **Expected time**:
-The counted time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none. The Year tab's goal bar marks it as "Target today" / "Mål i dag", on a scale that ends at the monthly goal times the months so far. With the Year switch on, each month's goal in this sum, and in the scale, is the monthly goal plus Buffer (current theocratic year only).
+The counted time the user should have by now to reach the yearly goal at an even pace: the monthly goal for each month of the theocratic year that is over, plus the current month's goal spread across the month. The current month adds its monthly goal times today's day number divided by the number of days in the month, so today counts as a whole day. On November 15 a regular pioneer (50 hours a month) expects 2 x 50 + 50 x 15/30 = 125 hours. For a past year it is the whole yearly goal; before the year starts there is none. The Service Year tab's goal bar marks it as "Target today" / "Mål i dag", on a scale that ends at the monthly goal times the months so far. With the Service Year switch on, each month's goal in this sum, and in the scale, is the monthly goal plus Buffer (current theocratic year only).
 
 ## Planning
 
@@ -157,7 +157,7 @@ _Avoid_: Goal (the goal comes from the publisher status)
 The remaining yearly goal divided over the months left in the theocratic year, including the current month, rounded up to whole hours and based on counted time before the current month. The Settings label is "Adjusted to yearly goal" / "Tilpasset årsmålet". The Settings explanation is one short sentence. The target preview shows the adjustment on its own line under the base target as a signed change, for example "Adjusted: +3 hours" / "Tilpasset: +3 timer", only while this option is chosen. The base target line always shows the monthly goal. The persisted case remains `yearlyGoalShare`.
 
 **Buffer**:
-The nonnegative hours added to the base monthly target. Without a publisher-status goal, the same preference sets the whole personal monthly target. Settings calls it "Buffer" / "Buffer". Historical storage and API names remain `plannerExtraHours` / `extraHours`. The Planner bar draws the base as a solid fill and Buffer as a separate faded extension. The Planner always counts it. Overview and the Year tab each count it only when the user turns on their own switch (`bufferInOverview` and `bufferInYear`, both off by default and synced). The switches live on a page titled "Count Buffer in" / "Medregn buffer i", opened from the "Counts in" / "Tæller i" row under the Buffer stepper, which shows only while the Buffer is above 0 hours. The Year tab adds it only in the current theocratic year, and never adds the adjusted target.
+The nonnegative hours added to the base monthly target. Without a publisher-status goal, the same preference sets the whole personal monthly target. Settings calls it "Buffer" / "Buffer". Historical storage and API names remain `plannerExtraHours` / `extraHours`. The Planner bar draws the base as a solid fill and Buffer as a separate faded extension. The Planner always counts it. Overview and the Service Year tab each count it only when the user turns on their own switch (`bufferInOverview` and `bufferInYear`, both off by default and synced). The switches live on a page titled "Count Buffer in" / "Medregn buffer i", opened from the "Counts in" / "Tæller i" row under the Buffer stepper, which shows only while the Buffer is above 0 hours. The Service Year tab adds it only in the current theocratic year, and never adds the adjusted target.
 
 **Plan pace**:
 How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.

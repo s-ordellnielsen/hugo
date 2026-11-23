@@ -3,11 +3,11 @@ import SwiftUI
 /// A strip of calendar years with a band in the middle that holds one
 /// theocratic year, for example `2025 [2026 / 2027] 2028`. A flick glides
 /// through the years and settles with a whole theocratic year in the band.
-/// The Year tab shows that year once the strip comes to rest.
+/// The Service Year tab shows that year once the strip comes to rest.
 struct TheocraticYearPicker: View {
     /// The pager's years, oldest first, with no gaps.
     let years: [TheocraticYear]
-    /// The year the Year tab shows.
+    /// The year the Service Year tab shows.
     let selection: TheocraticYear
     let onSelect: (TheocraticYear) -> Void
 
@@ -139,7 +139,7 @@ struct TheocraticYearPicker: View {
         }
     }
 
-    /// Scrolls the strip so `year` is in the band and shows it on the Year tab right away.
+    /// Scrolls the strip so `year` is in the band and shows it on the Service Year tab right away.
     private func move(to year: TheocraticYear, layout: TheocraticYearStripLayout) {
         yearInBand = year
         let animation: Animation? = reduceMotion || voiceOverEnabled ? nil : Motion.value

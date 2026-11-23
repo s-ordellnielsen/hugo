@@ -3082,7 +3082,7 @@
       }
     },
     "planner.target.countsIn.plannerYear" : {
-      "comment" : "Summary on the Counts in row when the Planner and the Year tab count the Buffer.",
+      "comment" : "Summary on the Counts in row when the Planner and the Service Year tab count the Buffer.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3093,13 +3093,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planner, Year"
+            "value" : "Planner, Service Year"
           }
         }
       }
     },
     "planner.target.countsIn.all" : {
-      "comment" : "Summary on the Counts in row when the Planner, Overview and the Year tab count the Buffer.",
+      "comment" : "Summary on the Counts in row when the Planner, Overview and the Service Year tab count the Buffer.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3110,7 +3110,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planner, Overview, Year"
+            "value" : "Planner, Overview, Service Year"
           }
         }
       }
@@ -3184,7 +3184,7 @@
       }
     },
     "planner.target.includeBuffer.year" : {
-      "comment" : "Spoken label of the Year switch on the Count Buffer in page.",
+      "comment" : "Spoken label of the Service Year switch on the Count Buffer in page.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -3195,7 +3195,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Include Buffer in Year"
+            "value" : "Include Buffer in Service Year"
           }
         }
       }
@@ -4537,7 +4537,7 @@
       }
     },
     "schoolCredit.submit.footer" : {
-      "comment" : "Note under the school credit rows on the submit report sheet. \"Year\" / \"Tjenesteår\" is the tab name (key tab.year).",
+      "comment" : "Note under the school credit rows on the submit report sheet. \"Service Year\" / \"Tjenesteår\" is the tab name (key tab.year).",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -4548,7 +4548,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "School credit is part of this report. To change it, open the month's menu on the Year tab."
+            "value" : "School credit is part of this report. To change it, open the month's menu on the Service Year tab."
           }
         }
       }
@@ -6054,7 +6054,7 @@
       }
     },
     "tab.year" : {
-      "comment" : "The label for the Year tab in the app's tab bar.",
+      "comment" : "The label for the Service Year tab in the app's tab bar.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -6065,7 +6065,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Year"
+            "value" : "Service Year"
           }
         }
       }
@@ -6879,7 +6879,7 @@
       }
     },
     "year.goalBar.marker" : {
-      "comment" : "Label of the marker on the Year tab's goal bar: the time expected by today.",
+      "comment" : "Label of the marker on the Service Year tab's goal bar: the time expected by today.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -6896,7 +6896,7 @@
       }
     },
     "year.goalBar.scaleEnd.%@.%@" : {
-      "comment" : "Caption under the Year tab's goal bar. The first argument is the goal at the end of the month, such as 150 hours; the second is the month's name, such as November.",
+      "comment" : "Caption under the Service Year tab's goal bar. The first argument is the goal at the end of the month, such as 150 hours; the second is the month's name, such as November.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -7066,7 +7066,7 @@
       }
     },
     "year.picker.a11y.hint" : {
-      "comment" : "Accessibility hint for the Year tab's title, which opens the year picker.",
+      "comment" : "Accessibility hint for the Service Year tab's title, which opens the year picker.",
       "localizations" : {
         "da" : {
           "stringUnit" : {
@@ -7083,7 +7083,7 @@
       }
     },
     "year.picker.a11y.label" : {
-      "comment" : "Accessibility label for the Year tab's title button and for the year picker strip.",
+      "comment" : "Accessibility label for the Service Year tab's title button and for the year picker strip.",
       "localizations" : {
         "da" : {
           "stringUnit" : {

@@ -24,7 +24,7 @@ You are a regular pioneer. In March you have 45 hours of Field Service and 15 ho
 
 ## School credit
 
-Hours from a school, such as Pioneer Service School, are credit too. You add them to a month on the Year tab, not with a category. They count in full toward your yearly goal and are sent on a line of their own.
+Hours from a school, such as Pioneer Service School, are credit too. You add them to a month on the Service Year tab, not with a category. They count in full toward your yearly goal and are sent on a line of their own.
 
 ## Changing a category's type
 

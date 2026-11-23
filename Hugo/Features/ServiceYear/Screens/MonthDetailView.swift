@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-/// One month of the Year tab: its total and report status, a breakdown by
+/// One month of the Service Year tab: its total and report status, a breakdown by
 /// category, school and Bible studies, and its entries. Holds the month's
 /// actions: submit the report, add an entry, and add, change or delete
 /// school credit. Pushed from the month card.

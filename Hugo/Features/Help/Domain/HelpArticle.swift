@@ -39,7 +39,7 @@ nonisolated enum HelpArticle: String, CaseIterable, Identifiable, Sendable {
 
     // MARK: Articles per screen
 
-    /// The Year tab and the year details screen.
+    /// The Service Year tab and the year details screen.
     static let year: [HelpArticle] = [.targetThisMonth, .fieldServiceAndCredit]
 
     /// The Submit Report sheet: rounding first, because a line can't be sent

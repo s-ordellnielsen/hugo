@@ -117,10 +117,11 @@ struct PlannerTargetTests {
             PlannerTarget.bufferScopeSummary(inOverview: true, inYear: false, locale: locale)
                 == "Planner, Overview")
         #expect(
-            PlannerTarget.bufferScopeSummary(inOverview: false, inYear: true, locale: locale) == "Planner, Year")
+            PlannerTarget.bufferScopeSummary(inOverview: false, inYear: true, locale: locale) == "Planner, Service Year"
+        )
         #expect(
             PlannerTarget.bufferScopeSummary(inOverview: true, inYear: true, locale: locale)
-                == "Planner, Overview, Year")
+                == "Planner, Overview, Service Year")
     }
 
     @Test

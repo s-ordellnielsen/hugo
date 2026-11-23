@@ -7,7 +7,7 @@ nonisolated enum UserDefaultsKeys {
     static let plannerExtraHours = "plannerExtraHours"
     /// Whether Overview adds the Buffer to the monthly goal it shows. Off by default.
     static let bufferInOverview = "bufferInOverview"
-    /// Whether the Year tab adds the Buffer to the monthly goal it uses. Off by default.
+    /// Whether the Service Year tab adds the Buffer to the monthly goal it uses. Off by default.
     static let bufferInYear = "bufferInYear"
 
     static let durationMinuteInterval = "durationMinuteInterval"

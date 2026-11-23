@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A month's credited time as one large serif number with its unit, as the
-/// month cards on the Year tab and the month detail page show it.
+/// month cards on the Service Year tab and the month detail page show it.
 struct MonthHeadline: View {
     enum Size {
         /// On a month card.

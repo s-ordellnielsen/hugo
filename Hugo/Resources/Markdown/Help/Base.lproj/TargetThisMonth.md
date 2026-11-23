@@ -1,6 +1,6 @@
 # Your target this month
 
-If you have a yearly goal, for example as a regular pioneer, the Year tab shows how many hours count toward your goal and whether you are ahead or behind. Hugo compares those hours with your target for today.
+If you have a yearly goal, for example as a regular pioneer, the Service Year tab shows how many hours count toward your goal and whether you are ahead or behind. Hugo compares those hours with your target for today.
 
 ## How Hugo works out your target
 
@@ -29,8 +29,8 @@ When the theocratic year is over, your target is the whole yearly goal.
 
 ## If you set a Buffer
 
-Under Settings > General > Monthly Target you can set a Buffer, extra hours on top of your goal. The Planner always counts it. Tap "Counts in" to also use it in Overview, in Year, or in both. A month's goal there then grows by your Buffer.
+Under Settings > General > Monthly Target you can set a Buffer, extra hours on top of your goal. The Planner always counts it. Tap "Counts in" to also use it in Overview, in Service Year, or in both. A month's goal there then grows by your Buffer.
 
-With the Year switch on, a regular pioneer with a 5 hour Buffer has a target of 55 hours a month. On November 15, the target today is 2 × 55 + 55 × 15 ÷ 30 = **137 hours and 30 minutes**. The hours that count toward your goal do not change, only the target.
+With the Service Year switch on, a regular pioneer with a 5 hour Buffer has a target of 55 hours a month. On November 15, the target today is 2 × 55 + 55 × 15 ÷ 30 = **137 hours and 30 minutes**. The hours that count toward your goal do not change, only the target.
 
 The Buffer only applies to the current theocratic year. A finished year keeps its original goal.
