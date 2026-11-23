@@ -1,7 +1,7 @@
 import Foundation
 
 /// Decides which category is the default, from the stored id.
-enum DefaultCategory {
+nonisolated enum DefaultCategory {
     /// `storedID` is the raw value of `UserDefaultsKeys.defaultCategoryID`.
     static func resolve(storedID: String?, in categories: [Tracker]) -> Tracker? {
         if storedID == "" { return nil }

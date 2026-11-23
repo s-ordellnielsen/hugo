@@ -2,27 +2,26 @@ import SwiftData
 import SwiftUI
 
 struct DefaultCategoryButton: View {
-    @Environment(\.modelContext) private var context
-    @State private var errorMessage: String?
+    @AppStorage(UserDefaultsKeys.defaultCategoryID) private var defaultCategoryID: String?
+    @Query private var trackers: [Tracker]
 
     var tracker: Tracker
 
+    private var isDefault: Bool {
+        DefaultCategory.resolve(storedID: defaultCategoryID, in: trackers)?.id == tracker.id
+    }
+
     var body: some View {
         Button {
-            do {
-                try DefaultCategoryService(context: context).setDefault(tracker.isDefault ? nil : tracker)
-            } catch {
-                errorMessage = error.localizedDescription
-            }
+            DefaultCategoryService().setDefault(isDefault ? nil : tracker)
         } label: {
-            Label("tracker.options.use-as-default", systemImage: tracker.isDefault ? "star.fill" : "star")
+            Label("tracker.options.use-as-default", systemImage: isDefault ? "star.fill" : "star")
                 .labelStyle(.iconOnly)
-                .foregroundStyle(tracker.isDefault ? .hugoAccent : .primary)
+                .foregroundStyle(isDefault ? .hugoAccent : .primary)
                 .contentTransition(.symbolEffect(.replace))
-                .motion(Motion.feedback, value: tracker.isDefault)
+                .motion(Motion.feedback, value: isDefault)
         }
-        .accessibilityAddTraits(tracker.isDefault ? .isSelected : [])
-        .errorAlert(message: $errorMessage)
+        .accessibilityAddTraits(isDefault ? .isSelected : [])
     }
 }
 

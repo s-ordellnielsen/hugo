@@ -128,27 +128,54 @@ struct AddEntryFormModelTests {
     func selectionPrefersDefaultAndPreservesExistingSelection() {
         let first = Tracker(name: "First")
         let selected = Tracker(name: "Selected")
-        let defaultTracker = Tracker(name: "Default", isDefault: true)
+        let defaultTracker = Tracker(name: "Default")
+        let defaultID = defaultTracker.id.uuidString
         let model = AddEntryFormModel(calendar: calendar, now: date(2026, 1, 1))
 
-        model.reconcileSelection(with: [first, defaultTracker])
+        model.reconcileSelection(with: [first, defaultTracker], defaultCategoryID: defaultID)
         #expect(model.selectedTracker?.id == defaultTracker.id)
         model.selectedTracker = selected
-        model.reconcileSelection(with: [first, selected, defaultTracker])
+        model.reconcileSelection(with: [first, selected, defaultTracker], defaultCategoryID: defaultID)
         #expect(model.selectedTracker?.id == selected.id)
-        model.reconcileSelection(with: [first, defaultTracker])
+        model.reconcileSelection(with: [first, defaultTracker], defaultCategoryID: defaultID)
         #expect(model.selectedTracker?.id == defaultTracker.id)
     }
 
     @Test
+    func unsetDefaultSelectsTheOldestFieldServiceCategory() {
+        let separate = Tracker(name: "LDC", type: .separate)
+        separate.createdAt = date(2025, 1, 1)
+        let newer = Tracker(name: "Newer")
+        newer.createdAt = date(2026, 2, 1)
+        let older = Tracker(name: "Older")
+        older.createdAt = date(2026, 1, 1)
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 11, 4, hour: 15))
+
+        model.reconcileSelection(with: [separate, newer, older], defaultCategoryID: nil)
+
+        #expect(model.selectedTracker?.id == older.id)
+    }
+
+    @Test
+    func clearedDefaultSelectsTheFirstCategory() {
+        let separate = Tracker(name: "LDC", type: .separate)
+        let main = Tracker(name: "Field Service")
+        let model = AddEntryFormModel(calendar: calendar, now: date(2026, 11, 4, hour: 15))
+
+        model.reconcileSelection(with: [separate, main], defaultCategoryID: "")
+
+        #expect(model.selectedTracker?.id == separate.id)
+    }
+
+    @Test
     func seedsDurationCategoryAndStartTimeFromAPlan() throws {
-        let fieldService = Tracker(name: "Field Service", isDefault: true)
+        let fieldService = Tracker(name: "Field Service")
         let ldc = Tracker(name: "LDC", type: .separate)
         let model = AddEntryFormModel(
             calendar: calendar, now: date(2026, 11, 4, hour: 15), seededDate: date(2026, 11, 4, hour: 12),
             seededDuration: 7_200, preferredTrackerID: ldc.id, seededStartMinute: 600)
 
-        model.reconcileSelection(with: [fieldService, ldc])
+        model.reconcileSelection(with: [fieldService, ldc], defaultCategoryID: fieldService.id.uuidString)
 
         #expect(model.durationInSeconds == 7_200)
         #expect(model.selectedTracker?.id == ldc.id)
@@ -158,12 +185,12 @@ struct AddEntryFormModelTests {
 
     @Test
     func unknownPreferredCategoryFallsBackToDefault() {
-        let fieldService = Tracker(name: "Field Service", isDefault: true)
+        let fieldService = Tracker(name: "Field Service")
         let ldc = Tracker(name: "LDC", type: .separate)
         let model = AddEntryFormModel(
             calendar: calendar, now: date(2026, 11, 4, hour: 15), preferredTrackerID: UUID())
 
-        model.reconcileSelection(with: [ldc, fieldService])
+        model.reconcileSelection(with: [ldc, fieldService], defaultCategoryID: fieldService.id.uuidString)
 
         #expect(model.selectedTracker?.id == fieldService.id)
     }

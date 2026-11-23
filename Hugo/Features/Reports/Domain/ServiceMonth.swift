@@ -104,11 +104,13 @@ nonisolated struct ServiceMonth: Identifiable {
         schoolCredits: [SchoolCredit] = [],
         now: Date = .now,
         calendar: Calendar = .current,
-        locale: Locale = .current
+        locale: Locale = .current,
+        userDefaults: UserDefaults = .standard
     ) -> ServiceMonth {
         let monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
         let summary = MonthlyReportBuilder.summaries(
-            from: monthEntries, calendar: calendar, locale: locale, trackers: trackers
+            from: monthEntries, calendar: calendar, locale: locale, trackers: trackers,
+            defaultCategoryID: userDefaults.string(forKey: UserDefaultsKeys.defaultCategoryID)
         ).first
         let report = SubmittedReportSelection.canonical(for: month, in: submissions)
         let schoolCreditHours = SchoolCreditLine.totalHours(

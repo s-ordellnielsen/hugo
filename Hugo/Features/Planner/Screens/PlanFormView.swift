@@ -5,6 +5,7 @@ import SwiftUI
 /// fixed; to move a plan, delete it and add it again.
 struct PlanFormView: View {
     @AppStorage(UserDefaultsKeys.durationMinuteInterval) private var durationMinuteInterval = 1
+    @AppStorage(UserDefaultsKeys.defaultCategoryID) private var defaultCategoryID: String?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
@@ -93,9 +94,9 @@ struct PlanFormView: View {
             }
             .errorAlert(message: $form.validationMessage)
         }
-        .task { form.reconcileSelection(with: trackers) }
+        .task { form.reconcileSelection(with: trackers, defaultCategoryID: defaultCategoryID) }
         .onChange(of: trackers) { _, newTrackers in
-            form.reconcileSelection(with: newTrackers)
+            form.reconcileSelection(with: newTrackers, defaultCategoryID: defaultCategoryID)
         }
     }
 

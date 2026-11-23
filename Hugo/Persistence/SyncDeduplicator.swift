@@ -51,7 +51,6 @@ struct SyncDeduplicator {
         let trackers = try context.fetch(FetchDescriptor<Tracker>())
         var removed = 0
         var changed = false
-        var deletedIDs = Set<PersistentIdentifier>()
 
         for group in Dictionary(grouping: trackers, by: \.id).values where group.count > 1 {
             let sorted = group.sorted(by: Self.survivorPrecedes)
@@ -65,21 +64,10 @@ struct SyncDeduplicator {
                     entry.tracker = survivor
                     entry.refreshStoredTracker()
                 }
-                if loser.isDefault { survivor.isDefault = true }
-                deletedIDs.insert(loser.persistentModelID)
                 context.delete(loser)
                 removed += 1
                 changed = true
             }
-        }
-
-        let defaults =
-            trackers
-            .filter { !deletedIDs.contains($0.persistentModelID) && $0.isDefault }
-            .sorted(by: Self.survivorPrecedes)
-        for extra in defaults.dropFirst() {
-            extra.isDefault = false
-            changed = true
         }
 
         if changed { try context.save() }
@@ -270,7 +258,7 @@ struct SyncDeduplicator {
     }
 
     /// Earliest `createdAt` wins; ties fall back to the remaining synced fields.
-    private static func survivorPrecedes(_ a: Tracker, _ b: Tracker) -> Bool {
+    static func survivorPrecedes(_ a: Tracker, _ b: Tracker) -> Bool {
         if a.createdAt != b.createdAt { return a.createdAt < b.createdAt }
         if a.name != b.name { return a.name < b.name }
         if a.iconName != b.iconName { return a.iconName < b.iconName }

@@ -31,7 +31,9 @@ struct AppBootstrapperTests {
         let trackers = try context.fetch(FetchDescriptor<Tracker>())
         #expect(trackers.count == 1)
         #expect(trackers.first?.id == DefaultCategoryDefinition.all[0].id)
-        #expect(trackers.first?.isDefault == true)
+        #expect(
+            defaults.string(forKey: UserDefaultsKeys.defaultCategoryID)
+                == DefaultCategoryDefinition.all[0].id.uuidString)
         #expect(defaults.bool(forKey: UserDefaultsKeys.hasRunInitialSetup))
         #expect(bootstrapper.state == .ready)
     }
@@ -59,6 +61,23 @@ struct AppBootstrapperTests {
         await bootstrapper.start(context: context)
 
         #expect(try context.fetch(FetchDescriptor<Tracker>()).isEmpty)
+        #expect(bootstrapper.state == .ready)
+    }
+
+    @Test
+    func upgradeMigratesTheLegacyDefaultWithoutSeeding() async throws {
+        let context = ModelContext(try InMemoryModelContainer.make())
+        let legacy = Tracker(name: "Bethel", isDefault: true)
+        context.insert(legacy)
+        try context.save()
+        let defaults = makeDefaults()
+        defaults.set(true, forKey: UserDefaultsKeys.hasRunInitialSetup)
+        let bootstrapper = AppBootstrapper(lookup: FailingCloudLookup(), userDefaults: defaults)
+
+        await bootstrapper.start(context: context)
+
+        #expect(try context.fetch(FetchDescriptor<Tracker>()).count == 1)
+        #expect(defaults.string(forKey: UserDefaultsKeys.defaultCategoryID) == legacy.id.uuidString)
         #expect(bootstrapper.state == .ready)
     }
 

@@ -3,22 +3,27 @@ import SwiftData
 
 @MainActor
 struct DefaultCategoryService {
-    private let context: ModelContext
+    private let userDefaults: UserDefaults
 
-    init(context: ModelContext) {
-        self.context = context
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
     }
 
-    func setDefault(_ tracker: Tracker?) throws {
-        let defaults = try context.fetch(FetchDescriptor<Tracker>(predicate: #Predicate { $0.isDefault }))
-        for category in defaults {
-            category.isDefault = false
+    /// Makes `tracker` the default. `nil` clears the default.
+    func setDefault(_ tracker: Tracker?) {
+        userDefaults.set(tracker?.id.uuidString ?? "", forKey: UserDefaultsKeys.defaultCategoryID)
+    }
+
+    /// Runs once per device. Copies the old `isDefault` row into the setting
+    /// unless the setting already has a value (for example from another device).
+    func migrateLegacyDefault(context: ModelContext) throws {
+        guard !userDefaults.bool(forKey: UserDefaultsKeys.hasMigratedDefaultCategory) else { return }
+        if userDefaults.object(forKey: UserDefaultsKeys.defaultCategoryID) == nil {
+            let legacy = try context.fetch(FetchDescriptor<Tracker>(predicate: #Predicate { $0.isDefault }))
+            if let survivor = legacy.min(by: SyncDeduplicator.survivorPrecedes) {
+                userDefaults.set(survivor.id.uuidString, forKey: UserDefaultsKeys.defaultCategoryID)
+            }
         }
-        tracker?.isDefault = true
-        try context.save()
-    }
-
-    func clearDefault() throws {
-        try setDefault(nil)
+        userDefaults.set(true, forKey: UserDefaultsKeys.hasMigratedDefaultCategory)
     }
 }

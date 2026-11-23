@@ -5,7 +5,8 @@ nonisolated enum MonthlyReportBuilder {
         from entries: [Entry],
         calendar: Calendar = .current,
         locale: Locale = .current,
-        trackers: [Tracker] = []
+        trackers: [Tracker] = [],
+        defaultCategoryID: String? = nil
     ) -> [MonthlyReportSummary] {
         var grouped: [YearMonth: [Entry]] = [:]
         for entry in entries {
@@ -28,7 +29,9 @@ nonisolated enum MonthlyReportBuilder {
                 }
             }
 
-            let categorySummaries = CategoryTotals.rows(entries: monthEntries, trackers: trackers, locale: locale).map {
+            let categorySummaries = CategoryTotals.rows(
+                entries: monthEntries, trackers: trackers, defaultCategoryID: defaultCategoryID, locale: locale
+            ).map {
                 MonthlyCategorySummary(
                     id: $0.id, name: $0.name, iconName: $0.iconName, type: $0.type, duration: $0.duration)
             }

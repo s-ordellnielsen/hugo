@@ -57,7 +57,11 @@ final class SubmitReportFormModel {
         }
         self.submissionsByMonth = SubmittedReportSelection.canonicalByMonth(submissions)
         self.monthEntries = entries.filter { $0.date.yearMonth(using: calendar) == month }
-        self.summary = MonthlyReportBuilder.summaries(from: monthEntries, calendar: calendar).first
+        self.summary =
+            MonthlyReportBuilder.summaries(
+                from: monthEntries, calendar: calendar,
+                defaultCategoryID: userDefaults.string(forKey: UserDefaultsKeys.defaultCategoryID)
+            ).first
         self.lines = ReportingLineCalculator.lines(from: monthEntries, calendar: calendar)
         self.schoolCreditLines = SchoolCreditLine.lines(from: schoolCredits, in: month)
 

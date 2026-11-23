@@ -22,11 +22,17 @@ nonisolated enum CategoryTotals {
     /// - any other category snapshot joins the live category with the same
     ///   name and type.
     /// `trackers` are the live categories to match against; categories attached
-    /// to `entries` are always considered as well. Rows are sorted by
+    /// to `entries` are always considered as well. `defaultCategoryID` is the
+    /// stored default (see `DefaultCategory`). Rows are sorted by
     /// duration (longest first), then name, then id.
-    static func rows(entries: [Entry], trackers: [Tracker] = [], locale: Locale = .current) -> [CategoryTotal] {
-        let candidates = liveCandidates(entries: entries, trackers: trackers)
-        let defaultMain = candidates.first { $0.isDefault && $0.type == .main }
+    static func rows(
+        entries: [Entry], trackers: [Tracker] = [], defaultCategoryID: String? = nil, locale: Locale = .current
+    ) -> [CategoryTotal] {
+        let live = liveCandidates(entries: entries, trackers: trackers)
+        let defaultCategory = DefaultCategory.resolve(storedID: defaultCategoryID, in: live)
+        // The default comes first, so it wins name matches as it did before.
+        let candidates = (defaultCategory.map { [$0] } ?? []) + live.filter { $0.id != defaultCategory?.id }
+        let defaultMain = defaultCategory.flatMap { $0.type == .main ? $0 : nil }
 
         var totals: [String: CategoryTotal] = [:]
         for entry in entries {
@@ -69,12 +75,11 @@ nonisolated enum CategoryTotals {
     }
 
     /// `trackers` plus every category attached to `entries`, without duplicates,
-    /// in a deterministic order: default first, then oldest, then by id.
+    /// in a deterministic order: oldest first, then by id.
     private static func liveCandidates(entries: [Entry], trackers: [Tracker]) -> [Tracker] {
         var byID: [UUID: Tracker] = [:]
         for tracker in trackers + entries.compactMap(\.tracker) { byID[tracker.id] = tracker }
         return byID.values.sorted {
-            if $0.isDefault != $1.isDefault { return $0.isDefault }
             if $0.createdAt != $1.createdAt { return $0.createdAt < $1.createdAt }
             return $0.id.uuidString < $1.id.uuidString
         }

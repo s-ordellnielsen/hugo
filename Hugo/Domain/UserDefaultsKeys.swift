@@ -24,7 +24,7 @@ nonisolated enum UserDefaultsKeys {
     /// Synced. See `DefaultCategory`.
     static let defaultCategoryID = "defaultCategoryID"
 
-    /// Whether this device has copied the old `Tracker.isDefault` row into
+    /// Whether this device has copied the old per-category default flag into
     /// `defaultCategoryID`. Device-only.
     static let hasMigratedDefaultCategory = "hasMigratedDefaultCategory"
 

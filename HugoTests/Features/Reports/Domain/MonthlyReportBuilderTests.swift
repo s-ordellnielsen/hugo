@@ -137,14 +137,17 @@ struct MonthlyReportBuilderTests {
 
     @Test
     func carriedMainTimeMergesIntoTheDefaultCategory() throws {
-        let main = Tracker(name: "Field Service", type: .main, isDefault: true, iconName: "figure.walk")
+        let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
         let carried = Entry(date: date(2026, 1, 2), duration: 1_800, tracker: nil)
         carried.storedTracker = Entry.EntryTracker(name: "Field Service", icon: "figure.walk", type: .main)
         carried.sourceReportYear = 2025
         carried.sourceReportMonth = 12
         let entries = [Entry(date: date(2026, 1, 1), duration: 3_600, tracker: main), carried]
         let summary = try #require(
-            MonthlyReportBuilder.summaries(from: entries, calendar: calendar, locale: locale, trackers: [main]).first)
+            MonthlyReportBuilder.summaries(
+                from: entries, calendar: calendar, locale: locale, trackers: [main],
+                defaultCategoryID: main.id.uuidString
+            ).first)
 
         #expect(summary.categories.count == 1)
         #expect(summary.categories.first?.duration == 5_400)

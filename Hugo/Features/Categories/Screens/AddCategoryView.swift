@@ -6,6 +6,7 @@ struct AddCategoryView: View {
     @Environment(\.modelContext) private var context
 
     @Query private var trackers: [Tracker]
+    @AppStorage(UserDefaultsKeys.defaultCategoryID) private var defaultCategoryID: String?
 
     @ScaledMetric(relativeTo: .largeTitle) private var iconSize: CGFloat = HugoLayout.Size.categoryIcon
     @ScaledMetric(relativeTo: .largeTitle) private var tileSize: CGFloat = HugoLayout.Size.categoryIconTile
@@ -101,17 +102,15 @@ struct AddCategoryView: View {
         let tracker = Tracker(
             name: trimmedName,
             type: type,
-            isDefault: false,
             iconName: iconName
         )
         tracker.setCategoryColor(color)
         context.insert(tracker)
 
         do {
+            try context.save()
             if isDefault {
-                try DefaultCategoryService(context: context).setDefault(tracker)
-            } else {
-                try context.save()
+                DefaultCategoryService().setDefault(tracker)
             }
             dismiss()
         } catch {

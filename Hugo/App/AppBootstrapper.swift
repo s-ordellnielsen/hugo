@@ -41,6 +41,7 @@ final class AppBootstrapper {
                 }
                 userDefaults.set(true, forKey: UserDefaultsKeys.hasRunInitialSetup)
             }
+            try DefaultCategoryService(userDefaults: userDefaults).migrateLegacyDefault(context: context)
             state = .ready
         } catch is CancellationError {
             state = .idle
@@ -62,11 +63,13 @@ final class AppBootstrapper {
                 id: definition.id,
                 name: String(localized: definition.nameKey),
                 type: .main,
-                isDefault: definition.isDefault,
                 iconName: definition.iconName
             )
             context.insert(tracker)
         }
         try context.save()
+        if userDefaults.object(forKey: UserDefaultsKeys.defaultCategoryID) == nil {
+            userDefaults.set(DefaultCategoryDefinition.all[0].id.uuidString, forKey: UserDefaultsKeys.defaultCategoryID)
+        }
     }
 }

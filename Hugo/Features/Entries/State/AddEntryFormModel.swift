@@ -82,13 +82,13 @@ final class AddEntryFormModel {
         return calendar.date(from: components)
     }
 
-    func reconcileSelection(with trackers: [Tracker]) {
+    func reconcileSelection(with trackers: [Tracker], defaultCategoryID: String?) {
         if let selectedTracker, trackers.contains(where: { $0.id == selectedTracker.id }) {
             return
         }
         selectedTracker =
             trackers.first(where: { $0.id == preferredTrackerID })
-            ?? trackers.first(where: \.isDefault) ?? trackers.first
+            ?? DefaultCategory.resolve(storedID: defaultCategoryID, in: trackers) ?? trackers.first
     }
 
     func incrementBibleStudies() {

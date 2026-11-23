@@ -7,7 +7,7 @@ extension ModelContainer {
         do {
             let container = try ModelContainerFactory.makeInMemoryContainer()
             let context = container.mainContext
-            let field = Tracker(name: "Field Service", isDefault: true, iconName: "figure.walk")
+            let field = Tracker(name: "Field Service", iconName: "figure.walk")
             let phone = Tracker(name: "Phone Service", iconName: "phone.fill")
             context.insert(field)
             context.insert(phone)

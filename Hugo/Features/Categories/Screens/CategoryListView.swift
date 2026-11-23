@@ -3,10 +3,12 @@ import SwiftUI
 
 struct CategoryListView: View {
     @Query private var trackers: [Tracker]
+    @AppStorage(UserDefaultsKeys.defaultCategoryID) private var defaultCategoryID: String?
 
     @State private var addTrackerSheetIsPresented: Bool = false
 
     var body: some View {
+        let defaultID = DefaultCategory.resolve(storedID: defaultCategoryID, in: trackers)?.id
         List {
             ForEach(TrackerType.allCases, id: \.self) { type in
                 let filtered = trackers.filter { $0.type == type }
@@ -25,7 +27,7 @@ struct CategoryListView: View {
                                             .foregroundStyle(CategoryColorStyle(tracker.categoryColor))
                                     }
                                     Spacer()
-                                    if tracker.isDefault {
+                                    if tracker.id == defaultID {
                                         Image(systemName: "star.fill")
                                             .font(.callout)
                                             .foregroundStyle(.hugoAccent)

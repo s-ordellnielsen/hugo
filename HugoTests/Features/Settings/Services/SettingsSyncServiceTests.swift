@@ -61,10 +61,12 @@ struct SettingsSyncServiceTests {
         defaults.set(true, forKey: UserDefaultsKeys.hasRunInitialSetup)
         defaults.set("byCategory", forKey: UserDefaultsKeys.overviewListStyle)
         cloud.values[UserDefaultsKeys.overviewListStyle] = "byDate"
+        defaults.set(true, forKey: UserDefaultsKeys.hasMigratedDefaultCategory)
 
         service.start()
 
         #expect(cloud.values.count == 1)
+        #expect(cloud.values[UserDefaultsKeys.hasMigratedDefaultCategory] == nil)
         #expect(defaults.string(forKey: UserDefaultsKeys.overviewListStyle) == "byCategory")
     }
 
@@ -114,6 +116,12 @@ struct SettingsSyncServiceTests {
     func theBufferSwitchesAreSyncedSettings() {
         #expect(SyncedSettings.keys.contains(UserDefaultsKeys.bufferInOverview))
         #expect(SyncedSettings.keys.contains(UserDefaultsKeys.bufferInYear))
+    }
+
+    @Test
+    func theDefaultCategoryIsASyncedSetting() {
+        #expect(SyncedSettings.keys.contains(UserDefaultsKeys.defaultCategoryID))
+        #expect(!SyncedSettings.keys.contains(UserDefaultsKeys.hasMigratedDefaultCategory))
     }
 
     @Test

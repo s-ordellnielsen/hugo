@@ -14,9 +14,9 @@ struct SyncDeduplicatorTests {
     }
 
     private func makeTracker(
-        id: UUID = UUID(), name: String = "Field Service", isDefault: Bool = false, createdAt: Date
+        id: UUID = UUID(), name: String = "Field Service", createdAt: Date
     ) -> Tracker {
-        let tracker = Tracker(id: id, name: name, isDefault: isDefault)
+        let tracker = Tracker(id: id, name: name)
         tracker.createdAt = createdAt
         return tracker
     }
@@ -32,8 +32,8 @@ struct SyncDeduplicatorTests {
         in context: ModelContext, earlyName: String = "Field Service", lateName: String = "Field Service"
     ) throws -> (first: Tracker, second: Tracker, entries: [Entry]) {
         let sharedID = UUID()
-        let first = makeTracker(id: sharedID, name: earlyName, isDefault: true, createdAt: early)
-        let second = makeTracker(id: sharedID, name: lateName, isDefault: true, createdAt: late)
+        let first = makeTracker(id: sharedID, name: earlyName, createdAt: early)
+        let second = makeTracker(id: sharedID, name: lateName, createdAt: late)
         context.insert(first)
         context.insert(second)
         let entries = [makeEntry(for: first, in: context), makeEntry(for: second, in: context)]
@@ -52,7 +52,6 @@ struct SyncDeduplicatorTests {
         #expect(removed == 1)
         #expect(trackers.count == 1)
         #expect(trackers.first?.createdAt == early)
-        #expect(trackers.first?.isDefault == true)
         for entry in setup.entries {
             #expect(entry.tracker?.createdAt == early)
         }
@@ -126,20 +125,6 @@ struct SyncDeduplicatorTests {
         #expect(removed == 1)
         #expect(trackers.count == 1)
         #expect(trackers.first?.categoryColor == nil)
-    }
-
-    @Test
-    func onlyOneDefaultRemains() throws {
-        let context = try makeContext()
-        context.insert(makeTracker(name: "Early", isDefault: true, createdAt: early))
-        context.insert(makeTracker(name: "Late", isDefault: true, createdAt: late))
-        try context.save()
-
-        try SyncDeduplicator(context: context).mergeDuplicateCategories()
-
-        let defaults = try context.fetch(FetchDescriptor<Tracker>(predicate: #Predicate { $0.isDefault }))
-        #expect(defaults.count == 1)
-        #expect(defaults.first?.createdAt == early)
     }
 
     @Test

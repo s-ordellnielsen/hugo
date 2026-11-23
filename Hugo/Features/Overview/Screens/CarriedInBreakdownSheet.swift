@@ -9,9 +9,10 @@ struct CarriedInBreakdownSheet: View {
     let entries: [Entry]
 
     @Query private var trackers: [Tracker]
+    @AppStorage(UserDefaultsKeys.defaultCategoryID) private var defaultCategoryID: String?
 
     var body: some View {
-        let rows = CategoryTotals.rows(entries: entries, trackers: trackers)
+        let rows = CategoryTotals.rows(entries: entries, trackers: trackers, defaultCategoryID: defaultCategoryID)
         List {
             Section {
                 Text(carriedIn.label())

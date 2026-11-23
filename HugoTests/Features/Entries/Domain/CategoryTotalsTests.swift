@@ -49,12 +49,13 @@ struct CategoryTotalsTests {
 
     @Test
     func carriedMainTimeJoinsTheDefaultCategoryWhateverItsName() {
-        let field = Tracker(name: "Forkyndelse", type: .main, isDefault: true, iconName: "figure.walk")
+        let field = Tracker(name: "Forkyndelse", type: .main, iconName: "figure.walk")
         let entries = [
             entry(3_600, tracker: field),
             entry(1_800, copy: ("Tjeneste", "figure.walk", .main), carried: true),
         ]
-        let rows = CategoryTotals.rows(entries: entries, trackers: [field], locale: locale)
+        let rows = CategoryTotals.rows(
+            entries: entries, trackers: [field], defaultCategoryID: field.id.uuidString, locale: locale)
 
         #expect(rows.count == 1)
         #expect(rows.first?.name == "Forkyndelse")
@@ -65,7 +66,7 @@ struct CategoryTotalsTests {
     func carriedMainTimeWithoutADefaultKeepsItsOwnRow() {
         let other = Tracker(name: "Other", type: .main, iconName: "tag")
         let entries = [entry(1_800, copy: ("Tjeneste", "figure.walk", .main), carried: true)]
-        let rows = CategoryTotals.rows(entries: entries, trackers: [other], locale: locale)
+        let rows = CategoryTotals.rows(entries: entries, trackers: [other], defaultCategoryID: "", locale: locale)
 
         #expect(rows.count == 1)
         #expect(rows.first?.id == "stored:Tjeneste|figure.walk|main")
@@ -74,12 +75,13 @@ struct CategoryTotalsTests {
 
     @Test
     func snapshotThatIsNotCarriedDoesNotJoinTheDefaultByType() {
-        let field = Tracker(name: "Field Service", type: .main, isDefault: true, iconName: "figure.walk")
+        let field = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
         let entries = [
             entry(3_600, tracker: field),
             entry(600, copy: ("Old", "tag", .main)),
         ]
-        let rows = CategoryTotals.rows(entries: entries, trackers: [field], locale: locale)
+        let rows = CategoryTotals.rows(
+            entries: entries, trackers: [field], defaultCategoryID: field.id.uuidString, locale: locale)
 
         #expect(rows.count == 2)
     }
@@ -154,6 +156,46 @@ struct CategoryTotalsTests {
         let rows = CategoryTotals.rows(entries: entries, trackers: [], locale: locale)
 
         #expect(rows.count == 2)
+    }
+
+    @Test
+    func defaultWinsANameMatchOverAnOlderCategory() {
+        let older = Tracker(name: "Same", type: .main, iconName: "tag")
+        older.createdAt = Date(timeIntervalSince1970: 1_000)
+        let stored = Tracker(name: "Same", type: .main, iconName: "tag")
+        stored.createdAt = Date(timeIntervalSince1970: 2_000)
+        let entries = [entry(600, copy: ("Same", "tag", .main))]
+        let rows = CategoryTotals.rows(
+            entries: entries, trackers: [older, stored], defaultCategoryID: stored.id.uuidString, locale: locale)
+
+        #expect(rows.count == 1)
+        #expect(rows.first?.trackerID == stored.id)
+    }
+
+    @Test
+    func unsetDefaultLetsTheOldestMainCategoryWinANameMatch() {
+        let older = Tracker(name: "Same", type: .main, iconName: "tag")
+        older.createdAt = Date(timeIntervalSince1970: 1_000)
+        let newer = Tracker(name: "Same", type: .main, iconName: "tag")
+        newer.createdAt = Date(timeIntervalSince1970: 2_000)
+        let entries = [entry(600, copy: ("Same", "tag", .main))]
+        let rows = CategoryTotals.rows(
+            entries: entries, trackers: [newer, older], defaultCategoryID: nil, locale: locale)
+
+        #expect(rows.first?.trackerID == older.id)
+    }
+
+    @Test
+    func aDefaultThatIsNotMainIsNotUsedForCarriedMainTime() {
+        let bethel = Tracker(name: "Bethel", type: .separate, iconName: "building")
+        let other = Tracker(name: "Other", type: .main, iconName: "tag")
+        let entries = [entry(1_800, copy: ("Tjeneste", "figure.walk", .main), carried: true)]
+        let rows = CategoryTotals.rows(
+            entries: entries, trackers: [bethel, other], defaultCategoryID: bethel.id.uuidString, locale: locale)
+
+        #expect(rows.count == 1)
+        #expect(rows.first?.id == "stored:Tjeneste|figure.walk|main")
+        #expect(rows.first?.trackerID == nil)
     }
 
     private func entry(

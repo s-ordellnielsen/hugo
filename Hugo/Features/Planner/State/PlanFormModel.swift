@@ -35,13 +35,13 @@ final class PlanFormModel {
         startTime.map { calendar.component(.hour, from: $0) * 60 + calendar.component(.minute, from: $0) }
     }
 
-    func reconcileSelection(with trackers: [Tracker]) {
+    func reconcileSelection(with trackers: [Tracker], defaultCategoryID: String?) {
         if let selectedTracker, trackers.contains(where: { $0.id == selectedTracker.id }) {
             return
         }
         selectedTracker =
             trackers.first(where: { $0.id == preferredTrackerID })
-            ?? trackers.first(where: \.isDefault) ?? trackers.first
+            ?? DefaultCategory.resolve(storedID: defaultCategoryID, in: trackers) ?? trackers.first
     }
 
     func draft() -> PlanDraft? {
