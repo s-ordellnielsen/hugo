@@ -9,6 +9,7 @@ struct ServiceYearView: View {
     @State private var displayedYear: TheocraticYear?
     @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
     @State private var isYearPickerPresented = false
+    @Namespace private var transition
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var resetToken: UUID
@@ -85,6 +86,7 @@ struct ServiceYearView: View {
                 ForEach(years) { year in
                     ServiceYearPageView(
                         year: year,
+                        transition: transition,
                         onScrolledFromTopChange: { newValue in
                             scrolledPages[year.id] = newValue
                         }
@@ -98,6 +100,9 @@ struct ServiceYearView: View {
         .scrollPosition(id: $scrollPosition)
         .scrollIndicators(.hidden)
         .background(Color(.systemGroupedBackground))
+        .navigationDestination(for: YearRoute.self) { route in
+            YearRouteView(route: route, transition: transition)
+        }
         .navigationTitle(activeYear.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)

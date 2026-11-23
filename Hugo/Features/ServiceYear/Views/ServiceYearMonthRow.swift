@@ -13,7 +13,8 @@ struct ServiceYearMonthRow: View {
     /// The month's school credits.
     var schoolCredits: [SchoolCredit] = []
 
-    @Namespace private var transition
+    /// The namespace the Year screen shares with the month page, for the zoom.
+    let transition: Namespace.ID
     @State private var isPresentingAddEntry = false
     @State private var isPresentingSubmitSheet = false
 
@@ -31,10 +32,7 @@ struct ServiceYearMonthRow: View {
             if month.isFuture {
                 card
             } else {
-                NavigationLink {
-                    MonthDetailView(month: month, schoolCredits: schoolCredits)
-                        .navigationTransition(.zoom(sourceID: month.id, in: transition))
-                } label: {
+                NavigationLink(value: YearRoute.month(month.id)) {
                     card
                         .matchedTransitionSource(id: month.id, in: transition) { source in
                             source.clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
@@ -270,13 +268,21 @@ extension ServiceYearMonthRow {
     }
 }
 
-#Preview {
-    NavigationStack {
-        ScrollView {
-            ServiceYearMonthRow(month: ReportPreviewFixtures.monthWithActivity)
+private struct MonthRowPreview: View {
+    @Namespace private var transition
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                ServiceYearMonthRow(month: ReportPreviewFixtures.monthWithActivity, transition: transition)
+            }
+            .padding()
+            .background(Color(.systemGroupedBackground))
         }
-        .padding()
-        .background(Color(.systemGroupedBackground))
     }
-    .modelContainer(.preview)
+}
+
+#Preview {
+    MonthRowPreview()
+        .modelContainer(.preview)
 }
