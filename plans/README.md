@@ -123,6 +123,18 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 140 | Keep each tab's position on iPad with one sidebar-adaptable TabView | P2 | S + owner | — | DONE (committed on main as 367b914; full `Scripts/verify.sh` passed, 610 tests (reviewer read the log); `.tabViewStyle(.sidebarAdaptable)` and `.defaultVisibility` compiled as planned; owner confirmed on an iPad on 2026-11-23 that it works) | [SLN-319](https://linear.app/sebastianln/issue/SLN-319) |
 | 141 | Build a year report by grouping entries by month once | P2 | S | — | DONE (committed on main as 3e1547a, 481d3e2, 2dccd92 and 55ff83f; full `Scripts/verify.sh` passed, 611 tests (reviewer read the log); one test added; owner check pending: Year tab totals and school credit rows look as before, and the Overview report reminder still appears and disappears) | [SLN-321](https://linear.app/sebastianln/issue/SLN-321) |
 | 142 | Coalesce SyncDeduplicator runs into one trailing run | P3 | M | — | DONE (committed on main as 10b243d, e2cc263 and 37de9bb; full `Scripts/verify.sh` passed, 614 tests (reviewer read the log); three scheduler tests added, `SyncDeduplicatorTests` unchanged; one deviation: the no-request test waits 300 ms instead of 150 ms to keep the 5x margin; owner check pending on a device: install over an existing store and confirm categories and reports look the same, and with two devices confirm a duplicate default category still merges within a few seconds) | [SLN-322](https://linear.app/sebastianln/issue/SLN-322) |
+| 143 | Store the default category as one synced setting | P2 | M | — | TODO | [SLN-324](https://linear.app/sebastianln/issue/SLN-324) |
+| 144 | Draw the default category star in yellow | P3 | S | 143 | TODO | [SLN-325](https://linear.app/sebastianln/issue/SLN-325) |
+| 145 | Size the Overview detail sheets to their content | P3 | S | — | TODO | [SLN-326](https://linear.app/sebastianln/issue/SLN-326) |
+| 146 | Left-align the entry detail title and remove the gap under the toolbar | P3 | S | — | TODO | [SLN-327](https://linear.app/sebastianln/issue/SLN-327) |
+| 147 | Open Add Plan directly from an empty Planner day | P2 | S | — | TODO | [SLN-328](https://linear.app/sebastianln/issue/SLN-328) |
+| 148 | Solid, larger total hours on the month detail page | P3 | S | — | TODO | [SLN-329](https://linear.app/sebastianln/issue/SLN-329) |
+| 149 | Category color pill in the date-grouped entry list | P2 | S | — | TODO | [SLN-330](https://linear.app/sebastianln/issue/SLN-330) |
+| 150 | Rename the Year tab to "Service Year" | P3 | S | — | TODO | [SLN-331](https://linear.app/sebastianln/issue/SLN-331) |
+| 151 | Align the Service Year card chevron with the month eyebrow | P3 | S | — | TODO | [SLN-332](https://linear.app/sebastianln/issue/SLN-332) |
+| 152 | Full iPad sidebar that keeps each tab's position | P2 | L | — | TODO | [SLN-333](https://linear.app/sebastianln/issue/SLN-333) |
+| 153 | Show details in an inspector on iPad and in a sheet on iPhone | P2 | L | 152 | TODO | [SLN-334](https://linear.app/sebastianln/issue/SLN-334) |
+| 154 | Two columns for the Planner and the Service Year on iPad | P2 | L | 152 | TODO | [SLN-336](https://linear.app/sebastianln/issue/SLN-336) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
