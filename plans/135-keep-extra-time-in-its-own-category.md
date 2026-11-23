@@ -63,6 +63,12 @@ Not changed on purpose:
   now leaves the plan empty and shows a full unplanned Phone bar. This is the
   owner's rule ("only fill that category's plans") and keeps the matching key
   simple: the category key.
+- One exception, decided by the owner on 2026-11-23: untracked time (an entry
+  with no category, key `untracked`, which counts as main time everywhere) still
+  fills a main plan. It fills only after every plan has taken its own category's
+  time, and never fills a separate plan. Without this, a user who logs time
+  without picking a category would see their Field Service plan stay empty.
+  The existing test `untrackedLoggedTimeFillsAMainPlan` keeps passing unchanged.
 
 Matching key check: `PlanMatcher` already groups and fills by
 `categoryKey`/`LoggedCategoryTime.key` (an `EntryCategory.key`), not by kind.
@@ -267,10 +273,19 @@ In `Hugo/Features/Planner/Domain/PlanMatcher.swift`:
 /// bar. Logged time in a category with no plan becomes an unplanned bar.
 ```
 
-3. Do not change any other line. `categories` is still used by the unplanned bars below, so the compiler stays quiet.
+3. Directly after the first pass (the loop with `upTo: plannedSeconds[key] ?? 0`) and before the pass with `upTo: .infinity`, add this pass, so untracked time fills main plans only after every plan took its own category's time:
+
+```swift
+        for key in groupKeys where (groupItems[key]?.first?.categoryType ?? .main) == .main {
+            fill(key, from: "untracked", upTo: plannedSeconds[key] ?? 0)
+        }
+```
+
+   Then the doc comment above (item 2) gets one more sentence at the end: `Untracked time, which counts as main, also fills main plans once every plan has taken its own category's time.` Item 2 is already applied if you are continuing this plan; just append that sentence. Because of this pass, `grep -n "categoryType" PlanMatcher.swift` now prints exactly one line (the one in the new pass), not nothing.
+4. Do not change any other line. `categories` is still used by the unplanned bars below, so the compiler stays quiet.
 
 **Verify**:
-- `grep -n "categoryType" Hugo/Features/Planner/Domain/PlanMatcher.swift` prints nothing.
+- `grep -n "categoryType" Hugo/Features/Planner/Domain/PlanMatcher.swift` prints exactly one line, inside the new untracked pass.
 - `xcrun swift-format lint --strict Hugo/Features/Planner/Domain/PlanMatcher.swift` exits 0.
 
 ### Step 3: Compute a day's still-planned time from its bars
@@ -334,6 +349,49 @@ In `HugoTests/Features/Planner/Domain/PlanMatcherTests.swift`:
 ```
 
 2. Rename `secondPassRespectsTheKindOfTime` (line 45) to `timeOfAnotherKindDoesNotFillThePlan`. Leave its body as it is (it still passes).
+
+2b. Leave `untrackedLoggedTimeFillsAMainPlan` unchanged and add these two tests directly after it:
+
+```swift
+    @Test
+    func untrackedTimeDoesNotFillASeparatePlan() throws {
+        let plans = [plan("ldc", ldcID, type: .separate, hours: 1)]
+        let logged = [
+            LoggedCategoryTime(
+                key: "untracked", name: "Untracked", iconName: "questionmark.circle", type: nil,
+                color: nil, seconds: 3_600)
+        ]
+
+        let bars = PlanMatcher.bars(plans: plans, logged: logged)
+
+        let planBar = try #require(bars.first { $0.kind == .plan })
+        #expect(planBar.filledSeconds == 0)
+        #expect(bars.contains { $0.kind == .unplanned })
+    }
+
+    @Test
+    func untrackedTimeFillsOnlyWhatTheOwnCategoryLeftOpen() throws {
+        let plans = [
+            plan("fs", fieldServiceID, type: .main, hours: 2),
+            plan("phone", phoneID, type: .main, hours: 1),
+        ]
+        let logged = [
+            time(fieldServiceID, name: "Field Service", type: .main, hours: 2),
+            LoggedCategoryTime(
+                key: "untracked", name: "Untracked", iconName: "questionmark.circle", type: nil,
+                color: nil, seconds: 1_800),
+        ]
+
+        let bars = PlanMatcher.bars(plans: plans, logged: logged)
+
+        let fieldService = try #require(bars.first { $0.id == barID(fieldServiceID) })
+        #expect(fieldService.filledSeconds == 7_200)
+        let phone = try #require(bars.first { $0.id == barID(phoneID) })
+        #expect(phone.filledSeconds == 1_800)
+    }
+```
+
+   Before using `ldcID`, check which separate-category id constant the test file already defines (`grep -n "ID = UUID\|let .*ID" HugoTests/Features/Planner/Domain/PlanMatcherTests.swift`). If there is no separate-category id, add `private let ldcID = UUID()` next to the other id constants and use the file's existing helper `plan(_:_:type:hours:startMinute:)` exactly as the other tests do. If the helper signature does not take an id like this, STOP and report.
 
 3. Replace `extraTimeFillsAnotherPlanOfTheSameKindFirst` (lines 142 to 156) with:
 
@@ -400,7 +458,7 @@ In `CONTEXT.md`, replace the whole "**Covered time**" definition (the paragraph
 starting `The part of a category's planned time on a day that logged time accounts for`) with:
 
 ```
-The part of a category's planned time on a day that time logged in that same category accounts for. Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. Time in one category never covers another category's plans, even of the same kind (Field Service or Credit). The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar. The day's still-planned time is the sum of what its bars have left, so the Planner header agrees with the bars.
+The part of a category's planned time on a day that time logged in that same category accounts for. Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. Time in one category never covers another category's plans, even of the same kind (Field Service or Credit). The one exception is an untracked entry, which counts as Field Service time and covers a Field Service plan once every plan has taken its own category's time. The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar. The day's still-planned time is the sum of what its bars have left, so the Planner header agrees with the bars.
 ```
 
 Also in the "**Unplanned time**" definition, replace
@@ -410,7 +468,7 @@ Also in the "**Unplanned time**" definition, replace
 In `plans/README.md`, in the bullet starting `* **Strict per-category bar filling** (2026-11-04)`, append the sentence
 ` Reversed 2026-11-23 (plan 135): the owner wanted extra time in one category to stay on that category, and the Planner header's still-planned time now comes from the bars.`
 
-**Verify**: `grep -n "same kind" CONTEXT.md` prints nothing, and `grep -n "plan 135" plans/README.md` prints the note.
+**Verify**: `grep -n "that no plan of the same kind took" CONTEXT.md` prints nothing, and `grep -n "plan 135" plans/README.md` prints the note.
 
 ### Step 6: Run the gate and commit
 
@@ -432,7 +490,7 @@ the explicit paths from "Git workflow" and commit with the message given there.
 
 - [ ] `Scripts/verify.sh` exits 0.
 - [ ] `grep -rn "remaining(after" Hugo HugoTests --include='*.swift'` prints nothing.
-- [ ] `PlanMatcher.swift` contains no `categoryType` and no second pass.
+- [ ] `PlanMatcher.swift` has no pass that fills a plan from another category's time, except the untracked pass (the only `categoryType` match).
 - [ ] Only the six in-scope files (plus this plan file) changed in the commit.
 - [ ] `plans/README.md` status row added or updated (unless the reviewer maintains it).
 
