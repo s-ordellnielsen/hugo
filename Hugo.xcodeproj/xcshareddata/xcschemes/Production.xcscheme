@@ -48,6 +48,17 @@
                ReferencedContainer = "container:Hugo.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E0CC408B30B4470300AF7971"
+               BuildableName = "HugoUITests.xctest"
+               BlueprintName = "HugoUITests"
+               ReferencedContainer = "container:Hugo.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
