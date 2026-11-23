@@ -131,7 +131,7 @@ stack never creates one.
 | Format one file | `xcrun swift-format format --in-place <file>` | exit 0, re-indents the body |
 | Lint one file | `xcrun swift-format lint --strict <file>` | exit 0, no output |
 | Whole gate | `Scripts/verify.sh` | exit 0 (lint, all tests, analyze). Takes several minutes. |
-| Build for iPad and iPhone | `xcodebuild build -project Hugo.xcodeproj -scheme Hugo -destination 'generic/platform=iOS Simulator'` | `** BUILD SUCCEEDED **` |
+| Build for iPad and iPhone | `xcodebuild build -project Hugo.xcodeproj -scheme Debug -configuration Debug -destination 'generic/platform=iOS Simulator'` | `** BUILD SUCCEEDED **` |
 
 ## Scope
 
