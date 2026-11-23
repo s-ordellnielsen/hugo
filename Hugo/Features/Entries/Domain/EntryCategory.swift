@@ -17,6 +17,9 @@ nonisolated struct EntryCategory: Hashable {
     var countsAs: TrackerType { type ?? .main }
     /// Set only when the live tracker is attached.
     let trackerID: UUID?
+    /// `nil` means Automatic. A deleted or untracked category has no stored
+    /// color, so it is `nil` too.
+    let color: CategoryColor?
     /// True for a main category. A separate category doesn't take new Bible
     /// studies. A category snapshot and an untracked entry count as main and
     /// allow them. `Tracker.allowBibleStudies` is no longer read.
@@ -28,17 +31,19 @@ extension Entry {
         if let tracker {
             return EntryCategory(
                 key: tracker.id.uuidString, name: tracker.name, iconName: tracker.iconName,
-                type: tracker.type, trackerID: tracker.id, allowsBibleStudies: tracker.type == .main)
+                type: tracker.type, trackerID: tracker.id, color: tracker.categoryColor,
+                allowsBibleStudies: tracker.type == .main)
         }
         if let snapshot = storedTracker {
             return EntryCategory(
                 key: "stored:\(snapshot.name)|\(snapshot.icon)|\(snapshot.type.rawValue)",
                 name: snapshot.name, iconName: snapshot.icon, type: snapshot.type, trackerID: nil,
-                allowsBibleStudies: true)
+                color: nil, allowsBibleStudies: true)
         }
         return EntryCategory(
             key: "untracked", name: String(localized: "entry.untracked", locale: locale),
-            iconName: "questionmark.circle", type: nil, trackerID: nil, allowsBibleStudies: true)
+            iconName: "questionmark.circle", type: nil, trackerID: nil, color: nil,
+            allowsBibleStudies: true)
     }
 }
 
