@@ -11,11 +11,12 @@ nonisolated enum TheocraticYearReportBuilder {
         calendar: Calendar = .current,
         locale: Locale = .current
     ) -> TheocraticYearReport {
-        let yearEntries = entries.filter { year.contains($0.date.yearMonth(using: calendar)) }
+        let entriesByMonth = Dictionary(grouping: entries) { $0.date.yearMonth(using: calendar) }
         let months = year.months.map { month in
             ServiceMonth.make(
-                month, entries: yearEntries, submissions: submissions, trackers: trackers,
-                schoolCredits: schoolCredits, now: now, calendar: calendar, locale: locale)
+                month, entries: entriesByMonth[month] ?? [], submissions: submissions,
+                trackers: trackers, schoolCredits: schoolCredits, now: now, calendar: calendar,
+                locale: locale)
         }
         let contributions = months.map(\.contribution)
 
