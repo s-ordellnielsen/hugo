@@ -1,4 +1,4 @@
-enum UserDefaultsKeys {
+nonisolated enum UserDefaultsKeys {
     static let isOnboarding = "isOnboarding"
     static let hasRunInitialSetup = "hasRunInitialSetup"
 
