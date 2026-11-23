@@ -3,6 +3,12 @@ import SwiftData
 import SwiftUI
 import UIKit
 
+/// The push from this page to the buffer scope page. Registered on this page,
+/// not in Settings, because the buffer page needs this page's own bindings.
+private enum BufferScopeRoute: Hashable {
+    case scope
+}
+
 struct PlannerTargetSettingsView: View {
     @AppStorage(UserDefaultsKeys.plannerTargetBase) private var base: PlannerTargetBase = .monthlyGoal
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
@@ -94,10 +100,7 @@ struct PlannerTargetSettingsView: View {
                 }
 
                 if extraHours > 0 {
-                    NavigationLink {
-                        BufferScopeSettingsView(
-                            includeInOverview: $includeInOverview, includeInYear: $includeInYear)
-                    } label: {
+                    NavigationLink(value: BufferScopeRoute.scope) {
                         LabeledContent(
                             "planner.target.countsIn",
                             value: PlannerTarget.bufferScopeSummary(
@@ -114,6 +117,10 @@ struct PlannerTargetSettingsView: View {
         }
         .editorialNavigationTitle("planner.target.title")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: BufferScopeRoute.self) { _ in
+            BufferScopeSettingsView(
+                includeInOverview: $includeInOverview, includeInYear: $includeInYear)
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { refreshToday() }
         }

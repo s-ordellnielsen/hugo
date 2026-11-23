@@ -16,9 +16,7 @@ struct CategoryListView: View {
                 if !filtered.isEmpty {
                     Section(type.label) {
                         ForEach(filtered, id: \.id) { tracker in
-                            NavigationLink(
-                                destination: CategoryDetailView(tracker: tracker)
-                            ) {
+                            NavigationLink(value: CategoryRoute.detail(tracker.persistentModelID)) {
                                 HStack {
                                     Label {
                                         Text(tracker.name)
@@ -41,6 +39,11 @@ struct CategoryListView: View {
             }
         }
         .editorialNavigationTitle("screen.category-list.title")
+        .navigationDestination(for: CategoryRoute.self) { route in
+            switch route {
+            case .detail(let id): CategoryRouteView(id: id)
+            }
+        }
         .toolbar {
             ToolbarItem {
                 HelpMenu(articles: HelpArticle.categories)
