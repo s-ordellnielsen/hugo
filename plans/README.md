@@ -121,6 +121,8 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 138 | Test category aggregation edges, service years, zero-goal publishers and submission state | P3 | M | 137 (the plan was refreshed for `isSubmitted` after 137 landed) | DONE (committed on main as 046ec61; full `Scripts/verify.sh` passed, 610 tests (reviewer read the log); 23 new tests, none under `Hugo/` changed; no owner check needed) | [SLN-213](https://linear.app/sebastianln/issue/SLN-213) |
 | 139 | Accessibility regression tests for Overview and Service Year (XCUITest) | P3 | M + owner | — | REJECTED (2026-11-23: the owner removed the UI tests; seven tree assertions passed but the audit was unstable and the gate cost 2 to 4 minutes; the target, seeder and files were removed in the commit after `58b2cdc`; the audit findings live in SLN-320) | [SLN-214](https://linear.app/sebastianln/issue/SLN-214) |
 | 140 | Keep each tab's position on iPad with one sidebar-adaptable TabView | P2 | S + owner | — | DONE (committed on main as 367b914; full `Scripts/verify.sh` passed, 610 tests (reviewer read the log); `.tabViewStyle(.sidebarAdaptable)` and `.defaultVisibility` compiled as planned; owner confirmed on an iPad on 2026-11-23 that it works) | [SLN-319](https://linear.app/sebastianln/issue/SLN-319) |
+| 141 | Build a year report by grouping entries by month once | P2 | S | — | TODO | [SLN-321](https://linear.app/sebastianln/issue/SLN-321) |
+| 142 | Coalesce SyncDeduplicator runs into one trailing run | P3 | M | — | TODO | [SLN-322](https://linear.app/sebastianln/issue/SLN-322) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
@@ -314,3 +316,4 @@ Found while planning 060–066 (2026-11-03), not planned:
 * **Read-time de-duplication of carried-in entries in `ReportingLineCalculator`** (2026-10-12): rejected in favor of merging rows (plan 044), so every screen sees the same data.
 * **Merging categories by name** (2026-10-12): could join categories the user meant to keep apart. Plan 041 merges only rows that share an `id`.
 * **Bundling a custom serif typeface**: rejected. iOS 26 provides New York through `.system(_, design: .serif, weight:)`, which honors Dynamic Type and avoids font-resource maintenance.
+* **Loading the Planner's year entries only for the yearly-goal-share target** (2026-11-23): the query is built in `init`, before the target setting is known. Fixing it means a child view that exists only for that target, which changes view identity and can reset the pager's scroll. The cost without the fix is one extra body pass per entry change. Revisit with a device check.
