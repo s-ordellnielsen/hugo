@@ -62,7 +62,14 @@ struct MonthHeadline: View {
     private var unit: some View {
         Text(unitLabel)
             .font(unitFont)
-            .foregroundStyle(fades ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
+            .foregroundStyle(unitStyle)
+    }
+
+    /// On the month page the unit is as solid as the number. On a card it stays a
+    /// secondary label, and fades with the number for an empty month.
+    private var unitStyle: AnyShapeStyle {
+        if size == .large { return AnyShapeStyle(Color.primary) }
+        return fades ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary)
     }
 
     var body: some View {
