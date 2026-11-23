@@ -377,6 +377,25 @@ struct TheocraticYearReportBuilderTests {
         #expect(report.totalSeconds == 20 * 3_600)
     }
 
+    @Test
+    func groupsEntriesByMonthAtYearBoundaries() throws {
+        let report = makeReport(entries: [
+            Entry(date: date(2026, 8, 31), duration: 900, tracker: nil),
+            Entry(date: date(2026, 9, 1), duration: 3_600, tracker: nil),
+            Entry(date: date(2027, 8, 31), duration: 1_800, tracker: nil),
+            Entry(date: date(2027, 9, 1), duration: 7_200, tracker: nil),
+        ])
+        let september = try #require(report.months.first)
+        let august = try #require(report.months.last)
+
+        #expect(september.id == YearMonth(year: 2026, month: 9))
+        #expect(september.summary?.totalSeconds == 3_600)
+        #expect(august.id == YearMonth(year: 2027, month: 8))
+        #expect(august.summary?.totalSeconds == 1_800)
+        #expect(report.months.dropFirst().dropLast().allSatisfy { $0.summary == nil })
+        #expect(report.totalSeconds == 5_400)
+    }
+
     private func makeReport(entries: [Entry]) -> TheocraticYearReport {
         makeReport(for: TheocraticYear(startYear: 2026), entries: entries, now: date(2026, 10, 15))
     }
