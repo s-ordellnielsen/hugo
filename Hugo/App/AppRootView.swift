@@ -126,7 +126,10 @@ struct AppRootView: View {
                 Label(tab.titleKey, systemImage: tab.systemImage)
             }
         } detail: {
-            tabDestination(for: selectedTab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
+            NavigationStack {
+                tabDestination(for: selectedTab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
+            }
+            .id(selectedTab)
         }
     }
 
