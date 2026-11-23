@@ -80,7 +80,7 @@ struct PlannerDaySheet: View {
     private func plannedSection(planBars: [PlannerBar]) -> some View {
         VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {
             if planBars.isEmpty {
-                Text("planner.day.planned.empty")
+                Text(emptyPlanText)
                     .foregroundStyle(.secondary)
             }
             ForEach(planBars) { bar in
@@ -95,6 +95,10 @@ struct PlannerDaySheet: View {
     }
 
     private var canLog: Bool { day <= CalendarDay(today) }
+
+    private var emptyPlanText: LocalizedStringKey {
+        day < CalendarDay(today) ? "planner.day.planned.empty.past" : "planner.day.planned.empty"
+    }
 
     private var items: [PlannedItem] {
         plans.map { PlannedItem($0, trackers: trackers) }

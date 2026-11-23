@@ -12,6 +12,7 @@ struct PlannerMonthPage: View {
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
     @State private var selectedDay: CalendarDay?
+    @State private var addingPlanDay: CalendarDay?
 
     init(
         month: YearMonth, today: Date, targetSeconds: TimeInterval?, rule: YearlyGoalRule?,
@@ -42,7 +43,7 @@ struct PlannerMonthPage: View {
                 PlannerStatusHeader(
                     status: PlannerMonthStatus.make(
                         month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
-                PlannerCalendarGrid(month: plannerMonth, onSelect: { selectedDay = $0 })
+                PlannerCalendarGrid(month: plannerMonth, onSelect: select)
                 if !plannerMonth.hasPlans {
                     PlannerIntroCard()
                 }
@@ -59,5 +60,19 @@ struct PlannerMonthPage: View {
             PlannerDaySheet(day: day, today: today)
                 .presentationDetents([.medium, .large])
         }
+        .sheet(item: $addingPlanDay) { day in
+            PlanFormView(day: day)
+        }
+    }
+
+    /// An empty day opens Add Plan directly; every other day opens the day sheet.
+    private func select(_ day: CalendarDay) {
+        guard let plannerDay = plannerMonth.days.first(where: { $0.id == day }),
+            PlannerDayDestination(day: plannerDay) == .addPlan
+        else {
+            selectedDay = day
+            return
+        }
+        addingPlanDay = day
     }
 }
