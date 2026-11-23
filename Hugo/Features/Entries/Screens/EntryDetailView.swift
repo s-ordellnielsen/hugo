@@ -47,13 +47,21 @@ struct EntryDetailView: View {
                     }
                 }
             }
+            .contentMargins(.top, 0, for: .scrollContent)
+            .navigationTitle(category.name)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    HStack {
+                ToolbarItem(placement: .topBarLeading) {
+                    Label {
+                        Text(category.name).font(.system(.headline, design: .serif, weight: .bold))
+                    } icon: {
                         Image(systemName: category.iconName)
-                        Text(category.name).font(.headline).fontDesign(.serif)
                     }
+                    .labelStyle(.titleAndIcon)
+                    .lineLimit(1)
+                    .accessibilityAddTraits(.isHeader)
                 }
+                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem {
                     Menu {
                         Button("entry.action.tracker.change", systemImage: "checklist") {
