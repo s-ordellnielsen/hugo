@@ -7,8 +7,8 @@
 > dispatched you and said they maintain the index.
 >
 > **Drift check (run first)**:
-> `git diff --stat 0af2e24..HEAD -- Hugo/App/HugoApp.swift Hugo/Features/Overview Hugo/Features/ServiceYear Scripts/verify.sh Hugo.xcodeproj/xcshareddata/xcschemes/Debug.xcscheme`
-> Expected: no output. If any file changed, compare it with "Current state" and STOP on a mismatch.
+> `git diff --stat 88defad..HEAD -- Hugo/App Hugo/Features/Overview Hugo/Features/ServiceYear Scripts/verify.sh Hugo.xcodeproj/xcshareddata/xcschemes/Debug.xcscheme`
+> Expected: no output. If any file changed, compare it with "Current state" and STOP on a mismatch. (Refreshed 2026-11-23: plans 136, 137 and 140 and the target setup landed after `0af2e24`. They re-indented `OverviewView` and `ServiceYearView`, renamed one date read in `MonthDetailView` and `ServiceYearMonthRow`, and replaced the tab layout. Line numbers in "Current state" can be off by one or two; match on the code, not the number.)
 > Also `git status --short` must show nothing, or only untracked plan files
 > and (after the owner's Step 0) the new `HugoUITests/` folder and the
 > `Hugo.xcodeproj` changes Xcode made when the owner created the target.
@@ -93,7 +93,7 @@ So the Year tab exposes categories and the Bible-study count through the month c
 
 ### Tab bar
 
-`Hugo/App/AppRootView.swift` lines 99 to 107: on a compact width, a `TabView` with `Tab(tab.titleKey, ...)` for `overview`, `planner`, `year` (settings is sidebar only). English titles "Overview", "Planner", "Year". The selected tab exposes `isSelected` on its tab bar button. This is the Year tab's selection surface.
+`Hugo/App/AppRootView.swift` (after plan 140): one `TabView(selection:)` with `.tabViewStyle(.sidebarAdaptable)` and a `Tab(tab.titleKey, ...)` per `AppTab`, each wrapping its own `NavigationStack`. On the compact iPhone the tab bar shows `overview`, `planner` and `year` (`settings` is hidden from the bar on compact, `TabPlacement.regularOnly`). English titles "Overview", "Planner", "Year". The selected tab exposes `isSelected` on its tab bar button. This is the Year tab's selection surface. The simulator in `verify.sh` is an iPhone, so the compact bar is what the tests see.
 
 ### Launch seam today (`Hugo/App/HugoApp.swift` lines 23 to 37)
 
