@@ -22,6 +22,23 @@ struct PublisherStatusTests {
         #expect(PublisherStatus.status(for: "regular-pioneer")?.id == "regular-pioneer")
     }
 
+    @Test
+    func aPublisherWithoutAGoalHasNoMonthlyOrYearlyGoal() throws {
+        let publisher = try #require(PublisherStatus.status(for: "publisher"))
+        #expect(publisher.goal == 0)
+        #expect(publisher.monthlyGoal == 0)
+        #expect(publisher.yearlyGoal == 0)
+        #expect(publisher.yearlyGoalRule == nil)
+    }
+
+    @Test
+    func aYearlyStatusWithAGoalOfZeroHasNoRule() {
+        let config = PublisherStatus(id: "yearly-zero", nameKey: "", shortName: "", goalPeriod: .yearly, goal: 0)
+        #expect(config.monthlyGoal == 0)
+        #expect(config.yearlyGoal == 0)
+        #expect(config.yearlyGoalRule == nil)
+    }
+
     @Test(arguments: ["", "unknown"])
     func returnsNilForUnknownStatus(identifier: String) {
         #expect(PublisherStatus.status(for: identifier) == nil)

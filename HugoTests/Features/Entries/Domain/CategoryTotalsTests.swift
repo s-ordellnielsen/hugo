@@ -128,6 +128,34 @@ struct CategoryTotalsTests {
         #expect(rows.map(\.name) == ["Gamma", "Alpha", "Beta"])
     }
 
+    @Test
+    func snapshotOfADeletedCategoryKeepsOneStoredRow() {
+        let entries = [
+            entry(600, copy: ("Deleted", "archivebox", .separate)),
+            entry(900, copy: ("Deleted", "archivebox", .separate)),
+        ]
+        let rows = CategoryTotals.rows(entries: entries, trackers: [], locale: locale)
+
+        #expect(rows.count == 1)
+        #expect(rows.first?.id == "stored:Deleted|archivebox|separate")
+        #expect(rows.first?.name == "Deleted")
+        #expect(rows.first?.iconName == "archivebox")
+        #expect(rows.first?.type == .separate)
+        #expect(rows.first?.trackerID == nil)
+        #expect(rows.first?.duration == 1_500)
+    }
+
+    @Test
+    func snapshotsWithDifferentIconsStaySeparateWithoutALiveCategory() {
+        let entries = [
+            entry(600, copy: ("Deleted", "archivebox", .separate)),
+            entry(600, copy: ("Deleted", "tray", .separate)),
+        ]
+        let rows = CategoryTotals.rows(entries: entries, trackers: [], locale: locale)
+
+        #expect(rows.count == 2)
+    }
+
     private func entry(
         _ duration: TimeInterval, tracker: Tracker? = nil, copy: (String, String, TrackerType)? = nil,
         carried: Bool = false

@@ -43,6 +43,21 @@ struct ServiceMonthTests {
     }
 
     @Test
+    func reportWithoutASubmittedDateIsNotSubmitted() {
+        let report = SubmittedReport(year: 2026, month: 6, entriesClosedAt: date(2026, 6, 30))
+        report.submittedAt = nil
+        let entry = Entry(date: date(2026, 6, 10), duration: 3_600, tracker: nil)
+        entry.createdAt = date(2026, 7, 2, hour: 9)
+
+        let m = month([entry], [report])
+
+        #expect(!m.isSubmitted)
+        #expect(m.unreportedChange == nil)
+        #expect(!m.isUnreported(entry))
+        #expect(m.contribution.total == 3_600)
+    }
+
+    @Test
     func unreportedForSentinelReports() {
         let sentinel = SubmittedReport(
             year: 2026,

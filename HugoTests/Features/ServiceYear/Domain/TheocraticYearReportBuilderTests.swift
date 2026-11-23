@@ -338,6 +338,45 @@ struct TheocraticYearReportBuilderTests {
         #expect(september.submittedReport == nil)
     }
 
+    @Test
+    func theLastDayOfAugustIsInTheYearAndSeptemberFirstIsNot() throws {
+        let report = makeReport(entries: [
+            Entry(date: date(2027, 8, 31), duration: 3_600, tracker: nil),
+            Entry(date: date(2027, 9, 1), duration: 7_200, tracker: nil),
+        ])
+        let august = try #require(report.months.last)
+
+        #expect(august.id == YearMonth(year: 2027, month: 8))
+        #expect(august.summary?.totalSeconds == 3_600)
+        #expect(report.totalSeconds == 3_600)
+    }
+
+    @Test
+    func aYearOfOnlySubmittedMonthsTotalsTheReportedHoursWithoutEntries() {
+        func submission(month: Int, year: Int, hours: Int) -> SubmittedReport {
+            SubmittedReport(
+                year: year,
+                month: month,
+                submittedAt: date(year, month + 1, 1),
+                reportingLines: [
+                    .init(typeRaw: TrackerType.main.rawValue, submittedHours: hours, roundingRaw: "")
+                ]
+            )
+        }
+        let report = makeReport(
+            entries: [],
+            submissions: [
+                submission(month: 9, year: 2026, hours: 13),
+                submission(month: 10, year: 2026, hours: 7),
+            ]
+        )
+
+        #expect(report.months.filter(\.isSubmitted).count == 2)
+        #expect(!report.hasEntries)
+        #expect(report.mainDuration == 20 * 3_600)
+        #expect(report.totalSeconds == 20 * 3_600)
+    }
+
     private func makeReport(entries: [Entry]) -> TheocraticYearReport {
         makeReport(for: TheocraticYear(startYear: 2026), entries: entries, now: date(2026, 10, 15))
     }

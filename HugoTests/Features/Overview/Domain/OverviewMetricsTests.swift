@@ -90,6 +90,56 @@ struct OverviewMetricsTests {
         #expect(metrics.hasOwnEntries == false)
     }
 
+    @Test
+    func aPublisherWithoutAGoalHasNoGoalAndNoExpectedProgress() {
+        let publisher = PublisherStatus.status(for: "publisher")
+        let metrics = OverviewMetrics.make(
+            entries: [Entry(date: date(2026, 1, 1), duration: 7_200, tracker: nil)], status: publisher,
+            now: date(2026, 1, 15), calendar: calendar)
+
+        #expect(metrics.monthlyGoal == 0)
+        #expect(metrics.expectedProgress == 0)
+        #expect(metrics.totalHours == 2)
+        #expect(metrics.hasOwnEntries == true)
+    }
+
+    @Test
+    func aBufferIsTheWholeGoalForAPublisherWithoutAGoal() {
+        let publisher = PublisherStatus.status(for: "publisher")
+        let metrics = OverviewMetrics.make(
+            entries: [], status: publisher, bufferHours: 5, now: date(2026, 1, 15), calendar: calendar)
+
+        #expect(metrics.monthlyGoal == 5)
+        #expect(abs(metrics.expectedProgress - (15.0 / 31.0 * 5.0)) < 0.0001)
+    }
+
+    @Test
+    func aNegativeBufferKeepsAPublisherWithoutAGoalAtZero() {
+        let publisher = PublisherStatus.status(for: "publisher")
+        let metrics = OverviewMetrics.make(
+            entries: [], status: publisher, bufferHours: -3, now: date(2026, 1, 15), calendar: calendar)
+
+        #expect(metrics.monthlyGoal == 0)
+        #expect(metrics.expectedProgress == 0)
+    }
+
+    @Test
+    func timeInEveryCategoryCountsWhenThereIsNoGoal() {
+        let main = Tracker(name: "Field Service", type: .main, iconName: "figure.walk")
+        let separate = Tracker(name: "Bethel", type: .separate, iconName: "building")
+        let entries = [
+            Entry(date: date(2026, 1, 1), duration: 3_600, tracker: main),
+            Entry(date: date(2026, 1, 2), duration: 1_800, tracker: separate),
+            Entry(date: date(2026, 1, 3), duration: 900, tracker: nil),
+        ]
+        let metrics = OverviewMetrics.make(
+            entries: entries, status: PublisherStatus.status(for: "publisher"), now: date(2026, 1, 15),
+            calendar: calendar)
+
+        #expect(metrics.totalHours == 1.75)
+        #expect(metrics.monthlyGoal == 0)
+    }
+
     private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day))!
     }
