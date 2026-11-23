@@ -18,7 +18,7 @@ struct OverviewListView: View {
     @State private var shownStyle: OverviewListStyle? = nil
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    @State var selectedEntry: Entry? = nil
+    @Binding var selectedEntry: Entry?
     @State var showAddEntrySheet: Bool = false
 
     var body: some View {
@@ -70,10 +70,6 @@ struct OverviewListView: View {
             withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : Motion.presence) {
                 shownStyle = listStyle
             }
-        }
-        .sheet(item: $selectedEntry) { entry in
-            EntryDetailView(entry: entry)
-                .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showAddEntrySheet) {
             AddEntryView()

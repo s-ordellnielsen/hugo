@@ -39,7 +39,7 @@ private struct AdaptiveDetailModifier<Item: Identifiable, DetailContent: View>: 
                         makeContent(shown)
                     }
                 }
-                .inspectorColumnWidth(min: 320, ideal: 380, max: 480)
+                .inspectorColumnWidth(min: 340, ideal: 400, max: 520)
                 .onChange(of: item?.id) {
                     if let item {
                         lastItem = item

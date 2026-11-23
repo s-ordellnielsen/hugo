@@ -42,6 +42,7 @@ private struct OverviewDayView: View {
 
     @State private var showingAddEntry = false
     @State private var showingPlanPace = false
+    @State private var selectedEntry: Entry?
 
     init(today: Date) {
         self.today = today
@@ -94,13 +95,16 @@ private struct OverviewDayView: View {
                     onShowPlanPace: { showingPlanPace = true })
                 Spacer(minLength: HugoLayout.Spacing.section)
 
-                OverviewListView(entries: entries)
+                OverviewListView(entries: entries, selectedEntry: $selectedEntry)
             }
             .motion(Motion.presence, value: reminderMonth)
             .padding()
         }
         .frame(maxWidth: .infinity)
         .background(Color(.systemGroupedBackground))
+        .adaptiveDetail(item: $selectedEntry) { entry in
+            EntryDetailView(entry: entry)
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem {
