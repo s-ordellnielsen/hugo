@@ -7,7 +7,7 @@
 > dispatched you and said they maintain the index.
 >
 > **Drift check (run first)**:
-> `git diff --stat 0af2e24..HEAD -- Hugo/Features/ServiceYear Hugo/Features/Entries/Domain Hugo/Features/Overview/Domain Hugo/Features/PublisherStatus Hugo/Features/Reports/Domain/ServiceMonth.swift Hugo/Persistence/SubmittedReportSelection.swift HugoTests/Features/ServiceYear HugoTests/Features/Entries/Domain HugoTests/Features/Overview/Domain HugoTests/Features/PublisherStatus HugoTests/Features/Reports/Domain/ServiceMonthTests.swift`
+> `git diff --stat 318489c..HEAD -- Hugo/Features/ServiceYear Hugo/Features/Entries/Domain Hugo/Features/Overview/Domain Hugo/Features/PublisherStatus Hugo/Features/Reports/Domain/ServiceMonth.swift Hugo/Persistence/SubmittedReportSelection.swift HugoTests/Features/ServiceYear HugoTests/Features/Entries/Domain HugoTests/Features/Overview/Domain HugoTests/Features/PublisherStatus HugoTests/Features/Reports/Domain/ServiceMonthTests.swift`
 > Expected: no output. If any file changed, compare it with "Current state" and STOP on a mismatch.
 > Also `git status --short` must show only
 > `M Hugo.xcodeproj/xcshareddata/xcschemes/Debug.xcscheme` (the owner's own
@@ -20,9 +20,9 @@
 - **Risk**: LOW. Tests only. No production code changes.
 - **Depends on**: none
 - **Category**: tests
-- **Planned at**: commit `0af2e24`, 2026-11-23
+- **Planned at**: commit `0af2e24`, 2026-11-23. Refreshed 2026-11-23 after plan 137 landed (`318489c`): `isReal` no longer exists, the tests below use `isSubmitted`.
 - **Issue**: [SLN-213](https://linear.app/sebastianln/issue/SLN-213)
-- **Plan 137 note**: plan 137 will introduce `isSubmitted` and `submittedDate` on the report. The submission-state tests in Steps 5 and 6 are written against today's behavior (`SubmittedReportSelection.isReal`, `ServiceMonth.isSubmitted`) and are the only tests plan 137 may need to touch. They are marked with a `// Plan 137:` comment.
+- **Plan 137 note**: plan 137 is done (`318489c`). It replaced `SubmittedReportSelection.isReal` with `SubmittedReport.isSubmitted`, `submittedDate`, `firstSubmittedDate` and `entriesCutoff` (`Hugo/Persistence/SubmittedReport+Submission.swift`), and added `HugoTests/Persistence/SubmittedReportSubmissionTests.swift`, which already covers a placeholder, a nil record and a genuinely submitted report. This plan only adds the canonical-selection tests and one `ServiceMonth` test, written against the new vocabulary.
 
 ## Why this matters
 
@@ -103,13 +103,11 @@ and latest `Entry.date` and `.now`. Submitted reports never reach the pager, so
 a year that holds only a submitted report and no entries does not get a page.
 Do not change that here (see Maintenance notes).
 
-`Hugo/Persistence/SubmittedReportSelection.swift`, lines 9 to 11 and 17 to 36:
-
-```swift
-    static func isReal(_ submission: SubmittedReport) -> Bool {
-        (submission.submittedAt ?? .distantPast) != .distantPast
-    }
-```
+`Hugo/Persistence/SubmittedReportSelection.swift` has no `isReal` any more. It
+decides with `SubmittedReport.isSubmitted` (true when `submittedAt` is a real
+date, false for `nil` and for `.distantPast`), defined in
+`Hugo/Persistence/SubmittedReport+Submission.swift`. Re-read the file before
+Step 5 and match the real `canonical(for:in:)` and `canonicalByMonth` signatures.
 
 `canonicalByMonth` skips a report whose `year` or `month` is nil, whose `year`
 is not above 0, or whose `month` is outside 1 to 12 (`validYearMonth`, line 38).
@@ -118,7 +116,7 @@ is not above 0, or whose `month` is outside 1 to 12 (`validYearMonth`, line 38).
 
 ```swift
     var isSubmitted: Bool {
-        submittedReport.map(SubmittedReportSelection.isReal) ?? false
+        submittedReport?.isSubmitted ?? false
     }
 ```
 
@@ -474,51 +472,26 @@ struct SubmittedReportSelectionTests {
     private let sent = Date(timeIntervalSince1970: 1_780_000_000)
     private let june = YearMonth(year: 2026, month: 6)
 
-    // Plan 137: this and the next two tests pin today's `isReal`; plan 137 may rename it.
     @Test
-    func aMissingSubmittedAtIsNotReal() {
-        let report = SubmittedReport(year: 2026, month: 6)
-        report.submittedAt = nil
-
-        #expect(!SubmittedReportSelection.isReal(report))
-    }
-
-    @Test
-    func thePlaceholderDateIsNotReal() {
-        let report = SubmittedReport(year: 2026, month: 6, submittedAt: .distantPast)
-
-        #expect(!SubmittedReportSelection.isReal(report))
-    }
-
-    @Test
-    func anyOtherSubmittedAtIsReal() {
-        let report = SubmittedReport(year: 2026, month: 6, submittedAt: sent)
-
-        #expect(SubmittedReportSelection.isReal(report))
-    }
-
-    // Plan 137: depends on `isReal`.
-    @Test
-    func aRealReportBeatsOneWithAMissingSubmittedAtEvenWhenTheOtherClosedLater() {
+    func aSubmittedReportBeatsOneWithAMissingSubmittedAtEvenWhenTheOtherClosedLater() {
         let missing = SubmittedReport(year: 2026, month: 6, entriesClosedAt: sent.addingTimeInterval(86_400))
         missing.submittedAt = nil
-        let real = SubmittedReport(year: 2026, month: 6, submittedAt: sent, entriesClosedAt: sent)
+        let submitted = SubmittedReport(year: 2026, month: 6, submittedAt: sent, entriesClosedAt: sent)
 
-        let canonical = SubmittedReportSelection.canonical(for: june, in: [missing, real])
+        let canonical = SubmittedReportSelection.canonical(for: june, in: [missing, submitted])
 
-        #expect(canonical === real)
+        #expect(canonical === submitted)
     }
 
-    // Plan 137: depends on `isReal`.
     @Test
-    func aMonthWithOnlyMissingAndPlaceholderReportsHasNoRealOne() throws {
+    func aMonthWithOnlyMissingAndPlaceholderReportsHasNoSubmittedOne() throws {
         let missing = SubmittedReport(year: 2026, month: 6)
         missing.submittedAt = nil
         let placeholder = SubmittedReport(year: 2026, month: 6, submittedAt: .distantPast)
 
         let canonical = try #require(SubmittedReportSelection.canonical(for: june, in: [missing, placeholder]))
 
-        #expect(!SubmittedReportSelection.isReal(canonical))
+        #expect(!canonical.isSubmitted)
     }
 
     @Test
@@ -565,7 +538,6 @@ Notes for the executor:
 Add to `HugoTests/Features/Reports/Domain/ServiceMonthTests.swift`:
 
 ```swift
-    // Plan 137: pins that a report with no `submittedAt` is treated like a placeholder.
     @Test
     func reportWithoutASubmittedDateIsNotSubmitted() {
         let report = SubmittedReport(year: 2026, month: 6, entriesClosedAt: date(2026, 6, 30))
@@ -593,7 +565,7 @@ Run `Scripts/verify.sh`, with the full output redirected to a file under
 Confirm the new tests ran:
 
 ```
-grep -c "snapshotOfADeletedCategoryKeepsOneStoredRow\|theBoundaryFollowsTheCalendarTimeZone\|aMissingSubmittedAtIsNotReal\|aPublisherWithoutAGoalHasNoGoalAndNoExpectedProgress\|aYearOfOnlySubmittedMonthsTotalsTheReportedHoursWithoutEntries\|reportWithoutASubmittedDateIsNotSubmitted" verify-138.log
+grep -c "snapshotOfADeletedCategoryKeepsOneStoredRow\|theBoundaryFollowsTheCalendarTimeZone\|aMonthWithOnlyMissingAndPlaceholderReportsHasNoSubmittedOne\|aPublisherWithoutAGoalHasNoGoalAndNoExpectedProgress\|aYearOfOnlySubmittedMonthsTotalsTheReportedHoursWithoutEntries\|reportWithoutASubmittedDateIsNotSubmitted" verify-138.log
 ```
 
 Expect 6 or more (Swift Testing prints each test name once or twice).
@@ -618,12 +590,7 @@ None of the new tests needs `InMemoryModelContainer.make()`; the existing
 `MonthlyReportBuilderTests.usesStoredTrackerWhenLiveTrackerWasDeleted` already
 covers the live-container deletion path. New test count: 2 (CategoryTotals) + 8
 (TheocraticYear) + 2 (report builder) + 4 (OverviewMetrics) + 2 (PublisherStatus)
-+ 7 (SubmittedReportSelection) + 1 (ServiceMonth) = 26.
-
-Tests plan 137 may need to touch (all marked `// Plan 137:`): the three `isReal`
-tests, `aRealReportBeatsOneWithAMissingSubmittedAtEvenWhenTheOtherClosedLater`,
-`aMonthWithOnlyMissingAndPlaceholderReportsHasNoRealOne` and
-`reportWithoutASubmittedDateIsNotSubmitted`.
++ 4 (SubmittedReportSelection) + 1 (ServiceMonth) = 23.
 
 ## Done criteria
 
@@ -646,5 +613,4 @@ Stop and report back (do not improvise) if:
 
 - The year pager (`ServiceYearView.years`) is built from entry dates only. A year whose entries were all deleted after a report was submitted gets no page, even though its reported hours still count in `TheocraticYearReportBuilder`. That may be intended; decide before changing it, then add `submissions` to `availableYears` and a test.
 - A real report (`submittedAt` set) with `entriesClosedAt == nil` makes every entry in the month count as unreported (`ServiceMonth.isUnreported` compares against `.distantPast`). This plan does not test it because the intended behavior is not documented. If a synced row can arrive that way, decide the rule and add a test.
-- When plan 137 lands, update the `// Plan 137:` tests to use `isSubmitted` and `submittedDate` and delete the comments.
 - Keep new boundary tests on a fixed calendar. Only the Copenhagen test uses a non-UTC zone, on purpose.
