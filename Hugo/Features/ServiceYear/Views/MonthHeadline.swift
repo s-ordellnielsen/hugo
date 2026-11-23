@@ -12,8 +12,14 @@ struct MonthHeadline: View {
 
     let seconds: TimeInterval
     var size: Size = .regular
-    /// Draws the number faded, for a month with nothing logged.
+    /// Draws the number faded, for a regular-size month with nothing logged.
+    /// The large size is never faded.
     var isFaded = false
+
+    @ScaledMetric(relativeTo: .largeTitle) private var largeNumberSize: CGFloat = 56
+
+    /// The large headline is never faded: it is the page's main number.
+    private var fades: Bool { isFaded && size == .regular }
 
     private var headline: HeadlineDuration {
         HeadlineDuration(seconds: seconds)
@@ -27,15 +33,48 @@ struct MonthHeadline: View {
         }
     }
 
+    private var numberFont: Font {
+        size == .large
+            ? .system(size: largeNumberSize, weight: .bold, design: .serif)
+            : .system(.title, design: .serif, weight: .bold)
+    }
+
+    private var unitFont: Font {
+        .system(size == .large ? .title2 : .title3, design: .serif, weight: .semibold)
+    }
+
+    @ViewBuilder
+    private var number: some View {
+        let text = Text(headline.value, format: .number)
+            .font(numberFont)
+            .foregroundStyle(fades ? AnyShapeStyle(.tertiary) : AnyShapeStyle(Color.primary))
+            .contentTransition(.numericText(value: Double(headline.value)))
+        if size == .large {
+            text
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+        } else {
+            text
+        }
+    }
+
+    private var unit: some View {
+        Text(unitLabel)
+            .font(unitFont)
+            .foregroundStyle(fades ? AnyShapeStyle(.tertiary) : AnyShapeStyle(.secondary))
+    }
+
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
-            Text(headline.value, format: .number)
-                .font(.system(size == .large ? .largeTitle : .title, design: .serif, weight: .bold))
-                .foregroundStyle(isFaded ? .tertiary : .primary)
-                .contentTransition(.numericText(value: Double(headline.value)))
-            Text(unitLabel)
-                .font(.system(size == .large ? .title2 : .title3, design: .serif, weight: .semibold))
-                .foregroundStyle(isFaded ? .tertiary : .secondary)
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .firstTextBaseline, spacing: HugoLayout.Spacing.compact) {
+                number
+                unit
+            }
+            VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+                number
+                unit
+            }
         }
         .animation(.snappy, value: headline)
         .accessibilityElement(children: .ignore)
@@ -49,4 +88,10 @@ struct MonthHeadline: View {
         MonthHeadline(seconds: 45 * 60)
         MonthHeadline(seconds: 0, isFaded: true)
     }
+}
+
+#Preview("Large, accessibility size") {
+    MonthHeadline(seconds: 142 * 3_600, size: .large)
+        .dynamicTypeSize(.accessibility3)
+        .padding()
 }
