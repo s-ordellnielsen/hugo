@@ -6,7 +6,6 @@ import SwiftUI
 
 struct AppRootView: View {
     @Environment(\.modelContext) private var context
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage(UserDefaultsKeys.isOnboarding) private var needsOnboarding = true
@@ -25,66 +24,55 @@ struct AppRootView: View {
         self.settingsSync = settingsSync
     }
 
-    private var isCompact: Bool { horizontalSizeClass == .compact }
-
-    private var visibleTabs: [AppTab] {
-        AppTab.allCases.filter { $0.placement.isVisible(compact: isCompact) }
-    }
-
-    private var tabSelection: Binding<AppTab> {
-        Binding(
-            get: { navigation.selectedTab },
-            set: { navigation.select($0) }
-        )
-    }
-
     var body: some View {
-        tabs
-            .environment(syncMonitor)
-            .task {
-                settingsSync?.start()
-                syncMonitor.startWatchingNetwork()
-                await bootstrapper.start(context: context)
-                deduplication.request(context: context)
-            }
-            .onChange(of: scenePhase) { _, phase in
-                if phase == .active { deduplication.request(context: context) }
-            }
-            .onReceive(
-                NotificationCenter.default
-                    .publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
-                    .receive(on: RunLoop.main)
-            ) { notification in
-                guard
-                    let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
-                        as? NSPersistentCloudKitContainer.Event
-                else { return }
-                syncMonitor.record(
-                    id: event.identifier,
-                    endDate: event.endDate,
-                    succeeded: event.succeeded,
-                    errorCode: (event.error as? CKError)?.code.rawValue
-                )
-                guard event.type == .import, event.endDate != nil else { return }
-                deduplication.request(context: context)
-            }
-            .onReceive(
-                NotificationCenter.default
-                    .publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
-                    .receive(on: RunLoop.main)
-            ) { _ in
-                settingsSync?.pullFromCloud()
-            }
-            .onReceive(
-                NotificationCenter.default
-                    .publisher(for: UserDefaults.didChangeNotification)
-                    .receive(on: RunLoop.main)
-            ) { _ in
-                settingsSync?.pushToCloud()
-            }
-            .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
-            .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
-            .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
+        AdaptiveAppLayout(navigation: navigation) { tab in
+            tabStack(for: tab)
+        }
+        .environment(syncMonitor)
+        .task {
+            settingsSync?.start()
+            syncMonitor.startWatchingNetwork()
+            await bootstrapper.start(context: context)
+            deduplication.request(context: context)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { deduplication.request(context: context) }
+        }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
+                .receive(on: RunLoop.main)
+        ) { notification in
+            guard
+                let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
+                    as? NSPersistentCloudKitContainer.Event
+            else { return }
+            syncMonitor.record(
+                id: event.identifier,
+                endDate: event.endDate,
+                succeeded: event.succeeded,
+                errorCode: (event.error as? CKError)?.code.rawValue
+            )
+            guard event.type == .import, event.endDate != nil else { return }
+            deduplication.request(context: context)
+        }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
+                .receive(on: RunLoop.main)
+        ) { _ in
+            settingsSync?.pullFromCloud()
+        }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: UserDefaults.didChangeNotification)
+                .receive(on: RunLoop.main)
+        ) { _ in
+            settingsSync?.pushToCloud()
+        }
+        .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
+        .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
+        .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
     }
 
     /// One stack per tab. Year and Settings bind their path, so reselecting
@@ -97,39 +85,28 @@ struct AppRootView: View {
                 tabDestination(
                     for: tab,
                     yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken)
+                    plannerResetToken: navigation.plannerResetToken
+                )
             }
         case .settings:
             NavigationStack(path: $navigation.settingsPath) {
                 tabDestination(
                     for: tab,
                     yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken)
+                    plannerResetToken: navigation.plannerResetToken
+                )
             }
         case .overview, .planner:
             NavigationStack {
                 tabDestination(
                     for: tab,
                     yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken)
+                    plannerResetToken: navigation.plannerResetToken
+                )
             }
         }
     }
 
-    private var tabs: some View {
-        TabView(selection: tabSelection) {
-            ForEach(visibleTabs) { tab in
-                Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
-                    tabStack(for: tab)
-                }
-                .defaultVisibility(tab.placement.showsInTabBar ? .automatic : .hidden, for: .tabBar)
-            }
-        }
-        .tabViewStyle(.sidebarAdaptable)
-        .onChange(of: isCompact) { _, compact in
-            navigation.ensureSelectionVisible(compact: compact)
-        }
-    }
 }
 
 @ViewBuilder
