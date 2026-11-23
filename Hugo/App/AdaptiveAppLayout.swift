@@ -12,6 +12,7 @@ struct AdaptiveAppLayout<TabContent: View>: View {
     let tabContent: (AppTab) -> TabContent
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var tapRule = SidebarTapRule()
 
     private var isCompact: Bool { horizontalSizeClass == .compact }
 
@@ -19,6 +20,19 @@ struct AdaptiveAppLayout<TabContent: View>: View {
         Binding(
             get: { navigation.selectedTab },
             set: { navigation.select($0) }
+        )
+    }
+
+    /// The sidebar selection. Setting it only switches tabs. Reselect is a
+    /// separate tap, decided by `tapRule`.
+    private var sidebarSelection: Binding<AppTab?> {
+        Binding(
+            get: { navigation.selectedTab },
+            set: { tab in
+                if let tab, tab != navigation.selectedTab {
+                    navigation.selectedTab = tab
+                }
+            }
         )
     }
 
@@ -68,30 +82,25 @@ struct AdaptiveAppLayout<TabContent: View>: View {
         .tabViewStyle(.sidebarAdaptable)
     }
 
-    /// A quiet tint behind the selected row. The text keeps the primary colour,
-    /// so it stays readable at any text size, in light or dark mode.
-    @ViewBuilder
-    private func rowBackground(for tab: AppTab) -> some View {
-        if tab == navigation.selectedTab {
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color.accentColor.opacity(0.18))
-        } else {
-            Color.clear
-        }
-    }
-
-    /// The sidebar rows are buttons, not a selection binding, so tapping the
-    /// selected row again still reaches `select(_:)` and resets that tab.
     private var regularLayout: some View {
         NavigationSplitView {
-            List(AppTab.allCases) { tab in
-                Button {
-                    navigation.select(tab)
-                } label: {
-                    Label(tab.titleKey, systemImage: tab.systemImage)
-                }
-                .accessibilityAddTraits(tab == navigation.selectedTab ? .isSelected : [])
-                .listRowBackground(rowBackground(for: tab))
+            List(AppTab.allCases, selection: sidebarSelection) { tab in
+                Label(tab.titleKey, systemImage: tab.systemImage)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                    .tag(tab)
+                    .simultaneousGesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { _ in
+                                tapRule.pressBegan(on: tab, selected: navigation.selectedTab)
+                            }
+                            .onEnded { value in
+                                let travel = hypot(value.translation.width, value.translation.height)
+                                if let reselected = tapRule.tapEnded(on: tab, travel: travel) {
+                                    navigation.popToRoot(reselected)
+                                }
+                            }
+                    )
             }
         } detail: {
             // One stack for the whole detail. A tab switch changes the root and
