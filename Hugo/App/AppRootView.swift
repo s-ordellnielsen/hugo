@@ -87,16 +87,40 @@ struct AppRootView: View {
             .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
     }
 
+    /// One stack per tab. Year and Settings bind their path, so reselecting
+    /// the tab can pop it. Overview and Planner push nothing.
+    @ViewBuilder
+    private func tabStack(for tab: AppTab) -> some View {
+        switch tab {
+        case .year:
+            NavigationStack(path: $navigation.yearPath) {
+                tabDestination(
+                    for: tab,
+                    yearResetToken: navigation.yearResetToken,
+                    plannerResetToken: navigation.plannerResetToken)
+            }
+        case .settings:
+            NavigationStack(path: $navigation.settingsPath) {
+                tabDestination(
+                    for: tab,
+                    yearResetToken: navigation.yearResetToken,
+                    plannerResetToken: navigation.plannerResetToken)
+            }
+        case .overview, .planner:
+            NavigationStack {
+                tabDestination(
+                    for: tab,
+                    yearResetToken: navigation.yearResetToken,
+                    plannerResetToken: navigation.plannerResetToken)
+            }
+        }
+    }
+
     private var tabs: some View {
         TabView(selection: tabSelection) {
             ForEach(visibleTabs) { tab in
                 Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
-                    NavigationStack {
-                        tabDestination(
-                            for: tab,
-                            yearResetToken: navigation.yearResetToken,
-                            plannerResetToken: navigation.plannerResetToken)
-                    }
+                    tabStack(for: tab)
                 }
                 .defaultVisibility(tab.placement.showsInTabBar ? .automatic : .hidden, for: .tabBar)
             }
