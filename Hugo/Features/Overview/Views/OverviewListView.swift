@@ -13,11 +13,17 @@ struct OverviewListView: View {
 
     @AppStorage(UserDefaultsKeys.overviewListStyle) private var listStyle: OverviewListStyle = .byDate
 
+    /// The style whose list is on screen. It trails `listStyle` by a moment so the segmented
+    /// control finishes its own layout before SwiftUI swaps the list. `nil` until the first change.
+    @State private var shownStyle: OverviewListStyle? = nil
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State var selectedEntry: Entry? = nil
     @State var showAddEntrySheet: Bool = false
 
     var body: some View {
         let groups = OverviewEntryGroups(entries)
+        let style = shownStyle ?? listStyle
 
         VStack(spacing: HugoLayout.Spacing.regular) {
             if entries.isEmpty {
@@ -44,10 +50,12 @@ struct OverviewListView: View {
                     Spacer()
                     OverviewListStyleControl(selection: $listStyle)
                 }
-                if listStyle == .byEntry {
+                if style == .byEntry {
                     OverviewEntryList(entries: groups.regular, selectedEntry: $selectedEntry)
-                } else if listStyle == .byDate {
+                        .transition(.opacity)
+                } else if style == .byDate {
                     OverviewDateList(entries: groups.regular, selectedEntry: $selectedEntry)
+                        .transition(.opacity)
                 }
                 if let carriedIn = CarriedInTime(entries: groups.carried) {
                     OverviewCarriedEntriesView(carriedIn: carriedIn, entries: groups.carried)
@@ -56,6 +64,13 @@ struct OverviewListView: View {
         }
         .padding(.top)
         .motion(Motion.presence, value: entries.count)
+        .task(id: listStyle) {
+            try? await Task.sleep(for: .milliseconds(50))
+            guard !Task.isCancelled else { return }
+            withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : Motion.presence) {
+                shownStyle = listStyle
+            }
+        }
         .sheet(item: $selectedEntry) { entry in
             EntryDetailView(entry: entry)
                 .presentationDetents([.medium, .large])
@@ -93,9 +108,11 @@ struct OverviewEntryList: View {
     @Binding var selectedEntry: Entry?
 
     var body: some View {
-        ForEach(entries) { entry in
-            EntryRow(entry: entry, selectedEntry: $selectedEntry)
-                .transition(.move(edge: .top).combined(with: .opacity))
+        LazyVStack(spacing: HugoLayout.Spacing.regular) {
+            ForEach(entries) { entry in
+                EntryRow(entry: entry, selectedEntry: $selectedEntry)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
     }
 }
@@ -106,10 +123,12 @@ struct OverviewDateList: View {
     @Binding var selectedEntry: Entry?
 
     var body: some View {
-        ForEach(dates) { date in
-            DateListItem(section: date, selectedEntry: $selectedEntry)
-                .equatable()
-                .transition(.move(edge: .top).combined(with: .opacity))
+        LazyVStack(spacing: HugoLayout.Spacing.regular) {
+            ForEach(dates) { date in
+                DateListItem(section: date, selectedEntry: $selectedEntry)
+                    .equatable()
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
     }
 
