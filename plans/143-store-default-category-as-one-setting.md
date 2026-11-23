@@ -153,7 +153,7 @@ oldest `createdAt`, ties broken by `id.uuidString`.
 - `Hugo/Features/Entries/State/AddEntryFormModel.swift`, `Hugo/Features/Entries/Screens/AddEntryView.swift`
 - `Hugo/Features/Entries/Domain/CategoryTotals.swift`
 - `Hugo/Features/Overview/Screens/CarriedInBreakdownSheet.swift`
-- `Hugo/Features/Reports/Domain/MonthlyReportBuilder.swift` and its callers, only to pass the stored id
+- `Hugo/Features/Reports/Domain/MonthlyReportBuilder.swift`, `ServiceMonth.swift` and `Hugo/Features/Reports/State/SubmitReportFormModel.swift`, only to pass the stored id
 - `Hugo/Features/Planner/State/PlanFormModel.swift`, `Hugo/Features/Planner/Screens/PlanFormView.swift`
 - `Hugo/App/AppBootstrapper.swift`
 - `Hugo/Persistence/SyncDeduplicator.swift`
@@ -189,7 +189,7 @@ static let defaultCategoryID = "defaultCategoryID"
 static let hasMigratedDefaultCategory = "hasMigratedDefaultCategory"
 ```
 
-Add `UserDefaultsKeys.defaultCategoryID` to `SyncedSettings.keys`. Update the
+Also change `enum UserDefaultsKeys` to `nonisolated enum UserDefaultsKeys`, so nonisolated domain code can read the key (Step 6 needs this). Add `UserDefaultsKeys.defaultCategoryID` to `SyncedSettings.keys`. Update the
 doc comment of `SyncedSettings` so the list of device-only keys also names the
 migration flag.
 
@@ -302,7 +302,7 @@ Read the stored id with `@AppStorage(UserDefaultsKeys.defaultCategoryID) private
 - `CategoryListView`: add the `@AppStorage` and replace `tracker.isDefault` with `DefaultCategory.resolve(storedID: defaultCategoryID, in: trackers)?.id == tracker.id`. Compute that id once above the `List` (`let defaultID = ...`), not per row.
 - `AddEntryFormModel.reconcileSelection(with:)` and `PlanFormModel.reconcileSelection(with:)`: add a parameter `defaultCategoryID: String?` and replace `trackers.first(where: \.isDefault)` with `DefaultCategory.resolve(storedID: defaultCategoryID, in: trackers)`. Update the two call sites in `AddEntryView.swift` (lines 87 and 89) and `PlanFormView.swift` (lines 96 and 98), where the view gets the value from `@AppStorage`. The `.onChange` handlers that pass `newTrackers` pass the same stored id.
 - `CategoryTotals.rows(entries:trackers:locale:)`: add `defaultCategoryID: String? = nil` before `locale`. Compute `defaultMain` as `DefaultCategory.resolve(storedID: defaultCategoryID, in: candidates).flatMap { $0.type == .main ? $0 : nil }`. In `liveCandidates` add the same parameter and replace the `isDefault` comparison with `($0.id == defaultID) != ($1.id == defaultID)` returning `$0.id == defaultID`, where `defaultID` is the resolved default's id (compute it in `rows` and pass it as `UUID?`). Update the doc comment ("default first" stays true).
-- Callers: `CarriedInBreakdownSheet` reads `@AppStorage` and passes it. `MonthlyReportBuilder.summaries` gets `defaultCategoryID: String? = nil` and passes it on. `ServiceMonth.swift:110` and `SubmitReportFormModel.swift:60` pass `UserDefaults.standard.string(forKey: UserDefaultsKeys.defaultCategoryID)` (a `UserDefaults` initializer parameter with that default if the type already takes one). If threading this needs more than these callers, STOP.
+- Callers: `CarriedInBreakdownSheet` reads `@AppStorage` and passes it. `MonthlyReportBuilder.summaries` gets `defaultCategoryID: String? = nil` and passes it on. `SubmitReportFormModel` reads `userDefaults.string(forKey: UserDefaultsKeys.defaultCategoryID)` (it already has a `userDefaults` initializer parameter) and passes it. `ServiceMonth.make` (a nonisolated static function) gets a new parameter `userDefaults: UserDefaults = .standard` after `locale`, and passes `userDefaults.string(forKey: UserDefaultsKeys.defaultCategoryID)` to the builder. Do not change `TheocraticYearReportBuilder` or any other caller of `ServiceMonth.make`: the default parameter covers them. This needs `UserDefaultsKeys` to be readable from nonisolated code, so declare it `nonisolated enum UserDefaultsKeys` (as other types in `Hugo/Domain` are). Do not read `UserDefaults.standard` or the key inline in `make`'s body.
 - Previews: remove `isDefault: true` from `ReportPreviewFixtures.swift:6` and `PreviewModelContainer.swift:10`. The first Field Service category is then the default.
 
 **Verify**: `grep -rn "isDefault" Hugo --include='*.swift' | grep -v "Persistence/SchemaVersions"` shows only `Tracker.swift` or the model file that declares the property and its init (no readers), and `Scripts/verify.sh` compiles (tests may still fail until Step 7).
@@ -367,7 +367,7 @@ Stop and report if:
 - A file in "Current state" no longer matches.
 - Any change to a `VersionedSchema` or `HugoMigrationPlan` seems needed.
 - `@AppStorage` with `String?` does not compile or does not refresh the view after `DefaultCategoryService` writes (then switch the views to a non-optional `String` with a documented unset marker and ask first).
-- Passing the stored id into `MonthlyReportBuilder` needs changes outside the files listed in Scope.
+- Passing the stored id into `MonthlyReportBuilder` needs changes outside the files listed in Scope, even after making `UserDefaultsKeys` nonisolated and adding the `userDefaults` parameter to `ServiceMonth.make`.
 - A `SyncDeduplicatorTests` test about merging categories (not about `isDefault`) fails.
 
 ## Maintenance notes
