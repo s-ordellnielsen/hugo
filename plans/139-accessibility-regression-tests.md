@@ -174,6 +174,15 @@ Always run `xcodebuild` and `verify.sh` in a Rex pane per the owner's global ins
 
 ## Steps
 
+### Update (2026-11-23): Steps 0 and 1 are done
+
+The `HugoUITests` target exists (created in Xcode by the owner), and the build settings and scheme work of Steps 0 and 1 are done and committed. Skip Steps 0 and 1. What is true now:
+
+- `HugoUITests` matches `HugoTests` on deployment target 26.0 (inherited from the project), Swift 6, strict concurrency `complete`, approachable concurrency, team `CAJA48GKTR` and device family iPhone and iPad. Like `HugoTests`, it sets no default actor isolation, so test classes that touch UI must be marked `@MainActor` themselves.
+- The `Debug`, `TestFlight` and `Production` schemes each list the target as a testable, with `BlueprintName = "HugoUITests"`.
+- A bundle with no test file has no executable and `xcodebuild test` fails to load it. So `HugoUITests/UITargetPlaceholderTests.swift` (one empty test) is committed to keep `Scripts/verify.sh` green. **Delete it with `git rm` in Step 4, in the same commit that adds the first real UI test file**, and never leave the target without a test file between commits.
+- The folder `HugoUITests/` exists and holds only that placeholder.
+
 ### Step 0: The owner creates the UI test target in Xcode (RISKIEST STEP, NOT AN EXECUTOR STEP)
 
 Hand-editing `project.pbxproj` for a new target (a `PBXNativeTarget` of type `com.apple.product-type.bundle.ui-testing`, its `PBXFileSystemSynchronizedRootGroup`, three build phases, a `PBXContainerItemProxy` and `PBXTargetDependency`, product reference, three build configurations and `TargetAttributes`) is fragile, and a mistake can corrupt the project. The owner does this once in Xcode:
