@@ -50,6 +50,7 @@ struct ServiceYearPageView: View {
     var body: some View {
         let report = self.report
         let progress = progress(for: report)
+        let creditsByMonth = Dictionary(grouping: schoolCredits, by: \.yearMonth)
         return ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
                 if report.hasEntries {
@@ -66,7 +67,7 @@ struct ServiceYearPageView: View {
                 ForEach(report.months) { month in
                     ServiceYearMonthRow(
                         month: month,
-                        schoolCredits: schoolCredits.filter { $0.yearMonth == month.id }
+                        schoolCredits: creditsByMonth[month.id] ?? []
                     )
                     .id(month.id)
                 }
