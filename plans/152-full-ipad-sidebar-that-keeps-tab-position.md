@@ -150,6 +150,17 @@ The selected row gets a selected background and `.accessibilityAddTraits(.isSele
 Compact gets today's `TabView`, regular gets the split view. Existing readers
 (`SettingsButton`, `AppRootView.isCompact`) stay as they are, and `isCompact` moves into the wrapper.
 
+## What was learned while building Step 6 (2026-11-23, simulator and iPad checks)
+
+The "Decisions" above about a bar-less `TabView` as the detail did not survive
+contact with iPadOS 26. The shipped design at regular width is different, and
+plans 153 and 154 build on it:
+
+- A `TabView` in the detail column shows its own top tab bar unless `.toolbarVisibility(.hidden, for: .tabBar)` is on each tab's content. With it, root screens lost their navigation titles, and a re-created stack lost the destinations of its restored path (SwiftUI logged "A NavigationLink is presenting a value of type ... but there is no matching navigationDestination declaration visible" and drew a yellow warning triangle).
+- A `ZStack` of four stacks showed the unselected stack's bar over the selected tab and left the same triangle.
+- **Shipped:** at regular width the detail is ONE `NavigationStack(path:)` whose root and path both follow the selected tab (`AdaptiveAppLayout.detailPath`). Year and Settings paths still live in `AppNavigationState`, so their pushed pages come back with the tab. The Year page and the Planner month the person is on (`displayedYear`, `displayedMonth`) are hoisted into `AppNavigationState` too, because a tab's own view state is recreated on every switch. Compact width keeps one stack per tab. Rule 1 ("one stack per tab") therefore applies to compact only; at regular width there is exactly one stack for the whole detail.
+- Sidebar rows must stay `Button`s: a `List(selection:)` setter calls `select` on the already selected row and pops it.
+
 ## Commands you will need
 
 | Purpose | Command | Expected on success |
@@ -414,5 +425,5 @@ Stop and report if:
 
 - A new pushed screen in Year or Settings adds a case to its route enum and a `navigationDestination` where the pushing page lives. A `NavigationLink(destination:)` in those tabs cannot be popped by reselect, so do not add one.
 - If a fifth tab is added, give it a path only if it pushes screens.
-- Plans 153 and 154 build on this layout. They must not add a `NavigationStack` inside a column or a detail.
+- Plans 153 and 154 build on this layout. They must not add a `NavigationStack` inside a column or a detail. At regular width the detail is one stack for all tabs, so a tab's own `@State` is lost on a tab switch: anything the person would miss (a selected page, a filter) belongs in `AppNavigationState`.
 - `AppTab.placement.showsInTabBar` is only used by the compact `TabView` after this plan.
