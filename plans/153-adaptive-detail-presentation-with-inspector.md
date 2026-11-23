@@ -48,8 +48,13 @@ inside the day sheet. `EntryDetailView` wraps its own `NavigationStack` (line 18
 because it is presented. `MonthEntriesSection.swift:30` also pushes it, which
 already nests a stack. Do not change that here.
 
-Plan 152 gives each tab exactly one `NavigationStack` and a bar-less `TabView`
-as the iPad detail. An inspector attaches to the view it is applied to.
+Plan 152 (as shipped) gives the iPad detail column ONE `NavigationStack` for the
+whole detail, rooted at the selected tab (`AdaptiveAppLayout`, `Hugo/App`); a
+bar-less `TabView` and a `ZStack` of stacks were tried and rejected (lost titles,
+a warning triangle for restored pushes). Compact width keeps one stack per tab.
+An inspector attaches to the view it is applied to. Because only the selected
+tab's root exists at a time, an open inspector is dropped when the person
+switches tab; that is acceptable.
 
 Today `SettingsButton` reads `horizontalSizeClass`. Nothing else in the feature
 code does. This plan adds one more reader, the modifier.
@@ -126,7 +131,7 @@ extension View {
 The size class decision is a pure rule, so it can be tested: a small `nonisolated enum DetailPresentation { case inspector, sheet }`
 with `static func presentation(for sizeClass: UserInterfaceSizeClass?) -> DetailPresentation` (`.regular` gives `.inspector`; `.compact` and `nil` give `.sheet`).
 
-Rules from plan 152 that still hold: no new `NavigationStack` around the inspector, and
+Rules from plan 152 that still hold: no new `NavigationStack` around the inspector (the detail already has its one stack), and
 the content may keep the one stack `EntryDetailView` already owns, because an inspector
 is a presentation like a sheet.
 

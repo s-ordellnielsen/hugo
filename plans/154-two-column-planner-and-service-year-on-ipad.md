@@ -38,8 +38,9 @@ iPhone and compact width (Split View narrow, Slide Over) keep today's behavior: 
 
 ## Rules from plans 136, 140 and 152 (do not bring those bugs back)
 
-- Each tab has exactly one `NavigationStack`, owned by `AppRootView`. A column must NOT contain a `NavigationStack`. Two nested stacks bring back the duplicate toolbars and lost titles of plan 136.
+- At regular width the iPad detail has exactly ONE `NavigationStack` for the whole detail (plan 152 as shipped, `AdaptiveAppLayout`; its root and path follow the selected tab), and compact width has one per tab, both owned by `Hugo/App`. A column must NOT contain a `NavigationStack`. Two nested stacks bring back the duplicate toolbars and lost titles of plan 136.
 - Never reset a stack with `.id`.
+- Only the selected tab's root exists at regular width, so a tab's own `@State` (the selected day, the selected month, scroll positions) is recreated when the person switches tabs and back. Plan 152 already hoists `displayedYear` and `displayedMonth` into `AppNavigationState`. Put the new selection (`selectedDay` for the Planner, the selected month for the Service Year) there too, as plain optional values with the same restore-on-appear pattern, so the details column survives a tab switch.
 - A column cannot use `.navigationTitle` or `.toolbar` of its own: they would attach to the tab's one navigation bar and replace the Planner or Year title. So the shared content views carry no title, no toolbar and no sheets. The sheet or pushed screen wrapper adds those back.
 
 ## Current state
