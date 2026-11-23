@@ -40,8 +40,7 @@ struct GreetingTemplateView: View {
                 Text("report.greeting.preview")
             }
         }
-        .navigationTitle("settings.report.greeting")
-        .navigationBarTitleDisplayMode(.inline)
+        .editorialNavigationTitle("settings.report.greeting")
     }
 
     private var previewMonth: YearMonth {

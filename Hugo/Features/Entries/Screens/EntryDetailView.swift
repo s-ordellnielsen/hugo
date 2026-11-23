@@ -51,7 +51,7 @@ struct EntryDetailView: View {
                 ToolbarItem(placement: .principal) {
                     HStack {
                         Image(systemName: category.iconName)
-                        Text(category.name).font(.headline)
+                        Text(category.name).font(.headline).fontDesign(.serif)
                     }
                 }
                 ToolbarItem {

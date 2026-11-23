@@ -85,7 +85,7 @@ struct CategoryDetailView: View {
             ToolbarItem(placement: .principal) {
                 HStack {
                     Image(systemName: tracker.iconName)
-                    Text(tracker.name).font(.headline)
+                    Text(tracker.name).font(.headline).fontDesign(.serif)
                 }
             }
             ToolbarItem {

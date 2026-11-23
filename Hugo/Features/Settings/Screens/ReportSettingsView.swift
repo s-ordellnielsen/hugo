@@ -43,7 +43,7 @@ struct ReportSettingsView: View {
                 Text("settings.screen.report.section.content.label")
             }
         }
-        .navigationTitle("settings.group.settings.report")
+        .editorialNavigationTitle("settings.group.settings.report")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HelpMenu(articles: HelpArticle.reportSettings)

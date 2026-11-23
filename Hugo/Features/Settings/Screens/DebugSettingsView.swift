@@ -22,7 +22,7 @@ import UIKit
                     Text("debug.action.copy-diagnostics.description")
                 }
             }
-            .navigationTitle("debug.title")
+            .editorialNavigationTitle("debug.title")
             .sensoryFeedback(.success, trigger: didCopyDiagnostics)
         }
 

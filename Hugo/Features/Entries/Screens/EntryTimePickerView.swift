@@ -15,7 +15,7 @@ struct EntryTimePickerView: View {
             DatePicker("entry.add.time.select.label", selection: $selectedDate, displayedComponents: .hourAndMinute)
                 .datePickerStyle(.wheel)
                 .labelsHidden()
-                .navigationTitle("entry.add.time.select.label")
+                .editorialNavigationTitle("entry.add.time.select.label")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem {

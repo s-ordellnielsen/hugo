@@ -19,7 +19,7 @@ struct BufferScopeSettingsView: View {
                     .accessibilityLabel("planner.target.includeBuffer.year")
             }
         }
-        .navigationTitle("planner.target.countsIn.title")
+        .editorialNavigationTitle("planner.target.countsIn.title")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -48,8 +48,7 @@ struct OverseerManualEntryView: View {
                     Text("overseer.section.phoneNumber")
                 }
             }
-            .navigationTitle("settings.report.overseer")
-            .navigationBarTitleDisplayMode(.inline)
+            .editorialNavigationTitle("settings.report.overseer")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(role: .cancel) {

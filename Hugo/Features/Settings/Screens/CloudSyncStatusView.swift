@@ -23,7 +23,7 @@ struct CloudSyncStatusView: View {
                 }
             }
         }
-        .navigationTitle("settings.sync.title")
+        .editorialNavigationTitle("settings.sync.title")
         .navigationBarTitleDisplayMode(.inline)
         .task { await monitor?.refreshAccount() }
     }

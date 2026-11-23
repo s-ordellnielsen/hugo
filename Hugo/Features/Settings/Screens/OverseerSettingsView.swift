@@ -72,8 +72,7 @@ struct OverseerSettingsView: View {
                 }
             }
         }
-        .navigationTitle("settings.report.overseer")
-        .navigationBarTitleDisplayMode(.inline)
+        .editorialNavigationTitle("settings.report.overseer")
         .motion(Motion.presence, value: hasOverseer)
         .background {
             OverseerContactPicker(isPresented: $isPickingContact) {

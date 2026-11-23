@@ -11,7 +11,7 @@ struct PublisherStatusSelectionView: View {
                 PublisherStatusOptionsView(selection: $currentStatus, rowStyle: .list)
             }
         }
-        .navigationTitle("account.page.publisherstatus.title")
+        .editorialNavigationTitle("account.page.publisherstatus.title")
     }
 }
 
