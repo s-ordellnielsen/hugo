@@ -296,7 +296,7 @@ Found while planning 060–066 (2026-11-03), not planned:
 * **Planner calendar import or export** (2026-11-04): My Service users reported every calendar event, even "Dinner 6pm–9pm", turning into service time.
 * **Red or green "short of plan" colors** (2026-11-04): they could discourage users who are behind. An unfilled bar already shows the gap.
 * **Past months in the Planner** (2026-11-04): the Year tab already covers history.
-* **Strict per-category bar filling** (2026-11-04): all main categories land on the same report line, and per-kind matching keeps the bars equal to the header's numbers. Revisit if users find it confusing (plan 068 maintenance notes).
+* **Strict per-category bar filling** (2026-11-04): all main categories land on the same report line, and per-kind matching keeps the bars equal to the header's numbers. Revisit if users find it confusing (plan 068 maintenance notes). Reversed 2026-11-23 (plan 135): the owner wanted extra time in one category to stay on that category, and the Planner header's still-planned time now comes from the bars.
 
 * **A context-fetching "service record reader" instead of `@Query` in views** (2026-11-03): it would make the predicates testable, but views would lose `@Query`'s automatic refresh on CloudKit imports. Plan 062 keeps `@Query` and moves the date math and the reminder rule out of the views instead.
 * **Converting the V9→V10 stage to `.custom`**: not part of this release; V10 has already shipped and the stage is unchanged. Revisit only with a failing upgrade report.

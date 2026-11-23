@@ -14,11 +14,6 @@ nonisolated struct TimeSplit: Equatable, Sendable {
         if type == .separate { separate += seconds } else { main += seconds }
     }
 
-    /// What is left of `self` once `covered` is taken off, per kind, never below zero.
-    func remaining(after covered: TimeSplit) -> TimeSplit {
-        TimeSplit(main: max(0, main - covered.main), separate: max(0, separate - covered.separate))
-    }
-
     static func + (lhs: TimeSplit, rhs: TimeSplit) -> TimeSplit {
         TimeSplit(main: lhs.main + rhs.main, separate: lhs.separate + rhs.separate)
     }
@@ -34,6 +29,17 @@ nonisolated struct PlannerDay: Identifiable, Equatable, Sendable {
     let bars: [PlannerBar]
     let isToday: Bool
     let isPast: Bool
+
+    /// Planned time that logged time in the same category has not covered yet:
+    /// what the plan bars still have left. The month's still-planned time adds
+    /// this up, so the header always agrees with the bars.
+    var stillPlanned: TimeSplit {
+        var split = TimeSplit.zero
+        for bar in bars where bar.kind == .plan {
+            split.add(bar.remainingSeconds, type: bar.items.first?.categoryType)
+        }
+        return split
+    }
 
     /// `items` and `entries` must already belong to `day`. `trackers` give the
     /// colors of logged categories. Carried-in entries are skipped: their time was not logged on this day.
@@ -88,9 +94,10 @@ nonisolated struct PlannerMonth: Equatable, Sendable {
 
     var planned: TimeSplit { days.reduce(.zero) { $0 + $1.planned } }
 
-    /// Planned time on today and later days that logged time has not yet covered.
+    /// Planned time on today and later days that logged time in the same
+    /// category has not yet covered.
     var stillPlanned: TimeSplit {
-        days.filter { $0.id >= today }.reduce(.zero) { $0 + $1.planned.remaining(after: $1.logged) }
+        days.filter { $0.id >= today }.reduce(.zero) { $0 + $1.stillPlanned }
     }
 
     /// Logged time plus still-planned time.

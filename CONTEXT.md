@@ -163,10 +163,10 @@ The nonnegative hours added to the base monthly target. Without a publisher-stat
 How the current month's logged time compares with the time planned up to now. Today's plan counts only as far as it has been logged.
 
 **Covered time**:
-The part of a category's planned time on a day that logged time accounts for: first time in that category, then other time of the same kind (Field Service or Credit). Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar.
+The part of a category's planned time on a day that time logged in that same category accounts for. Hugo matches per category, not per plan, and ignores start times, because an entry does not record whether its time was picked or guessed. Time in one category never covers another category's plans, even of the same kind (Field Service or Credit). The one exception is an untracked entry, which counts as Field Service time and covers a Field Service plan once every plan has taken its own category's time. The Planner draws each category's plans on a day as one bar, filled as far as the covered time goes. Time beyond the plans stays on that bar. The day's still-planned time is the sum of what its bars have left, so the Planner header agrees with the bars.
 
 **Unplanned time**:
-Logged time in a category that has no plan on that day and that no plan of the same kind took. It gets its own bar.
+Logged time in a category that has no plan on that day. It gets its own bar.
 
 **Logging a plan**:
 Opening Add Entry filled from a category's plans on a day: the category, the start time of the first plan not covered yet, and the planned time not covered yet. The user still saves the entry, and the plans stay.

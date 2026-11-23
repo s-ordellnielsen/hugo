@@ -46,10 +46,12 @@ nonisolated struct PlannerBar: Identifiable, Equatable, Sendable {
 
 /// Matches one day's logged time to its plans, per category. Start times are
 /// ignored: an entry does not record whether its time was picked or guessed.
-/// Each category's plans share one bar. A bar takes time from its own category
-/// first, then other time of the same kind (main or separate). Time beyond a
-/// category's plans stays on that category's bar. Logged time left over in a
-/// category with no plan becomes an unplanned bar.
+/// Each category's plans share one bar. A bar is filled only by time logged in
+/// its own category, so extra time in one category never fills another
+/// category's plans. Time beyond a category's plans stays on that category's
+/// bar. Logged time in a category with no plan becomes an unplanned bar.
+/// Untracked time, which counts as main, also fills main plans once every plan
+/// has taken its own category's time.
 nonisolated enum PlanMatcher {
     static func bars(plans: [PlannedItem], logged: [LoggedCategoryTime]) -> [PlannerBar] {
         let ordered = plans.enumerated()
@@ -85,11 +87,8 @@ nonisolated enum PlanMatcher {
         for key in groupKeys {
             fill(key, from: key, upTo: plannedSeconds[key] ?? 0)
         }
-        for key in groupKeys {
-            let type = groupItems[key]?.first?.categoryType ?? .main
-            for category in categories where (category.type ?? .main) == type {
-                fill(key, from: category.key, upTo: plannedSeconds[key] ?? 0)
-            }
+        for key in groupKeys where (groupItems[key]?.first?.categoryType ?? .main) == .main {
+            fill(key, from: "untracked", upTo: plannedSeconds[key] ?? 0)
         }
         for key in groupKeys {
             fill(key, from: key, upTo: .infinity)

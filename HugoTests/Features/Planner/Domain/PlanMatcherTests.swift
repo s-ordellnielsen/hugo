@@ -32,19 +32,45 @@ struct PlanMatcherTests {
     }
 
     @Test
-    func secondPassLetsAnotherMainCategoryFillThePlan() {
+    func extraTimeInOneCategoryDoesNotFillAnotherCategorysPlan() throws {
+        let plans = [
+            plan("fs", fieldServiceID, type: .main, hours: 2),
+            plan("phone", phoneID, type: .main, hours: 1),
+        ]
+        let logged = [time(fieldServiceID, name: "Field Service", type: .main, hours: 2.25)]
+
+        let bars = PlanMatcher.bars(plans: plans, logged: logged)
+
+        #expect(bars.count == 2)
+        let fieldService = try #require(bars.first { $0.id == barID(fieldServiceID) })
+        #expect(fieldService.filledSeconds == 8_100)
+        #expect(fieldService.fraction == 1)
+        #expect(fieldService.isFull)
+        let phone = try #require(bars.first { $0.id == barID(phoneID) })
+        #expect(phone.filledSeconds == 0)
+        #expect(phone.fraction == 0)
+        #expect(phone.remainingSeconds == 3_600)
+        #expect(!bars.contains { $0.kind == .unplanned })
+    }
+
+    @Test
+    func anotherMainCategoryDoesNotFillThePlan() throws {
         let plans = [plan("fs", fieldServiceID, type: .main, hours: 2)]
         let logged = [time(phoneID, name: "Phone", type: .main, hours: 2)]
 
         let bars = PlanMatcher.bars(plans: plans, logged: logged)
 
-        #expect(bars.count == 1)
-        #expect(bars.first?.isFull == true)
-        #expect(bars.allSatisfy { $0.kind == .plan })
+        #expect(bars.count == 2)
+        let planBar = try #require(bars.first { $0.id == barID(fieldServiceID) })
+        #expect(planBar.filledSeconds == 0)
+        #expect(planBar.remainingSeconds == 7_200)
+        let unplanned = try #require(bars.first { $0.kind == .unplanned })
+        #expect(unplanned.id == "unplanned:\(phoneID.uuidString)")
+        #expect(unplanned.seconds == 7_200)
     }
 
     @Test
-    func secondPassRespectsTheKindOfTime() throws {
+    func timeOfAnotherKindDoesNotFillThePlan() throws {
         let plans = [plan("fs", fieldServiceID, type: .main, hours: 2)]
         let logged = [time(ldcID, name: "LDC", type: .separate, hours: 2)]
 
@@ -120,6 +146,43 @@ struct PlanMatcherTests {
     }
 
     @Test
+    func untrackedTimeDoesNotFillASeparatePlan() throws {
+        let plans = [plan("ldc", ldcID, type: .separate, hours: 1)]
+        let logged = [
+            LoggedCategoryTime(
+                key: "untracked", name: "Untracked", iconName: "questionmark.circle", type: nil,
+                color: nil, seconds: 3_600)
+        ]
+
+        let bars = PlanMatcher.bars(plans: plans, logged: logged)
+
+        let planBar = try #require(bars.first { $0.kind == .plan })
+        #expect(planBar.filledSeconds == 0)
+        #expect(bars.contains { $0.kind == .unplanned })
+    }
+
+    @Test
+    func untrackedTimeFillsOnlyWhatTheOwnCategoryLeftOpen() throws {
+        let plans = [
+            plan("fs", fieldServiceID, type: .main, hours: 2),
+            plan("phone", phoneID, type: .main, hours: 1),
+        ]
+        let logged = [
+            time(fieldServiceID, name: "Field Service", type: .main, hours: 2),
+            LoggedCategoryTime(
+                key: "untracked", name: "Untracked", iconName: "questionmark.circle", type: nil,
+                color: nil, seconds: 1_800),
+        ]
+
+        let bars = PlanMatcher.bars(plans: plans, logged: logged)
+
+        let fieldService = try #require(bars.first { $0.id == barID(fieldServiceID) })
+        #expect(fieldService.filledSeconds == 7_200)
+        let phone = try #require(bars.first { $0.id == barID(phoneID) })
+        #expect(phone.filledSeconds == 1_800)
+    }
+
+    @Test
     func startTimesDoNotAffectMatching() {
         let plans = [
             plan("morning", fieldServiceID, type: .main, hours: 2, startMinute: 600),
@@ -149,7 +212,7 @@ struct PlanMatcherTests {
     }
 
     @Test
-    func extraTimeFillsAnotherPlanOfTheSameKindFirst() {
+    func extraTimeStaysOnItsOwnBarWhenAnotherPlanOfTheSameKindIsEmpty() throws {
         let plans = [
             plan("fs", fieldServiceID, type: .main, hours: 1),
             plan("phone", phoneID, type: .main, hours: 1),
@@ -159,7 +222,12 @@ struct PlanMatcherTests {
         let bars = PlanMatcher.bars(plans: plans, logged: logged)
 
         #expect(bars.count == 2)
-        #expect(bars.allSatisfy { $0.isFull })
+        let fieldService = try #require(bars.first { $0.id == barID(fieldServiceID) })
+        #expect(fieldService.filledSeconds == 7_200)
+        #expect(fieldService.isFull)
+        let phone = try #require(bars.first { $0.id == barID(phoneID) })
+        #expect(phone.filledSeconds == 0)
+        #expect(!phone.isFull)
         #expect(!bars.contains { $0.kind == .unplanned })
     }
 

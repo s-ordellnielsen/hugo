@@ -75,6 +75,20 @@ struct PlannerMonthTests {
     }
 
     @Test
+    func extraTimeInOneCategoryDoesNotReduceAnotherCategorysStillPlannedTime() {
+        let day = CalendarDay(year: 2026, month: 11, day: 5)
+        let items = [
+            item(day, hours: 2, tracker: main),
+            item(day, hours: 1, tracker: phone),
+        ]
+        let entries = [Entry(date: date(2026, 11, 5, hour: 10), duration: 2.25 * 3_600, tracker: main)]
+        let month = makeMonth(items: items, entries: entries)
+
+        #expect(month.stillPlanned == TimeSplit(main: 3_600, separate: 0))
+        #expect(month.projected == TimeSplit(main: 11_700, separate: 0))
+    }
+
+    @Test
     func futureMonthLeavesEveryPlannedSecondStillPlanned() {
         let items = [
             item(CalendarDay(year: 2026, month: 12, day: 5), hours: 2, tracker: main),
@@ -136,7 +150,7 @@ struct PlannerMonthTests {
     }
 
     @Test
-    func planBarsAgreeWithStillPlannedTimePerKind() {
+    func planBarsAgreeWithTheDaysStillPlannedTime() {
         let day = CalendarDay(year: 2026, month: 11, day: 5)
         let fieldService = item(day, hours: 2, tracker: main, id: "fs")
         let phoneItem = item(day, hours: 1, tracker: phone, id: "phone")
@@ -154,11 +168,9 @@ struct PlannerMonthTests {
             .reduce(0) { $0 + $1.remainingSeconds }
         let separateRemaining = planned.bars.filter { $0.items.first?.categoryType == .separate }
             .reduce(0) { $0 + $1.remainingSeconds }
-        let expected = planned.planned.remaining(after: planned.logged)
-
-        #expect(expected.main == 1_800)
-        #expect(mainRemaining == expected.main)
-        #expect(separateRemaining == expected.separate)
+        #expect(mainRemaining == 3_600)
+        #expect(separateRemaining == 0)
+        #expect(planned.stillPlanned == TimeSplit(main: mainRemaining, separate: separateRemaining))
     }
 
     @Test
