@@ -24,10 +24,12 @@ struct HugoApp: App {
         if ProcessInfo.processInfo.arguments.contains("-HugoSimulateStoreLoadFailure") {
             throw SimulatedStoreLoadFailure()
         }
-        return
-            try isRunningTests
-            ? ModelContainerFactory.makeInMemoryContainer()
-            : ModelContainerFactory.makeProductionContainer()
+        guard isRunningTests else { return try ModelContainerFactory.makeProductionContainer() }
+        let container = try ModelContainerFactory.makeInMemoryContainer()
+        if UITestSeed.isRequested() {
+            try UITestSeed.insert(into: container.mainContext)
+        }
+        return container
     }
 
     private static var isRunningTests: Bool {
