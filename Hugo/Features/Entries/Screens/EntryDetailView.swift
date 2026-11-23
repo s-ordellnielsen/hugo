@@ -17,12 +17,14 @@ struct EntryDetailView: View {
         @Bindable var entry = entry
         NavigationStack {
             Form {
-                Section("entry.duration.label") {
+                Section {
                     DurationWheelPicker(
                         duration: $entry.duration,
                         minuteInterval: durationMinuteInterval,
                         maxDuration: max(24 * 60 * 60, entry.duration)
                     )
+                } header: {
+                    titleHeader
                 }
 
                 Section {
@@ -49,17 +51,6 @@ struct EntryDetailView: View {
             }
             .contentMargins(.top, 0, for: .scrollContent)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Label {
-                        Text(category.name).font(.system(.headline, design: .serif, weight: .bold))
-                    } icon: {
-                        Image(systemName: category.iconName)
-                    }
-                    .labelStyle(.titleAndIcon)
-                    .lineLimit(1)
-                    .accessibilityAddTraits(.isHeader)
-                }
-                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem {
                     Menu {
                         Button("entry.action.tracker.change", systemImage: "checklist") {
@@ -105,6 +96,27 @@ struct EntryDetailView: View {
             }
             .errorAlert(message: $deletionError)
         }
+    }
+
+    private var titleHeader: some View {
+        VStack(alignment: .leading, spacing: HugoLayout.Spacing.compact) {
+            Label {
+                Text(category.name)
+                    .font(.system(.title2, design: .serif, weight: .bold))
+                    .fixedSize(horizontal: false, vertical: true)
+            } icon: {
+                Image(systemName: category.iconName)
+                    .font(.system(.title2, weight: .semibold))
+            }
+            .labelStyle(.titleAndIcon)
+            .foregroundStyle(Color.primary)
+            .accessibilityAddTraits(.isHeader)
+            Text("entry.duration.label")
+                .font(.subheadline)
+                .foregroundStyle(Color.secondary)
+        }
+        .textCase(nil)
+        .padding(.bottom, HugoLayout.Spacing.compact)
     }
 
     private func incrementBibleStudies() {
