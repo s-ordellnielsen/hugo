@@ -23,6 +23,21 @@
 - **Planned at**: commit `0af2e24`, 2026-11-23
 - **Issue**: [SLN-200](https://linear.app/sebastianln/issue/SLN-200)
 
+## Correction (2026-11-23, after owner testing on an iPad)
+
+This plan was wrong about the regular layout. A `NavigationSplitView` detail
+column does NOT provide a navigation stack. With the four screens' stacks
+removed and none added around the detail, a `NavigationLink` on iPad replaced
+the detail content instead of pushing, there was no back button, and sidebar
+selection stopped navigating. The compact side of the plan (one stack per tab
+in `AppRootView`) was correct. The regular side is fixed in a follow-up commit,
+`fix: give the iPad detail column its own navigation stack`: the detail column is
+wrapped in one `NavigationStack` with `.id(selectedTab)` so a tab switch resets
+it. Read every statement below that says the detail column already is a stack
+as wrong, and read "Step 1" as "one stack per layout, added by `AppRootView` in
+both layouts". Rule going forward: each layout gets exactly one stack, and it
+comes from `AppRootView`.
+
 ## Why this matters
 
 On iPad (regular width) `AppRootView` shows a `NavigationSplitView` whose detail
