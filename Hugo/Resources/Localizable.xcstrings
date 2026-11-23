@@ -2399,6 +2399,23 @@
         }
       }
     },
+    "planner.day.planned.empty.past" : {
+      "comment" : "Shown in the Planner day sheet when a past day has no plans. Tells the user to log time instead.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagen er gået, og der var ikke planlagt noget. Brug Tilføj til rapport på Overblik for at registrere din tid."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This day has passed, so nothing was planned. Use Add Entry on the Overview tab to log your time."
+          }
+        }
+      }
+    },
     "planner.header.logged" : {
       "comment" : "Time already logged this month. The argument is a duration.",
       "localizations" : {
