@@ -36,7 +36,7 @@ tab uses the same words. Danish stays as it is.
 - The catalog entry `tab.year` in `Hugo/Resources/Localizable.xcstrings` (about line 6038): en "Year", da "Tjenesteår". The Danish term is confirmed: the catalog already uses "Tjenesteår" for this tab in the Danish help articles (`Hugo/Resources/Markdown/Help/da.lproj/TargetThisMonth.md`, `FieldServiceAndCredit.md`) and in the strings below. No Danish change is needed.
 - The page title is not this string. `ServiceYearView` shows the selected year, for example `2026/2027` (`.navigationTitle(activeYear.displayName)`). Nothing to change there.
 - `tab.year` is also used as a label in `Hugo/Features/Planner/Screens/BufferScopeSettingsView.swift:18`: `Toggle(isOn: $includeInYear) { Text("tab.year") }`. It will say "Service Year" too, which is right.
-- No Swift test or UI test looks up "Year" or `tab.year`. Checked with `grep -rn 'tab.year\|"Year"\|Year tab' HugoTests` (no hits). There is no `HugoUITests` folder.
+- One unit test asserts the English strings: `HugoTests/Features/Planner/Domain/PlannerTargetTests.swift` lines 120 and 123 (`bufferScopeSummaryNamesEveryCombinationOfSwitches`) expect "Planner, Year" and "Planner, Overview, Year". They must change to "Planner, Service Year" and "Planner, Overview, Service Year" (found by the first executor run). There is no `HugoUITests` folder.
 - Domain conflict to flag: `CONTEXT.md` line 52, under "Theocratic year", says `_Avoid_: Service year, school year`. The owner now wants "Service Year" as the tab name. See Step 4.
 
 English text that names the tab (found with `grep -rIn 'Year tab\|Year switch\|in Year' ...`):
@@ -74,7 +74,7 @@ owner's hunks so that `git add -p` cannot split them, STOP and ask.
 
 ## Scope
 
-**In scope**: the files in the table above, except the shipped changelog.
+**In scope**: the files in the table above, except the shipped changelog, plus `HugoTests/Features/Planner/Domain/PlannerTargetTests.swift` (lines 120 and 123 only) and the catalog comment "Spoken label of the Year switch on the Count Buffer in page." (change "Year switch" to "Service Year switch").
 
 **Out of scope**:
 
@@ -99,7 +99,7 @@ in Service Year", "...menu on the Service Year tab."). In the comment lines
 listed, replace "Year tab" with "Service Year tab", and in the comment at
 4522 say the tab name is "Service Year" / "Tjenesteår".
 
-**Verify**: `git diff Hugo/Resources/Localizable.xcstrings` shows only your lines among the owner's hunks, and `plutil -lint Hugo/Resources/Localizable.xcstrings` says OK.
+**Verify**: `git diff Hugo/Resources/Localizable.xcstrings` shows only your lines among the owner's hunks, and the file still parses (`python3 -c "import json; json.load(open('Hugo/Resources/Localizable.xcstrings'))"`; `plutil -lint` does not accept this catalog).
 
 ### Step 2: Help articles
 
@@ -154,7 +154,7 @@ Owner check on device:
 Stop and report if:
 
 - `git add -p` cannot separate your catalog lines from the owner's.
-- A test or UI test turns up that looks up the old label.
+- A test other than `PlannerTargetTests` lines 120 and 123 looks up the old label.
 - The owner's catalog edit already changes `tab.year`.
 
 ## Maintenance notes
