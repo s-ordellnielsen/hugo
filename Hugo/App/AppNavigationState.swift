@@ -10,6 +10,10 @@ final class AppNavigationState {
     var settingsPath = NavigationPath()
     private(set) var yearResetToken = UUID()
     private(set) var plannerResetToken = UUID()
+    /// The Service Year page and the Planner month the person is on. The
+    /// views read them when they appear again, so the page survives a switch.
+    var displayedYear: TheocraticYear?
+    var displayedMonth: YearMonth?
 
     init(selectedTab: AppTab = .overview) {
         self.selectedTab = selectedTab

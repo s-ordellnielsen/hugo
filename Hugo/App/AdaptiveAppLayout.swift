@@ -4,8 +4,9 @@ import SwiftUI
 /// bar. Regular (iPad) is a sidebar beside the selected tab. This is the only
 /// place in `App` that reads the size class for layout.
 ///
-/// `tabContent` returns one navigation stack per tab. Both layouts keep those
-/// stacks alive, so a pushed page survives a switch between tabs.
+/// Compact gives each tab its own stack through `tabContent`. Regular has one
+/// stack for the detail column, rooted at the selected tab. Each tab's pushed
+/// pages live in `AppNavigationState`, so they come back when the tab does.
 struct AdaptiveAppLayout<TabContent: View>: View {
     let navigation: AppNavigationState
     let tabContent: (AppTab) -> TabContent
@@ -18,6 +19,27 @@ struct AdaptiveAppLayout<TabContent: View>: View {
         Binding(
             get: { navigation.selectedTab },
             set: { navigation.select($0) }
+        )
+    }
+
+    /// The path of the selected tab. Overview and Planner push nothing, so they
+    /// get an empty path that is never written back.
+    private var detailPath: Binding<NavigationPath> {
+        Binding(
+            get: {
+                switch navigation.selectedTab {
+                case .year: navigation.yearPath
+                case .settings: navigation.settingsPath
+                case .overview, .planner: NavigationPath()
+                }
+            },
+            set: { newValue in
+                switch navigation.selectedTab {
+                case .year: navigation.yearPath = newValue
+                case .settings: navigation.settingsPath = newValue
+                case .overview, .planner: break
+                }
+            }
         )
     }
 
@@ -59,17 +81,23 @@ struct AdaptiveAppLayout<TabContent: View>: View {
                 .accessibilityAddTraits(tab == navigation.selectedTab ? .isSelected : [])
             }
         } detail: {
-            // A bar-less TabView keeps every tab's stack alive. Only the
-            // selected tab is shown and reachable by VoiceOver.
-            TabView(selection: tabSelection) {
-                ForEach(AppTab.allCases) { tab in
-                    Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
-                        tabContent(tab)
-                            .toolbarVisibility(.hidden, for: .tabBar)
-                    }
-                }
+            // One stack for the whole detail. A tab switch changes the root and
+            // the path together, so no hidden stack keeps a stale destination.
+            NavigationStack(path: detailPath) {
+                tabDestination(
+                    for: navigation.selectedTab,
+                    yearResetToken: navigation.yearResetToken,
+                    plannerResetToken: navigation.plannerResetToken,
+                    displayedYear: Binding(
+                        get: { navigation.displayedYear },
+                        set: { navigation.displayedYear = $0 }
+                    ),
+                    displayedMonth: Binding(
+                        get: { navigation.displayedMonth },
+                        set: { navigation.displayedMonth = $0 }
+                    )
+                )
             }
-            .toolbarVisibility(.hidden, for: .tabBar)
         }
     }
 }

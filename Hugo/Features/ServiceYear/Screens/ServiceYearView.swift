@@ -6,7 +6,7 @@ struct ServiceYearView: View {
     @Query private var latestEntry: [Entry]
 
     @State private var scrollPosition: TheocraticYear.ID?
-    @State private var displayedYear: TheocraticYear?
+    @Binding var displayedYear: TheocraticYear?
     @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
     @State private var isYearPickerPresented = false
     @Namespace private var transition
@@ -14,8 +14,9 @@ struct ServiceYearView: View {
 
     var resetToken: UUID
 
-    init(resetToken: UUID = UUID()) {
+    init(resetToken: UUID = UUID(), displayedYear: Binding<TheocraticYear?> = .constant(nil)) {
         self.resetToken = resetToken
+        _displayedYear = displayedYear
         var earliest = FetchDescriptor<Entry>(sortBy: [SortDescriptor(\.date, order: .forward)])
         earliest.fetchLimit = 1
         _earliestEntry = Query(earliest)
@@ -144,8 +145,9 @@ struct ServiceYearView: View {
         }
         .onAppear {
             if scrollPosition == nil {
-                scrollPosition = currentYear.id
-                displayedYear = currentYear
+                let year = displayedYear ?? currentYear
+                scrollPosition = year.id
+                displayedYear = year
             }
         }
         .onChange(

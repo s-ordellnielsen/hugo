@@ -77,6 +77,20 @@ struct AppRootView: View {
 
     /// One stack per tab. Year and Settings bind their path, so reselecting
     /// the tab can pop it. Overview and Planner push nothing.
+    private var displayedYearBinding: Binding<TheocraticYear?> {
+        Binding(
+            get: { navigation.displayedYear },
+            set: { navigation.displayedYear = $0 }
+        )
+    }
+
+    private var displayedMonthBinding: Binding<YearMonth?> {
+        Binding(
+            get: { navigation.displayedMonth },
+            set: { navigation.displayedMonth = $0 }
+        )
+    }
+
     @ViewBuilder
     private func tabStack(for tab: AppTab) -> some View {
         switch tab {
@@ -85,7 +99,9 @@ struct AppRootView: View {
                 tabDestination(
                     for: tab,
                     yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken
+                    plannerResetToken: navigation.plannerResetToken,
+                    displayedYear: displayedYearBinding,
+                    displayedMonth: displayedMonthBinding
                 )
             }
         case .settings:
@@ -93,7 +109,9 @@ struct AppRootView: View {
                 tabDestination(
                     for: tab,
                     yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken
+                    plannerResetToken: navigation.plannerResetToken,
+                    displayedYear: displayedYearBinding,
+                    displayedMonth: displayedMonthBinding
                 )
             }
         case .overview, .planner:
@@ -101,7 +119,9 @@ struct AppRootView: View {
                 tabDestination(
                     for: tab,
                     yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken
+                    plannerResetToken: navigation.plannerResetToken,
+                    displayedYear: displayedYearBinding,
+                    displayedMonth: displayedMonthBinding
                 )
             }
         }
@@ -110,11 +130,17 @@ struct AppRootView: View {
 }
 
 @ViewBuilder
-func tabDestination(for tab: AppTab, yearResetToken: UUID, plannerResetToken: UUID) -> some View {
+func tabDestination(
+    for tab: AppTab,
+    yearResetToken: UUID,
+    plannerResetToken: UUID,
+    displayedYear: Binding<TheocraticYear?>,
+    displayedMonth: Binding<YearMonth?>
+) -> some View {
     switch tab {
     case .overview: OverviewView()
-    case .year: ServiceYearView(resetToken: yearResetToken)
-    case .planner: PlannerView(resetToken: plannerResetToken)
+    case .year: ServiceYearView(resetToken: yearResetToken, displayedYear: displayedYear)
+    case .planner: PlannerView(resetToken: plannerResetToken, displayedMonth: displayedMonth)
     case .settings: SettingsView()
     }
 }

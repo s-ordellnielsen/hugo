@@ -65,4 +65,29 @@ struct AppNavigationStateTests {
         #expect(navigation.selectedTab == .overview)
         #expect(navigation.settingsPath.count == 1)
     }
+
+    @Test func displayedYearAndMonthSurviveATabSwitch() {
+        let navigation = AppNavigationState()
+        let year = TheocraticYear(startYear: 2025)
+        let month = YearMonth(year: 2026, month: 3)
+        navigation.displayedYear = year
+        navigation.displayedMonth = month
+
+        navigation.select(.settings)
+        navigation.select(.planner)
+
+        #expect(navigation.displayedYear == year)
+        #expect(navigation.displayedMonth == month)
+    }
+
+    @Test func reselectLeavesTheDisplayedPagesToTheViews() {
+        let navigation = AppNavigationState()
+        let year = TheocraticYear(startYear: 2025)
+        navigation.select(.year)
+        navigation.displayedYear = year
+
+        navigation.select(.year)
+
+        #expect(navigation.displayedYear == year)
+    }
 }
