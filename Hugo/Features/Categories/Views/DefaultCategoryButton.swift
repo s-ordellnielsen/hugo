@@ -13,15 +13,15 @@ struct DefaultCategoryButton: View {
 
     var body: some View {
         Button {
-            DefaultCategoryService().setDefault(isDefault ? nil : tracker)
+            if !isDefault { DefaultCategoryService().setDefault(tracker) }
         } label: {
             Label("tracker.options.use-as-default", systemImage: isDefault ? "star.fill" : "star")
                 .labelStyle(.iconOnly)
-                .foregroundStyle(isDefault ? .yellow : .primary)
                 .contentTransition(.symbolEffect(.replace))
                 .motion(Motion.feedback, value: isDefault)
         }
         .accessibilityAddTraits(isDefault ? .isSelected : [])
+        .tint(isDefault ? .yellow : .primary)
     }
 }
 
