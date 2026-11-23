@@ -94,29 +94,34 @@ private struct DurationPickerRepresentable: UIViewRepresentable {
             min(maxHours, Int(max(0, duration.wrappedValue) / 3600))
         }
 
-        private var minuteOptions: [Int] {
-            let remainingSeconds = maxDuration - TimeInterval(hours * 3600)
-            let ceiling = hours >= maxHours ? max(0, Int(remainingSeconds / 60)) : 59
-            return Array(stride(from: 0, through: ceiling, by: interval))
+        private var range: DurationWheelRange {
+            DurationWheelRange(maxDuration: maxDuration, interval: interval)
+        }
+
+        /// The hour the wheel is showing. The minutes wheel must follow this
+        /// and not the binding, because the binding is written after the wheel
+        /// has already moved.
+        private func selectedHours(in picker: UIPickerView) -> Int {
+            min(maxHours, max(0, picker.selectedRow(inComponent: 0)))
         }
 
         private var minutes: Int {
             let rawMinutes = Int(max(0, duration.wrappedValue).truncatingRemainder(dividingBy: 3600) / 60)
-            let snapped = (rawMinutes / interval) * interval
-            return min(minuteOptions.last ?? 0, snapped)
+            return range.snappedMinutes(rawMinutes, forHours: hours)
         }
 
         func select(in picker: UIPickerView, animated: Bool) {
             picker.selectRow(hours, inComponent: 0, animated: animated)
-            let minuteRow = minuteOptions.firstIndex(of: minutes) ?? 0
-            picker.selectRow(minuteRow, inComponent: 1, animated: animated)
+            picker.reloadComponent(1)
+            let options = range.minuteOptions(forHours: hours)
+            picker.selectRow(options.firstIndex(of: minutes) ?? 0, inComponent: 1, animated: animated)
             lastAppliedDuration = duration.wrappedValue
         }
 
         func numberOfComponents(in pickerView: UIPickerView) -> Int { 2 }
 
         func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-            component == 0 ? maxHours + 1 : minuteOptions.count
+            component == 0 ? maxHours + 1 : range.minuteOptions(forHours: selectedHours(in: pickerView)).count
         }
 
         func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
@@ -127,7 +132,8 @@ private struct DurationPickerRepresentable: UIViewRepresentable {
             _ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?
         ) -> UIView {
             let label = view as? UILabel ?? UILabel()
-            let value = component == 0 ? row : minuteOptions[row]
+            let options = range.minuteOptions(forHours: selectedHours(in: pickerView))
+            let value = component == 0 ? row : (options.indices.contains(row) ? options[row] : 0)
             label.text = String(format: "%02d", value)
             label.accessibilityLabel =
                 component == 0
@@ -139,17 +145,15 @@ private struct DurationPickerRepresentable: UIViewRepresentable {
         }
 
         func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-            let newHours = component == 0 ? row : hours
-            var newMinutes = component == 1 ? minuteOptions[row] : minutes
-
-            if component == 0 {
-                let remainingSeconds = maxDuration - TimeInterval(newHours * 3600)
-                let ceiling = newHours >= maxHours ? max(0, Int(remainingSeconds / 60)) : 59
-                let options = Array(stride(from: 0, through: ceiling, by: interval))
-                newMinutes = min(options.last ?? 0, newMinutes)
+            let newHours = selectedHours(in: pickerView)
+            let options = range.minuteOptions(forHours: newHours)
+            let newMinutes: Int
+            if component == 1 {
+                newMinutes = options.indices.contains(row) ? options[row] : (options.last ?? 0)
+            } else {
+                newMinutes = range.snappedMinutes(minutes, forHours: newHours)
                 pickerView.reloadComponent(1)
-                let minuteRow = options.firstIndex(of: newMinutes) ?? 0
-                pickerView.selectRow(minuteRow, inComponent: 1, animated: false)
+                pickerView.selectRow(options.firstIndex(of: newMinutes) ?? 0, inComponent: 1, animated: false)
             }
 
             let candidate = TimeInterval(newHours * 3600 + newMinutes * 60)
