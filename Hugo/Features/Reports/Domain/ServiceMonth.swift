@@ -28,7 +28,7 @@ nonisolated struct ServiceMonth: Identifiable {
     let schoolCreditHours: Int
 
     var isSubmitted: Bool {
-        submittedReport.map(SubmittedReportSelection.isReal) ?? false
+        submittedReport?.isSubmitted ?? false
     }
 
     /// The title of the action that sends this month's report: submit it,
@@ -41,13 +41,13 @@ nonisolated struct ServiceMonth: Identifiable {
     /// True when the month was submitted and `entry` was created after the report was sent.
     func isUnreported(_ entry: Entry) -> Bool {
         guard isSubmitted, let submittedReport else { return false }
-        return entry.createdAt > (submittedReport.entriesClosedAt ?? .distantPast)
+        return entry.createdAt > submittedReport.entriesCutoff
     }
 
     /// What this month adds to the year total: reported hours and reported school
     /// credit when submitted, logged time and current school credit otherwise.
     var contribution: MonthContribution {
-        if let submission = submittedReport, SubmittedReportSelection.isReal(submission) {
+        if let submission = submittedReport, submission.isSubmitted {
             let studies = submission.totalBibleStudies ?? 0
             let credit = TimeInterval(submission.schoolCreditHours ?? 0) * 3_600
 
@@ -136,8 +136,8 @@ nonisolated struct ServiceMonth: Identifiable {
     private static func unreportedChange(
         report: SubmittedReport?, monthEntries: [Entry], schoolCreditHours: Int, calendar: Calendar
     ) -> UnreportedChange? {
-        guard let report, SubmittedReportSelection.isReal(report) else { return nil }
-        let cutoff = report.entriesClosedAt ?? .distantPast
+        guard let report, report.isSubmitted else { return nil }
+        let cutoff = report.entriesCutoff
         if monthEntries.contains(where: { $0.createdAt > cutoff }) { return .newEntries }
         if (report.schoolCreditHours ?? 0) != schoolCreditHours { return .changedTotals }
         guard isComparable(report), hasChangedTotals(report: report, monthEntries: monthEntries, calendar: calendar)

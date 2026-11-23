@@ -180,6 +180,60 @@ struct SyncDeduplicatorTests {
     }
 
     @Test
+    func normalizingClearsPlaceholderDatesAndKeepsSubmittedOnes() throws {
+        let context = try makeContext()
+        let placeholder = makeReport(month: 5, submittedAt: .distantPast, entriesClosedAt: early, in: context)
+        placeholder.firstSubmittedAt = .distantPast
+        let nilDates = makeReport(month: 6, submittedAt: early, in: context)
+        nilDates.submittedAt = nil
+        nilDates.firstSubmittedAt = nil
+        let submitted = makeReport(month: 7, submittedAt: late, entriesClosedAt: late, in: context)
+        submitted.firstSubmittedAt = early
+        try context.save()
+
+        let rewritten = try SyncDeduplicator(context: context).normalizePlaceholderReports()
+
+        #expect(rewritten == 1)
+        #expect(placeholder.submittedAt == nil)
+        #expect(placeholder.firstSubmittedAt == nil)
+        #expect(placeholder.entriesClosedAt == early)
+        #expect(!placeholder.isSubmitted)
+        #expect(nilDates.submittedAt == nil)
+        #expect(!nilDates.isSubmitted)
+        #expect(submitted.submittedAt == late)
+        #expect(submitted.firstSubmittedAt == early)
+        #expect(submitted.isSubmitted)
+    }
+
+    @Test
+    func normalizingPlaceholderDatesIsIdempotent() throws {
+        let context = try makeContext()
+        _ = makeReport(submittedAt: .distantPast, in: context)
+        try context.save()
+        let deduplicator = SyncDeduplicator(context: context)
+
+        #expect(try deduplicator.normalizePlaceholderReports() == 1)
+        #expect(try deduplicator.normalizePlaceholderReports() == 0)
+    }
+
+    @Test
+    func submittedReportStillWinsOverANormalizedPlaceholder() throws {
+        let context = try makeContext()
+        let placeholder = makeReport(submittedAt: .distantPast, in: context)
+        _ = makeReport(submittedAt: early, in: context)
+        try context.save()
+        try SyncDeduplicator(context: context).normalizePlaceholderReports()
+
+        let removed = try SyncDeduplicator(context: context).mergeDuplicateMonthlyReports()
+
+        let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
+        #expect(removed == 1)
+        #expect(reports.count == 1)
+        #expect(reports.first?.submittedDate == early)
+        #expect(reports.first !== placeholder)
+    }
+
+    @Test
     func realSubmissionReplacesPlaceholder() throws {
         let context = try makeContext()
         _ = makeReport(submittedAt: .distantPast, in: context)

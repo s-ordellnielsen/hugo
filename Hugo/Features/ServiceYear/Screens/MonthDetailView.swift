@@ -86,7 +86,7 @@ extension MonthDetailView {
 
     @ViewBuilder
     private var reportStatus: some View {
-        if month.isSubmitted, let submittedAt = month.submittedReport?.submittedAt {
+        if let submittedAt = month.submittedReport?.submittedDate {
             statusLine(
                 Text("report.status.submitted.\(submittedAt.formatted(date: .abbreviated, time: .omitted))"),
                 systemImage: "checkmark.circle.fill",

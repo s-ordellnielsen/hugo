@@ -1136,6 +1136,35 @@ struct SchemaMigrationTests {
     }
 
     @Test
+    func clearedPlaceholderDatesSurviveReopeningTheStore() throws {
+        let store = try TemporaryStore()
+        defer { store.remove() }
+        let closedAt = Date(timeIntervalSince1970: 3_000)
+        let sentAt = Date(timeIntervalSince1970: 20_000)
+
+        let container = try makeCurrentStore(at: store.storeURL)
+        let context = container.mainContext
+        context.insert(SubmittedReport(year: 2026, month: 5, entriesClosedAt: closedAt))
+        context.insert(
+            SubmittedReport(
+                year: 2026, month: 6, firstSubmittedAt: sentAt, submittedAt: sentAt, entriesClosedAt: closedAt))
+        try context.save()
+        #expect(try SyncDeduplicator(context: context).normalizePlaceholderReports() == 1)
+
+        let reopened = try makeCurrentStore(at: store.storeURL)
+        let reports = try reopened.mainContext.fetch(FetchDescriptor<SubmittedReport>())
+        let placeholder = try #require(reports.first { $0.month == 5 })
+        let submitted = try #require(reports.first { $0.month == 6 })
+
+        #expect(placeholder.submittedAt == nil)
+        #expect(placeholder.firstSubmittedAt == nil)
+        #expect(placeholder.entriesClosedAt == closedAt)
+        #expect(!placeholder.isSubmitted)
+        #expect(submitted.submittedAt == sentAt)
+        #expect(submitted.isSubmitted)
+    }
+
+    @Test
     func migratesFullChainFromV1ToCurrentSchemaWithoutThrowing() throws {
         let store = try TemporaryStore()
         defer { store.remove() }

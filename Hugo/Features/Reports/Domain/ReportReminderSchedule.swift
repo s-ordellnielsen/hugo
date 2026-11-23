@@ -40,7 +40,7 @@ nonisolated enum ReportReminderSchedule {
     ) -> YearMonth? {
         guard let due = dueMonth(now: now, calendar: calendar) else { return nil }
         guard let submission = SubmittedReportSelection.canonical(for: due, in: submissions) else { return due }
-        return SubmittedReportSelection.isReal(submission) ? nil : due
+        return submission.isSubmitted ? nil : due
     }
 
     /// 7 days into the following month during which the previous month's

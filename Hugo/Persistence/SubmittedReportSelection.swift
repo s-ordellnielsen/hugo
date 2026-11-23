@@ -4,12 +4,6 @@ import Foundation
 /// placeholders can leave several rows for one month, and every device and
 /// every screen must pick the same one.
 nonisolated enum SubmittedReportSelection {
-    /// False for a placeholder report (`submittedAt == .distantPast`), which
-    /// the V8 to V9 upgrade created for months that were never sent.
-    static func isReal(_ submission: SubmittedReport) -> Bool {
-        (submission.submittedAt ?? .distantPast) != .distantPast
-    }
-
     static func canonical(for month: YearMonth, in submissions: [SubmittedReport]) -> SubmittedReport? {
         canonicalByMonth(submissions)[month]
     }
@@ -54,31 +48,26 @@ nonisolated enum SubmittedReportSelection {
         _ candidate: SubmittedReport,
         over existing: SubmittedReport
     ) -> Bool {
-        let candidateIsReal = isReal(candidate)
-        let existingIsReal = isReal(existing)
+        let candidateIsSubmitted = candidate.isSubmitted
+        let existingIsSubmitted = existing.isSubmitted
 
-        // A real submission always wins over a migration sentinel.
-        if candidateIsReal != existingIsReal {
-            return candidateIsReal
+        // A submitted report always wins over a placeholder report.
+        if candidateIsSubmitted != existingIsSubmitted {
+            return candidateIsSubmitted
         }
 
-        if candidateIsReal {
-            // Among real submissions, retain the most recent submission.
-            let candidateDate = candidate.submittedAt ?? .distantPast
-            let existingDate = existing.submittedAt ?? .distantPast
-
-            if candidateDate != existingDate {
-                return candidateDate > existingDate
-            }
+        if let candidateDate = candidate.submittedDate,
+            let existingDate = existing.submittedDate,
+            candidateDate != existingDate
+        {
+            // Among submitted reports, retain the most recent submission.
+            return candidateDate > existingDate
         }
 
-        // Among sentinels, retain the one that covers the most recently created
-        // pre-existing entry.
-        let candidateClosedAt = candidate.entriesClosedAt ?? .distantPast
-        let existingClosedAt = existing.entriesClosedAt ?? .distantPast
-
-        if candidateClosedAt != existingClosedAt {
-            return candidateClosedAt > existingClosedAt
+        // Among placeholders, retain the one that covers the most recently
+        // created pre-existing entry.
+        if candidate.entriesCutoff != existing.entriesCutoff {
+            return candidate.entriesCutoff > existing.entriesCutoff
         }
 
         // Equal records are semantically equivalent for this purpose.

@@ -36,6 +36,10 @@ struct SyncDeduplicator {
             if repairedCarries > 0 {
                 Self.logger.info("Moved \(repairedCarries) carried-in entries back into their month")
             }
+            let normalizedReports = try normalizePlaceholderReports()
+            if normalizedReports > 0 {
+                Self.logger.info("Cleared the stored dates of \(normalizedReports) placeholder reports")
+            }
         } catch {
             Self.logger.error("Deduplication failed: \(error.localizedDescription, privacy: .public)")
         }
@@ -103,22 +107,22 @@ struct SyncDeduplicator {
 
             // Real rows that tie cannot be ordered safely: two devices could
             // each keep a different one and together delete both.
-            let winnerIsReal = SubmittedReportSelection.isReal(winner)
-            if winnerIsReal {
+            let winnerIsSubmitted = winner.isSubmitted
+            if winnerIsSubmitted {
                 let tied = group.contains { other in
                     other !== winner
-                        && SubmittedReportSelection.isReal(other)
-                        && other.submittedAt == winner.submittedAt
-                        && other.entriesClosedAt == winner.entriesClosedAt
+                        && other.isSubmitted
+                        && other.submittedDate == winner.submittedDate
+                        && other.entriesCutoff == winner.entriesCutoff
                 }
                 if tied { continue }
             }
 
             // The pre-fix V10 to V11 migration could attach a real report's
             // lines to a placeholder.
-            if winnerIsReal, winner.reportingLines.isEmpty,
+            if winnerIsSubmitted, winner.reportingLines.isEmpty,
                 let donor = group.first(where: {
-                    !SubmittedReportSelection.isReal($0) && !$0.reportingLines.isEmpty
+                    !$0.isSubmitted && !$0.reportingLines.isEmpty
                 })
             {
                 winner.reportingLines = donor.reportingLines
@@ -135,6 +139,33 @@ struct SyncDeduplicator {
 
         if removed > 0 { try context.save() }
         return removed
+    }
+
+    /// Rewrites the earliest-possible placeholder dates that the V8 to V9
+    /// upgrade (and every schema initializer's default) stored in
+    /// `submittedAt` and `firstSubmittedAt` to `nil`. Readers already treat both
+    /// the same through `SubmittedReport.submittedDate`; this only makes the
+    /// stored data match. It never changes which row survives a merge, so it
+    /// needs no tie-break. Returns the number of rewritten reports. Safe to call
+    /// often: a second call finds nothing.
+    @discardableResult
+    func normalizePlaceholderReports() throws -> Int {
+        let reports = try context.fetch(FetchDescriptor<SubmittedReport>())
+        var rewritten = 0
+        for report in reports {
+            var changed = false
+            if report.submittedAt == .distantPast {
+                report.submittedAt = nil
+                changed = true
+            }
+            if report.firstSubmittedAt == .distantPast {
+                report.firstSubmittedAt = nil
+                changed = true
+            }
+            if changed { rewritten += 1 }
+        }
+        if rewritten > 0 { try context.save() }
+        return rewritten
     }
 
     /// Collapses carried-in entries that two devices each created for the same

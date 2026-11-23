@@ -109,7 +109,7 @@ final class SubmitReportFormModel {
     /// into the next month, and the next month already has a real submission.
     var changesSubmittedNextMonth: Bool {
         let next = month.nextMonth(calendar: calendar)
-        guard let nextReport = submissionsByMonth[next], SubmittedReportSelection.isReal(nextReport)
+        guard let nextReport = submissionsByMonth[next], nextReport.isSubmitted
         else { return false }
 
         var existing: [String: TimeInterval] = [:]

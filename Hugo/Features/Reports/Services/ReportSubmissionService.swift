@@ -35,7 +35,7 @@ struct ReportSubmissionService {
 
         let report: SubmittedReport
         if let existing {
-            if existing.firstSubmittedAt == nil || existing.firstSubmittedAt == .distantPast {
+            if existing.firstSubmittedDate == nil {
                 existing.firstSubmittedAt = now
             }
             existing.submittedAt = now

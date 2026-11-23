@@ -61,7 +61,7 @@ struct ServiceYearMonthRow: View {
         VStack(alignment: .leading) {
             header
 
-            if month.isSubmitted, let submittedAt = month.submittedReport?.submittedAt {
+            if let submittedAt = month.submittedReport?.submittedDate {
                 submissionStatus(submittedAt)
             }
 
