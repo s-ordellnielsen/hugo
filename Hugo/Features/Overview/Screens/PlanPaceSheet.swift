@@ -48,7 +48,7 @@ struct PlanPaceSheet: View {
         }
         .padding(HugoLayout.Spacing.card)
         .padding(.top, HugoLayout.Spacing.spacious)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
     private func amount(_ value: String, label: LocalizedStringKey, alignment: HorizontalAlignment) -> some View {

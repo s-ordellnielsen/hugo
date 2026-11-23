@@ -113,7 +113,7 @@ private struct OverviewDayView: View {
         .sheet(isPresented: $showingPlanPace) {
             if let pace {
                 PlanPaceSheet(pace: pace)
-                    .presentationDetents([.medium])
+                    .sheetHeightFitsContent()
                     .presentationDragIndicator(.visible)
             }
         }
