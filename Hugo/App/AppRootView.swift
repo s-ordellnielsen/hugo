@@ -6,12 +6,15 @@ import SwiftUI
 
 struct AppRootView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage(UserDefaultsKeys.isOnboarding) private var needsOnboarding = true
 
     @State private var bootstrapper = AppBootstrapper()
-    @State private var navigation = AppNavigationState()
+    @State private var selectedTab: AppTab = .overview
+    @State private var yearResetToken = UUID()
+    @State private var plannerResetToken = UUID()
     @State private var bootstrapErrorMessage: String?
     @State private var syncMonitor = CloudSyncMonitor()
     @State private var deduplication = SyncDeduplicationScheduler()
@@ -24,123 +27,104 @@ struct AppRootView: View {
         self.settingsSync = settingsSync
     }
 
+    private var isCompact: Bool { horizontalSizeClass == .compact }
+
+    private var visibleTabs: [AppTab] {
+        AppTab.allCases.filter { $0.placement.isVisible(compact: isCompact) }
+    }
+
+    private func select(_ tab: AppTab) {
+        if tab == .year && selectedTab == .year {
+            yearResetToken = UUID()
+        }
+        if tab == .planner && selectedTab == .planner {
+            plannerResetToken = UUID()
+        }
+        selectedTab = tab
+    }
+
+    private var tabSelection: Binding<AppTab> {
+        Binding(
+            get: { selectedTab },
+            set: { select($0) }
+        )
+    }
+
     var body: some View {
-        AdaptiveAppLayout(navigation: navigation) { tab in
-            tabStack(for: tab)
-        }
-        .environment(syncMonitor)
-        .task {
-            settingsSync?.start()
-            syncMonitor.startWatchingNetwork()
-            await bootstrapper.start(context: context)
-            deduplication.request(context: context)
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active { deduplication.request(context: context) }
-        }
-        .onReceive(
-            NotificationCenter.default
-                .publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
-                .receive(on: RunLoop.main)
-        ) { notification in
-            guard
-                let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
-                    as? NSPersistentCloudKitContainer.Event
-            else { return }
-            syncMonitor.record(
-                id: event.identifier,
-                endDate: event.endDate,
-                succeeded: event.succeeded,
-                errorCode: (event.error as? CKError)?.code.rawValue
-            )
-            guard event.type == .import, event.endDate != nil else { return }
-            deduplication.request(context: context)
-        }
-        .onReceive(
-            NotificationCenter.default
-                .publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
-                .receive(on: RunLoop.main)
-        ) { _ in
-            settingsSync?.pullFromCloud()
-        }
-        .onReceive(
-            NotificationCenter.default
-                .publisher(for: UserDefaults.didChangeNotification)
-                .receive(on: RunLoop.main)
-        ) { _ in
-            settingsSync?.pushToCloud()
-        }
-        .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
-        .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
-        .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
-    }
-
-    /// One stack per tab. Year and Settings bind their path, so reselecting
-    /// the tab can pop it. Overview and Planner push nothing.
-    private var displayedYearBinding: Binding<TheocraticYear?> {
-        Binding(
-            get: { navigation.displayedYear },
-            set: { navigation.displayedYear = $0 }
-        )
-    }
-
-    private var displayedMonthBinding: Binding<YearMonth?> {
-        Binding(
-            get: { navigation.displayedMonth },
-            set: { navigation.displayedMonth = $0 }
-        )
-    }
-
-    @ViewBuilder
-    private func tabStack(for tab: AppTab) -> some View {
-        switch tab {
-        case .year:
-            NavigationStack(path: $navigation.yearPath) {
-                tabDestination(
-                    for: tab,
-                    yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken,
-                    displayedYear: displayedYearBinding,
-                    displayedMonth: displayedMonthBinding
-                )
+        tabs
+            .environment(syncMonitor)
+            .task {
+                settingsSync?.start()
+                syncMonitor.startWatchingNetwork()
+                await bootstrapper.start(context: context)
+                deduplication.request(context: context)
             }
-        case .settings:
-            NavigationStack(path: $navigation.settingsPath) {
-                tabDestination(
-                    for: tab,
-                    yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken,
-                    displayedYear: displayedYearBinding,
-                    displayedMonth: displayedMonthBinding
-                )
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { deduplication.request(context: context) }
             }
-        case .overview, .planner:
-            NavigationStack {
-                tabDestination(
-                    for: tab,
-                    yearResetToken: navigation.yearResetToken,
-                    plannerResetToken: navigation.plannerResetToken,
-                    displayedYear: displayedYearBinding,
-                    displayedMonth: displayedMonthBinding
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
+                    .receive(on: RunLoop.main)
+            ) { notification in
+                guard
+                    let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey]
+                        as? NSPersistentCloudKitContainer.Event
+                else { return }
+                syncMonitor.record(
+                    id: event.identifier,
+                    endDate: event.endDate,
+                    succeeded: event.succeeded,
+                    errorCode: (event.error as? CKError)?.code.rawValue
                 )
+                guard event.type == .import, event.endDate != nil else { return }
+                deduplication.request(context: context)
+            }
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
+                    .receive(on: RunLoop.main)
+            ) { _ in
+                settingsSync?.pullFromCloud()
+            }
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: UserDefaults.didChangeNotification)
+                    .receive(on: RunLoop.main)
+            ) { _ in
+                settingsSync?.pushToCloud()
+            }
+            .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
+            .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
+            .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
+    }
+
+    private var tabs: some View {
+        TabView(selection: tabSelection) {
+            ForEach(visibleTabs) { tab in
+                Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
+                    NavigationStack {
+                        tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
+                    }
+                }
+                .defaultVisibility(tab.placement.showsInTabBar ? .automatic : .hidden, for: .tabBar)
+            }
+        }
+        .tabViewStyle(.sidebarAdaptable)
+        .onChange(of: isCompact) { _, compact in
+            if compact && !selectedTab.placement.isVisible(compact: true) {
+                selectedTab = .overview
             }
         }
     }
-
 }
 
 @ViewBuilder
-func tabDestination(
-    for tab: AppTab,
-    yearResetToken: UUID,
-    plannerResetToken: UUID,
-    displayedYear: Binding<TheocraticYear?>,
-    displayedMonth: Binding<YearMonth?>
-) -> some View {
+func tabDestination(for tab: AppTab, yearResetToken: UUID, plannerResetToken: UUID) -> some View {
     switch tab {
     case .overview: OverviewView()
-    case .year: ServiceYearView(resetToken: yearResetToken, displayedYear: displayedYear)
-    case .planner: PlannerView(resetToken: plannerResetToken, displayedMonth: displayedMonth)
+    case .year: ServiceYearView(resetToken: yearResetToken)
+    case .planner: PlannerView(resetToken: plannerResetToken)
     case .settings: SettingsView()
     }
 }

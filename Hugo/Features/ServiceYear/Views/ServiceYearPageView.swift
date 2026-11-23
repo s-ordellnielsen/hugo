@@ -4,8 +4,6 @@ import SwiftUI
 struct ServiceYearPageView: View {
     let year: TheocraticYear
     var onScrolledFromTopChange: ((Bool) -> Void)? = nil
-    /// The namespace the month cards zoom from, shared with the Year screen.
-    let transition: Namespace.ID
 
     @Query private var entries: [Entry]
     @Query private var submissions: [SubmittedReport]
@@ -15,13 +13,8 @@ struct ServiceYearPageView: View {
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
     @AppStorage(UserDefaultsKeys.bufferInYear) private var includeBuffer = false
 
-    init(
-        year: TheocraticYear,
-        transition: Namespace.ID,
-        onScrolledFromTopChange: ((Bool) -> Void)? = nil
-    ) {
+    init(year: TheocraticYear, onScrolledFromTopChange: ((Bool) -> Void)? = nil) {
         self.year = year
-        self.transition = transition
         self.onScrolledFromTopChange = onScrolledFromTopChange
         let range = year.dateRange()
         let start = range.lowerBound
@@ -61,7 +54,9 @@ struct ServiceYearPageView: View {
         return ScrollView {
             VStack(spacing: HugoLayout.Spacing.card) {
                 if report.hasEntries {
-                    NavigationLink(value: YearRoute.yearDetail(year.id)) {
+                    NavigationLink {
+                        ServiceYearDetailView(report: report, progress: progress)
+                    } label: {
                         TheocraticYearTotalsView(report: report, progress: progress)
                     }
                     .buttonStyle(.card)
@@ -72,8 +67,7 @@ struct ServiceYearPageView: View {
                 ForEach(report.months) { month in
                     ServiceYearMonthRow(
                         month: month,
-                        schoolCredits: creditsByMonth[month.id] ?? [],
-                        transition: transition
+                        schoolCredits: creditsByMonth[month.id] ?? []
                     )
                     .id(month.id)
                 }
@@ -108,17 +102,9 @@ struct ServiceYearPageView: View {
     }
 }
 
-private struct YearPagePreview: View {
-    @Namespace private var transition
-
-    var body: some View {
-        NavigationStack {
-            ServiceYearPageView(year: ReportPreviewFixtures.currentYear, transition: transition)
-        }
-    }
-}
-
 #Preview {
-    YearPagePreview()
-        .modelContainer(.preview)
+    NavigationStack {
+        ServiceYearPageView(year: ReportPreviewFixtures.currentYear)
+    }
+    .modelContainer(.preview)
 }

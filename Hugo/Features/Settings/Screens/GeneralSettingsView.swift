@@ -11,7 +11,7 @@ struct GeneralSettingsView: View {
     var body: some View {
         List {
             Section {
-                NavigationLink(value: SettingsRoute.plannerTarget) {
+                NavigationLink(destination: PlannerTargetSettingsView()) {
                     LabeledContent {
                         Text(
                             PlannerTarget.settingSummary(

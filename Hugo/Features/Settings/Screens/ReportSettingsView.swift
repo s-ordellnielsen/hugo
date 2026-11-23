@@ -14,7 +14,7 @@ struct ReportSettingsView: View {
     var body: some View {
         List {
             Section {
-                NavigationLink(value: ReportSettingsRoute.overseer) {
+                NavigationLink(destination: OverseerSettingsView()) {
                     Label {
                         Text("settings.report.overseer")
                         Text(
@@ -26,7 +26,7 @@ struct ReportSettingsView: View {
                     }
                 }
 
-                NavigationLink(value: ReportSettingsRoute.greetingTemplate) {
+                NavigationLink(destination: GreetingTemplateView()) {
                     Label {
                         Text("settings.report.greeting")
                         Text(
@@ -44,12 +44,6 @@ struct ReportSettingsView: View {
             }
         }
         .editorialNavigationTitle("settings.group.settings.report")
-        .navigationDestination(for: ReportSettingsRoute.self) { route in
-            switch route {
-            case .overseer: OverseerSettingsView()
-            case .greetingTemplate: GreetingTemplateView()
-            }
-        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HelpMenu(articles: HelpArticle.reportSettings)

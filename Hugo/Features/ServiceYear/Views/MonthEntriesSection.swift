@@ -27,7 +27,7 @@ struct MonthEntriesSection: View {
             }
 
             ForEach(logged) { entry in
-                NavigationLink(value: YearRoute.entry(entry.persistentModelID)) {
+                NavigationLink(destination: EntryDetailView(entry: entry)) {
                     entryRow(entry)
                 }
                 .swipeActions {

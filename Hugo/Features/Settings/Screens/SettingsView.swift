@@ -47,27 +47,10 @@ struct SettingsView: View {
         syncMonitor?.status ?? .upToDate(lastSync: nil)
     }
 
-    @ViewBuilder
-    private func settingsDestination(for route: SettingsRoute) -> some View {
-        switch route {
-        case .publisherStatus: PublisherStatusSelectionView()
-        case .report: ReportSettingsView()
-        case .categories: CategoryListView()
-        case .general: GeneralSettingsView()
-        case .plannerTarget: PlannerTargetSettingsView()
-        case .cloudSync: CloudSyncStatusView()
-        case .privacyPolicy: HelpView(for: LegalPage.privacyPolicy.rawValue, presentation: .pushed)
-        case .termsOfUse: HelpView(for: LegalPage.termsOfUse.rawValue, presentation: .pushed)
-        #if SHOW_DEBUG_MENU
-            case .debug: DebugSettingsView()
-        #endif
-        }
-    }
-
     var body: some View {
         List {
             Section {
-                NavigationLink(value: SettingsRoute.publisherStatus) {
+                NavigationLink(destination: PublisherStatusSelectionView()) {
                     Label {
                         Text("account.group.main.item.publisher.status")
                         Text(
@@ -84,13 +67,13 @@ struct SettingsView: View {
             }
 
             Section {
-                NavigationLink(value: SettingsRoute.report) {
+                NavigationLink(destination: ReportSettingsView()) {
                     Label("settings.group.settings.report", systemImage: "doc.text")
                 }
-                NavigationLink(value: SettingsRoute.categories) {
+                NavigationLink(destination: CategoryListView()) {
                     Label("settings.group.settings.category", systemImage: "square.grid.2x2")
                 }
-                NavigationLink(value: SettingsRoute.general) {
+                NavigationLink(destination: GeneralSettingsView()) {
                     Label("settings.group.settings.general", systemImage: "gearshape")
                 }
             } header: {
@@ -98,7 +81,7 @@ struct SettingsView: View {
             }
 
             Section {
-                NavigationLink(value: SettingsRoute.cloudSync) {
+                NavigationLink(destination: CloudSyncStatusView()) {
                     LabeledContent {
                         Text(syncStatus.title).foregroundStyle(.secondary)
                     } label: {
@@ -160,17 +143,21 @@ struct SettingsView: View {
             }
 
             Section {
-                NavigationLink(value: SettingsRoute.privacyPolicy) {
+                NavigationLink {
+                    HelpView(for: LegalPage.privacyPolicy.rawValue, presentation: .pushed)
+                } label: {
                     Label("settings.legal.privacyPolicy", systemImage: "hand.raised")
                 }
-                NavigationLink(value: SettingsRoute.termsOfUse) {
+                NavigationLink {
+                    HelpView(for: LegalPage.termsOfUse.rawValue, presentation: .pushed)
+                } label: {
                     Label("settings.legal.termsOfUse", systemImage: "doc.plaintext")
                 }
             }
 
             #if SHOW_DEBUG_MENU
                 Section {
-                    NavigationLink(value: SettingsRoute.debug) {
+                    NavigationLink(destination: DebugSettingsView()) {
                         Label("debug.title", systemImage: "ant.fill")
                             .foregroundStyle(.primary)
                     }
@@ -181,9 +168,6 @@ struct SettingsView: View {
         }
         .editorialNavigationTitle("settings.title")
         .task { await syncMonitor?.refreshAccount() }
-        .navigationDestination(for: SettingsRoute.self) { route in
-            settingsDestination(for: route)
-        }
         .toolbar {
             if showDismiss {
                 ToolbarItem(placement: .cancellationAction) {

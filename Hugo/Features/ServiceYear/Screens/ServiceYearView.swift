@@ -6,17 +6,15 @@ struct ServiceYearView: View {
     @Query private var latestEntry: [Entry]
 
     @State private var scrollPosition: TheocraticYear.ID?
-    @Binding var displayedYear: TheocraticYear?
+    @State private var displayedYear: TheocraticYear?
     @State private var scrolledPages: [TheocraticYear.ID: Bool] = [:]
     @State private var isYearPickerPresented = false
-    @Namespace private var transition
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var resetToken: UUID
 
-    init(resetToken: UUID = UUID(), displayedYear: Binding<TheocraticYear?> = .constant(nil)) {
+    init(resetToken: UUID = UUID()) {
         self.resetToken = resetToken
-        _displayedYear = displayedYear
         var earliest = FetchDescriptor<Entry>(sortBy: [SortDescriptor(\.date, order: .forward)])
         earliest.fetchLimit = 1
         _earliestEntry = Query(earliest)
@@ -87,7 +85,6 @@ struct ServiceYearView: View {
                 ForEach(years) { year in
                     ServiceYearPageView(
                         year: year,
-                        transition: transition,
                         onScrolledFromTopChange: { newValue in
                             scrolledPages[year.id] = newValue
                         }
@@ -101,9 +98,6 @@ struct ServiceYearView: View {
         .scrollPosition(id: $scrollPosition)
         .scrollIndicators(.hidden)
         .background(Color(.systemGroupedBackground))
-        .navigationDestination(for: YearRoute.self) { route in
-            YearRouteView(route: route, transition: transition)
-        }
         .navigationTitle(activeYear.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
@@ -145,9 +139,8 @@ struct ServiceYearView: View {
         }
         .onAppear {
             if scrollPosition == nil {
-                let year = displayedYear ?? currentYear
-                scrollPosition = year.id
-                displayedYear = year
+                scrollPosition = currentYear.id
+                displayedYear = currentYear
             }
         }
         .onChange(

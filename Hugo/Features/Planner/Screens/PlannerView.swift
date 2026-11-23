@@ -9,15 +9,12 @@ struct PlannerView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var today = Calendar.current.startOfDay(for: .now)
 
-    @Binding var displayedMonth: YearMonth?
-
-    init(resetToken: UUID = UUID(), displayedMonth: Binding<YearMonth?> = .constant(nil)) {
+    init(resetToken: UUID = UUID()) {
         self.resetToken = resetToken
-        _displayedMonth = displayedMonth
     }
 
     var body: some View {
-        PlannerPager(today: today, resetToken: resetToken, displayedMonth: $displayedMonth)
+        PlannerPager(today: today, resetToken: resetToken)
             .id(today)
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { refreshToday() }
@@ -50,13 +47,12 @@ private struct PlannerPager: View {
     @AppStorage(UserDefaultsKeys.plannerExtraHours) private var extraHours = 0
 
     @State private var scrollPosition: YearMonth?
-    @Binding var displayedMonth: YearMonth?
+    @State private var displayedMonth: YearMonth?
     @State private var scrolledPages: [YearMonth: Bool] = [:]
 
-    init(today: Date, resetToken: UUID, displayedMonth: Binding<YearMonth?>) {
+    init(today: Date, resetToken: UUID) {
         self.today = today
         self.resetToken = resetToken
-        _displayedMonth = displayedMonth
         let range = TheocraticYear.containing(today).dateRange()
         let start = range.lowerBound
         let end = range.upperBound
@@ -114,9 +110,8 @@ private struct PlannerPager: View {
         }
         .onAppear {
             if scrollPosition == nil {
-                let month = displayedMonth ?? currentMonth
-                scrollPosition = month
-                displayedMonth = month
+                scrollPosition = currentMonth
+                displayedMonth = currentMonth
             }
         }
         .onChange(of: scrollPosition) { _, newValue in
