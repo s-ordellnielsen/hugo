@@ -17,6 +17,7 @@ struct AppRootView: View {
     @State private var plannerResetToken = UUID()
     @State private var bootstrapErrorMessage: String?
     @State private var syncMonitor = CloudSyncMonitor()
+    @State private var deduplication = SyncDeduplicationScheduler()
 
     /// Copies the synced settings to and from iCloud. `nil` in the unit-test
     /// host, so tests never touch the real iCloud store.
@@ -56,10 +57,10 @@ struct AppRootView: View {
                 settingsSync?.start()
                 syncMonitor.startWatchingNetwork()
                 await bootstrapper.start(context: context)
-                SyncDeduplicator(context: context).run()
+                deduplication.request(context: context)
             }
             .onChange(of: scenePhase) { _, phase in
-                if phase == .active { SyncDeduplicator(context: context).run() }
+                if phase == .active { deduplication.request(context: context) }
             }
             .onReceive(
                 NotificationCenter.default
@@ -77,7 +78,7 @@ struct AppRootView: View {
                     errorCode: (event.error as? CKError)?.code.rawValue
                 )
                 guard event.type == .import, event.endDate != nil else { return }
-                SyncDeduplicator(context: context).run()
+                deduplication.request(context: context)
             }
             .onReceive(
                 NotificationCenter.default
