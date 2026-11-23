@@ -20,6 +20,14 @@ enum UserDefaultsKeys {
 
     static let overviewListStyle = "overviewListStyle"
 
+    /// The UUID string of the default category. "" means the user cleared it.
+    /// Synced. See `DefaultCategory`.
+    static let defaultCategoryID = "defaultCategoryID"
+
+    /// Whether this device has copied the old `Tracker.isDefault` row into
+    /// `defaultCategoryID`. Device-only.
+    static let hasMigratedDefaultCategory = "hasMigratedDefaultCategory"
+
     /// When this device last finished a sync with iCloud. Device-only.
     static let cloudSyncLastSuccess = "cloudSyncLastSuccess"
 }
