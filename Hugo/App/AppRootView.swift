@@ -108,7 +108,9 @@ struct AppRootView: View {
         TabView(selection: tabSelection) {
             ForEach(visibleTabs) { tab in
                 Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
-                    tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
+                    NavigationStack {
+                        tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
+                    }
                 }
             }
         }

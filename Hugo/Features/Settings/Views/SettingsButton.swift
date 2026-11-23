@@ -15,8 +15,10 @@ struct SettingsButton: View {
                     .labelStyle(.iconOnly)
             }
             .sheet(isPresented: $showAccount) {
-                SettingsView(showDismiss: true)
-                    .presentationDetents([.large])
+                NavigationStack {
+                    SettingsView(showDismiss: true)
+                }
+                .presentationDetents([.large])
             }
         }
     }

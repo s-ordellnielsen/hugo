@@ -273,6 +273,8 @@ struct OverviewCarriedEntriesView: View {
 }
 
 #Preview {
-    OverviewView()
-        .modelContainer(.preview)
+    NavigationStack {
+        OverviewView()
+    }
+    .modelContainer(.preview)
 }

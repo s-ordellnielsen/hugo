@@ -80,63 +80,61 @@ struct ServiceYearView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 0) {
-                    ForEach(years) { year in
-                        ServiceYearPageView(
-                            year: year,
-                            onScrolledFromTopChange: { newValue in
-                                scrolledPages[year.id] = newValue
-                            }
-                        )
-                        .containerRelativeFrame(.horizontal)
-                    }
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(years) { year in
+                    ServiceYearPageView(
+                        year: year,
+                        onScrolledFromTopChange: { newValue in
+                            scrolledPages[year.id] = newValue
+                        }
+                    )
+                    .containerRelativeFrame(.horizontal)
                 }
-                .scrollTargetLayout()
             }
-            .scrollTargetBehavior(.paging)
-            .scrollPosition(id: $scrollPosition)
-            .scrollIndicators(.hidden)
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle(activeYear.displayName)
-            .navigationBarTitleDisplayMode(.inline)
-            .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    if years.count > 1 {
-                        Button {
-                            isYearPickerPresented = true
-                        } label: {
-                            HStack(spacing: HugoLayout.Spacing.tight) {
-                                yearTitleChevron
-                                    .hidden()
-                                yearTitle
-                                yearTitleChevron
-                            }
-                            .padding(.horizontal, HugoLayout.Spacing.compact)
-                            .frame(minHeight: HugoLayout.Size.minimumHitTarget)
-                            .contentShape(.rect)
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.paging)
+        .scrollPosition(id: $scrollPosition)
+        .scrollIndicators(.hidden)
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(activeYear.displayName)
+        .navigationBarTitleDisplayMode(.inline)
+        .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                if years.count > 1 {
+                    Button {
+                        isYearPickerPresented = true
+                    } label: {
+                        HStack(spacing: HugoLayout.Spacing.tight) {
+                            yearTitleChevron
+                                .hidden()
+                            yearTitle
+                            yearTitleChevron
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("year.picker.a11y.label")
-                        .accessibilityValue(activeYear.spokenName)
-                        .accessibilityHint("year.picker.a11y.hint")
-                        .popover(isPresented: $isYearPickerPresented) {
-                            TheocraticYearPicker(years: years, selection: activeYear, onSelect: jump(to:))
-                                .presentationCompactAdaptation(.popover)
-                        }
-                    } else {
-                        yearTitle
+                        .padding(.horizontal, HugoLayout.Spacing.compact)
+                        .frame(minHeight: HugoLayout.Size.minimumHitTarget)
+                        .contentShape(.rect)
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("year.picker.a11y.label")
+                    .accessibilityValue(activeYear.spokenName)
+                    .accessibilityHint("year.picker.a11y.hint")
+                    .popover(isPresented: $isYearPickerPresented) {
+                        TheocraticYearPicker(years: years, selection: activeYear, onSelect: jump(to:))
+                            .presentationCompactAdaptation(.popover)
+                    }
+                } else {
+                    yearTitle
                 }
-                ToolbarItem {
-                    HelpMenu(articles: HelpArticle.year)
-                }
-                ToolbarSpacer(.fixed)
-                ToolbarItem {
-                    SettingsButton(sizeClass: .compact)
-                }
+            }
+            ToolbarItem {
+                HelpMenu(articles: HelpArticle.year)
+            }
+            ToolbarSpacer(.fixed)
+            ToolbarItem {
+                SettingsButton(sizeClass: .compact)
             }
         }
         .onAppear {
@@ -164,6 +162,8 @@ struct ServiceYearView: View {
 }
 
 #Preview {
-    ServiceYearView()
-        .modelContainer(.preview)
+    NavigationStack {
+        ServiceYearView()
+    }
+    .modelContainer(.preview)
 }

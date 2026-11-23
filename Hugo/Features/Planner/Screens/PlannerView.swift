@@ -80,34 +80,32 @@ private struct PlannerPager: View {
 
     var body: some View {
         let credited = creditedBeforeCurrentMonth
-        NavigationStack {
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 0) {
-                    ForEach(months, id: \.self) { month in
-                        PlannerMonthPage(
-                            month: month, today: today,
-                            targetSeconds: PlannerTarget.seconds(
-                                for: month, base: targetBase, extraHours: extraHours, status: status,
-                                creditedBeforeCurrentMonth: credited, now: today),
-                            rule: status?.yearlyGoalRule,
-                            onScrolledFromTopChange: { scrolledPages[month] = $0 }
-                        )
-                        .containerRelativeFrame(.horizontal)
-                    }
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(months, id: \.self) { month in
+                    PlannerMonthPage(
+                        month: month, today: today,
+                        targetSeconds: PlannerTarget.seconds(
+                            for: month, base: targetBase, extraHours: extraHours, status: status,
+                            creditedBeforeCurrentMonth: credited, now: today),
+                        rule: status?.yearlyGoalRule,
+                        onScrolledFromTopChange: { scrolledPages[month] = $0 }
+                    )
+                    .containerRelativeFrame(.horizontal)
                 }
-                .scrollTargetLayout()
             }
-            .scrollTargetBehavior(.paging)
-            .scrollPosition(id: $scrollPosition)
-            .scrollIndicators(.hidden)
-            .background(Color(.systemGroupedBackground))
-            .editorialNavigationTitle(activeMonth.monthYearString())
-            .navigationSubtitle("tab.planner")
-            .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
-            .toolbar {
-                ToolbarItem {
-                    SettingsButton(sizeClass: .compact)
-                }
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.paging)
+        .scrollPosition(id: $scrollPosition)
+        .scrollIndicators(.hidden)
+        .background(Color(.systemGroupedBackground))
+        .editorialNavigationTitle(activeMonth.monthYearString())
+        .navigationSubtitle("tab.planner")
+        .scrollEdgeEffectHidden(!isScrolledFromTop, for: .top)
+        .toolbar {
+            ToolbarItem {
+                SettingsButton(sizeClass: .compact)
             }
         }
         .onAppear {
@@ -132,6 +130,8 @@ private struct PlannerPager: View {
 }
 
 #Preview {
-    PlannerView()
-        .modelContainer(.preview)
+    NavigationStack {
+        PlannerView()
+    }
+    .modelContainer(.preview)
 }

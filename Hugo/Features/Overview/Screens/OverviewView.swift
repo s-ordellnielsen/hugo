@@ -79,51 +79,51 @@ private struct OverviewDayView: View {
         let fill = MonthlyCircleFill.make(
             monthlyGoalHours: metrics.monthlyGoal, loggedSeconds: metrics.progress * 3_600,
             plannedSeconds: month.planned.total, hasOwnEntries: metrics.hasOwnEntries)
-        NavigationStack {
-            ScrollView {
-                VStack {
-                    if let reminderMonth {
-                        ReportReminderCard(month: reminderMonth)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                        Spacer(minLength: HugoLayout.Spacing.section)
-                    }
-                    MonthlyProgressCard(
-                        value: metrics.progress, fill: fill,
-                        planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
-                        onAddEntry: { showingAddEntry = true },
-                        onShowPlanPace: { showingPlanPace = true })
+        ScrollView {
+            VStack {
+                if let reminderMonth {
+                    ReportReminderCard(month: reminderMonth)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                     Spacer(minLength: HugoLayout.Spacing.section)
+                }
+                MonthlyProgressCard(
+                    value: metrics.progress, fill: fill,
+                    planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
+                    onAddEntry: { showingAddEntry = true },
+                    onShowPlanPace: { showingPlanPace = true })
+                Spacer(minLength: HugoLayout.Spacing.section)
 
-                    OverviewListView(entries: entries)
-                }
-                .motion(Motion.presence, value: reminderMonth)
-                .padding()
+                OverviewListView(entries: entries)
             }
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGroupedBackground))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem {
-                    SettingsButton(sizeClass: .compact)
-                }
+            .motion(Motion.presence, value: reminderMonth)
+            .padding()
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemGroupedBackground))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem {
+                SettingsButton(sizeClass: .compact)
             }
-            .sheet(isPresented: $showingAddEntry) {
-                AddEntryView()
+        }
+        .sheet(isPresented: $showingAddEntry) {
+            AddEntryView()
+        }
+        .sheet(isPresented: $showingPlanPace) {
+            if let pace {
+                PlanPaceSheet(pace: pace)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
             }
-            .sheet(isPresented: $showingPlanPace) {
-                if let pace {
-                    PlanPaceSheet(pace: pace)
-                        .presentationDetents([.medium])
-                        .presentationDragIndicator(.visible)
-                }
-            }
-            .onChange(of: pace == nil) { _, hasNoPlans in
-                if hasNoPlans { showingPlanPace = false }
-            }
+        }
+        .onChange(of: pace == nil) { _, hasNoPlans in
+            if hasNoPlans { showingPlanPace = false }
         }
     }
 }
 
 #Preview {
-    OverviewView()
+    NavigationStack {
+        OverviewView()
+    }
 }
