@@ -103,18 +103,19 @@ ToolbarItem(placement: .topBarLeading) {
 
 `.sharedBackgroundVisibility(.hidden)` removes the glass capsule so the title
 looks like a title, not a button. Keep the existing More `ToolbarItem` as is.
-Also add `.navigationTitle(category.name)` and `.navigationBarTitleDisplayMode(.inline)`
-on the `Form` so VoiceOver and the sheet's accessibility name still read the
-category. Hide the system inline title with `.toolbarTitleDisplayMode(.inline)` only
-if it shows twice. Mark the leading item `.accessibilityAddTraits(.isHeader)`.
+Do NOT add `.navigationTitle` or a display mode: an inline navigation title
+is drawn centered in the bar, so it would show the category name a second time
+next to the leading item (the reviewer found this on the first run). The
+leading item carries the name, and `.accessibilityAddTraits(.isHeader)` on it
+gives VoiceOver the heading.
 
 Judge it: the icon and name sit on the left, in serif, in one line; a long name
 (for example "Theocratic Ministry School Assistance") truncates with an ellipsis and
 never overlaps the More button; the large Dynamic Type sizes do not break the bar.
 
 Fallback, only if the primary approach shows a capsule you cannot remove or the title clips:
-use `.navigationTitle(category.name)` with `.navigationBarTitleDisplayMode(.inline)`
-and `.toolbarTitleDisplayMode(.inline)`, drop the custom item, and accept the
+use `.navigationTitle(category.name)` with `.navigationBarTitleDisplayMode(.inline)`,
+drop the custom item, and accept the
 system title style. Then apply the serif font only if SwiftUI allows it without
 a custom item. If it does not, report that the serif title and left alignment conflict, and stop.
 
