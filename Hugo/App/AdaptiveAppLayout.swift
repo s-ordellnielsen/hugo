@@ -30,6 +30,7 @@ struct AdaptiveAppLayout<TabContent: View>: View {
             get: { navigation.selectedTab },
             set: { tab in
                 if let tab, tab != navigation.selectedTab {
+                    tapRule.selectionSwitched()
                     navigation.selectedTab = tab
                 }
             }
