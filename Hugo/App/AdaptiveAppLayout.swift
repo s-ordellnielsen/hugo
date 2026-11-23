@@ -68,6 +68,18 @@ struct AdaptiveAppLayout<TabContent: View>: View {
         .tabViewStyle(.sidebarAdaptable)
     }
 
+    /// A quiet tint behind the selected row. The text keeps the primary colour,
+    /// so it stays readable at any text size, in light or dark mode.
+    @ViewBuilder
+    private func rowBackground(for tab: AppTab) -> some View {
+        if tab == navigation.selectedTab {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.accentColor.opacity(0.18))
+        } else {
+            Color.clear
+        }
+    }
+
     /// The sidebar rows are buttons, not a selection binding, so tapping the
     /// selected row again still reaches `select(_:)` and resets that tab.
     private var regularLayout: some View {
@@ -79,6 +91,7 @@ struct AdaptiveAppLayout<TabContent: View>: View {
                     Label(tab.titleKey, systemImage: tab.systemImage)
                 }
                 .accessibilityAddTraits(tab == navigation.selectedTab ? .isSelected : [])
+                .listRowBackground(rowBackground(for: tab))
             }
         } detail: {
             // One stack for the whole detail. A tab switch changes the root and
