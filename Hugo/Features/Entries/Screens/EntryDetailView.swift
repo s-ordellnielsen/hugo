@@ -48,8 +48,6 @@ struct EntryDetailView: View {
                 }
             }
             .contentMargins(.top, 0, for: .scrollContent)
-            .navigationTitle(category.name)
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Label {
