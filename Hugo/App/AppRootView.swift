@@ -28,6 +28,10 @@ struct AppRootView: View {
 
     private var isCompact: Bool { horizontalSizeClass == .compact }
 
+    private var visibleTabs: [AppTab] {
+        AppTab.allCases.filter { $0.placement.isVisible(compact: isCompact) }
+    }
+
     private func select(_ tab: AppTab) {
         if tab == .year && selectedTab == .year {
             yearResetToken = UUID()
@@ -96,13 +100,13 @@ struct AppRootView: View {
 
     private var tabs: some View {
         TabView(selection: tabSelection) {
-            ForEach(AppTab.allCases) { tab in
+            ForEach(visibleTabs) { tab in
                 Tab(tab.titleKey, systemImage: tab.systemImage, value: tab) {
                     NavigationStack {
                         tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
                     }
                 }
-                .defaultVisibility(tab.placement.isVisible(compact: isCompact) ? .automatic : .hidden, for: .tabBar)
+                .defaultVisibility(tab.placement.showsInTabBar ? .automatic : .hidden, for: .tabBar)
             }
         }
         .tabViewStyle(.sidebarAdaptable)
@@ -155,18 +159,27 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         case .overview: .all
         case .year: .all
         case .planner: .all
-        case .settings: .regularOnly
+        case .settings: .sidebarOnly
         }
     }
 }
 
 enum TabPlacement {
-    case regularOnly
+    case sidebarOnly
     case all
+
+    /// Whether the tab gets an item in the tab bar. A sidebar-only tab is listed
+    /// in the sidebar and reached from a toolbar button on a compact screen.
+    var showsInTabBar: Bool {
+        switch self {
+        case .sidebarOnly: false
+        case .all: true
+        }
+    }
 
     func isVisible(compact: Bool) -> Bool {
         switch self {
-        case .regularOnly: !compact
+        case .sidebarOnly: !compact
         case .all: true
         }
     }
