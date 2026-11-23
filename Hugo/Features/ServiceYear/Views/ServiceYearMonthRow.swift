@@ -97,7 +97,7 @@ struct ServiceYearMonthRow: View {
 
 extension ServiceYearMonthRow {
     fileprivate var header: some View {
-        HStack {
+        HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: HugoLayout.Spacing.tight) {
                 monthTitle
                 duration
@@ -107,7 +107,7 @@ extension ServiceYearMonthRow {
 
             if !month.isFuture {
                 Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
+                    .font(.caption2.weight(.semibold))
                     .foregroundStyle(.tertiary)
                     .accessibilityHidden(true)
             }
