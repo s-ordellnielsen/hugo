@@ -86,6 +86,30 @@ struct EntryCategoryTests {
     }
 
     @Test
+    func liveTrackerColorIsCarried() {
+        let tracker = Tracker(name: "Field Service", type: .main)
+        tracker.setCategoryColor(CategoryColorPreset.all[0].color)
+        let entry = Entry(date: .now, duration: 1_800, tracker: tracker)
+        #expect(entry.resolvedCategory().color == tracker.categoryColor)
+        #expect(entry.resolvedCategory().color != nil)
+    }
+
+    @Test
+    func automaticTrackerHasNoColor() {
+        let entry = Entry(date: .now, duration: 1_800, tracker: Tracker(name: "Field Service", type: .main))
+        #expect(entry.resolvedCategory().color == nil)
+    }
+
+    @Test
+    func snapshotAndUntrackedHaveNoColor() {
+        let snapshotEntry = Entry(date: .now, duration: 1_800, tracker: nil)
+        snapshotEntry.storedTracker = Entry.EntryTracker(name: "Bethel", icon: "building", type: .separate)
+        let untrackedEntry = Entry(date: .now, duration: 1_800, tracker: nil)
+        #expect(snapshotEntry.resolvedCategory().color == nil)
+        #expect(untrackedEntry.resolvedCategory().color == nil)
+    }
+
+    @Test
     func untrackedTimeCountsAsMain() {
         let entry = Entry(date: .now, duration: 1_800, tracker: nil)
         #expect(entry.resolvedCategory().countsAs == .main)
