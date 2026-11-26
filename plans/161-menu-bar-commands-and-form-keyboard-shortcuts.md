@@ -7,9 +7,11 @@
 > dispatched you and said they maintain the index.
 >
 > **Drift check (run first)**:
-> `git diff --stat 9a7dc2e..HEAD -- Hugo/App Hugo/Features/Entries/Screens Hugo/Features/Planner/Screens Hugo/Features/ServiceYear/Screens/SchoolCreditFormView.swift Hugo/Features/Settings/Screens Hugo/Features/Categories/Screens Hugo/Features/Reports/Screens`
-> Expected: no output, or only `.readableListWidth()` lines from plan 159. Anything
-> else: compare it with "Current state" and STOP on a mismatch.
+> `git diff --stat 23ba2bf..HEAD -- Hugo/App Hugo/Features/Entries/Screens Hugo/Features/Planner/Screens Hugo/Features/ServiceYear/Screens/SchoolCreditFormView.swift Hugo/Features/Settings/Screens Hugo/Features/Categories/Screens Hugo/Features/Reports/Screens`
+> Expected: no output. Anything else: compare it with "Current state" and STOP on a mismatch.
+> (Plans 159 and 160 landed before `23ba2bf`: many list screens end in
+> `.readableListWidth()`, and the Overview's + button opens Add Entry in its
+> own popover. Neither changes this plan.)
 > `git status --short` may show `M Hugo/Resources/Localizable.xcstrings` (the
 > owner's own edit). Never stage that file as a whole. See Step 2 for the string.
 
@@ -20,7 +22,7 @@
 - **Risk**: LOW. Commands and shortcuts only add ways to reach existing screens. Nobody without a keyboard sees a change. The owner check needs a hardware keyboard on the iPad.
 - **Depends on**: none
 - **Category**: ux, accessibility
-- **Planned at**: commit `9a7dc2e`, 2026-11-26
+- **Planned at**: commit `9a7dc2e`, 2026-11-26; drift baseline refreshed to `23ba2bf` after plans 159 and 160
 - **Issue**: [SLN-339](https://linear.app/sebastianln/issue/SLN-339)
 
 ## Why this matters
@@ -219,9 +221,55 @@ Add the string `commands.today` to `Localizable.xcstrings`:
 English "Go to Today", Danish "Gå til i dag", comment
 "Menu bar item on iPad (⌘T). Scrolls the Planner to this month or the Service Year tab to this theocratic year."
 
-Strings: do not stage the owner's uncommitted `Localizable.xcstrings` edits. Add
-only your key and commit only your hunk with `git add -p Hugo/Resources/Localizable.xcstrings`.
-If the file's existing diff overlaps where your key goes, STOP and ask.
+Strings: the catalog has the owner's uncommitted edits (around line 2,900, under
+`planner.target.*`), and `git add -p` is interactive, so do not use it. Run this
+script from the repo root instead. It inserts the key before `"common.add"`
+(keys are alphabetical) in the working file, and stages the committed version of
+the file plus only your key:
+
+```sh
+python3 - <<'EOF'
+import subprocess
+path = 'Hugo/Resources/Localizable.xcstrings'
+block = '''    "commands.today" : {
+      "comment" : "Menu bar item on iPad (⌘T). Scrolls the Planner to this month or the Service Year tab to this theocratic year.",
+      "localizations" : {
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gå til i dag"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Today"
+          }
+        }
+      }
+    },
+'''
+anchor = '    "common.add" : {\n'
+def insert(text):
+    assert text.count(anchor) == 1, 'anchor not found exactly once'
+    assert '"commands.today"' not in text, 'key already present'
+    return text.replace(anchor, block + anchor, 1)
+work = open(path, encoding='utf-8').read()
+open(path, 'w', encoding='utf-8').write(insert(work))
+head = subprocess.run(['git', 'show', 'HEAD:' + path], capture_output=True, text=True, check=True).stdout
+blob = subprocess.run(['git', 'hash-object', '-w', '--stdin'], input=insert(head),
+                      capture_output=True, text=True, check=True).stdout.strip()
+subprocess.run(['git', 'update-index', '--cacheinfo', '100644,' + blob + ',' + path], check=True)
+EOF
+```
+
+Then `git diff --cached Hugo/Resources/Localizable.xcstrings` must show exactly
+the 17 added lines of the key and nothing else, and
+`git diff Hugo/Resources/Localizable.xcstrings` (unstaged) must still show the
+owner's `planner.target` hunks. If an assertion fails or either check differs,
+STOP. Never run `git add` on the catalog afterwards: that would stage the owner's
+edits. A build may touch the working file again; that is fine, because the staged
+version does not change.
 
 **Verify**: `Scripts/verify.sh` exits 0, and `git diff --cached --stat` shows only your key in the catalog. Commit `feat(app): add menu bar commands`.
 
