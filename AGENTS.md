@@ -154,7 +154,7 @@ Classify every request before starting, and name the tier in one line. Move up a
 
 - **Small:** one file or one view, no schema change, no new domain term. Make the change directly, run `Scripts/verify.sh`, commit on `main`. No plan file and no subagent.
 - **Medium:** up to about 5 files inside one feature, no schema or CloudKit change. Write a short plan, then implement it in one pass on Sonnet.
-- **Large:** any schema, CloudKit or `TheocraticYear` change, or work that spans features. Use the full pipeline: plan file, Linear issue, Haiku executor, review of the full diff.
+- **Large:** any schema, CloudKit or `TheocraticYear` change, or work that spans features. Use the full pipeline: plan file written by `plan-writer`, Linear issue, `plan-executor` (Haiku) to implement, review of the full diff.
 
 The process rules for each tier (executors, review, revisions, delegation) are in the `workflow-tiers` memory.
 
