@@ -67,9 +67,11 @@ struct AddEntryView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+                        .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem {
                     Button("entry.add.label", systemImage: "plus", action: submit)
+                        .keyboardShortcut(.defaultAction)
                         .buttonStyle(.glassProminent)
                         .tint(.hugoAccent)
                         .disabled(form.isSubmitDisabled)

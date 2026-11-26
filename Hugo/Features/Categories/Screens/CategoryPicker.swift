@@ -50,6 +50,7 @@ struct CategoryPicker: View {
                     Button(role: .cancel) {
                         dismiss()
                     }
+                    .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem {
                     Button {

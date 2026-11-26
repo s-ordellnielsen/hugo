@@ -50,6 +50,7 @@ struct PlannerDaySheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+                        .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem {
                     Button("planner.plan.add", systemImage: "plus") {

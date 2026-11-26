@@ -54,11 +54,13 @@ struct OverseerManualEntryView: View {
                     Button(role: .cancel) {
                         dismiss()
                     }
+                    .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem {
                     Button(role: .confirm, action: save) {
                         Label("common.done", systemImage: "checkmark")
                     }
+                    .keyboardShortcut(.defaultAction)
                     .disabled(!details.canSave)
                 }
             }

@@ -68,9 +68,11 @@ struct SchoolCreditFormView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+                        .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem {
                     Button("schoolCredit.form.save", systemImage: "checkmark", action: save)
+                        .keyboardShortcut(.defaultAction)
                         .buttonStyle(.glassProminent)
                         .tint(.hugoAccent)
                 }

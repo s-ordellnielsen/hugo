@@ -155,6 +155,7 @@ struct SubmitReportView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(role: .cancel) { dismiss() }
+                    .keyboardShortcut(.cancelAction)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 HelpMenu(articles: HelpArticle.submitReport)

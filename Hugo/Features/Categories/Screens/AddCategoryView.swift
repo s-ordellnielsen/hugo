@@ -87,6 +87,7 @@ struct AddCategoryView: View {
                     Button(role: .confirm, action: submit) {
                         Label("common.done", systemImage: "checkmark")
                     }
+                    .keyboardShortcut(.defaultAction)
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }

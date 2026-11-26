@@ -69,9 +69,11 @@ struct PlanFormView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("navigation.dismiss", systemImage: "xmark", role: .cancel) { dismiss() }
+                        .keyboardShortcut(.cancelAction)
                 }
                 ToolbarItem {
                     Button("planner.plan.save", systemImage: "checkmark", action: save)
+                        .keyboardShortcut(.defaultAction)
                         .buttonStyle(.glassProminent)
                         .tint(.hugoAccent)
                         .disabled(form.isSaveDisabled)
