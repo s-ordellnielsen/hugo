@@ -36,6 +36,7 @@ struct ServiceYearMonthRow: View {
                         .navigationTransition(.zoom(sourceID: month.id, in: transition))
                 } label: {
                     card
+                        .monthReportDragSource(month)
                         .matchedTransitionSource(id: month.id, in: transition) { source in
                             source.clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
                         }
