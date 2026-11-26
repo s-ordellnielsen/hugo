@@ -11,8 +11,13 @@ struct PlannerMonthPage: View {
     @Query private var entries: [Entry]
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
-    @State private var selectedDay: CalendarDay?
-    @State private var addingPlanDay: CalendarDay?
+    /// The day whose popover is open.
+    @State private var presentedDay: CalendarDay?
+    /// What the open (or closing) popover shows. Never reset on dismissal: the
+    /// content stays on screen during the dismiss animation, and saving a plan
+    /// makes an empty day non-empty, so recomputing it would flip Add Plan to the
+    /// day view while it closes.
+    @State private var popoverDestination: PlannerDayDestination = .daySheet
 
     init(
         month: YearMonth, today: Date, targetSeconds: TimeInterval?, rule: YearlyGoalRule?,
@@ -43,7 +48,9 @@ struct PlannerMonthPage: View {
                 PlannerStatusHeader(
                     status: PlannerMonthStatus.make(
                         month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
-                PlannerCalendarGrid(month: plannerMonth, onSelect: select)
+                PlannerCalendarGrid(month: plannerMonth, onSelect: select, presentedDay: $presentedDay) { day in
+                    dayPopover(for: day)
+                }
                 if !plannerMonth.hasPlans {
                     PlannerIntroCard()
                 }
@@ -56,23 +63,24 @@ struct PlannerMonthPage: View {
         } action: { _, isScrolledFromTop in
             onScrolledFromTopChange?(isScrolledFromTop)
         }
-        .sheet(item: $selectedDay) { day in
-            PlannerDaySheet(day: day, today: today)
-                .presentationDetents([.medium, .large])
-        }
-        .sheet(item: $addingPlanDay) { day in
-            PlanFormView(day: day)
-        }
     }
 
     /// An empty day opens Add Plan directly; every other day opens the day sheet.
     private func select(_ day: CalendarDay) {
-        guard let plannerDay = plannerMonth.days.first(where: { $0.id == day }),
-            PlannerDayDestination(day: plannerDay) == .addPlan
-        else {
-            selectedDay = day
-            return
+        let plannerDay = plannerMonth.days.first { $0.id == day }
+        popoverDestination = plannerDay.map(PlannerDayDestination.init(day:)) ?? .daySheet
+        presentedDay = day
+    }
+
+    @ViewBuilder
+    private func dayPopover(for day: CalendarDay) -> some View {
+        if popoverDestination == .addPlan {
+            PlanFormView(day: day)
+                .popoverContentSize()
+        } else {
+            PlannerDaySheet(day: day, today: today)
+                .presentationDetents([.medium, .large])
+                .popoverContentSize()
         }
-        addingPlanDay = day
     }
 }
