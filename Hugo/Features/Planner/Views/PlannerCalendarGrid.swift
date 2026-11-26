@@ -17,6 +17,8 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
     @ViewBuilder var dayPopover: (CalendarDay) -> DayPopover
 
     @State private var dropTarget: CalendarDay?
+    @Namespace private var keyboardHighlight
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: HugoLayout.Spacing.tight, alignment: .top), count: 7)
@@ -82,6 +84,7 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
                                     RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.calendarDay)
                                         .strokeBorder(.primary.opacity(0.3), lineWidth: 1)
                                 }
+                                .matchedGeometryEffect(id: "keyboardHighlight", in: keyboardHighlight)
                                 .accessibilityHidden(true)
                         }
                     }
@@ -90,6 +93,7 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
                     }
                 }
             }
+            .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: keyboardDay)
             PlannerLegend()
         }
         .padding(HugoLayout.Spacing.regular)
