@@ -18,6 +18,7 @@ struct HugoApp: App {
                     .tint(.primary)
             }
         }
+        .commands { HugoCommands() }
     }
 
     private static func makeContainer() throws -> ModelContainer {
