@@ -21,7 +21,7 @@
 - **Category**: bug, ux
 - **Planned at**: commit `b198210`, 2026-11-26
 - **Issue**: [SLN-341](https://linear.app/sebastianln/issue/SLN-341)
-- **Revisions**: original (mint, `15c7fd2`) was dropped by the owner on the iPad; Revision 1 (neutral gray, `5123aa9`); Revision 2 (one gray for the selection fill and the icons, `8a60518`); Revision 3 (mint again as a trial, owner to choose). Revisions 1 and 2 were first written as plans 164 and 165 and folded in here on 2026-11-26.
+- **Revisions**: original (mint, `15c7fd2`) was dropped by the owner on the iPad; Revision 1 (neutral gray, `5123aa9`); Revision 2 (one gray for the selection fill and the icons, `8a60518`); Revision 3 (mint again as a trial, `1d51620`), which the owner kept; Revision 4 (remove the gray). Revisions 1 and 2 were first written as plans 164 and 165 and folded in here on 2026-11-26.
 
 ## Why this matters
 
@@ -439,3 +439,38 @@ Then the owner chooses mint or gray.
 
 - The drift check shows changes.
 - The `.tint(isCompact ? Color.primary : Color.hugoSidebarSelection)` line is not there.
+
+## Revision 4 (2026-11-26): keep mint, remove the gray
+
+Drift baseline for this revision: `1d51620`. Run first:
+`git diff --stat 1d51620..HEAD -- Hugo/App Hugo/DesignSystem/Theme`. Expected: no output; STOP on a mismatch.
+
+### Why
+
+The owner saw Revision 3 on the iPad and chose mint. The 44% gray
+(`Color.hugoSidebarSelection`) is now unused, and the tint's comment still calls
+mint a trial.
+
+### Steps
+
+#### Step 1
+
+- In `Hugo/DesignSystem/Theme/Theme.swift`, delete `hugoSidebarSelection` with its doc comment (the whole `nonisolated static var hugoSidebarSelection: Color { Color(white: 0.44) }` block). Leave the blank-line layout of `extension Color` as the neighbors have it.
+- In `Hugo/App/AppRootView.swift`, replace the comment above `.tint(isCompact ? Color.primary : Color.hugoAccent)` with:
+  `// Mint sidebar tint: the sidebar fills the selected row with it (white label) and draws the other rows' icons in it; primary (white in dark mode) hid the selected label. Screens inside the tabs reset to primary. Compact width keeps the iPhone tab bar as it was.`
+
+**Verify**: `grep -rn "hugoSidebarSelection" Hugo HugoTests` prints nothing. Lint both files with
+`xcrun swift-format lint --strict`, exit 0. `Scripts/verify.sh` exits 0 with 653 tests.
+Commit `refactor(app): keep mint as the iPad sidebar tint and drop the gray`.
+
+### Done criteria
+
+- [ ] `Scripts/verify.sh` exits 0, 653 tests
+- [ ] Only `Theme.swift` (one token removed) and `AppRootView.swift` (one comment) changed
+
+No owner check: the app looks exactly like Revision 3.
+
+### STOP conditions
+
+- The drift check shows changes.
+- `hugoSidebarSelection` is used anywhere besides its own definition.
