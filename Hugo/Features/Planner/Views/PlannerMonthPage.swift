@@ -44,22 +44,29 @@ struct PlannerMonthPage: View {
     var body: some View {
         let plannerMonth = self.plannerMonth
         ScrollView {
-            VStack(spacing: HugoLayout.Spacing.card) {
+            AdaptiveTwoColumnStack(
+                leadingWidth: HugoLayout.Size.plannerStatusColumnWidth,
+                inset: HugoLayout.Spacing.spacious, spacing: HugoLayout.Spacing.card
+            ) {
                 PlannerStatusHeader(
                     status: PlannerMonthStatus.make(
-                        month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
-                PlannerCalendarGrid(
-                    month: plannerMonth, onSelect: select,
-                    onAddPlan: { open($0, .addPlan) }, onLogTime: { open($0, .logTime) },
-                    presentedDay: $presentedDay
-                ) { day in
-                    dayPopover(for: day)
-                }
-                if !plannerMonth.hasPlans {
-                    PlannerIntroCard()
+                        month: plannerMonth, targetSeconds: targetSeconds, rule: rule)
+                )
+                .padding(.bottom, HugoLayout.Spacing.card)
+            } trailing: {
+                VStack(spacing: HugoLayout.Spacing.card) {
+                    PlannerCalendarGrid(
+                        month: plannerMonth, onSelect: select,
+                        onAddPlan: { open($0, .addPlan) }, onLogTime: { open($0, .logTime) },
+                        presentedDay: $presentedDay
+                    ) { day in
+                        dayPopover(for: day)
+                    }
+                    if !plannerMonth.hasPlans {
+                        PlannerIntroCard()
+                    }
                 }
             }
-            .padding()
         }
         .frame(maxWidth: .infinity)
         .onScrollGeometryChange(for: Bool.self) { geometry in
