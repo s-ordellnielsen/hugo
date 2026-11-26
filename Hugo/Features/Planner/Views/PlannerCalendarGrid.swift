@@ -12,6 +12,8 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
     /// Called when a day's plans are dropped on `target`. Returns whether the
     /// drop was accepted. Nil turns drag and drop off.
     var onDropPlans: ((PlanMoveRequest, PlannerDay) -> Bool)? = nil
+    /// The day the hardware keyboard has highlighted, or nil.
+    var keyboardDay: CalendarDay? = nil
     @ViewBuilder var dayPopover: (CalendarDay) -> DayPopover
 
     @State private var dropTarget: CalendarDay?
@@ -70,6 +72,13 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
                             dropTarget = day.id
                         } else if dropTarget == day.id {
                             dropTarget = nil
+                        }
+                    }
+                    .overlay {
+                        if keyboardDay == day.id {
+                            RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.calendarDay)
+                                .strokeBorder(.tint, lineWidth: 2)
+                                .accessibilityHidden(true)
                         }
                     }
                     .popover(isPresented: isPresented(day.id)) {
