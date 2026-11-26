@@ -35,6 +35,7 @@ struct MonthEntriesSection: View {
                         delete(entry)
                     }
                 }
+                .entryContextMenu(entry)
             }
         }
         .alert(

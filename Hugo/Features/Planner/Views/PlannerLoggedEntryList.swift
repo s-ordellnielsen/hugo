@@ -72,5 +72,6 @@ struct PlannerLoggedEntryList: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(category.name))
         .accessibilityValue(Text(ServiceDurationFormatter.accessibilityString(from: entry.duration)))
+        .entryContextMenu(entry) { onSelect(entry) }
     }
 }

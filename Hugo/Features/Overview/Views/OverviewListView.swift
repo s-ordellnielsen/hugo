@@ -253,6 +253,7 @@ struct OverviewDateList: View {
             .accessibilityValue(
                 Text(verbatim: EntryAccessibilityValue.text(duration: entry.duration, bibleStudies: entry.bibleStudies))
             )
+            .entryContextMenu(entry) { selectedEntry = entry }
         }
     }
 }

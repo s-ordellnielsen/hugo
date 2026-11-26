@@ -84,6 +84,8 @@ struct EntryRow: View {
         .accessibilityLabel(Text(category.name))
         .accessibilityValue(accessibilityValue)
         .buttonStyle(.plain)
+        .contentShape(.contextMenuPreview, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+        .entryContextMenu(entry) { selectedEntry = entry }
     }
 }
 
