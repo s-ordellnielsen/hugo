@@ -148,8 +148,8 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 167 | Hover effects on cards and day cells | P3 | S + owner | 166 | DONE (committed on main as e1887bb, 9dc18f7; `Scripts/verify.sh` passed, 661 tests; owner check pending on the iPad with a pointer) | [SLN-348](https://linear.app/sebastianln/issue/SLN-348) |
 | 168 | Two columns on the Overview and the Planner on wide iPad screens | P2 | M + owner | 159, 162, 167 | DONE | [SLN-344](https://linear.app/sebastianln/issue/SLN-344) |
 | 169 | Month grid and hours chart on the Service Year page on wide screens | P2 | M + owner | 168 | DONE | [SLN-345](https://linear.app/sebastianln/issue/SLN-345) |
-| 170 | Drag a day's plans to another day in the Planner | P2 | M + owner | 160, 167, 169 | DONE (committed on main as e28509e, 2f38cb9, fd69920; `Scripts/verify.sh` passed; owner check pending on the iPad and the iPhone) | [SLN-342](https://linear.app/sebastianln/issue/SLN-342) |
-| 171 | Drag a month's report out of Service Year | P2 | S + owner | 167, 169 | TODO | [SLN-349](https://linear.app/sebastianln/issue/SLN-349) |
+| 170 | Drag a day's plans to another day in the Planner | P2 | M + owner | 160, 167, 169 | DONE (committed on main as e28509e, 2f38cb9, fd69920; `Scripts/verify.sh` passed; owner check passed on the iPad 2026-11-27) | [SLN-342](https://linear.app/sebastianln/issue/SLN-342) |
+| 171 | Drag a month's report out of Service Year | P2 | S + owner | 167, 169 | DONE (committed on main as dbcde04, 9e8a524; `Scripts/verify.sh` passed; owner check pending on the iPad) | [SLN-349](https://linear.app/sebastianln/issue/SLN-349) |
 | 172 | Arrow keys in the Planner | P2 | M + owner | 160, 161, 170 | TODO | [SLN-343](https://linear.app/sebastianln/issue/SLN-343) |
 | 173 | Width audit: layout decisions on measured width, size class only where the system decides | P3 | S + owner | 168 | DONE | [SLN-346](https://linear.app/sebastianln/issue/SLN-346) |
 
