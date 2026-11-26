@@ -46,6 +46,13 @@ struct PlannerDaySheet: View {
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
+            // Space closes the day, as it does in Quick Look.
+            .focusable()
+            .focusEffectDisabled()
+            .onKeyPress(.space) {
+                dismiss()
+                return .handled
+            }
             .editorialNavigationTitle(day.startDate().formatted(.dateTime.weekday(.wide).day().month(.wide)))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

@@ -77,7 +77,11 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
                     .overlay {
                         if keyboardDay == day.id {
                             RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.calendarDay)
-                                .strokeBorder(.tint, lineWidth: 2)
+                                .fill(.primary.opacity(0.08))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: HugoLayout.CornerRadius.calendarDay)
+                                        .strokeBorder(.primary.opacity(0.3), lineWidth: 1)
+                                }
                                 .accessibilityHidden(true)
                         }
                     }

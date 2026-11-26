@@ -105,7 +105,7 @@ struct PlannerMonthPage: View {
     }
 
     /// Arrow keys move the highlight, ⌘← and ⌘→ change month, Return or Space
-    /// opens the highlighted day, Esc removes the highlight.
+    /// opens the highlighted day (Space closes it again), Esc removes the highlight.
     private func handleKey(_ press: KeyPress, in plannerMonth: PlannerMonth) -> KeyPress.Result {
         // Arrow keys report the function and numeric-pad flags; only ⌘ and the
         // other modifiers count.
@@ -130,6 +130,11 @@ struct PlannerMonthPage: View {
         case .upArrow: move = .previousWeek
         case .downArrow: move = .nextWeek
         case .return, .space:
+            // Space also closes an open day, like Quick Look.
+            if press.key == .space, presentedDay != nil {
+                presentedDay = nil
+                return .handled
+            }
             guard let keyboardDay else { return .ignored }
             select(keyboardDay)
             return .handled
