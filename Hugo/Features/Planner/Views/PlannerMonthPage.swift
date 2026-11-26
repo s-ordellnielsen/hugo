@@ -48,7 +48,11 @@ struct PlannerMonthPage: View {
                 PlannerStatusHeader(
                     status: PlannerMonthStatus.make(
                         month: plannerMonth, targetSeconds: targetSeconds, rule: rule))
-                PlannerCalendarGrid(month: plannerMonth, onSelect: select, presentedDay: $presentedDay) { day in
+                PlannerCalendarGrid(
+                    month: plannerMonth, onSelect: select,
+                    onAddPlan: { open($0, .addPlan) }, onLogTime: { open($0, .logTime) },
+                    presentedDay: $presentedDay
+                ) { day in
                     dayPopover(for: day)
                 }
                 if !plannerMonth.hasPlans {
@@ -72,12 +76,22 @@ struct PlannerMonthPage: View {
         presentedDay = day
     }
 
+    /// Opens `destination` in the day's popover, as a tap would.
+    private func open(_ day: CalendarDay, _ destination: PlannerDayDestination) {
+        popoverDestination = destination
+        presentedDay = day
+    }
+
     @ViewBuilder
     private func dayPopover(for day: CalendarDay) -> some View {
-        if popoverDestination == .addPlan {
+        switch popoverDestination {
+        case .addPlan:
             PlanFormView(day: day)
                 .popoverContentSize()
-        } else {
+        case .logTime:
+            AddEntryView(seededDate: day.startDate())
+                .popoverContentSize()
+        case .daySheet:
             PlannerDaySheet(day: day, today: today)
                 .presentationDetents([.medium, .large])
                 .popoverContentSize()

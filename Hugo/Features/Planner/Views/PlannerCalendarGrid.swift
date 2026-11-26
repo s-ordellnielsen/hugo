@@ -3,6 +3,9 @@ import SwiftUI
 struct PlannerCalendarGrid<DayPopover: View>: View {
     let month: PlannerMonth
     var onSelect: ((CalendarDay) -> Void)? = nil
+    /// Context-menu actions. Nil hides the item.
+    var onAddPlan: ((CalendarDay) -> Void)? = nil
+    var onLogTime: ((CalendarDay) -> Void)? = nil
     /// The day whose popover is open. Each cell anchors its own popover, so the
     /// arrow points at the tapped day.
     var presentedDay: Binding<CalendarDay?> = .constant(nil)
@@ -32,6 +35,16 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(onSelect == nil)
+                    .contentShape(.contextMenuPreview, .rect(cornerRadius: HugoLayout.Spacing.regular))
+                    .contextMenu {
+                        let actions = PlannerDayActions(day: day)
+                        if actions.canAddPlan, let onAddPlan {
+                            Button("planner.plan.add", systemImage: "calendar.badge.plus") { onAddPlan(day.id) }
+                        }
+                        if actions.canLogTime, let onLogTime {
+                            Button("planner.day.action.logTime", systemImage: "plus.circle") { onLogTime(day.id) }
+                        }
+                    }
                     .popover(isPresented: isPresented(day.id)) {
                         dayPopover(day.id)
                     }
