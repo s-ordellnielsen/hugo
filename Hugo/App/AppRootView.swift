@@ -18,6 +18,8 @@ struct AppRootView: View {
     @State private var bootstrapErrorMessage: String?
     @State private var syncMonitor = CloudSyncMonitor()
     @State private var deduplication = SyncDeduplicationScheduler()
+    @State private var isAddingEntry = false
+    @State private var isShowingSettingsSheet = false
 
     /// Copies the synced settings to and from iCloud. `nil` in the unit-test
     /// host, so tests never touch the real iCloud store.
@@ -43,6 +45,35 @@ struct AppRootView: View {
         selectedTab = tab
     }
 
+    private var commandActions: AppCommandActions {
+        AppCommandActions(
+            selectedTab: selectedTab,
+            addEntry: { if !needsOnboarding { isAddingEntry = true } },
+            select: { select($0) },
+            showToday: showToday,
+            showSettings: showSettings
+        )
+    }
+
+    /// Scrolls the Planner or the Service Year back to now, like selecting its tab again.
+    private func showToday() {
+        switch selectedTab {
+        case .planner: plannerResetToken = UUID()
+        case .year: yearResetToken = UUID()
+        case .overview, .settings: break
+        }
+    }
+
+    /// The Settings tab when the sidebar lists it, otherwise the same sheet as the
+    /// toolbar's settings button.
+    private func showSettings() {
+        if AppTab.settings.placement.isVisible(compact: isCompact) {
+            select(.settings)
+        } else {
+            isShowingSettingsSheet = true
+        }
+    }
+
     private var tabSelection: Binding<AppTab> {
         Binding(
             get: { selectedTab },
@@ -52,6 +83,7 @@ struct AppRootView: View {
 
     var body: some View {
         tabs
+            .focusedSceneValue(\.appCommands, commandActions)
             .environment(syncMonitor)
             .task {
                 settingsSync?.start()
@@ -95,6 +127,13 @@ struct AppRootView: View {
                 settingsSync?.pushToCloud()
             }
             .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
+            .sheet(isPresented: $isAddingEntry) { AddEntryView() }
+            .sheet(isPresented: $isShowingSettingsSheet) {
+                NavigationStack {
+                    SettingsView(showDismiss: true)
+                }
+                .presentationDetents([.large])
+            }
             .onChange(of: bootstrapper.errorMessage) { _, newValue in bootstrapErrorMessage = newValue }
             .errorAlert(message: $bootstrapErrorMessage, retry: { Task { await bootstrapper.retry(context: context) } })
     }
