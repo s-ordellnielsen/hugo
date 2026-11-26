@@ -7,11 +7,12 @@
 > dispatched you and said they maintain the index.
 >
 > **Drift check (run first)**:
-> `git diff --stat 9a7dc2e..HEAD -- Hugo/Features/Planner Hugo/Features/Overview Hugo/DesignSystem`
-> Expected: no output, or only plan 159's files (`Theme.swift`,
-> `ReadableContentWidth.swift`, `ReadableWidthGeometry.swift`, `OverviewView.swift`
-> with one `.readableContentWidth()` line). Anything else: compare it with
-> "Current state" and STOP on a mismatch.
+> `git diff --stat 8020494..HEAD -- Hugo/Features/Planner Hugo/Features/Overview Hugo/DesignSystem`
+> Expected: no output. If a file changed, compare it with "Current state" and STOP on a mismatch.
+> (Plan 159 already landed before `8020494`: `Theme.swift` has `readableContentWidth`
+> in `HugoLayout.Size`, `OverviewView` has `.readableContentWidth()` after its
+> `.padding()`, and `Hugo/DesignSystem/Modifiers/` has `ReadableContentWidth.swift`
+> and `ReadableWidthGeometry.swift`. Leave all of that as is.)
 > `git status --short` may show `M Hugo/Resources/Localizable.xcstrings` (the
 > owner's own edit). This plan adds no strings. Never stage that file.
 
@@ -22,7 +23,7 @@
 - **Risk**: MEDIUM. Popovers can't be checked from this Mac (no `Simulator.app`, nothing can be tapped), and earlier iPad work failed on exactly that kind of untested interaction. The plan therefore stops after each screen for an owner check on the real iPad.
 - **Depends on**: none
 - **Category**: ux
-- **Planned at**: commit `9a7dc2e`, 2026-11-26
+- **Planned at**: commit `9a7dc2e`, 2026-11-26; drift baseline refreshed to `8020494` after plan 159
 - **Issue**: [SLN-338](https://linear.app/sebastianln/issue/SLN-338)
 
 ## Why this matters
