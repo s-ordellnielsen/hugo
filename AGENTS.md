@@ -140,6 +140,7 @@ Tests mirror the source layout: the test for `Hugo/Features/Reports/Domain/Repor
 ## 8. Verification and testing
 
 - Run `Scripts/verify.sh` before every commit. It runs `swift-format lint --strict`, the tests (serially) and static analysis, and must exit 0. Use 4-space indentation; tabs fail the lint.
+- `Scripts/verify.sh` is quiet: one `ok` line per stage, and on failure the error lines plus a log path in `/tmp/hugo-verify-logs`. Add `--verbose` for full output. While working, run `Scripts/test-quick.sh HugoTests/<SuiteName>` for one suite. It is not the commit gate.
 - Build-specific behavior uses flags, never the build's name. `Configuration/Debug.xcconfig`, `TestFlight.xcconfig` and `Production.xcconfig` set `SWIFT_ACTIVE_COMPILATION_CONDITIONS` (see "Builds" in `README.md`). Check a flag with `#if SHOW_DEBUG_MENU`; never write `#if PRODUCTION`, `#if ENV_PROD` or a check on `DEBUG` for a product feature. A new flag goes in each file where it is on, and in the README table.
 - Run `Scripts/install-hooks.sh` once after cloning. The pre-commit hook formats staged Swift files.
 - Tests use Swift Testing (`import Testing`, `@Test`, `#expect`). Persistence tests use `InMemoryModelContainer.make()`.

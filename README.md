@@ -27,6 +27,8 @@ Scripts/verify.sh
 
 It runs strict Swift-format lint, Debug tests, and static analysis. The tests run on a simulator that only this script uses, `Hugo Verify iOS 26.5`, which the script creates the first time. Only one run happens at a time: a second run waits for the first. Don't point other test runs or Xcode at that simulator. `DESTINATION` and `DERIVED_DATA` can be overridden.
 
+The script prints one `ok` line per stage and, when a stage fails, the error lines and the path of its log in `/tmp/hugo-verify-logs`. Pass `--verbose` (or set `VERIFY_VERBOSE=1`) for full tool output. `Scripts/test-quick.sh HugoTests/YearMonthTests` runs only the named suites on the same simulator while you work. It skips lint and analysis, so it is not a substitute for `Scripts/verify.sh` before a commit.
+
 ### Pre-commit format hook
 
 Run once per clone:
