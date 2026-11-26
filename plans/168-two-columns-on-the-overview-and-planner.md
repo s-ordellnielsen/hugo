@@ -36,7 +36,7 @@ After this plan, when the container is wide enough:
   points wide. This month's entries sit in a right column, at most the
   readable width (672 points, scaled with Dynamic Type).
 - **Planner:** the month's numbers (`PlannerStatusHeader`) sit in a left
-  column 320 points wide. The calendar fills the rest, with the intro card
+  column 380 points wide. The calendar fills the rest, with the intro card
   under it in a month without plans, as today.
 
 Narrow widths (iPhone, iPad portrait, split view, Slide Over) and every
@@ -171,7 +171,7 @@ In `Theme.swift`, inside `HugoLayout.Size`, after `popoverHeight`, add:
         /// The Overview's left column on wide screens: the progress card.
         static let overviewProgressColumnWidth: CGFloat = 400
         /// The Planner's left column on wide screens: the month's numbers.
-        static let plannerStatusColumnWidth: CGFloat = 320
+        static let plannerStatusColumnWidth: CGFloat = 380
 ```
 
 Create `Hugo/DesignSystem/Components/TwoColumnBreakpoint.swift`:
