@@ -71,6 +71,76 @@ struct PlanServiceTests {
         #expect(remaining.isEmpty)
     }
 
+    @Test
+    func moveChangesOnlyTheDate() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = ModelContext(container)
+        let tracker = Tracker(name: "Field Service", type: .main)
+        context.insert(tracker)
+        let service = PlanService(context: context, calendar: calendar)
+        let plan = try service.add(
+            PlanDraft(
+                day: CalendarDay(year: 2026, month: 11, day: 4), duration: 7_200, startMinute: 600, tracker: tracker))
+
+        let moved = try service.move(planIDs: [plan.id], to: CalendarDay(year: 2026, month: 11, day: 6))
+
+        #expect(moved == 1)
+        let fetched = try #require(try context.fetch(FetchDescriptor<Plan>()).first)
+        #expect(fetched.date == date(2026, 11, 6, hour: 12))
+        #expect(fetched.duration == 7_200)
+        #expect(fetched.startMinute == 600)
+        #expect(fetched.categoryID == tracker.id)
+    }
+
+    @Test
+    func moveLeavesOtherPlansAlone() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = ModelContext(container)
+        let tracker = Tracker(name: "Field Service", type: .main)
+        context.insert(tracker)
+        let service = PlanService(context: context, calendar: calendar)
+        let day = CalendarDay(year: 2026, month: 11, day: 4)
+        let first = try service.add(PlanDraft(day: day, duration: 3_600, startMinute: nil, tracker: tracker))
+        let second = try service.add(PlanDraft(day: day, duration: 1_800, startMinute: nil, tracker: tracker))
+
+        try service.move(planIDs: [first.id], to: CalendarDay(year: 2026, month: 11, day: 9))
+
+        let plans = try context.fetch(FetchDescriptor<Plan>())
+        let stayed = try #require(plans.first { $0.id == second.id })
+        let movedPlan = try #require(plans.first { $0.id == first.id })
+        #expect(stayed.date == date(2026, 11, 4, hour: 12))
+        #expect(movedPlan.date == date(2026, 11, 9, hour: 12))
+    }
+
+    @Test
+    func moveWithNoIDsDoesNothing() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = ModelContext(container)
+        let tracker = Tracker(name: "Field Service", type: .main)
+        context.insert(tracker)
+        let service = PlanService(context: context, calendar: calendar)
+        try service.add(
+            PlanDraft(
+                day: CalendarDay(year: 2026, month: 11, day: 4), duration: 3_600, startMinute: nil, tracker: tracker))
+
+        let moved = try service.move(planIDs: [], to: CalendarDay(year: 2026, month: 11, day: 6))
+
+        #expect(moved == 0)
+        let fetched = try #require(try context.fetch(FetchDescriptor<Plan>()).first)
+        #expect(fetched.date == date(2026, 11, 4, hour: 12))
+    }
+
+    @Test
+    func moveWithUnknownIDReturnsZero() throws {
+        let container = try InMemoryModelContainer.make()
+        let context = ModelContext(container)
+        let service = PlanService(context: context, calendar: calendar)
+
+        let moved = try service.move(planIDs: [UUID()], to: CalendarDay(year: 2026, month: 11, day: 6))
+
+        #expect(moved == 0)
+    }
+
     private func date(_ year: Int, _ month: Int, _ day: Int, hour: Int = 0, minute: Int = 0) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute))!
     }

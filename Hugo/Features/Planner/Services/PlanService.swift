@@ -40,6 +40,21 @@ struct PlanService {
         }
     }
 
+    /// Moves the plans with `planIDs` to `day`, keeping their duration, start
+    /// time and category. Rows that share an id move together. Returns how many
+    /// rows moved.
+    @discardableResult
+    func move(planIDs: [UUID], to day: CalendarDay) throws -> Int {
+        guard !planIDs.isEmpty else { return 0 }
+        let descriptor = FetchDescriptor<Plan>(predicate: #Predicate<Plan> { planIDs.contains($0.id) })
+        let plans = try context.fetch(descriptor)
+        let date = day.midday(calendar: calendar)
+        try context.performIsolatedChange {
+            for plan in plans { plan.date = date }
+        }
+        return plans.count
+    }
+
     func delete(_ plan: Plan) throws {
         try context.performIsolatedChange { context.delete(plan) }
     }
