@@ -79,6 +79,18 @@ extension Color {
                 traits.userInterfaceStyle == .dark ? .quaternarySystemFill : .white
             })
     }
+
+    /// Fill of the selected row in the iPad sidebar. The system draws that
+    /// row's label in white, so the gray is dark enough for white text in light
+    /// mode (about 5:1) and a soft dark gray in dark mode.
+    nonisolated static var hugoSidebarSelection: Color {
+        Color(
+            uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor.systemGray3.resolvedColor(with: traits)
+                    : UIColor(white: 0.42, alpha: 1)
+            })
+    }
 }
 
 extension ShapeStyle where Self == Color {

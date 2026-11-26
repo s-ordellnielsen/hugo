@@ -145,15 +145,15 @@ struct AppRootView: View {
                     NavigationStack {
                         tabDestination(for: tab, yearResetToken: yearResetToken, plannerResetToken: plannerResetToken)
                     }
-                    // The tab view's mint is for the sidebar selection only; content stays monochrome.
+                    // The tab view's tint is for the sidebar selection only; content stays monochrome.
                     .tint(.primary)
                 }
                 .defaultVisibility(tab.placement.showsInTabBar ? .automatic : .hidden, for: .tabBar)
             }
         }
         .tabViewStyle(.sidebarAdaptable)
-        // Mint selection in the iPad sidebar, where a primary (white in dark mode) capsule hides its label. Compact width keeps the iPhone tab bar as it was.
-        .tint(isCompact ? Color.primary : Color.hugoAccent)
+        // Neutral gray selection in the iPad sidebar, where a primary (white in dark mode) capsule hides its white label. Compact width keeps the iPhone tab bar as it was.
+        .tint(isCompact ? Color.primary : Color.hugoSidebarSelection)
         .onChange(of: isCompact) { _, compact in
             if compact && !selectedTab.placement.isVisible(compact: true) {
                 selectedTab = .overview
