@@ -74,7 +74,7 @@ Tests: `HugoTests/Features/Overview/`.
 
 Plans per day and the monthly target. `PlannerView` (Screens) is the tab root.
 - `PlanService` (Services) writes Plans. `PlanFormModel` (State) drives `PlanFormView` (Screens).
-- `PlannerTarget`, `PlanPace`, `PlanMatcher`, `PlannedItem`, `PlannerMonth` (Domain). `PlanMatcher` decides which Entries cover which Plans.
+- `PlannerTarget`, `PlanPace`, `PlanMatcher`, `PlannedItem`, `PlannerMonth` (Domain). `PlanMatcher` decides which Entries cover which Plans. `PlanMoveRequest` and `PlanMoveRule` describe dragging a day's plans to another day.
 - `PlannerCalendarGrid`, `PlannerDayCell`, `PlannerMonthPage` (Views).
 - `PlannerDaySheet`, `PlannerTargetSettingsView`, `BufferScopeSettingsView` (Screens).
 Terms: Planner, Plan, Still planned, Projected time, Monthly target, Adjusted target, Buffer, Plan pace, Covered time, Unplanned time, Logging a plan.
