@@ -79,14 +79,6 @@ extension Color {
                 traits.userInterfaceStyle == .dark ? .quaternarySystemFill : .white
             })
     }
-
-    /// Tint of the iPad sidebar. The sidebar fills the selected row with it
-    /// (white icon and label on top) and draws the other rows' icons in it, so
-    /// one gray must pass both: white text on it is about 4.9:1, and as an
-    /// icon it is about 3.4:1 on the dark sidebar and 4.4:1 on the light one.
-    nonisolated static var hugoSidebarSelection: Color {
-        Color(white: 0.44)
-    }
 }
 
 extension ShapeStyle where Self == Color {
