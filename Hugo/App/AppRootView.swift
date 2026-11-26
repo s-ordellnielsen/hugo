@@ -152,8 +152,8 @@ struct AppRootView: View {
             }
         }
         .tabViewStyle(.sidebarAdaptable)
-        // Neutral gray sidebar tint: it fills the selected row (white label) and colors the other rows' icons, where primary (white in dark mode) hid the selected label. Compact width keeps the iPhone tab bar as it was.
-        .tint(isCompact ? Color.primary : Color.hugoSidebarSelection)
+        // Mint sidebar tint (trial, plan 163 Revision 3): the sidebar fills the selected row with it (white label) and draws the other rows' icons in it. Screens inside the tabs reset to primary. Compact width keeps the iPhone tab bar as it was.
+        .tint(isCompact ? Color.primary : Color.hugoAccent)
         .onChange(of: isCompact) { _, compact in
             if compact && !selectedTab.placement.isVisible(compact: true) {
                 selectedTab = .overview
