@@ -7,12 +7,17 @@ struct PlannerMonthPage: View {
     let targetSeconds: TimeInterval?
     let rule: YearlyGoalRule?
     var onScrolledFromTopChange: ((Bool) -> Void)? = nil
+    let isActive: Bool
+    var onChangeMonth: ((Int) -> Void)? = nil
 
     @Query private var entries: [Entry]
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
     @Environment(\.modelContext) private var context
     @State private var moveError: String?
+    /// The day the hardware keyboard highlights. Shown only while the page has keyboard focus.
+    @State private var keyboardDay: CalendarDay?
+    @FocusState private var isKeyboardFocused: Bool
     /// The day whose popover is open.
     @State private var presentedDay: CalendarDay?
     /// What the open (or closing) popover shows. Never reset on dismissal: the
@@ -23,13 +28,16 @@ struct PlannerMonthPage: View {
 
     init(
         month: YearMonth, today: Date, targetSeconds: TimeInterval?, rule: YearlyGoalRule?,
-        onScrolledFromTopChange: ((Bool) -> Void)? = nil
+        onScrolledFromTopChange: ((Bool) -> Void)? = nil, isActive: Bool = false,
+        onChangeMonth: ((Int) -> Void)? = nil
     ) {
         self.month = month
         self.today = today
         self.targetSeconds = targetSeconds
         self.rule = rule
         self.onScrolledFromTopChange = onScrolledFromTopChange
+        self.isActive = isActive
+        self.onChangeMonth = onChangeMonth
         let range = month.dateRange()
         let start = range.lowerBound
         let end = range.upperBound
@@ -60,7 +68,8 @@ struct PlannerMonthPage: View {
                     PlannerCalendarGrid(
                         month: plannerMonth, onSelect: select,
                         onAddPlan: { open($0, .addPlan) }, onLogTime: { open($0, .logTime) },
-                        presentedDay: $presentedDay, onDropPlans: movePlans
+                        presentedDay: $presentedDay, onDropPlans: movePlans,
+                        keyboardDay: isKeyboardFocused ? keyboardDay : nil
                     ) { day in
                         dayPopover(for: day)
                     }
@@ -77,6 +86,63 @@ struct PlannerMonthPage: View {
             onScrolledFromTopChange?(isScrolledFromTop)
         }
         .errorAlert(message: $moveError)
+        .focusable()
+        .focusEffectDisabled()
+        .focused($isKeyboardFocused)
+        .onKeyPress(phases: .down) { press in
+            handleKey(press, in: plannerMonth)
+        }
+        .onAppear {
+            if isActive { isKeyboardFocused = true }
+        }
+        .onChange(of: isActive) { _, active in
+            isKeyboardFocused = active
+        }
+        .onChange(of: presentedDay) { _, day in
+            // Take the keys back when the day's popover closes.
+            if day == nil, isActive { isKeyboardFocused = true }
+        }
+    }
+
+    /// Arrow keys move the highlight, ⌘← and ⌘→ change month, Return or Space
+    /// opens the highlighted day, Esc removes the highlight.
+    private func handleKey(_ press: KeyPress, in plannerMonth: PlannerMonth) -> KeyPress.Result {
+        // Arrow keys report the function and numeric-pad flags; only ⌘ and the
+        // other modifiers count.
+        let modifiers = press.modifiers.subtracting([.numericPad, .function])
+        if modifiers == .command {
+            switch press.key {
+            case .leftArrow:
+                onChangeMonth?(-1)
+                return .handled
+            case .rightArrow:
+                onChangeMonth?(1)
+                return .handled
+            default:
+                return .ignored
+            }
+        }
+        guard modifiers.isEmpty else { return .ignored }
+        let move: PlannerKeyboardMove
+        switch press.key {
+        case .leftArrow: move = .previousDay
+        case .rightArrow: move = .nextDay
+        case .upArrow: move = .previousWeek
+        case .downArrow: move = .nextWeek
+        case .return, .space:
+            guard let keyboardDay else { return .ignored }
+            select(keyboardDay)
+            return .handled
+        case .escape:
+            guard keyboardDay != nil else { return .ignored }
+            keyboardDay = nil
+            return .handled
+        default:
+            return .ignored
+        }
+        keyboardDay = PlannerKeyboardNavigation.day(
+            after: move, from: keyboardDay, in: month, today: plannerMonth.today)
+        return .handled
     }
 
     /// Moves the dragged day's plans to `target`. Past days and the source day

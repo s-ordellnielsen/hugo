@@ -49,6 +49,7 @@ private struct PlannerPager: View {
     @State private var scrollPosition: YearMonth?
     @State private var displayedMonth: YearMonth?
     @State private var scrolledPages: [YearMonth: Bool] = [:]
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(today: Date, resetToken: UUID) {
         self.today = today
@@ -89,7 +90,8 @@ private struct PlannerPager: View {
                             for: month, base: targetBase, extraHours: extraHours, status: status,
                             creditedBeforeCurrentMonth: credited, now: today),
                         rule: status?.yearlyGoalRule,
-                        onScrolledFromTopChange: { scrolledPages[month] = $0 }
+                        onScrolledFromTopChange: { scrolledPages[month] = $0 },
+                        isActive: month == activeMonth, onChangeMonth: showMonth(offsetBy:)
                     )
                     .containerRelativeFrame(.horizontal)
                 }
@@ -125,6 +127,16 @@ private struct PlannerPager: View {
                 scrollPosition = currentMonth
                 displayedMonth = currentMonth
             }
+        }
+    }
+
+    /// Pages to the month `offset` away from the shown one, within the reachable months.
+    private func showMonth(offsetBy offset: Int) {
+        guard let index = months.firstIndex(of: activeMonth) else { return }
+        let target = index + offset
+        guard months.indices.contains(target) else { return }
+        withAnimation(reduceMotion ? nil : .snappy) {
+            scrollPosition = months[target]
         }
     }
 }
