@@ -45,6 +45,9 @@ enum HugoLayout {
         static let gradientSliderThumbRing: CGFloat = 4
         static let yearPickerCellWidth: CGFloat = 68
         static let yearPickerMaximumStripWidth: CGFloat = 320
+        /// Widest a column of text should be at the default text size, as
+        /// UIKit's readable content guide. Scaled with Dynamic Type where used.
+        static let readableContentWidth: CGFloat = 672
 
         static let minimumHitTarget: CGFloat = 44
     }
