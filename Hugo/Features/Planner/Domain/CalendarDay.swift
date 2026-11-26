@@ -1,7 +1,7 @@
 import Foundation
 
 /// One day on the calendar, without a time of day.
-nonisolated struct CalendarDay: Hashable, Comparable, Identifiable, Sendable {
+nonisolated struct CalendarDay: Hashable, Comparable, Identifiable, Sendable, Codable {
     let year: Int
     let month: Int
     let day: Int
