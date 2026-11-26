@@ -19,6 +19,8 @@ enum HugoLayout {
         static let compactCard: CGFloat = 24
         static let card: CGFloat = 32
         static let calendarBar: CGFloat = 4
+        /// The hover, drop and keyboard highlight around a Planner day.
+        static let calendarDay: CGFloat = 8
     }
 
     enum Size {
