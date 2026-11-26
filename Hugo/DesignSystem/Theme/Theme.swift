@@ -54,6 +54,13 @@ enum HugoLayout {
         /// ignores it.
         static let popoverWidth: CGFloat = 400
         static let popoverHeight: CGFloat = 600
+        /// Content width from which a screen shows two columns side by side.
+        /// An 11" iPad in portrait stays below it; landscape is above it.
+        static let twoColumnMinimumWidth: CGFloat = 880
+        /// The Overview's left column on wide screens: the progress card.
+        static let overviewProgressColumnWidth: CGFloat = 400
+        /// The Planner's left column on wide screens: the month's numbers.
+        static let plannerStatusColumnWidth: CGFloat = 320
 
         static let minimumHitTarget: CGFloat = 44
     }
