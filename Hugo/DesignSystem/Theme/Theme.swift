@@ -48,6 +48,10 @@ enum HugoLayout {
         /// Widest a column of text should be at the default text size, as
         /// UIKit's readable content guide. Scaled with Dynamic Type where used.
         static let readableContentWidth: CGFloat = 672
+        /// Ideal size of a form or detail shown in a popover on iPad. A sheet
+        /// ignores it.
+        static let popoverWidth: CGFloat = 400
+        static let popoverHeight: CGFloat = 600
 
         static let minimumHitTarget: CGFloat = 44
     }
