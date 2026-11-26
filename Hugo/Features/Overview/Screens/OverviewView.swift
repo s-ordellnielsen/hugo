@@ -90,7 +90,7 @@ private struct OverviewDayView: View {
                 MonthlyProgressCard(
                     value: metrics.progress, fill: fill,
                     planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
-                    onAddEntry: { showingAddEntry = true },
+                    isAddingEntry: $showingAddEntry,
                     onShowPlanPace: { showingPlanPace = true })
                 Spacer(minLength: HugoLayout.Spacing.section)
 
@@ -107,9 +107,6 @@ private struct OverviewDayView: View {
             ToolbarItem {
                 SettingsButton(sizeClass: .compact)
             }
-        }
-        .sheet(isPresented: $showingAddEntry) {
-            AddEntryView()
         }
         .sheet(isPresented: $showingPlanPace) {
             if let pace {

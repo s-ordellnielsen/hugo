@@ -4,7 +4,7 @@ struct MonthlyProgressCard: View {
     let value: Double
     let fill: MonthlyCircleFill
     var planStatus: MonthlyProgressStatus? = nil
-    let onAddEntry: () -> Void
+    @Binding var isAddingEntry: Bool
     let onShowPlanPace: () -> Void
 
     @ScaledMetric(relativeTo: .largeTitle) private var heroSize: CGFloat = HugoLayout.Typography.monthlyProgressHeroSize
@@ -48,7 +48,9 @@ struct MonthlyProgressCard: View {
                 }
             }
 
-            Button(action: onAddEntry) {
+            Button {
+                isAddingEntry = true
+            } label: {
                 Label("entry.add.label", systemImage: "plus")
                     .padding(HugoLayout.Spacing.regular)
             }
@@ -57,6 +59,10 @@ struct MonthlyProgressCard: View {
             .labelStyle(.iconOnly)
             .buttonStyle(.glass)
             .hoverEffect(.lift)
+            .popover(isPresented: $isAddingEntry) {
+                AddEntryView()
+                    .popoverContentSize()
+            }
             .padding(.trailing, HugoLayout.Spacing.compact)
             .padding(.bottom, HugoLayout.Spacing.compact)
         }
