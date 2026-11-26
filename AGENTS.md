@@ -146,6 +146,16 @@ Tests mirror the source layout: the test for `Hugo/Features/Reports/Domain/Repor
 - CloudKit sync can duplicate rows, because it cannot enforce uniqueness. Merges live in `SyncDeduplicator` and must choose the surviving row from synced attributes only.
 - Get an entry's category with `entry.resolvedCategory()`, never from `entry.tracker` directly.
 
+## 9. Workflow tiers
+
+Classify every request before starting, and name the tier in one line. Move up a tier if the work grows.
+
+- **Small:** one file or one view, no schema change, no new domain term. Make the change directly, run `Scripts/verify.sh`, commit on `main`. No plan file and no subagent.
+- **Medium:** up to about 5 files inside one feature, no schema or CloudKit change. Write a short plan, then implement it in one pass on Sonnet.
+- **Large:** any schema, CloudKit or `TheocraticYear` change, or work that spans features. Use the full pipeline: plan file, Linear issue, Haiku executor, review of the full diff.
+
+The process rules for each tier (executors, review, revisions, delegation) are in the `workflow-tiers` memory.
+
 ## Final repository conventions
 
 * Put new code where section 7 says. Do not add catch-all folders; generic UI goes in `Hugo/DesignSystem` under its admission rule.
