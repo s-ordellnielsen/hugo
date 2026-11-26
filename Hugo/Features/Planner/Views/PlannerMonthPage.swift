@@ -11,6 +11,8 @@ struct PlannerMonthPage: View {
     @Query private var entries: [Entry]
     @Query private var plans: [Plan]
     @Query private var trackers: [Tracker]
+    @Environment(\.modelContext) private var context
+    @State private var moveError: String?
     /// The day whose popover is open.
     @State private var presentedDay: CalendarDay?
     /// What the open (or closing) popover shows. Never reset on dismissal: the
@@ -58,7 +60,7 @@ struct PlannerMonthPage: View {
                     PlannerCalendarGrid(
                         month: plannerMonth, onSelect: select,
                         onAddPlan: { open($0, .addPlan) }, onLogTime: { open($0, .logTime) },
-                        presentedDay: $presentedDay
+                        presentedDay: $presentedDay, onDropPlans: movePlans
                     ) { day in
                         dayPopover(for: day)
                     }
@@ -73,6 +75,20 @@ struct PlannerMonthPage: View {
             geometry.contentOffset.y + geometry.contentInsets.top > 0
         } action: { _, isScrolledFromTop in
             onScrolledFromTopChange?(isScrolledFromTop)
+        }
+        .errorAlert(message: $moveError)
+    }
+
+    /// Moves the dragged day's plans to `target`. Past days and the source day
+    /// refuse the drop.
+    private func movePlans(_ request: PlanMoveRequest, to target: PlannerDay) -> Bool {
+        guard PlanMoveRule.canDrop(from: request.sourceDay, on: target) else { return false }
+        do {
+            try PlanService(context: context).move(planIDs: request.planIDs, to: target.id)
+            return true
+        } catch {
+            moveError = error.localizedDescription
+            return false
         }
     }
 
