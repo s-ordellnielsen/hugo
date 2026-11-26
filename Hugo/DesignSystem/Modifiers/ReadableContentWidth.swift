@@ -27,19 +27,29 @@ private struct ReadableContentWidth: ViewModifier {
 
 private struct ReadableListWidth: ViewModifier {
     @ScaledMetric(relativeTo: .body) private var maxWidth = HugoLayout.Size.readableContentWidth
-    @State private var containerWidth: CGFloat = 0
+    @State private var container = ReadableListContainer()
 
     func body(content: Content) -> some View {
+        let margins = ReadableWidthGeometry.listMargins(
+            containerWidth: container.width, leadingInset: container.leadingInset,
+            trailingInset: container.trailingInset, maxWidth: maxWidth)
         content
-            .contentMargins(
-                .horizontal,
-                ReadableWidthGeometry.listMargin(containerWidth: containerWidth, maxWidth: maxWidth),
-                for: .scrollContent
-            )
-            .onGeometryChange(for: CGFloat.self) { proxy in
-                proxy.size.width
-            } action: { width in
-                containerWidth = width
+            .contentMargins(.leading, margins?.leading, for: .scrollContent)
+            .contentMargins(.trailing, margins?.trailing, for: .scrollContent)
+            .onGeometryChange(for: ReadableListContainer.self) { proxy in
+                ReadableListContainer(
+                    width: proxy.size.width, leadingInset: proxy.safeAreaInsets.leading,
+                    trailingInset: proxy.safeAreaInsets.trailing)
+            } action: { newValue in
+                container = newValue
             }
     }
+}
+
+/// The list's width and the safe-area insets beside it (the iPad sidebar is
+/// a leading inset).
+nonisolated private struct ReadableListContainer: Equatable, Sendable {
+    var width: CGFloat = 0
+    var leadingInset: CGFloat = 0
+    var trailingInset: CGFloat = 0
 }
