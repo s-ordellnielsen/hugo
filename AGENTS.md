@@ -103,6 +103,8 @@ Use `TheocraticYear` (`Hugo/Features/ServiceYear/Domain/TheocraticYear.swift`) i
 
 ## 7. Project structure
 
+Read `CODEMAP.md` at the repo root before exploring. It lists each folder's key types, test locations and a task-to-file table. Update it in the same change when you add a feature folder, a key type or a schema version, and when a listed path moves.
+
 ### Top level of `Hugo/`
 
 - `App`: app entry point, root view, bootstrap and the CloudKit boundary. Composition only, no reusable UI.
