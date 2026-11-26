@@ -60,6 +60,8 @@ struct ServiceYearPageView: View {
                         TheocraticYearTotalsView(report: report, progress: progress)
                     }
                     .buttonStyle(.card)
+                    .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+                    .hoverEffect(.highlight)
                 } else {
                     emptyYearCard
                 }

@@ -73,5 +73,7 @@ struct PlannerLoggedEntryList: View {
         .accessibilityLabel(Text(category.name))
         .accessibilityValue(Text(ServiceDurationFormatter.accessibilityString(from: entry.duration)))
         .entryContextMenu(entry) { onSelect(entry) }
+        .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.Spacing.regular))
+        .hoverEffect(.highlight)
     }
 }

@@ -45,6 +45,8 @@ struct ServiceYearMonthRow: View {
                 .contextMenu {
                     quickActions
                 }
+                .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+                .hoverEffect(.highlight)
             }
         }
         .sheet(isPresented: $isPresentingAddEntry) {

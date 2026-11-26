@@ -74,6 +74,8 @@ struct PlannedCategoryCard: View {
                         header(startTime: startTimeText(for: singleItem))
                     }
                     .buttonStyle(.plain)
+                    .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.Spacing.regular))
+                    .hoverEffect(.highlight)
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(Text(bar.categoryName))
                     .accessibilityValue(Text(headerValue))
@@ -173,6 +175,8 @@ struct PlannedCategoryCard: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.Spacing.regular))
+        .hoverEffect(.highlight)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(startTime.map { Text($0) } ?? Text("planner.plan.noStartTime"))
         .accessibilityValue(Text(ServiceDurationFormatter.accessibilityString(from: item.duration)))

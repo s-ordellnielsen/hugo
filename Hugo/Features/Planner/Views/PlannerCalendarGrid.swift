@@ -45,6 +45,8 @@ struct PlannerCalendarGrid<DayPopover: View>: View {
                             Button("planner.day.action.logTime", systemImage: "plus.circle") { onLogTime(day.id) }
                         }
                     }
+                    .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.CornerRadius.calendarDay))
+                    .hoverEffect(.highlight)
                     .popover(isPresented: isPresented(day.id)) {
                         dayPopover(day.id)
                     }

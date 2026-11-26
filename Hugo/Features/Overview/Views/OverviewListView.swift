@@ -254,6 +254,8 @@ struct OverviewDateList: View {
                 Text(verbatim: EntryAccessibilityValue.text(duration: entry.duration, bibleStudies: entry.bibleStudies))
             )
             .entryContextMenu(entry) { selectedEntry = entry }
+            .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.Spacing.regular))
+            .hoverEffect(.highlight)
         }
     }
 }
@@ -287,6 +289,8 @@ struct OverviewCarriedEntriesView: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+        .hoverEffect(.highlight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityHint(Text("overview.carried.hint"))

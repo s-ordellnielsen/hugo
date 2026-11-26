@@ -59,6 +59,8 @@ struct ReportReminderCard: View {
             .clipShape(.rect(cornerRadius: HugoLayout.CornerRadius.card))
         }
         .buttonStyle(.plain)
+        .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+        .hoverEffect(.highlight)
         .sheet(isPresented: $isPresentingSubmitSheet) {
             NavigationStack {
                 SubmitReportView(month: month)

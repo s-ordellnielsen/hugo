@@ -86,6 +86,8 @@ struct EntryRow: View {
         .buttonStyle(.plain)
         .contentShape(.contextMenuPreview, .rect(cornerRadius: HugoLayout.CornerRadius.card))
         .entryContextMenu(entry) { selectedEntry = entry }
+        .contentShape(.hoverEffect, .rect(cornerRadius: HugoLayout.CornerRadius.card))
+        .hoverEffect(.highlight)
     }
 }
 

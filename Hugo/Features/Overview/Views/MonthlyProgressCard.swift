@@ -41,6 +41,8 @@ struct MonthlyProgressCard: View {
                             .contentShape(.rect)
                         }
                         .buttonStyle(.card)
+                        .contentShape(.hoverEffect, .capsule)
+                        .hoverEffect(.highlight)
                         .accessibilityLabel(Text(verbatim: planStatus.label))
                         .accessibilityHint(Text("overview.pace.a11y.hint"))
                         .transition(.opacity)
