@@ -81,24 +81,27 @@ private struct OverviewDayView: View {
             monthlyGoalHours: metrics.monthlyGoal, loggedSeconds: metrics.progress * 3_600,
             plannedSeconds: month.planned.total, hasOwnEntries: metrics.hasOwnEntries)
         ScrollView {
-            VStack {
-                if let reminderMonth {
-                    ReportReminderCard(month: reminderMonth)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
+            AdaptiveTwoColumnStack(
+                leadingWidth: HugoLayout.Size.overviewProgressColumnWidth, capsAtReadableWidth: true,
+                inset: HugoLayout.Spacing.spacious
+            ) {
+                VStack {
+                    if let reminderMonth {
+                        ReportReminderCard(month: reminderMonth)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                        Spacer(minLength: HugoLayout.Spacing.section)
+                    }
+                    MonthlyProgressCard(
+                        value: metrics.progress, fill: fill,
+                        planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
+                        isAddingEntry: $showingAddEntry,
+                        onShowPlanPace: { showingPlanPace = true })
                     Spacer(minLength: HugoLayout.Spacing.section)
                 }
-                MonthlyProgressCard(
-                    value: metrics.progress, fill: fill,
-                    planStatus: pace.map(MonthlyProgressStatus.make(pace:)),
-                    isAddingEntry: $showingAddEntry,
-                    onShowPlanPace: { showingPlanPace = true })
-                Spacer(minLength: HugoLayout.Spacing.section)
-
+            } trailing: {
                 OverviewListView(entries: entries)
             }
             .motion(Motion.presence, value: reminderMonth)
-            .padding()
-            .readableContentWidth()
         }
         .frame(maxWidth: .infinity)
         .background(Color(.systemGroupedBackground))
