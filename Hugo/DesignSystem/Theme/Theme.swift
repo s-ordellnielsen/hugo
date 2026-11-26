@@ -80,16 +80,12 @@ extension Color {
             })
     }
 
-    /// Fill of the selected row in the iPad sidebar. The system draws that
-    /// row's label in white, so the gray is dark enough for white text in light
-    /// mode (about 5:1) and a soft dark gray in dark mode.
+    /// Tint of the iPad sidebar. The sidebar fills the selected row with it
+    /// (white icon and label on top) and draws the other rows' icons in it, so
+    /// one gray must pass both: white text on it is about 4.9:1, and as an
+    /// icon it is about 3.4:1 on the dark sidebar and 4.4:1 on the light one.
     nonisolated static var hugoSidebarSelection: Color {
-        Color(
-            uiColor: UIColor { traits in
-                traits.userInterfaceStyle == .dark
-                    ? UIColor.systemGray3.resolvedColor(with: traits)
-                    : UIColor(white: 0.42, alpha: 1)
-            })
+        Color(white: 0.44)
     }
 }
 

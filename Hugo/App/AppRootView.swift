@@ -152,7 +152,7 @@ struct AppRootView: View {
             }
         }
         .tabViewStyle(.sidebarAdaptable)
-        // Neutral gray selection in the iPad sidebar, where a primary (white in dark mode) capsule hides its white label. Compact width keeps the iPhone tab bar as it was.
+        // Neutral gray sidebar tint: it fills the selected row (white label) and colors the other rows' icons, where primary (white in dark mode) hid the selected label. Compact width keeps the iPhone tab bar as it was.
         .tint(isCompact ? Color.primary : Color.hugoSidebarSelection)
         .onChange(of: isCompact) { _, compact in
             if compact && !selectedTab.placement.isVisible(compact: true) {
