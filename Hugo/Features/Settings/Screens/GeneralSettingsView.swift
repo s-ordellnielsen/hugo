@@ -35,6 +35,7 @@ struct GeneralSettingsView: View {
                 .pickerStyle(.navigationLink)
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("settings.group.settings.general")
     }
 }

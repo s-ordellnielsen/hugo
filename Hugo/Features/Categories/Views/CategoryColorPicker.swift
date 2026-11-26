@@ -44,6 +44,8 @@ struct CategoryColorPicker: View {
                 .padding(.vertical, HugoLayout.Spacing.tight)
             }
             .scrollIndicators(.hidden)
+            // Keeps a parent list's readable-width margins out of the swatch row.
+            .contentMargins(.horizontal, 0, for: .scrollContent)
 
             if showsSliders {
                 VStack(alignment: .leading, spacing: HugoLayout.Spacing.regular) {

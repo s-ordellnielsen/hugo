@@ -16,6 +16,7 @@ struct ServiceYearDetailView: View {
                 monthsSection(progress)
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle(report.year.displayName)
         .navigationSubtitle("year.detail.subtitle")
         .toolbar {

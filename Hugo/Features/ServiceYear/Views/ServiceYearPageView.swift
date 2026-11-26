@@ -73,6 +73,7 @@ struct ServiceYearPageView: View {
                 }
             }
             .padding()
+            .readableContentWidth()
         }
         .frame(maxWidth: .infinity)
         .onScrollGeometryChange(for: Bool.self) { geometry in

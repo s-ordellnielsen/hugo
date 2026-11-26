@@ -11,6 +11,7 @@ struct PublisherStatusSelectionView: View {
                 PublisherStatusOptionsView(selection: $currentStatus, rowStyle: .list)
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("account.page.publisherstatus.title")
     }
 }

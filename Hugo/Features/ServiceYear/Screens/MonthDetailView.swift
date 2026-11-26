@@ -33,6 +33,7 @@ struct MonthDetailView: View {
             summarySection
             MonthEntriesSection(month: month)
         }
+        .readableListWidth()
         .editorialNavigationTitle(month.displayName)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

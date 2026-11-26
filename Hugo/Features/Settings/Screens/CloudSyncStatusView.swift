@@ -23,6 +23,7 @@ struct CloudSyncStatusView: View {
                 }
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("settings.sync.title")
         .navigationBarTitleDisplayMode(.inline)
         .task { await monitor?.refreshAccount() }

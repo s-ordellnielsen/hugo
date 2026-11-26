@@ -112,6 +112,7 @@ struct PlannerTargetSettingsView: View {
             }
             .motion(Motion.presence, value: extraHours > 0)
         }
+        .readableListWidth()
         .editorialNavigationTitle("planner.target.title")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: scenePhase) { _, phase in

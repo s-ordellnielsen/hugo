@@ -40,6 +40,7 @@ struct CategoryListView: View {
                 }
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("screen.category-list.title")
         .toolbar {
             ToolbarItem {

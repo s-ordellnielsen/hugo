@@ -22,6 +22,7 @@ import UIKit
                     Text("debug.action.copy-diagnostics.description")
                 }
             }
+            .readableListWidth()
             .editorialNavigationTitle("debug.title")
             .sensoryFeedback(.success, trigger: didCopyDiagnostics)
         }

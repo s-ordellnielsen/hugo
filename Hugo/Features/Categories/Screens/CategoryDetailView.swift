@@ -71,6 +71,7 @@ struct CategoryDetailView: View {
                 Text("category.kind.change.footer")
             }
         }
+        .readableListWidth()
         .onAppear {
             if originalName == nil { originalName = tracker.name }
         }

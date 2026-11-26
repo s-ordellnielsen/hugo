@@ -40,6 +40,7 @@ struct GreetingTemplateView: View {
                 Text("report.greeting.preview")
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("settings.report.greeting")
     }
 

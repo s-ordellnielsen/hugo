@@ -98,6 +98,7 @@ private struct OverviewDayView: View {
             }
             .motion(Motion.presence, value: reminderMonth)
             .padding()
+            .readableContentWidth()
         }
         .frame(maxWidth: .infinity)
         .background(Color(.systemGroupedBackground))

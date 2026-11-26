@@ -43,6 +43,7 @@ struct ReportSettingsView: View {
                 Text("settings.screen.report.section.content.label")
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("settings.group.settings.report")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

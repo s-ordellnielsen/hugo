@@ -72,6 +72,7 @@ struct OverseerSettingsView: View {
                 }
             }
         }
+        .readableListWidth()
         .editorialNavigationTitle("settings.report.overseer")
         .motion(Motion.presence, value: hasOverseer)
         .background {

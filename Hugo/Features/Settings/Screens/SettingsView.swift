@@ -166,6 +166,7 @@ struct SettingsView: View {
                 }
             #endif
         }
+        .readableListWidth()
         .editorialNavigationTitle("settings.title")
         .task { await syncMonitor?.refreshAccount() }
         .toolbar {
