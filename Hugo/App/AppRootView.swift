@@ -163,6 +163,24 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable {
         case .settings: .sidebarOnly
         }
     }
+
+    /// The digit for ⌘1, ⌘2 and ⌘3, in tab bar order. Settings uses ⌘, instead.
+    var commandDigit: Character? {
+        switch self {
+        case .overview: "1"
+        case .planner: "2"
+        case .year: "3"
+        case .settings: nil
+        }
+    }
+
+    /// Whether Go to Today does something on this tab.
+    var showsTodayCommand: Bool {
+        switch self {
+        case .planner, .year: true
+        case .overview, .settings: false
+        }
+    }
 }
 
 enum TabPlacement {
