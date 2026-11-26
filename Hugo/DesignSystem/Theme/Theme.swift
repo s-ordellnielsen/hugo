@@ -60,7 +60,7 @@ enum HugoLayout {
         /// The Overview's left column on wide screens: the progress card.
         static let overviewProgressColumnWidth: CGFloat = 400
         /// The Planner's left column on wide screens: the month's numbers.
-        static let plannerStatusColumnWidth: CGFloat = 320
+        static let plannerStatusColumnWidth: CGFloat = 380
 
         static let minimumHitTarget: CGFloat = 44
     }
