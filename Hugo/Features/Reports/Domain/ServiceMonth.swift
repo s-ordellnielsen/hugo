@@ -167,14 +167,3 @@ nonisolated struct ServiceMonth: Identifiable {
         return ids.contains { abs((stored[$0] ?? 0) - (current[$0] ?? 0)) >= toleranceSeconds }
     }
 }
-
-/// What one month adds to the year total.
-nonisolated struct MonthContribution: Equatable, Sendable {
-    let total: TimeInterval
-    let main: TimeInterval
-    let separate: TimeInterval
-    let bibleStudies: Int
-    /// School credit in seconds. Counts toward the yearly goal like main time
-    /// and is part of `total`.
-    var schoolCredit: TimeInterval = 0
-}

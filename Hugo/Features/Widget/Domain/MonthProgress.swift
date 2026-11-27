@@ -14,7 +14,6 @@ nonisolated struct MonthProgress: Equatable, Sendable {
     }
 
     /// Calls the Overview's own types with the same inputs, so the numbers match the circle.
-    @MainActor
     static func make(
         entries: [Entry], plannedSeconds: TimeInterval, settings: WidgetSettings, now: Date, calendar: Calendar
     ) -> MonthProgress {

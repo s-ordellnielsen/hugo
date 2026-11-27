@@ -1,6 +1,6 @@
 import Foundation
 
-struct OverviewMetrics {
+nonisolated struct OverviewMetrics: Sendable {
     let totalHours: Double
     let monthlyGoal: Double
     let expectedProgress: Double
