@@ -4,6 +4,8 @@
 <dict>
 	<key>AppStoreID</key>
 	<string>6754619142</string>
+	<key>HugoAppGroupIdentifier</key>
+	<string>$(APP_GROUP_IDENTIFIER)</string>
 	<key>SupportEmail</key>
 	<string>$(SUPPORT_EMAIL)</string>
 	<key>TestFlightURL</key>

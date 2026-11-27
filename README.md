@@ -45,7 +45,7 @@ Hugo has three build configurations, each with a scheme of the same name:
 * **TestFlight**: what beta testers install. Archive with the `TestFlight` scheme.
 * **Production**: the App Store build. Archive with the `Production` scheme.
 
-TestFlight and Production share the App Store bundle ID and iCloud container. Each configuration turns feature flags on in its `Configuration/*.xcconfig` file, and Swift code checks the flag, never the build's name:
+TestFlight and Production share the App Store bundle ID and iCloud container. Each build has its own App Group, named `group.` plus its bundle ID, and the SwiftData store lives in that group. Each configuration turns feature flags on in its `Configuration/*.xcconfig` file, and Swift code checks the flag, never the build's name:
 
 | Flag | Debug | TestFlight | Production |
 |---|---|---|---|
