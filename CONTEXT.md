@@ -108,6 +108,10 @@ The user's role, which sets their goal: publisher, auxiliary pioneer or regular 
 **Monthly goal**:
 The hours the publisher status expects in one month. A yearly goal is split evenly into twelve monthly goals.
 
+**Month pace**:
+A month's logged time compared with the Monthly goal spread evenly over the month's days. The medium widget shows it as "Pace" / "Tempo", in whole hours ahead or behind.
+_Avoid_: Plan pace (that compares logged time with the Plan), Expected time (that is the yearly goal)
+
 **Yearly goal**:
 The hours the publisher status expects in one theocratic year. Only statuses with a yearly goal get yearly goal progress.
 

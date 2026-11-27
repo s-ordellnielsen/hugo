@@ -42,6 +42,7 @@ extension MonthProgress {
             month: YearMonth(year: 2026, month: 11),
             loggedSeconds: seconds,
             goalHours: 50,
-            fill: MonthlyCircleFill(basis: .monthlyGoal(hours: 50), fraction: seconds / (50 * 3_600)))
+            fill: MonthlyCircleFill(basis: .monthlyGoal(hours: 50), fraction: seconds / (50 * 3_600)),
+            leftHours: 18, paceHours: 4, daysLeft: 4)
     }
 }

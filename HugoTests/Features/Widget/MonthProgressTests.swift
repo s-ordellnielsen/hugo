@@ -102,4 +102,46 @@ struct MonthProgressTests {
         #expect(headline(seconds: 60 * 60) == .hours(1))
         #expect(headline(seconds: 12 * 3_600) == .hours(12))
     }
+
+    private func progress(
+        status: String = "regular-pioneer", logged hours: Double, now: Date? = nil
+    ) -> MonthProgress {
+        let entries = [Entry(date: date(2026, 11, 3), duration: 3_600 * hours, tracker: nil)]
+        return MonthProgress.make(
+            entries: entries, plannedSeconds: 0, settings: settings(status: status), now: now ?? self.now,
+            calendar: calendar)
+    }
+
+    @Test
+    func leftHoursIsTheGoalMinusLoggedTimeAndNeverBelowZero() throws {
+        #expect(progress(logged: 20).leftHours == 30)
+        #expect(progress(logged: 50).leftHours == 0)
+        #expect(progress(logged: 60).leftHours == 0)
+    }
+
+    @Test
+    func paceHoursCompareLoggedTimeWithAnEvenPace() throws {
+        // Day 15 of 30 with a 50 hour goal: an even pace is 25 hours.
+        #expect(progress(logged: 30).paceHours == 5)
+        #expect(progress(logged: 20).paceHours == -5)
+        #expect(progress(logged: 25).paceHours == 0)
+    }
+
+    @Test
+    func noGoalMeansNoLeftOrPaceHours() throws {
+        let result = progress(status: "publisher", logged: 12)
+
+        #expect(result.leftHours == nil)
+        #expect(result.paceHours == nil)
+    }
+
+    @Test
+    func daysLeftCountsTodayInThirtyAndThirtyOneDayMonths() throws {
+        #expect(progress(logged: 0, now: date(2026, 11, 1)).daysLeft == 30)
+        #expect(progress(logged: 0, now: date(2026, 11, 15)).daysLeft == 16)
+        #expect(progress(logged: 0, now: date(2026, 11, 30)).daysLeft == 1)
+        #expect(progress(logged: 0, now: date(2026, 12, 1)).daysLeft == 31)
+        #expect(progress(logged: 0, now: date(2026, 12, 16)).daysLeft == 16)
+        #expect(progress(logged: 0, now: date(2026, 12, 31)).daysLeft == 1)
+    }
 }

@@ -11,6 +11,6 @@ struct MonthProgressWidget: Widget {
         }
         .configurationDisplayName("widget.month.name")
         .description(Text("widget.month.description"))
-        .supportedFamilies([.systemSmall])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

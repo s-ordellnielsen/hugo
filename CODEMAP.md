@@ -132,7 +132,7 @@ Tests: `HugoTests/Features/SymbolPicker/`.
 
 ## Features/Widget
 
-Shared logic for the home screen widget: `WidgetSettings`, `MonthProgress` (Domain). `WidgetSettingsMirror`, `WidgetStoreReader` (read-only App Group store), `WidgetRefreshScheduler` (Services). This folder is a member of the app and the widget. `HugoWidget/` at the repo root holds the WidgetKit glue and views, and is a member of the widget only.
+Shared logic for the home screen widget: `WidgetSettings`, `MonthProgress` (Domain). `WidgetSettingsMirror`, `WidgetStoreReader` (read-only App Group store), `WidgetRefreshScheduler` (Services). This folder is a member of the app and the widget. `HugoWidget/` at the repo root holds the WidgetKit glue and views (small and medium Month progress), and is a member of the widget only.
 Tests: `HugoTests/Features/Widget/`.
 
 ## Where to look for
