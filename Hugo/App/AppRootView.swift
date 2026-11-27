@@ -30,12 +30,6 @@ struct AppRootView: View {
 
     init(settingsSync: SettingsSyncService? = nil) {
         self.settingsSync = settingsSync
-        _widgetRefresh = State(
-            initialValue: settingsSync == nil
-                ? nil
-                : WidgetRefreshScheduler(
-                    mirror: WidgetSettingsMirror(suite: WidgetSettingsMirror.appGroupSuite()),
-                    reload: { WidgetCenter.shared.reloadAllTimelines() }))
     }
 
     private var isCompact: Bool { horizontalSizeClass == .compact }
@@ -95,6 +89,11 @@ struct AppRootView: View {
             .focusedSceneValue(\.appCommands, commandActions)
             .environment(syncMonitor)
             .task {
+                if settingsSync != nil, widgetRefresh == nil {
+                    widgetRefresh = WidgetRefreshScheduler(
+                        mirror: WidgetSettingsMirror(suite: WidgetSettingsMirror.appGroupSuite()),
+                        reload: { WidgetCenter.shared.reloadAllTimelines() })
+                }
                 settingsSync?.start()
                 syncMonitor.startWatchingNetwork()
                 await bootstrapper.start(context: context)

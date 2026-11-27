@@ -1,76 +1,210 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "duration.hoursAndMinutes" : {
+      "comment" : "A duration with hours and minutes, such as 23 hours, 15 min. The first argument is the hours (23 hours), the second the minutes (15 min).",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "duration.minutesShort" : {
+      "comment" : "Minutes in a short duration, such as the 15 min in 23 hours, 15 min. No period after min.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
+          }
+        }
+      }
+    },
     "widget.month.a11y.goal %@ %@ %@" : {
       "comment" : "VoiceOver sentence for the month progress widget with a Monthly goal. Arguments: month, time logged, goal.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "%@: %@ af %@" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@: %@ of %@" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@ af %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@ of %@"
+          }
+        }
       }
     },
     "widget.month.a11y.nogoal %@ %@" : {
       "comment" : "VoiceOver sentence for the month progress widget without a goal or plans. Arguments: month, time logged.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "%@: %@" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@: %@" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@"
+          }
+        }
       }
     },
     "widget.month.a11y.plan %@ %@ %@" : {
       "comment" : "VoiceOver sentence for the month progress widget with plans and no goal. Arguments: month, time logged, planned time.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "%@: %@ af %@ planlagt" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@: %@ of %@ planned" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@ af %@ planlagt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@ of %@ planned"
+          }
+        }
       }
     },
     "widget.month.a11y.unavailable" : {
       "comment" : "VoiceOver sentence for the month progress widget when the app has not set it up yet.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "Hugo-widget. Åbn Hugo for at sætte den op." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Hugo widget. Open Hugo to set it up." } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo-widget. Åbn Hugo for at sætte den op."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugo widget. Open Hugo to set it up."
+          }
+        }
       }
     },
     "widget.month.description" : {
       "comment" : "Description of the month progress widget in the widget gallery.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "Din tid denne måned mod dit mål." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your time this month against your goal." } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din tid denne måned mod dit mål."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your time this month against your goal."
+          }
+        }
       }
     },
     "widget.month.minutes.unit" : {
       "comment" : "Unit shown after the widget's number when the month has under one hour.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "min" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "min" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "min"
+          }
+        }
       }
     },
     "widget.month.name" : {
       "comment" : "Display name of the month progress widget in the widget gallery.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "Denne måned" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "This Month" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne måned"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Month"
+          }
+        }
       }
     },
     "widget.month.of.goal %lld" : {
       "comment" : "The Monthly goal under the widget's number. Argument: goal in hours.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "af %lld timer" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "of %lld hours" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "af %lld timer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "of %lld hours"
+          }
+        }
       }
     },
     "widget.month.of.planned %lld" : {
       "comment" : "The planned time under the widget's number when there is no Monthly goal. Argument: planned hours.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "af %lld timer planlagt" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "of %lld hours planned" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "af %lld timer planlagt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "of %lld hours planned"
+          }
+        }
       }
     },
     "widget.month.setup" : {
       "comment" : "Shown in the month progress widget until the app has run once.",
       "localizations" : {
-        "da" : { "stringUnit" : { "state" : "translated", "value" : "Åbn Hugo for at sætte widgetten op" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Hugo to set up the widget" } }
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbn Hugo for at sætte widgetten op"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Hugo to set up the widget"
+          }
+        }
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }
