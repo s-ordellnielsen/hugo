@@ -83,6 +83,7 @@
 				Domain/ServiceDurationFormatter.swift,
 				Domain/UserDefaultsKeys.swift,
 				Domain/YearMonth.swift,
+				Features/Overview/Domain/CircleFillGeometry.swift,
 				Features/Overview/Domain/MonthlyCircleFill.swift,
 				Features/Overview/Domain/OverviewMetrics.swift,
 				Features/PublisherStatus/Domain/PublisherStatus.swift,

@@ -4,16 +4,16 @@
     "duration.hoursAndMinutes" : {
       "comment" : "A duration with hours and minutes, such as 23 hours, 15 min. The first argument is the hours (23 hours), the second the minutes (15 min).",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, %2$@"
-          }
-        },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
           }
         }
       }
@@ -21,13 +21,13 @@
     "duration.minutesShort" : {
       "comment" : "Minutes in a short duration, such as the 15 min in 23 hours, 15 min. No period after min.",
       "localizations" : {
-        "en" : {
+        "da" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld min"
           }
         },
-        "da" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld min"
@@ -161,19 +161,43 @@
         }
       }
     },
-    "widget.month.days.title" : {
-      "comment" : "Caption over the days remaining in the month, counting today, in the medium widget.",
+    "widget.month.days.left %lld" : {
+      "comment" : "Days remaining in the month, on the medium widget detail line.",
       "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dage tilbage"
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day left"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days left"
+                }
+              }
+            }
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Days left"
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld dag tilbage"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld dage tilbage"
+                }
+              }
+            }
           }
         }
       }
@@ -195,60 +219,118 @@
         }
       }
     },
-    "widget.month.left.title" : {
-      "comment" : "Caption in the medium month progress widget over the hours still needed.",
+    "widget.month.hour.unit" : {
+      "comment" : "Unit next to the medium widget number when it is exactly 1.",
       "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilbage til målet"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Left to goal"
+            "value" : "hour"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "time"
           }
         }
       }
     },
-    "widget.month.left.value %lld" : {
-      "comment" : "Hours still needed to reach the Monthly goal, in the medium widget.",
+    "widget.month.hours.left %lld" : {
+      "comment" : "Hours still needed to reach the monthly goal, on the medium widget detail line.",
       "localizations" : {
-        "da" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld time"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld timer"
-                }
-              }
-            }
-          }
-        },
         "en" : {
           "variations" : {
             "plural" : {
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld hour"
+                  "value" : "%lld hour left"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld hours"
+                  "value" : "%lld hours left"
                 }
               }
             }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld time tilbage"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld timer tilbage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.month.hours.planned %lld" : {
+      "comment" : "Planned time for the month when there is no goal, on the medium widget detail line.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hour planned"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hours planned"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld time planlagt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld timer planlagt"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "widget.month.hours.unit" : {
+      "comment" : "Unit next to the medium widget number for any other count of whole hours.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hours"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "timer"
           }
         }
       }
@@ -317,122 +399,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "of %lld hours planned"
-          }
-        }
-      }
-    },
-    "widget.month.pace.ahead %lld" : {
-      "comment" : "Pace in the medium widget when logged time is ahead of an even pace.",
-      "localizations" : {
-        "da" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld time foran"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld timer foran"
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld hour ahead"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld hours ahead"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "widget.month.pace.behind %lld" : {
-      "comment" : "Pace in the medium widget when logged time is behind an even pace.",
-      "localizations" : {
-        "da" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld time bagud"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld timer bagud"
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld hour behind"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld hours behind"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "widget.month.pace.on" : {
-      "comment" : "Pace in the medium widget when logged time matches an even pace to the whole hour.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På tempo"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On pace"
-          }
-        }
-      }
-    },
-    "widget.month.pace.title" : {
-      "comment" : "Caption over the pace in the medium widget: logged time against an even pace through the month.",
-      "localizations" : {
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tempo"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pace"
           }
         }
       }

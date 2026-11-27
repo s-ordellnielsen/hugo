@@ -92,32 +92,46 @@ private struct ReadyContent: View {
     }
 }
 
-/// A circular progress ring. Matches the Overview circle's accent (`Color.hugoAccent`, which the widget cannot
-/// use from the app's DesignSystem) with a faded track and a gradient that darkens toward the start.
-private struct ProgressRing<Content: View>: View {
+/// The Overview's `MonthlyProgressCircle`, redrawn for the widget: a disc that a gradient fills from the bottom.
+/// `CircleFillGeometry` sizes the fill so its area matches `fraction`. The accent is `Color.hugoAccent`
+/// (`.mint`), which the widget cannot take from the app's DesignSystem.
+private struct ProgressCircle<Content: View>: View {
     let fraction: Double
     @ViewBuilder let content: Content
 
+    @Environment(\.colorScheme) private var colorScheme
+
     private var clampedFraction: Double { min(max(fraction, 0), 1) }
+
+    private var gradient: LinearGradient {
+        LinearGradient(
+            colors: colorScheme == .dark ? [.mint.opacity(0.7), .mint] : [.mint, .mint.opacity(0.55)],
+            startPoint: UnitPoint(x: 0.456, y: 1),
+            endPoint: UnitPoint(x: 0.544, y: 0))
+    }
 
     var body: some View {
         GeometryReader { proxy in
             let side = min(proxy.size.width, proxy.size.height)
-            let lineWidth = side * 0.11
-            ZStack {
+            let fillHeight = CircleFillGeometry.height(forAreaFraction: clampedFraction)
+            ZStack(alignment: .bottom) {
                 Circle()
-                    .stroke(Color.mint.opacity(0.2), lineWidth: lineWidth)
-                Circle()
-                    .trim(from: 0, to: clampedFraction)
-                    .stroke(
-                        AngularGradient(colors: [.mint.opacity(0.55), .mint], center: .center),
-                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
+                    .fill(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+                    .frame(width: side, height: side)
+                Rectangle()
+                    .fill(gradient)
+                    .frame(width: side, height: side)
+                    .mask(alignment: .bottom) {
+                        Rectangle()
+                            .frame(
+                                width: side,
+                                height: CGFloat(ceil(fillHeight * Double(side) + (clampedFraction >= 1 ? 1 : 0))))
+                    }
                 content
-                    .padding(lineWidth * 1.3)
+                    .frame(maxHeight: .infinity)
             }
             .frame(width: side, height: side)
+            .clipShape(Circle())
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .aspectRatio(1, contentMode: .fit)
@@ -130,56 +144,32 @@ private struct MediumContent: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            ProgressRing(fraction: progress.fill.fraction) {
-                VStack(spacing: 0) {
-                    Text(date, format: .dateTime.month(.wide))
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.6)
-                    Text(verbatim: "\(progress.headline.value)")
-                        .font(.system(.title, design: .serif, weight: .bold))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                    if case .minutes = progress.headline {
-                        Text("widget.month.minutes.unit")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                    }
-                }
+            ProgressCircle(fraction: progress.fill.fraction) {
+                EmptyView()
             }
 
-            VStack(alignment: .leading, spacing: 6) {
-                if let leftHours = progress.leftHours {
-                    stat("widget.month.left.title") {
-                        if leftHours <= 0 {
-                            Text("widget.month.reached")
-                        } else {
-                            Text("widget.month.left.value \(Int(leftHours.rounded(.up)))")
-                        }
-                    }
-                }
-                if let pace = Pace(hours: progress.paceHours) {
-                    stat("widget.month.pace.title") {
-                        switch pace {
-                        case .ahead(let hours): Text("widget.month.pace.ahead \(hours)")
-                        case .behind(let hours): Text("widget.month.pace.behind \(hours)")
-                        case .onPace: Text("widget.month.pace.on")
-                        }
-                    }
-                }
-                stat("widget.month.days.title") {
-                    Text(verbatim: "\(progress.daysLeft)")
-                }
-                if case .plan(let plannedSeconds) = progress.fill.basis {
-                    Text("widget.month.of.planned \(ServiceDurationFormatter.wholeHours(from: plannedSeconds))")
-                        .font(.caption)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(date, format: .dateTime.month(.wide))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text(verbatim: "\(progress.headline.value)")
+                        .font(.system(.largeTitle, design: .serif, weight: .bold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                    unit
+                        .font(.title3)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.7)
                 }
+
+                Text(verbatim: detailLine)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -187,22 +177,33 @@ private struct MediumContent: View {
         .accessibilityLabel(accessibilityText)
     }
 
-    private func stat<Value: View>(_ title: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            value()
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+    /// "hours" or "min", next to the number.
+    @ViewBuilder
+    private var unit: some View {
+        switch progress.headline {
+        case .hours(let hours): hours == 1 ? Text("widget.month.hour.unit") : Text("widget.month.hours.unit")
+        case .minutes: Text("widget.month.minutes.unit")
         }
     }
 
+    /// "4 days left · 45 hours left". Without a goal the second part is the planned time, if any.
+    private var detailLine: String {
+        var parts = [String(localized: "widget.month.days.left \(progress.daysLeft)")]
+        if let leftHours = progress.leftHours {
+            if leftHours <= 0 {
+                parts.append(String(localized: "widget.month.reached"))
+            } else {
+                parts.append(String(localized: "widget.month.hours.left \(Int(leftHours.rounded(.up)))"))
+            }
+        } else if case .plan(let plannedSeconds) = progress.fill.basis {
+            parts.append(
+                String(localized: "widget.month.hours.planned \(ServiceDurationFormatter.wholeHours(from: plannedSeconds))"))
+        }
+        return parts.joined(separator: " \u{B7} ")
+    }
+
     /// The full sentence VoiceOver reads, such as
-    /// "November: 32 hours of 50 hours. 18 hours left to the goal. 4 hours ahead. 4 days left in the month."
+    /// "November: 32 hours of 50 hours. 18 hours left to the goal. 4 days left in the month."
     private var accessibilityText: String {
         let month = date.formatted(.dateTime.month(.wide))
         let time = progress.headline.spokenText()
@@ -225,27 +226,8 @@ private struct MediumContent: View {
                 parts.append(String(localized: "widget.month.a11y.left \(left)"))
             }
         }
-        switch Pace(hours: progress.paceHours) {
-        case .ahead(let hours): parts.append(String(localized: "widget.month.pace.ahead \(hours)"))
-        case .behind(let hours): parts.append(String(localized: "widget.month.pace.behind \(hours)"))
-        case .onPace: parts.append(String(localized: "widget.month.pace.on"))
-        case nil: break
-        }
         parts.append(String(localized: "widget.month.a11y.days \(progress.daysLeft)"))
         return parts.joined(separator: ". ") + "."
-    }
-}
-
-/// `MonthProgress.paceHours` in whole hours. A difference that rounds to 0 is on pace.
-private enum Pace {
-    case ahead(Int)
-    case behind(Int)
-    case onPace
-
-    init?(hours: Double?) {
-        guard let hours else { return nil }
-        let whole = Int(hours.rounded())
-        self = whole > 0 ? .ahead(whole) : whole < 0 ? .behind(-whole) : .onPace
     }
 }
 
@@ -334,7 +316,7 @@ private struct UnavailableContent: View {
                 leftHours: 0, paceHours: 2, daysLeft: 4)))
 }
 
-#Preview("Medium, behind pace", as: .systemMedium) {
+#Preview("Medium, many days left", as: .systemMedium) {
     MonthProgressWidget()
 } timeline: {
     MonthProgressEntry(date: .now, state: .ready(
