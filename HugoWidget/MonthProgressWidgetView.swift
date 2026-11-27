@@ -160,7 +160,7 @@ private struct MediumContent: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                     unit
-                        .font(.title3)
+                        .font(.system(.title3, design: .serif, weight: .semibold))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
