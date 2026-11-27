@@ -115,6 +115,8 @@ Read `CODEMAP.md` at the repo root before exploring. It lists each folder's key 
 - `PreviewSupport`: preview containers and fixtures.
 - `Resources`: string catalogs, help Markdown and app icons.
 
+`HugoWidget/` at the repo root holds the widget extension's WidgetKit glue and views. Logic the widget shares with the app lives in `Hugo/Features/Widget` and is a member of both targets.
+
 Do not add other top-level folders. Do not create catch-all folders such as `Utilities`, `Helpers`, `Managers`, `Common`, `Shared`, `Extensions` or a top-level `Views`. Every folder is named after what it holds or what role its files play.
 
 ### `DesignSystem`

@@ -27,6 +27,8 @@ enum ModelContainerFactory {
                 relocator.markCopied()
             } else if resolution.legacyCleanupPending {
                 relocator.confirmAndDeleteLegacyStore()
+            } else {
+                relocator.markFreshInstallIfNeeded()
             }
             return container
         } catch {

@@ -350,4 +350,27 @@ struct StoreRelocatorTests {
         #expect(resolution.isFreshCopy)
         #expect(try trackerCount(at: resolution.storeURL) == 2)
     }
+
+    @Test
+    func markFreshInstallWritesConfirmedWhenNoMarkerExists() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+
+        fixture.relocator().markFreshInstallIfNeeded()
+
+        #expect(try String(contentsOf: fixture.markerURL, encoding: .utf8) == "confirmed")
+    }
+
+    @Test
+    func markFreshInstallNeverOverwritesAnExistingMarker() throws {
+        for state in ["copied", "confirmed"] {
+            let fixture = try Fixture()
+            defer { fixture.remove() }
+            try Data(state.utf8).write(to: fixture.markerURL)
+
+            fixture.relocator().markFreshInstallIfNeeded()
+
+            #expect(try String(contentsOf: fixture.markerURL, encoding: .utf8) == state)
+        }
+    }
 }

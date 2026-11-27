@@ -3,6 +3,8 @@
 /// `UserDefaultsKeys` stays on the device: the onboarding and setup flags,
 /// the default category migration flag and the Overview's list style.
 ///
+/// `widgetSettings` is a device-only copy in the App Group and is not a synced setting.
+///
 /// When the publisher status timeline (SLN-227) moves the status into
 /// SwiftData, remove `publisherStatus` from this list.
 enum SyncedSettings {

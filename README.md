@@ -45,7 +45,7 @@ Hugo has three build configurations, each with a scheme of the same name:
 * **TestFlight**: what beta testers install. Archive with the `TestFlight` scheme.
 * **Production**: the App Store build. Archive with the `Production` scheme.
 
-TestFlight and Production share the App Store bundle ID and iCloud container. Each build has its own App Group, named `group.` plus its bundle ID, and the SwiftData store lives in that group. Each configuration turns feature flags on in its `Configuration/*.xcconfig` file, and Swift code checks the flag, never the build's name:
+TestFlight and Production share the App Store bundle ID and iCloud container. Each build has its own App Group, named `group.` plus its bundle ID, and the SwiftData store lives in that group. The widget extension has the bundle ID of the app plus `.widget` and shares the app's App Group, and `APP_GROUP_IDENTIFIER` is derived from `BUNDLE_IDENTIFIER`, not from `PRODUCT_BUNDLE_IDENTIFIER`. Each configuration turns feature flags on in its `Configuration/*.xcconfig` file, and Swift code checks the flag, never the build's name:
 
 | Flag | Debug | TestFlight | Production |
 |---|---|---|---|
@@ -67,6 +67,7 @@ All three schemes run the tests in the Debug configuration, because the tests us
 * `Hugo/Persistence` — SwiftData schema versions, migration plan, container factory, and the sync-duplicate merge.
 * `Hugo/Features` — feature-first SwiftUI UI and feature-local domain logic, organized into Screens, Views, State, Domain and Services folders (see AGENTS.md).
 * `Hugo/PreviewSupport` — isolated, synchronous in-memory preview containers and fixtures.
+* `HugoWidget` — the home screen widget extension: WidgetKit glue and views. Logic it shares with the app lives in `Hugo/Features/Widget`.
 * `HugoTests` — domain, feature, persistence, and migration tests.
 * `Configuration` — project-only xcconfig and entitlement inputs; these are not app resources.
 

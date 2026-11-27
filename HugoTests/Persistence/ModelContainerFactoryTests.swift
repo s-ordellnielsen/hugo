@@ -90,6 +90,15 @@ struct ModelContainerFactoryTests {
     }
 
     @Test
+    func freshInstallMarksTheStoreConfirmed() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+
+        #expect(try launchCount(fixture) == 0)
+        #expect(fixture.markerText() == "confirmed")
+    }
+
+    @Test
     func secondLaunchDeletesLegacyFilesAndKeepsRows() throws {
         let fixture = try Fixture()
         defer { fixture.remove() }

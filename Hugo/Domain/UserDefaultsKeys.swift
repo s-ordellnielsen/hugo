@@ -30,4 +30,7 @@ nonisolated enum UserDefaultsKeys {
 
     /// When this device last finished a sync with iCloud. Device-only.
     static let cloudSyncLastSuccess = "cloudSyncLastSuccess"
+
+    /// The widget's copy of the settings it needs, as JSON in the App Group suite. Written by the app, read by the widget. Device-only: never synced, derived from the synced settings. See `WidgetSettings`.
+    static let widgetSettings = "widgetSettings"
 }

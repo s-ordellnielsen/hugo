@@ -22,9 +22,9 @@ struct StoreRelocator {
     }
 
     static let storeFileName = "default.store"
-    private static let markerFileName = "store-move-state"
-    private static let copiedState = "copied"
-    private static let confirmedState = "confirmed"
+    static let markerFileName = "store-move-state"
+    static let copiedState = "copied"
+    static let confirmedState = "confirmed"
     private static let logger = Logger(subsystem: "com.ordellnielsen.Hugo", category: "Persistence")
 
     let legacyStoreURL: URL
@@ -104,6 +104,13 @@ struct StoreRelocator {
     /// Writes the marker after the copy has opened and answered a fetch.
     func markCopied() {
         writeMarker(Self.copiedState)
+    }
+
+    /// Marks a fresh install's App Group store as confirmed, but only when no marker exists yet.
+    /// Never overwrites `copied` or `confirmed`.
+    func markFreshInstallIfNeeded() {
+        guard readMarker() == nil else { return }
+        writeMarker(Self.confirmedState)
     }
 
     /// Removes the App Group store files and the marker, so the next launch copies again.

@@ -3,6 +3,7 @@ import Combine
 import CoreData
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct AppRootView: View {
     @Environment(\.modelContext) private var context
@@ -18,6 +19,8 @@ struct AppRootView: View {
     @State private var bootstrapErrorMessage: String?
     @State private var syncMonitor = CloudSyncMonitor()
     @State private var deduplication = SyncDeduplicationScheduler()
+    /// Mirrors the widget settings and reloads the widget. `nil` in the unit-test host, so tests never write the App Group suite or call WidgetKit.
+    @State private var widgetRefresh: WidgetRefreshScheduler?
     @State private var isAddingEntry = false
     @State private var isShowingSettingsSheet = false
 
@@ -27,6 +30,12 @@ struct AppRootView: View {
 
     init(settingsSync: SettingsSyncService? = nil) {
         self.settingsSync = settingsSync
+        _widgetRefresh = State(
+            initialValue: settingsSync == nil
+                ? nil
+                : WidgetRefreshScheduler(
+                    mirror: WidgetSettingsMirror(suite: WidgetSettingsMirror.appGroupSuite()),
+                    reload: { WidgetCenter.shared.reloadAllTimelines() }))
     }
 
     private var isCompact: Bool { horizontalSizeClass == .compact }
@@ -90,9 +99,18 @@ struct AppRootView: View {
                 syncMonitor.startWatchingNetwork()
                 await bootstrapper.start(context: context)
                 deduplication.request(context: context)
+                widgetRefresh?.request()
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { deduplication.request(context: context) }
+                widgetRefresh?.request()
+            }
+            .onReceive(
+                NotificationCenter.default
+                    .publisher(for: ModelContext.didSave)
+                    .receive(on: RunLoop.main)
+            ) { _ in
+                widgetRefresh?.request()
             }
             .onReceive(
                 NotificationCenter.default
@@ -111,6 +129,7 @@ struct AppRootView: View {
                 )
                 guard event.type == .import, event.endDate != nil else { return }
                 deduplication.request(context: context)
+                widgetRefresh?.request()
             }
             .onReceive(
                 NotificationCenter.default
@@ -125,6 +144,7 @@ struct AppRootView: View {
                     .receive(on: RunLoop.main)
             ) { _ in
                 settingsSync?.pushToCloud()
+                widgetRefresh?.request()
             }
             .sheet(isPresented: $needsOnboarding) { OnboardingView { needsOnboarding = false } }
             .sheet(isPresented: $isAddingEntry) { AddEntryView() }

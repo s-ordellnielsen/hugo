@@ -9,7 +9,7 @@
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
 BUNDLE_IDENTIFIER = com.ordellnielsen.Hugo
-APP_GROUP_IDENTIFIER = group.$(PRODUCT_BUNDLE_IDENTIFIER)
+APP_GROUP_IDENTIFIER = group.$(BUNDLE_IDENTIFIER)
 ICLOUD_CONTAINER_IDENTIFIER = iCloud.com.ordellnielsen.Hugo
 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
 // The build for beta testers. It uses the App Store bundle ID and iCloud

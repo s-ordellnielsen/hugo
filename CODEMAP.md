@@ -14,7 +14,7 @@ Tests: `HugoTests/DesignSystem/`.
 
 ## Domain
 
-Value types shared by several features: `YearMonth`, `RoundingRule`, `CategoryColor`, `HeadlineDuration`, `ServiceDurationFormatter` and `UserDefaultsKeys`. Every UserDefaults key lives in `UserDefaultsKeys`, with comments saying whether it syncs.
+Value types shared by several features: `YearMonth`, `RoundingRule`, `CategoryColor`, `HeadlineDuration`, `ServiceDurationFormatter` and `UserDefaultsKeys`. Every UserDefaults key lives in `UserDefaultsKeys`, with comments saying whether it syncs. `widgetSettings` is device-only: the widget's copy of its settings, in the App Group.
 Tests: `HugoTests/Domain/`.
 
 ## Persistence
@@ -24,7 +24,7 @@ Tests: `HugoTests/Domain/`.
 - Migration plan: `HugoMigrationPlan` in `Hugo/Persistence/HugoMigrationPlan.swift`. Add the new schema to `schemas` and a stage such as `migrateV13toV14`.
 - Container creation: `ModelContainerFactory`. Store location: `StoreRelocator` decides between the legacy store and the App Group copy with a marker file, and `StoreCopier` (`StoreCopying`, `FileStoreCopier`) copies and verifies the files. Sync repair: `SyncDeduplicator` (merges duplicate categories and monthly reports) run by `SyncDeduplicationScheduler`.
 - Other: `SubmittedReportSelection` picks the canonical report, `SubmittedReport+Submission` creates one, `ModelContext+IsolatedChange` holds the isolated-change helper. `Hugo/Persistence/Legacy/` holds `TrackerType` and old model leftovers.
-- Tests: `HugoTests/Persistence/`. Schema migrations are tested in `SchemaMigrationTests.swift`, with helpers in `HugoTests/TestSupport/` (`InMemoryModelContainer`, `TemporaryStore`). `StoreRelocatorTests` and `ModelContainerFactoryTests` cover the store move.
+- Tests: `HugoTests/Persistence/`. Schema migrations are tested in `SchemaMigrationTests.swift`, with helpers in `HugoTests/TestSupport/` (`InMemoryModelContainer`, `TemporaryStore`). `StoreRelocatorTests` and `ModelContainerFactoryTests` cover the store move. `StoreRelocator.markFreshInstallIfNeeded()` marks a fresh install's App Group store as confirmed, without overwriting an existing marker.
 
 ## PreviewSupport
 
@@ -130,6 +130,11 @@ Tests: `HugoTests/Features/Settings/`.
 Icon picker for categories. `SymbolPicker` (Screens), `SymbolSet`, `SymbolDefinition`, `SymbolAttribute` (Domain).
 Tests: `HugoTests/Features/SymbolPicker/`.
 
+## Features/Widget
+
+Shared logic for the home screen widget: `WidgetSettings`, `MonthProgress` (Domain). `WidgetSettingsMirror`, `WidgetStoreReader` (read-only App Group store), `WidgetRefreshScheduler` (Services). This folder is a member of the app and the widget. `HugoWidget/` at the repo root holds the WidgetKit glue and views, and is a member of the widget only.
+Tests: `HugoTests/Features/Widget/`.
+
 ## Where to look for
 
 | Task | Start here |
@@ -148,3 +153,5 @@ Tests: `HugoTests/Features/SymbolPicker/`.
 | Add a help article | Markdown in `Hugo/Resources/Markdown/Help/Base.lproj/`, then `Hugo/Features/Help/Domain/HelpArticle.swift` |
 | Change user-facing strings | `Hugo/Resources/Localizable.xcstrings` |
 | Add a build flag | `Configuration/*.xcconfig` and the table in `README.md` |
+| Change what the widget shows | `Hugo/Features/Widget/Domain/MonthProgress.swift`, `HugoWidget/MonthProgressWidgetView.swift` |
+| Give the widget another setting | `Hugo/Features/Widget/Domain/WidgetSettings.swift` and `WidgetSettingsMirror.swift` |
