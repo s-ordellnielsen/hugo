@@ -22,9 +22,9 @@ Tests: `HugoTests/Domain/`.
 - Current schema: `SchemaV14` in `Hugo/Persistence/AppSchema.swift`. `CurrentSchema` is a typealias, and `Entry`, `Tracker`, `SubmittedReport`, `Plan` and `SchoolCredit` are typealiases to its models.
 - Model definitions per version: `Hugo/Persistence/SchemaVersions/V14/` (`EntryV14`, `TrackerV14`, `SubmittedReportV14`, `PlanV14`, `SchoolCreditV14`). Never edit an older version folder.
 - Migration plan: `HugoMigrationPlan` in `Hugo/Persistence/HugoMigrationPlan.swift`. Add the new schema to `schemas` and a stage such as `migrateV13toV14`.
-- Container creation: `ModelContainerFactory`. Sync repair: `SyncDeduplicator` (merges duplicate categories and monthly reports) run by `SyncDeduplicationScheduler`.
+- Container creation: `ModelContainerFactory`. Store location: `StoreRelocator` decides between the legacy store and the App Group copy with a marker file, and `StoreCopier` (`StoreCopying`, `FileStoreCopier`) copies and verifies the files. Sync repair: `SyncDeduplicator` (merges duplicate categories and monthly reports) run by `SyncDeduplicationScheduler`.
 - Other: `SubmittedReportSelection` picks the canonical report, `SubmittedReport+Submission` creates one, `ModelContext+IsolatedChange` holds the isolated-change helper. `Hugo/Persistence/Legacy/` holds `TrackerType` and old model leftovers.
-- Tests: `HugoTests/Persistence/`. Schema migrations are tested in `SchemaMigrationTests.swift`, with helpers in `HugoTests/TestSupport/` (`InMemoryModelContainer`, `TemporaryStore`).
+- Tests: `HugoTests/Persistence/`. Schema migrations are tested in `SchemaMigrationTests.swift`, with helpers in `HugoTests/TestSupport/` (`InMemoryModelContainer`, `TemporaryStore`). `StoreRelocatorTests` and `ModelContainerFactoryTests` cover the store move.
 
 ## PreviewSupport
 
@@ -139,6 +139,7 @@ Tests: `HugoTests/Features/SymbolPicker/`.
 | Change report composition or rounding | `Hugo/Features/Reports/Domain/ReportComposer.swift`, `ReportingLineCalculator.swift`, `Hugo/Domain/RoundingRule.swift` |
 | Change the yearly goal or credit allowance | `Hugo/Features/ServiceYear/Domain/YearlyGoalRule.swift` |
 | Add a setting | Key in `Hugo/Domain/UserDefaultsKeys.swift`, UI in `Hugo/Features/Settings/Screens/`, and `Hugo/Features/Settings/Domain/SyncedSettings.swift` if it syncs |
+| Change where the store lives | `Hugo/Persistence/StoreRelocator.swift`, `Hugo/Persistence/ModelContainerFactory.swift` |
 | Change what duplicates sync merges | `Hugo/Persistence/SyncDeduplicator.swift` |
 | Add a reusable component | A role folder in `Hugo/DesignSystem/`, if it passes the admission rule in `AGENTS.md` |
 | Change layout tokens | `Hugo/DesignSystem/Theme/Theme.swift` (`HugoLayout`) |
