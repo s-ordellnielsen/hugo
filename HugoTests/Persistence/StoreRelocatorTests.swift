@@ -288,4 +288,66 @@ struct StoreRelocatorTests {
         #expect(!resolution.legacyCleanupPending)
         #expect(!fixture.newStoreFilesExist())
     }
+
+    @Test
+    func productionLegacyStoreURLIsInTheAppContainer() {
+        let path = StoreRelocator.productionLegacyStoreURL().path
+
+        #expect(path.hasSuffix("/Library/Application Support/default.store"))
+        #expect(!path.contains("/Shared/AppGroup/"))
+    }
+
+    @Test
+    func legacyAndNewStoreAtTheSamePathUsesLegacy() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        try seedStore(at: fixture.legacyURL, names: ["Bethel"])
+        let counter = CountingCopier()
+        let relocator = StoreRelocator(
+            legacyStoreURL: fixture.legacyURL,
+            groupDirectory: fixture.legacy.directoryURL,
+            copier: counter
+        )
+
+        let resolution = relocator.resolve()
+
+        #expect(resolution.location == .legacy)
+        #expect(resolution.storeURL == fixture.legacyURL)
+        #expect(!resolution.isFreshCopy)
+        #expect(counter.copyCount == 0)
+        let stray = fixture.legacy.directoryURL.appending(path: "store-move-state")
+        #expect(!FileManager.default.fileExists(atPath: stray.path))
+    }
+
+    @Test
+    func copyToDifferentPathGetsCopiedMarkerAfterMarkCopied() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        try seedStore(at: fixture.legacyURL, names: ["Bethel"])
+        let relocator = fixture.relocator()
+
+        let resolution = relocator.resolve()
+        #expect(resolution.isFreshCopy)
+        #expect(resolution.storeURL == fixture.newStoreURL)
+        #expect(FileManager.default.fileExists(atPath: fixture.newStoreURL.path))
+
+        relocator.markCopied()
+        let marker = try String(contentsOf: fixture.markerURL, encoding: .utf8)
+        #expect(marker == "copied")
+    }
+
+    @Test
+    func strayGroupStoreWithoutMarkerIsReplacedFromLegacy() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        try seedStore(at: fixture.legacyURL, names: ["Bethel", "Ministry"])
+        try Data("stray".utf8).write(to: fixture.newStoreURL)
+        #expect(!FileManager.default.fileExists(atPath: fixture.markerURL.path))
+
+        let resolution = fixture.relocator().resolve()
+
+        #expect(resolution.location == .appGroup)
+        #expect(resolution.isFreshCopy)
+        #expect(try trackerCount(at: resolution.storeURL) == 2)
+    }
 }

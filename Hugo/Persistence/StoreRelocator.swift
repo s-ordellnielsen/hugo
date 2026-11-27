@@ -1,6 +1,5 @@
 import Foundation
 import OSLog
-import SwiftData
 
 /// Decides whether the SwiftData store lives at the legacy location or in the App Group container.
 ///
@@ -64,6 +63,11 @@ struct StoreRelocator {
         } catch {
             Self.logger.error(
                 "App Group directory unavailable, using legacy store: \(error.localizedDescription, privacy: .public)")
+            return legacyResolution
+        }
+
+        if legacyStoreURL.standardizedFileURL.path == newStoreURL.standardizedFileURL.path {
+            Self.logger.error("Legacy and App Group store paths are identical, using the single store path")
             return legacyResolution
         }
 
@@ -141,12 +145,10 @@ struct StoreRelocator {
         return directory
     }
 
+    /// The fixed path of the store in the app's own container, before the App Group move.
+    /// Not read from the SwiftData configuration URL, which points into the App Group once the entitlement exists.
     static func productionLegacyStoreURL() -> URL {
-        let configuration = ModelConfiguration(
-            schema: Schema(versionedSchema: CurrentSchema.self),
-            isStoredInMemoryOnly: false
-        )
-        return configuration.url
+        URL.applicationSupportDirectory.appending(path: storeFileName)
     }
 
     private func appGroupResolution(isFreshCopy: Bool, legacyCleanupPending: Bool) -> Resolution {
