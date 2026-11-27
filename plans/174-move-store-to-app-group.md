@@ -104,7 +104,7 @@ struct StoreRelocator {
 ```
 
 - The new store is `<groupDirectory>/default.store` (same file name, so the support directory name stays the same). `groupDirectory` is `containerURL(forSecurityApplicationGroupIdentifier:)` plus `Library/Application Support`, created if missing. The identifier comes from the Info.plist key `HugoAppGroupIdentifier`. Return nil when the key is empty, the container is nil or the directory cannot be created.
-- `productionLegacyStoreURL()` returns `ModelConfiguration(schema: Schema(versionedSchema: CurrentSchema.self), isStoredInMemoryOnly: false).url`. Do not hardcode the path. This is what SwiftData uses today, so it is the true legacy path.
+- `productionLegacyStoreURL()` returns `URL.applicationSupportDirectory.appending(path: "default.store")`, the fixed path in the app's own container. Do not ask `ModelConfiguration` for it: once the App Group entitlement exists, its default URL points into the group (see Revision 1).
 - The marker is a small file `store-move-state` in `groupDirectory` whose text is `copied` or `confirmed`. **The marker is the only authority for "the app group store is the real store".** Files in the group directory without a marker are never trusted.
 
 `resolve()` rules, in order:
