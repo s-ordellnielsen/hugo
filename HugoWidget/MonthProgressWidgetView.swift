@@ -106,14 +106,13 @@ private struct ReadyContent: View {
 }
 
 /// The Overview's `MonthlyProgressCircle`, redrawn for the widget: a disc that a gradient fills from the bottom.
-/// `CircleFillGeometry` sizes the fill so its area matches `fraction`. The accent is `Color.hugoAccent`
-/// (`.mint`), which the widget cannot take from the app's DesignSystem.
+/// `fillHeight` is the water level as a share of the diameter, measured from the disc's bottom. The accent is
+/// `Color.hugoAccent` (`.mint`), which the widget cannot take from the app's DesignSystem.
 private struct ProgressCircle: View {
-    let fraction: Double
+    let fillHeight: Double
+    let isFull: Bool
 
     @Environment(\.colorScheme) private var colorScheme
-
-    private var clampedFraction: Double { min(max(fraction, 0), 1) }
 
     private var gradient: LinearGradient {
         LinearGradient(
@@ -125,7 +124,6 @@ private struct ProgressCircle: View {
     var body: some View {
         GeometryReader { proxy in
             let side = min(proxy.size.width, proxy.size.height)
-            let fillHeight = CircleFillGeometry.height(forAreaFraction: clampedFraction)
             ZStack(alignment: .bottom) {
                 Circle()
                     .fill(colorScheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
@@ -135,9 +133,7 @@ private struct ProgressCircle: View {
                     .frame(width: side, height: side)
                     .mask(alignment: .bottom) {
                         Rectangle()
-                            .frame(
-                                width: side,
-                                height: CGFloat(ceil(fillHeight * Double(side) + (clampedFraction >= 1 ? 1 : 0))))
+                            .frame(width: side, height: CGFloat(ceil(fillHeight * Double(side) + (isFull ? 1 : 0))))
                     }
             }
             .frame(width: side, height: side)
@@ -148,21 +144,31 @@ private struct ProgressCircle: View {
     }
 }
 
-/// How much of the medium circle's width stays inside the widget. The circle is as tall as the widget and
-/// runs off the left edge, so the fill height stays true to the fraction.
-private let mediumCircleVisibleShare: CGFloat = 0.82
+/// The medium circle is `mediumCircleScale` times as tall as the widget, centered vertically, so the widget's
+/// top and bottom edges cut it. `mediumCircleVisibleShare` of its width stays in view; the left edge cuts the rest.
+private let mediumCircleScale: CGFloat = 1.3
+private let mediumCircleVisibleShare: CGFloat = 0.62
 
 private struct MediumBackground: View {
     let fraction: Double
 
     var body: some View {
         GeometryReader { proxy in
-            let side = proxy.size.height
+            let height = proxy.size.height
+            let side = height * mediumCircleScale
+            // What you see of the circle, as shares of its diameter.
+            let windowHeight = 1 / Double(mediumCircleScale)
+            let windowBottom = (1 - windowHeight) / 2
+            let windowLeft = 1 - Double(mediumCircleVisibleShare)
+            // The fraction is the share of the visible part that is filled, so the level matches what you see.
+            let fillHeight = CircleFillGeometry.height(
+                forVisibleAreaFraction: fraction, windowBottom: windowBottom, windowHeight: windowHeight,
+                windowLeft: windowLeft)
             ZStack {
                 Rectangle().fill(.fill.tertiary)
-                ProgressCircle(fraction: fraction)
+                ProgressCircle(fillHeight: fillHeight, isFull: fraction >= 1)
                     .frame(width: side, height: side)
-                    .position(x: side * mediumCircleVisibleShare - side / 2, y: side / 2)
+                    .position(x: side * mediumCircleVisibleShare - side / 2, y: height / 2)
             }
         }
     }
@@ -176,8 +182,8 @@ private struct MediumContent: View {
 
     var body: some View {
         GeometryReader { proxy in
-            // The background circle is as tall as the whole widget, margins included.
-            let circleSide = proxy.size.height + margins.top + margins.bottom
+            // The background circle is `mediumCircleScale` times as tall as the whole widget, margins included.
+            let circleSide = (proxy.size.height + margins.top + margins.bottom) * mediumCircleScale
             let inset = max(0, circleSide * mediumCircleVisibleShare - margins.leading + 12)
             textColumn
                 .padding(.leading, inset)

@@ -33,4 +33,46 @@ nonisolated enum CircleFillGeometry {
         }
         return (low + high) / 2
     }
+
+    /// The fill height for a circle that is only partly in view. The circle has diameter 1, and the window
+    /// is the part you can see: from `windowBottom` up by `windowHeight`, and from `windowLeft` to the right.
+    /// All three are shares of the diameter. `area` is the share of the visible part that is filled, and the
+    /// result is the water level measured from the circle's bottom, so it is never below `windowBottom` or
+    /// above `windowBottom + windowHeight`. Found by summing thin horizontal slices of the visible part.
+    static func height(
+        forVisibleAreaFraction area: Double, windowBottom: Double, windowHeight: Double, windowLeft: Double = 0
+    ) -> Double {
+        let bottom = min(max(windowBottom, 0), 1)
+        let top = min(bottom + max(windowHeight, 0), 1)
+        guard area.isFinite else { return area == .infinity ? top : bottom }
+        let target = min(max(area, 0), 1)
+        guard top > bottom, target > 0 else { return bottom }
+        if target >= 1 { return top }
+
+        let slices = 400
+        let step = (top - bottom) / Double(slices)
+        var widths: [Double] = []
+        widths.reserveCapacity(slices)
+        var total = 0.0
+        for index in 0..<slices {
+            let y = bottom + (Double(index) + 0.5) * step
+            let offset = y - 0.5
+            let half = max(0, 0.25 - offset * offset).squareRoot()
+            let width = max(0, 0.5 + half - max(0.5 - half, windowLeft)) * step
+            widths.append(width)
+            total += width
+        }
+        guard total > 0 else { return bottom }
+
+        let goal = target * total
+        var filled = 0.0
+        for (index, width) in widths.enumerated() {
+            if filled + width >= goal {
+                let share = width > 0 ? (goal - filled) / width : 0
+                return bottom + (Double(index) + share) * step
+            }
+            filled += width
+        }
+        return top
+    }
 }
