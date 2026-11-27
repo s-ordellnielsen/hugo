@@ -152,6 +152,7 @@ Each plan has a Linear issue in workspace SebastianLN, project Hugo (team key `S
 | 171 | Drag a month's report out of Service Year | P2 | S + owner | 167, 169 | DONE (committed on main as dbcde04, 9e8a524; `Scripts/verify.sh` passed; owner check passed on the iPad 2026-11-27) | [SLN-349](https://linear.app/sebastianln/issue/SLN-349) |
 | 172 | Arrow keys in the Planner | P2 | M + owner | 160, 161, 170 | DONE (committed on main as 42f03c3, 1f47881, 8a13af7; `Scripts/verify.sh` passed; later commits 721a49a and fe23b05 softened the highlight, added Space to close and slid the highlight between days; owner check passed on the iPad 2026-11-27) | [SLN-343](https://linear.app/sebastianln/issue/SLN-343) |
 | 173 | Width audit: layout decisions on measured width, size class only where the system decides | P3 | S + owner | 168 | DONE | [SLN-346](https://linear.app/sebastianln/issue/SLN-346) |
+| 174 | Move the SwiftData store into an App Group container | P2 | L + owner | — | TODO | [SLN-350](https://linear.app/sebastianln/issue/SLN-350) |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
