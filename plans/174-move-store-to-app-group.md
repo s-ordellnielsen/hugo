@@ -301,3 +301,37 @@ Stop and report (do not improvise) if:
 - A reviewer should check that `confirmAndDeleteLegacyStore` can only run in a launch whose marker was already `copied` when `resolve()` started, and that no path falls back to the legacy store once the marker exists.
 - Deferred: removing the `copied` versus `confirmed` states and the legacy cleanup code in a later release, once every tester has moved.
 - Known limit: edits made between the first and second launch exist only in the new store. This is intended; the old store is stale after the first launch.
+
+## Revision 1 (2026-11-27): the legacy URL pointed into the App Group
+
+> **Drift baseline for this revision**: commit `0e7bc61`.
+> `git diff --stat 0e7bc61..HEAD -- Hugo/Persistence HugoTests/Persistence Configuration`
+> Expected: no output.
+
+### What went wrong
+
+The Simulator-style rehearsal on the iPhone (Hugo Dev, 2026-11-27) showed that the migration did not run. `StoreRelocator.productionLegacyStoreURL()` builds `ModelConfiguration(schema:isStoredInMemoryOnly:)` and returns its `.url`. Once the app has an App Group entitlement, `ModelConfiguration` defaults to `groupContainer: .automatic`, so that URL is now `<group>/Library/Application Support/default.store`, the NEW location. `resolve()` found no file there (rule 5, "no legacy store"), returned a fresh `.appGroup` store with no marker and no copy, and CloudKit refilled it. The real old store stayed untouched in the app container. The unit tests passed because they hand in both URLs.
+
+Evidence on the device: the old store at `<app container>/Library/Application Support/default.store` still 835 KB and unchanged, the group store a different size (not a byte copy), no `store-move-state` marker, equal row counts because CloudKit re-imported.
+
+### Fix
+
+1. `StoreRelocator.productionLegacyStoreURL()` must return the true old location without asking `ModelConfiguration`: `URL.applicationSupportDirectory.appending(path: storeFileName)` (the app's own container, `Library/Application Support/default.store`). Remove the `SwiftData` import from `StoreRelocator.swift` only if nothing else there needs it.
+2. Guard against the same mistake in `resolve()`. Right after the group directory check, if `legacyStoreURL.standardizedFileURL.path == newStoreURL.standardizedFileURL.path`, log an error and return `legacyResolution`. The app then keeps using that single path and never treats an empty new store as a fresh install.
+3. Update the "Design" text for `productionLegacyStoreURL()` in this plan to say it is a fixed path in the app's own container, not `ModelConfiguration(...).url`.
+4. Tests in `HugoTests/Persistence/StoreRelocatorTests.swift`:
+   - `productionLegacyStoreURLIsInTheAppContainer`: the path ends with `/Library/Application Support/default.store` and does not contain `/Shared/AppGroup/`.
+   - `legacyAndNewStoreAtTheSamePathUsesLegacy`: pass the same directory as the legacy store's parent and as the group directory. `resolve()` returns `.legacy`, nothing is copied and no marker is written (use a counting stub copier).
+   - Extend the existing first-copy case, or add one, that checks a legacy store at a path DIFFERENT from the group store is copied and gets marker `copied` after the factory opens it.
+5. Do not change the factory flow, the marker rules, the entitlement files or any other file.
+
+### Self-healing note (no code needed)
+
+A device that already ran the broken build has a stray group store and no marker. The fixed code sees no marker and an existing legacy store, calls `abandonCopy()` (removes the stray group files) and copies properly. Add one test for it: group files exist, no marker, legacy store present, `resolve()` copies again and returns `isFreshCopy` true.
+
+### Done criteria for Revision 1
+
+- [ ] `Scripts/verify.sh` exits 0
+- [ ] `grep -n "ModelConfiguration" Hugo/Persistence/StoreRelocator.swift` prints nothing
+- [ ] The three new tests and the self-healing test exist and pass
+- [ ] `git diff --stat 0e7bc61..HEAD` lists only `StoreRelocator.swift`, `StoreRelocatorTests.swift`, `ModelContainerFactoryTests.swift` (if touched) and this plan
