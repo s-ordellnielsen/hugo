@@ -325,3 +325,22 @@ Stop and report (do not improvise) if:
 - A reviewer should check: the widget code path has no write, migration or relocation call (done criteria grep); `markFreshInstallIfNeeded` can never overwrite `copied`; the scheduler cannot loop (the mirror writes only on a difference).
 - Known limit: the widget shows data from the last time the app saved or synced. Changes that CloudKit imports while the app is not running appear after the next app launch or the midnight reload.
 - Deferred: lock screen and medium families, the Due month reminder, a widget tap target (`widgetURL`) that opens Add Entry, and removing the `copied`/`confirmed` distinction when plan 174's cleanup code goes.
+
+## Revision 1 (2026-11-27)
+
+The owner created the `HugoWidgetExtension` target and ticked membership. Building the `HugoWidgetExtension` scheme (Debug) gave this error in the widget glue:
+
+`Hugo/Features/Widget/Services/WidgetStoreReader.swift:77:30: error: call to main actor-isolated static method 'make(entries:plannedSeconds:settings:now:calendar:)' in a synchronous nonisolated context`
+
+Cause: `MonthProgress.make` is `@MainActor` because `OverviewMetrics` (and `PublisherStatus.status(for:)`, if it is isolated the same way) take the project's MainActor default isolation. The widget reads the store off the main actor, so the call is illegal there.
+
+Fix, in order of preference:
+1. Mark the pure value logic `nonisolated`: `OverviewMetrics` (the struct and `make`), and anything it or `MonthProgress.make` calls that has no UI or `ModelContext` (check `PublisherStatus`, `YearMonth`, `HeadlineDuration`). Then remove `@MainActor` from `MonthProgress.make`. Follow the pattern already used by `MonthlyCircleFill` (`nonisolated struct ... Sendable`). `Entry` is a SwiftData model: if the compiler objects to passing `[Entry]` across isolation, build `OverviewMetrics` inputs inside the same context that fetched them instead of making `Entry` Sendable, and say so in the report.
+2. Only if 1 is impossible, make `fetchProgress` and its caller `@MainActor` and keep `MonthProgress.make` as is. Say why in the report.
+
+Rules for this revision:
+- Do not edit `Hugo.xcodeproj/project.pbxproj`. The owner maintains target membership. If a "cannot find ... in scope" error appears for a type in a `Domain` folder, list the file in the report and stop.
+- Known and not yours: `RoundingRule` (`Hugo/Domain/RoundingRule.swift`) is not yet a widget member, so `SubmittedReportV11.swift` fails with "cannot find 'RoundingRule' in scope". The owner adds it. Ignore that one error.
+- Verify with `Scripts/verify.sh` (must exit 0) and by building the widget scheme: `xcodebuild -project Hugo.xcodeproj -scheme HugoWidgetExtension -configuration Debug -destination "generic/platform=iOS Simulator" build`. Report any remaining errors from that build verbatim.
+- Never stage `Hugo/Resources/Localizable.xcstrings`, `Hugo.xcodeproj/project.pbxproj` or `HugoWidget/Assets.xcassets/`.
+- Commit code only, `fix(widget): ...`.
