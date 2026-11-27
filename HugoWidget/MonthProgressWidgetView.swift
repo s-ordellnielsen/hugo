@@ -8,15 +8,28 @@ struct MonthProgressWidgetView: View {
     @Environment(\.widgetFamily) private var family
 
     var body: some View {
-        switch state {
-        case .ready(let progress):
-            if family == .systemMedium {
-                MediumContent(progress: progress, date: date)
-            } else {
-                ReadyContent(progress: progress, date: date)
+        Group {
+            switch state {
+            case .ready(let progress):
+                if family == .systemMedium {
+                    MediumContent(progress: progress, date: date)
+                } else {
+                    ReadyContent(progress: progress, date: date)
+                }
+            case .unavailable:
+                UnavailableContent()
             }
-        case .unavailable:
-            UnavailableContent()
+        }
+        .containerBackground(for: .widget) { background }
+    }
+
+    /// The medium widget draws its progress circle in the background so it can run to the widget's edge.
+    @ViewBuilder
+    private var background: some View {
+        if family == .systemMedium, case .ready(let progress) = state {
+            MediumBackground(fraction: progress.fill.fraction)
+        } else {
+            Rectangle().fill(.fill.tertiary)
         }
     }
 }
@@ -95,9 +108,8 @@ private struct ReadyContent: View {
 /// The Overview's `MonthlyProgressCircle`, redrawn for the widget: a disc that a gradient fills from the bottom.
 /// `CircleFillGeometry` sizes the fill so its area matches `fraction`. The accent is `Color.hugoAccent`
 /// (`.mint`), which the widget cannot take from the app's DesignSystem.
-private struct ProgressCircle<Content: View>: View {
+private struct ProgressCircle: View {
     let fraction: Double
-    @ViewBuilder let content: Content
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -127,8 +139,6 @@ private struct ProgressCircle<Content: View>: View {
                                 width: side,
                                 height: CGFloat(ceil(fillHeight * Double(side) + (clampedFraction >= 1 ? 1 : 0))))
                     }
-                content
-                    .frame(maxHeight: .infinity)
             }
             .frame(width: side, height: side)
             .clipShape(Circle())
@@ -138,43 +148,69 @@ private struct ProgressCircle<Content: View>: View {
     }
 }
 
+/// How much of the medium circle's width stays inside the widget. The circle is as tall as the widget and
+/// runs off the left edge, so the fill height stays true to the fraction.
+private let mediumCircleVisibleShare: CGFloat = 0.82
+
+private struct MediumBackground: View {
+    let fraction: Double
+
+    var body: some View {
+        GeometryReader { proxy in
+            let side = proxy.size.height
+            ZStack {
+                Rectangle().fill(.fill.tertiary)
+                ProgressCircle(fraction: fraction)
+                    .frame(width: side, height: side)
+                    .position(x: side * mediumCircleVisibleShare - side / 2, y: side / 2)
+            }
+        }
+    }
+}
+
 private struct MediumContent: View {
     let progress: MonthProgress
     let date: Date
 
+    @Environment(\.widgetContentMargins) private var margins
+
     var body: some View {
-        HStack(spacing: 16) {
-            ProgressCircle(fraction: progress.fill.fraction) {
-                EmptyView()
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(date, format: .dateTime.month(.wide))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(verbatim: "\(progress.headline.value)")
-                        .font(.system(.largeTitle, design: .serif, weight: .bold))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                    unit
-                        .font(.system(.title3, design: .serif, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-
-                Text(verbatim: detailLine)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        GeometryReader { proxy in
+            // The background circle is as tall as the whole widget, margins included.
+            let circleSide = proxy.size.height + margins.top + margins.bottom
+            let inset = max(0, circleSide * mediumCircleVisibleShare - margins.leading + 12)
+            textColumn
+                .padding(.leading, inset)
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .leading)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
+    }
+
+    private var textColumn: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(date, format: .dateTime.month(.wide))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(verbatim: "\(progress.headline.value)")
+                    .font(.system(.largeTitle, design: .serif, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                unit
+                    .font(.system(.title3, design: .serif, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Text(verbatim: detailLine)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+        }
     }
 
     /// "hours" or "min", next to the number.
